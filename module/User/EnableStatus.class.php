@@ -8,20 +8,17 @@ class User_EnableStatus extends SplEnum {
     const NORMAL    = 1;
     // 禁用
     const FORBIDDEN = 0;
-    // 实例
-    static private $_instance;
 
     /**
-     * 获取实例
+     * 获取用户状态
      *
-     * @return User_EnableStatus    实例
+     * @return array    用户状态
      */
-    public function getInstance () {
+    static public function getUserStatus () {
 
-        if (!self::$_instance instanceof self) {
-
-            self::$_instance = new self;
-        }
-        return self::$_instance;
+        return array(
+            self::NORMAL    => '正常',
+            self::FORBIDDEN => '禁用',
+        );
     }
 }
