@@ -1,0 +1,9 @@
+<?php
+return  array(
+    'default'   => array(
+        'dsn'       => 'mysql:dbname=vip;host=127.0.0.1',
+        'username'  => 'root',
+        'password'  => '',
+        'cmd'       => "SET NAMES 'utf8'",
+    ),
+);

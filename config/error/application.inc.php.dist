@@ -1,0 +1,13 @@
+<?php
+/**
+ * 应用错误
+ *
+ * @author    yaoxiaowei    <yaoxw@sinera.cn>
+ *
+ * @example    占用位置 9xx000000
+ */
+return    array(
+    'params'    => 1000000,
+    'module'    => 2000000,
+    'prompt'    => 9000001,
+);

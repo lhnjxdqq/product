@@ -1,0 +1,11 @@
+<?php
+/**
+ * 授权
+ */
+return  array(
+    'white_list'    => array(
+        '/login.php',
+        '/do_login.php',
+        '/logout.php',
+    ),
+);

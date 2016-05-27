@@ -1,0 +1,13 @@
+<?php
+/**
+ * 模板配置
+ */
+return  array(
+    'base'  => array(
+        'template_dir'      => ROOT . '/template',
+        'compiled_dir'      => ROOT . '/compiled',
+        'plugins_dir'       => ROOT . '/template/plugins',
+        'left_delimiter'    => '<{',
+        'right_delimiter'   => '}>',
+    ),
+);
