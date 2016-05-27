@@ -5,7 +5,7 @@
     <!-- /.login-logo -->
     <div class="login-box-body">
 
-        <form action="<{$data.action}>" method="post">
+        <form action="/do_login.php" method="post">
             <div class="form-group has-feedback">
                 <input type="text" name="username" class="form-control" placeholder="请输入登录账号">
                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
@@ -15,6 +15,7 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="form-group">
+                <input type="hidden" name="redirect" value="<{$smarty.get.redirect|escape}>" />
                 <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
             </div>
         </form>

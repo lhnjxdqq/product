@@ -123,7 +123,7 @@
                                 <a href="#" class="btn btn-default btn-flat">资料</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">签出</a>
+                                <a href="/logout.php" class="btn btn-default btn-flat">签出</a>
                             </div>
                         </li>
                     </ul>

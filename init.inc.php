@@ -14,3 +14,9 @@ date_default_timezone_set(TIME_ZONE_DEFAULT);
 Application::initialize();
 
 session_start();
+
+if ((!isset($argc) || $argc == 0) && !Common_Auth::validate()) {
+
+    header('Location: /login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    exit;
+}
