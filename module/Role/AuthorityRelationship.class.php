@@ -27,12 +27,17 @@ class   Role_AuthorityRelationship {
      */
     static  public  function create (array $data) {
 
+        $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
             'filter'    => 'role_id,authority_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => $datetime,
+        );
         self::_getStore()->insert(self::_tableName(), $newData);
+        return      self::_getStore()->lastInsertId();
     }
 
     /**

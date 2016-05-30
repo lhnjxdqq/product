@@ -27,12 +27,17 @@ class   User_RoleRelationship {
      */
     static  public  function create (array $data) {
 
+        $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'user_id,role_id',
+            'filter'    => '',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => $datetime,
+        );
         self::_getStore()->insert(self::_tableName(), $newData);
+        return      self::_getStore()->lastInsertId();
     }
 
     /**
@@ -44,7 +49,7 @@ class   User_RoleRelationship {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'user_id,role_id',
+            'filter'    => '',
         );
         $condition  = "`user_id` = '" . addslashes($data['user_id']) . "' AND `role_id` = '" . addslashes($data['role_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
@@ -62,5 +67,18 @@ class   User_RoleRelationship {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `user_id` = "' . (int) $userId . '"';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据用户ID删除其所有角色
+     *
+     * @param $userId   用户ID
+     * @return int      受影响的条数
+     */
+    static public function delByUserId ($userId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `user_id` = "' . (int) $userId . '"';
+
+        return  self::_getStore()->execute($sql);
     }
 }

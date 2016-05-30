@@ -70,7 +70,7 @@ class   Role_Info {
      * @param null $limit       数量
      * @return array            数据
      */
-    static public function listByCondition (array $condition, array $order, $offset = null, $limit = null) {
+    static public function listByCondition (array $condition, array $order = array(), $offset = null, $limit = null) {
 
         $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);

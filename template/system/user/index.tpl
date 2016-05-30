@@ -57,7 +57,7 @@
                                         <td><{$user.create_time}></td>
                                         <td><{$data.userStatus[$user.enable_status]}></td>
                                         <td>
-                                            <a href="" class="btn btn-primary btn-xs"><i class="fa fa-check-square-o"></i> 分配角色</a>
+                                            <a href="/system/user/assign_role.php?user_id=<{$user.user_id}>" class="btn btn-primary btn-xs"><i class="fa fa-check-square-o"></i> 分配角色</a>
                                             <a href="/system/user/edit.php?user_id=<{$user.user_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <a href="javascript:delUser(<{$user.user_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                         </td>
