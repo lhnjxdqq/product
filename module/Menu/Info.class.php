@@ -19,7 +19,7 @@ class   Menu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'menu_id,menu_name,menu_desc,menu_icon,menu_level,menu_url,parent_id,create_time,update_time,delete_status';
+    const   FIELDS      = 'menu_id,menu_name,menu_desc,menu_related,menu_icon,menu_level,menu_url,parent_id,create_time,update_time,delete_status';
     /**
      * 新增
      *
@@ -69,27 +69,29 @@ class   Menu_Info {
         foreach ($menuData as $menu) {
             if ($menu['menu_level'] == 1) {
                 $menus[$menu['menu_id']]['top'] = array(
-                    'name'  => $menu['menu_name'],
-                    'url'   => $menu['menu_url'],
-                    'icon'  => $menu['menu_icon'],
+                    'name'      => $menu['menu_name'],
+                    'url'       => $menu['menu_url'],
+                    'icon'      => $menu['menu_icon'],
+                    'related'   => $menu['menu_related'],
                 );
                 $menus[$menu['menu_id']]['child'] = array();
             }
             if ($menu['menu_level'] == 2) {
                 $menus[$menu['parent_id']]['child'][] = array(
-                    'name'  => $menu['menu_name'],
-                    'url'   => $menu['menu_url'],
-                    'icon'  => $menu['menu_icon'],
+                    'name'      => $menu['menu_name'],
+                    'url'       => $menu['menu_url'],
+                    'icon'      => $menu['menu_icon'],
+                    'related'   => $menu['menu_related'],
                 );
             }
         }
         $scriptName = $_SERVER['SCRIPT_NAME'];
         foreach ($menus as &$menu) {
-            if ($menu['top']['url'] == $scriptName) {
+            if ($menu['top']['url'] == $scriptName || in_array($scriptName, explode('|', $menu['related']))) {
                 $menu['top']['current'] = true;
             }
             foreach ($menu['child'] as &$childMenu) {
-                if ($childMenu['url'] == $scriptName) {
+                if ($childMenu['url'] == $scriptName || in_array($scriptName, explode('|', $childMenu['related']))) {
                     $childMenu['current']   = true;
                     $menu['top']['current'] = true;
                 }

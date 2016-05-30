@@ -14,11 +14,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>用户管理</h1>
+            <h1>权限管理</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="javascript:void(0);">用户管理</a></li>
-                <li class="active">用户列表</li>
+                <li><a href="javascript:void(0);">权限管理</a></li>
+                <li class="active">权限列表</li>
             </ol>
         </section>
 
@@ -28,8 +28,8 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">
-                        <span style="margin-right: 10px;">用户列表</span>
-                        <a href="/system/user/add.php" class="btn btn-success btn-xs"><i class="fa fa-plus"></i> 新增用户</a>
+                        <span style="margin-right: 10px;">权限列表</span>
+                        <a href="/system/authority/add.php" class="btn btn-success btn-xs"><i class="fa fa-plus"></i> 新增权限</a>
                     </h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip">
@@ -41,27 +41,26 @@
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">
                             <thead>
-                                <tr>
-                                    <th>用户ID</th>
-                                    <th>用户名</th>
-                                    <th>创建时间</th>
-                                    <th style="width: 100px;">用户状态</th>
-                                    <th style="width: 200px;">操作</th>
-                                </tr>
+                            <tr>
+                                <th>权限ID</th>
+                                <th>权限名称</th>
+                                <th>权限URL</th>
+                                <th>权限描述</th>
+                                <th style="width: 150px;">操作</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <{foreach from=$data.listUsers item=user}>
-                                    <tr>
-                                        <td><{$user.user_id}></td>
-                                        <td><{$user.username}></td>
-                                        <td><{$user.create_time}></td>
-                                        <td><{$data.userStatus[$user.enable_status]}></td>
-                                        <td>
-                                            <a href="" class="btn btn-primary btn-xs"><i class="fa fa-check-square-o"></i> 分配角色</a>
-                                            <a href="/system/user/edit.php?user_id=<{$user.user_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
-                                            <a href="javascript:delUser(<{$user.user_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
-                                        </td>
-                                    </tr>
+                            <{foreach from=$data.listAuthority item=authority}>
+                                <tr>
+                                    <td><{$authority.authority_id}></td>
+                                    <td><{$authority.authority_name}></td>
+                                    <td><{$authority.authority_url}></td>
+                                    <td><{$authority.authority_desc}></td>
+                                    <td>
+                                        <a href="/system/authority/edit.php?authority_id=<{$authority.authority_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                        <a href="javascript:delAuthority(<{$authority.authority_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
+                                    </td>
+                                </tr>
                                 <{/foreach}>
                             </tbody>
                         </table>
@@ -98,10 +97,10 @@
 
 <{include file="section/foot.tpl"}>
 <script>
-    function delUser(userId) {
-        if (userId) {
-            if (confirm('确认删除该用户吗 ?')) {
-                var redirect = '/system/user/del.php?user_id=' + userId;
+    function delAuthority(authorityId) {
+        if (authorityId) {
+            if (confirm('确认删除该权限吗 ?')) {
+                var redirect = '/system/authority/del.php?user_id=' + authorityId;
                 location.href = redirect;
             }
         }
