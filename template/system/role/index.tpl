@@ -55,7 +55,7 @@
                                     <td><{$item.role_name}></td>
                                     <td><{$item.role_desc}></td>
                                     <td>
-                                        <a href="" class="btn btn-primary btn-xs"><i class="fa fa-check-square-o"></i> 分配权限</a>
+                                        <a href="/system/role/assign_authority.php?role_id=<{$item.role_id}>" class="btn btn-primary btn-xs"><i class="fa fa-check-square-o"></i> 分配权限</a>
                                         <a href="/system/role/edit.php?role_id=<{$item.role_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                         <a href="javascript:delRole(<{$item.role_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                     </td>

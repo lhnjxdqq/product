@@ -30,7 +30,7 @@ class   Role_AuthorityRelationship {
         $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'role_id,authority_id',
+            'filter'    => '',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData    += array(
@@ -67,5 +67,31 @@ class   Role_AuthorityRelationship {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `authority_id`="' . (int) $authorityId . '"';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据角色ID获取其所有权限
+     *
+     * @param $roleId   角色ID
+     * @return array    该角色所有权限
+     */
+    static public function getByRoleId ($roleId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `role_id` = "' . (int) $roleId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据角色ID 删除其所有权限
+     *
+     * @param $roleId   角色ID
+     * @return int      受影响的条数
+     */
+    static public function delByRoleId ($roleId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `role_id` = "' . (int) $roleId . '"';
+
+        return  self::_getStore()->execute($sql);
     }
 }
