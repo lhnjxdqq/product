@@ -100,7 +100,7 @@
     function delAuthority(authorityId) {
         if (authorityId) {
             if (confirm('确认删除该权限吗 ?')) {
-                var redirect = '/system/authority/del.php?user_id=' + authorityId;
+                var redirect = '/system/authority/del.php?authority_id=' + authorityId;
                 location.href = redirect;
             }
         }
