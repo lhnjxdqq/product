@@ -102,13 +102,13 @@ class   Common_Auth {
         }
 
         // 根据当前访问脚本URL去权限表查询, 如果查询不到则不验证
-        $authrityInfo   = System_Authority_Info::getByUrl($_SERVER['SCRIPT_NAME']);
+        $authrityInfo   = Authority_Info::getByUrl($_SERVER['SCRIPT_NAME']);
         if (empty($authrityInfo) || $authrityInfo['delete_status'] == Authority_DeleteStatus::DELETED) {
 
             return;
         }
         // 如果该URL需要验证, 列出所有拥有访问该脚本的所有角色
-        $listAuthorityRole      = System_Role_AuthorityRelationship::getByAuthorityId($authrityInfo['authority_id']);
+        $listAuthorityRole      = Role_AuthorityRelationship::getByAuthorityId($authrityInfo['authority_id']);
         if (empty($listAuthorityRole)) {
 
             Utility::notice('该权限尚未授权任何用户组');
@@ -116,7 +116,7 @@ class   Common_Auth {
         $listAuthorityRoleIds   = ArrayUtility::listField($listAuthorityRole, 'role_id');
 
         // 获取当前用户的角色
-        $listUserRoles      = System_User_RoleRelationship::getByUserId($_SESSION['user_id']);
+        $listUserRoles      = User_RoleRelationship::getByUserId($_SESSION['user_id']);
         $listUserRoleIds    = ArrayUtility::listField($listUserRoles, 'role_id');
 
         // 有权限访问的角色 和 当前用户的角色 是否有交集)

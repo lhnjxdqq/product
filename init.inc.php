@@ -20,3 +20,5 @@ if ((!isset($argc) || $argc == 0) && !Common_Auth::validate()) {
     header('Location: /login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit;
 }
+
+Common_Auth::authority();
