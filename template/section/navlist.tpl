@@ -25,7 +25,7 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li class="header">功能</li>
-            <{foreach from=$data.mainMenu item=menu}>
+            <{foreach from=$mainMenu item=menu}>
                 <li class="<{if !empty($menu.child)}>treeview<{/if}><{if $menu.top.current}> active<{/if}>">
                     <a href="<{$menu.top.url}>">
                         <i class="fa <{$menu.top.icon}>"></i>
