@@ -7,7 +7,7 @@
                 <img src="/images/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p>艄公</p>
+                <p><{$smarty.session.user_info.username}></p>
                 <a href="javascript:void(0);"><i class="fa fa-clock-o"></i> <{date('Y-m-d')}></a>
             </div>
         </div>

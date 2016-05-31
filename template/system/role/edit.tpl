@@ -17,7 +17,7 @@
             <h1>角色管理</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="javascript:void(0);">角色管理</a></li>
+                <li><a href="/system/role/index.php">角色管理</a></li>
                 <li class="active">编辑角色</li>
             </ol>
         </section>

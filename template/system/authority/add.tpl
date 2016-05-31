@@ -17,7 +17,7 @@
             <h1>权限管理</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="javascript:void(0);">权限管理</a></li>
+                <li><a href="/system/authority/index.php">权限管理</a></li>
                 <li class="active">新增权限</li>
             </ol>
         </section>
