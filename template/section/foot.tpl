@@ -30,3 +30,4 @@
 <script src="/js/jquery.knob.js"></script>
 <!-- AdminLTE App -->
 <script src="/js/app.min.js"></script>
+<script src="/js/global.js"></script>

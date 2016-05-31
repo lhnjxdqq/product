@@ -25,6 +25,18 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
+            <div class="box collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">表格操作</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" id="user-list-vis">
+
+                </div>
+            </div>
+            <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">
@@ -106,6 +118,30 @@
             }
         }
     }
+    var userList = $('#user-list').DataTable({
+        autoWidth   : true,
+        info        : false,
+        lengthChange: false,
+        ordering    : false,
+        paging      : false,
+        searching   : false,
+        order       : [[0, 'desc']],
+        processing  : true,
+        language    : {
+            url     : '/js/dataTable.cn.json'
+        },
+        aoColumnDefs: [
+            {
+                "bSortable": false,
+                "aTargets": [0,1,2,3,4]
+            }
+        ]
+    });
+    tableColumn({
+        selector    : '#user-list',
+        container   : '#user-list-vis',
+        dataTable   : userList
+    });
 </script>
 </body>
 </html>
