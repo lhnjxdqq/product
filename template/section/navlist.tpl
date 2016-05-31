@@ -8,11 +8,11 @@
             </div>
             <div class="pull-left info">
                 <p>艄公</p>
-                <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
+                <a href="javascript:void(0);"><i class="fa fa-clock-o"></i> <{date('Y-m-d')}></a>
             </div>
         </div>
         <!-- search form -->
-        <form action="#" method="get" class="sidebar-form">
+        <form action="javascript:void(0);" method="get" class="sidebar-form">
             <div class="input-group">
                 <input type="text" name="q" class="form-control" placeholder="搜索">
               <span class="input-group-btn">
@@ -43,8 +43,6 @@
                     <{/if}>
                 </li>
             <{/foreach}>
-            <li class="header">配置</li>
-            <li><a href="#"><i class="fa fa-gear"></i> <span>在途预警阀值</span></a></li>
         </ul>
     </section>
     <!-- /.sidebar -->
