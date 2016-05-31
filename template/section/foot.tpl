@@ -16,6 +16,7 @@
 <script src="/js/daterangepicker.js"></script>
 <!-- bootstrap datepicker -->
 <script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/bootstrap-datepicker.zh-CN.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="/js/bootstrap-timepicker.min.js"></script>
 <!-- iCheck 1.0.1 -->
@@ -24,8 +25,7 @@
 <script src="/js/select2.full.min.js"></script>
 <!-- SlimScroll 1.3.0 -->
 <script src="/js/jquery.slimscroll.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="/js/jquery-ui.min.js"></script>
+
 <!-- jQuery Knob -->
 <script src="/js/jquery.knob.js"></script>
 <!-- AdminLTE App -->

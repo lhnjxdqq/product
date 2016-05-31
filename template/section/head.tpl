@@ -12,16 +12,13 @@
     <link rel="stylesheet" href="/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="/css/ionicons.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="/css/AdminLTE.min.css">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="/css/skins/_all-skins.min.css">
     <!-- bootstrap slider -->
     <link rel="stylesheet" href="/css/slider.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="/css/dataTables.bootstrap.css">
     <!-- daterange picker -->
     <link rel="stylesheet" href="/css/daterangepicker-bs3.css">
+
     <!-- bootstrap datepicker -->
     <link rel="stylesheet" href="/css/datepicker3.css">
     <!-- Bootstrap time Picker -->
@@ -30,6 +27,11 @@
     <link rel="stylesheet" href="/css/iCheck-all.css">
     <!-- Select2 -->
     <link rel="stylesheet" href="/css/select2.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/css/global.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

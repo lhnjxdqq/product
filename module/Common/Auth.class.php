@@ -56,6 +56,7 @@ class   Common_Auth {
         if ($userInfo['password_encode'] == self::passwordEncoding($password, $userInfo['password_salt'])) {
 
             $_SESSION['user_id']    = $userInfo['user_id'];
+            Log_Info::logRecord($_SESSION['user_id']);
             return  true;
         }
 

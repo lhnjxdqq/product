@@ -21,4 +21,7 @@ if ((!isset($argc) || $argc == 0) && !Common_Auth::validate()) {
     exit;
 }
 
-Common_Auth::authority();
+if ($_SERVER['SCRIPT_NAME'] && $_SERVER['SCRIPT_NAME'] != '/') {
+    Common_Auth::authority();
+    Log_Info::logRecord();
+}
