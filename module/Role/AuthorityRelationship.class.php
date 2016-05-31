@@ -83,6 +83,21 @@ class   Role_AuthorityRelationship {
     }
 
     /**
+     * 获取一组角色的权限
+     *
+     * @param $multiRoleId  一组角色ID
+     * @return array        这组角色的权限
+     */
+    static public function getByMultiRoleId ($multiRoleId) {
+
+        $multiRoleId    = array_filter(array_unique($multiRoleId));
+        $multiRoleId    = array_map('addslashes', $multiRoleId);
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `role_id` IN ("' . implode('","', $multiRoleId) . '")';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据角色ID 删除其所有权限
      *
      * @param $roleId   角色ID

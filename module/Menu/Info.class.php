@@ -77,6 +77,10 @@ class   Menu_Info {
                 $menus[$menu['menu_id']]['child'] = array();
             }
             if ($menu['menu_level'] == 2) {
+                if (!in_array($menu['menu_url'], $_SESSION['user_auth'])) {
+
+                    continue;
+                }
                 $menus[$menu['parent_id']]['child'][] = array(
                     'name'      => $menu['menu_name'],
                     'url'       => $menu['menu_url'],

@@ -1,9 +1,7 @@
 <?php
 require_once    dirname(__FILE__) . '/../init.inc.php';
 
-$mainMenu           = Menu_Info::getMainMenu();
-
-$data['mainMenu']   = $mainMenu;
+$data['mainMenu']   = Menu_Info::getMainMenu();
 
 $template = Template::getInstance();
 $template->assign('data', $data);

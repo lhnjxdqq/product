@@ -198,4 +198,19 @@ class   Authority_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
+
+    /**
+     * 根据一组权限ID获取权限信息
+     *
+     * @param $multiId  一组权限ID
+     * @return array    权限信息
+     */
+    static public function getByMultiId ($multiId) {
+
+        $multiId    = array_filter(array_unique($multiId));
+        $multiId    = array_map('addslashes', $multiId);
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `authority_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
 }

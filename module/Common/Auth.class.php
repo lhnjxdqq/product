@@ -57,8 +57,15 @@ class   Common_Auth {
 
             unset($userInfo['password_encode']);
             unset($userInfo['password_salt']);
+
+            $userRoleIds        = ArrayUtility::listField(User_RoleRelationship::getByUserId($userInfo['user_id']), 'role_id');
+            $userAuthorityIds   = ArrayUtility::listField(Role_AuthorityRelationship::getByMultiRoleId($userRoleIds), 'authority_id');
+            $userAuthoritys     = ArrayUtility::indexByField(Authority_Info::getByMultiId($userAuthorityIds), 'authority_id', 'authority_url');
+
             $_SESSION['user_id']    = $userInfo['user_id'];
             $_SESSION['user_info']  = $userInfo;
+            $_SESSION['user_auth']  = $userAuthoritys;
+
             Log_Info::logRecord($_SESSION['user_id']);
             return  true;
         }
