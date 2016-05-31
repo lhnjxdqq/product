@@ -8,7 +8,7 @@
     <{include file="section/navbar.tpl"}>
 
     <!-- Left side column. contains the sidebar -->
-    <{include file="section/navlist.tpl"}>
+    <{include file="section/navlist.tpl" mainMenu=$data.mainMenu}>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
