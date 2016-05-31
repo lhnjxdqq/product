@@ -8,7 +8,15 @@ function tableColumn (obj) {
     });
     table += '</tr></table></div>';
     $(obj.container).append(table).delegate('table tr td input', 'click', function () {
-        var column = obj.dataTable.column( $(this).attr('data-column') );
-        column.visible( ! column.visible() );
+        var tr          = $(obj.selector).find('tr'),
+            cellIndex   = $(this).attr('data-column'),
+            checked     = $(this).prop('checked');
+        $.each(tr, function (index, val) {
+            if (checked) {
+                $(val).children('th,td').eq(cellIndex).show();
+            } else {
+                $(val).children('th,td').eq(cellIndex).hide();
+            }
+        });
     });
 }

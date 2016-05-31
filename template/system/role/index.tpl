@@ -25,6 +25,18 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
+            <div class="box collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">表格操作</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" id="role-list-vis">
+
+                </div>
+            </div>
+            <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">
@@ -37,9 +49,8 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="row toggle-vis"></div>
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="user-list">
+                        <table class="table table-hover table-bordered" id="role-list">
                             <thead>
                             <tr>
                                 <th>角色ID</th>
@@ -104,6 +115,10 @@
             }
         }
     }
+    tableColumn({
+        selector    : '#role-list',
+        container   : '#role-list-vis'
+    });
 </script>
 </body>
 </html>

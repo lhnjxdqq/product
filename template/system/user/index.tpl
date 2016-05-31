@@ -49,7 +49,6 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="row toggle-vis"></div>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">
                             <thead>
@@ -118,29 +117,9 @@
             }
         }
     }
-    var userList = $('#user-list').DataTable({
-        autoWidth   : true,
-        info        : false,
-        lengthChange: false,
-        ordering    : false,
-        paging      : false,
-        searching   : false,
-        order       : [[0, 'desc']],
-        processing  : true,
-        language    : {
-            url     : '/js/dataTable.cn.json'
-        },
-        aoColumnDefs: [
-            {
-                "bSortable": false,
-                "aTargets": [0,1,2,3,4]
-            }
-        ]
-    });
     tableColumn({
         selector    : '#user-list',
-        container   : '#user-list-vis',
-        dataTable   : userList
+        container   : '#user-list-vis'
     });
 </script>
 </body>
