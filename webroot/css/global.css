@@ -1,0 +1,11 @@
+.input-daterange {
+
+}
+
+.input-daterange input[readonly] {
+    background: #fff;
+}
+
+.input-daterange .input-group-addon {
+    background: #eee;
+}

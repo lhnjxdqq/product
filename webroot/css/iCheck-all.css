@@ -1,0 +1,61 @@
+/* iCheck plugin skins
+----------------------------------- */
+@import url("iCheck/minimal/_all.css");
+/*
+@import url("iCheck/minimal/minimal.css");
+@import url("iCheck/minimal/red.css");
+@import url("iCheck/minimal/green.css");
+@import url("iCheck/minimal/blue.css");
+@import url("iCheck/minimal/aero.css");
+@import url("iCheck/minimal/grey.css");
+@import url("iCheck/minimal/orange.css");
+@import url("iCheck/minimal/yellow.css");
+@import url("iCheck/minimal/pink.css");
+@import url("iCheck/minimal/purple.css");
+*/
+
+@import url("iCheck/square/_all.css");
+/*
+@import url("iCheck/square/square.css");
+@import url("iCheck/square/red.css");
+@import url("iCheck/square/green.css");
+@import url("iCheck/square/blue.css");
+@import url("iCheck/square/aero.css");
+@import url("iCheck/square/grey.css");
+@import url("iCheck/square/orange.css");
+@import url("iCheck/square/yellow.css");
+@import url("iCheck/square/pink.css");
+@import url("iCheck/square/purple.css");
+*/
+
+@import url("iCheck/flat/_all.css");
+/*
+@import url("iCheck/flat/flat.css");
+@import url("iCheck/flat/red.css");
+@import url("iCheck/flat/green.css");
+@import url("iCheck/flat/blue.css");
+@import url("iCheck/flat/aero.css");
+@import url("iCheck/flat/grey.css");
+@import url("iCheck/flat/orange.css");
+@import url("iCheck/flat/yellow.css");
+@import url("iCheck/flat/pink.css");
+@import url("iCheck/flat/purple.css");
+*/
+
+@import url("iCheck/line/_all.css");
+/*
+@import url("iCheck/line/line.css");
+@import url("iCheck/line/red.css");
+@import url("iCheck/line/green.css");
+@import url("iCheck/line/blue.css");
+@import url("iCheck/line/aero.css");
+@import url("iCheck/line/grey.css");
+@import url("iCheck/line/orange.css");
+@import url("iCheck/line/yellow.css");
+@import url("iCheck/line/pink.css");
+@import url("iCheck/line/purple.css");
+*/
+
+@import url("iCheck/polaris/polaris.css");
+
+@import url("iCheck/futurico/futurico.css");

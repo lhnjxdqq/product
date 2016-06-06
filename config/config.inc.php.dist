@@ -1,0 +1,21 @@
+<?php
+/**
+ * 全局配置文件
+ */
+
+define('ROOT', str_replace('\\', '/', realpath(dirname(__FILE__) . '/../')));
+define('LIB', ROOT . '/lib/');
+define('MODULE', ROOT . '/module/');
+define('CONF', ROOT . '/config/');
+define('LOG', ROOT . '/logs/');
+define('TEMP', ROOT . '/tmp/');
+define('TIME_ZONE_DEFAULT', 'Asia/Shanghai');
+
+//code
+define('CODE_SUCCESS', 0);
+
+define('CODE_SYSTEM_ERROR_FILE', 203000000);
+define('CODE_SYSTEM_ERROR_DATABASE', 202000000);
+define('CODE_SYSTEM_ERROR_LOGIC', 205000000);
+
+

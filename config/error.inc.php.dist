@@ -1,0 +1,13 @@
+<?php
+/**
+ * 错误代码
+ *
+ * @author  yaoxiaowei  <yaoxw@sinera.cn>
+ *
+ * @example 占用位置 x00000000
+ */
+return  array(
+    'unknown'       => 100000000,
+    'system'        => 200000000,
+    'application'   => 900000000,
+);
