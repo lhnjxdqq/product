@@ -108,4 +108,46 @@ class   Utility {
         return $ip[$type];
     }
 
+    /**
+     * 发送HTTP状态
+     * @param integer $code 状态码
+     * @return void
+     */
+    static public function sendHttpStatus($code) {
+        static $_status = array(
+            // Success 2xx
+            200 => 'OK',
+            // Redirection 3xx
+            301 => 'Moved Permanently',
+            302 => 'Moved Temporarily ',  // 1.1
+            // Client Error 4xx
+            400 => 'Bad Request',
+            403 => 'Forbidden',
+            404 => 'Not Found',
+            // Server Error 5xx
+            500 => 'Internal Server Error',
+            503 => 'Service Unavailable',
+        );
+        if(isset($_status[$code])) {
+            header('HTTP/1.1 '.$code.' '.$_status[$code]);
+            // 确保FastCGI模式下正常
+            header('Status:'.$code.' '.$_status[$code]);
+        }
+    }
+
+    /**
+     * 生成随机字符串
+     *
+     * @param int $length   长度
+     * @return string       随机字符串
+     */
+    static public function createRandCode ($length = 6) {
+
+        $seed   = 'abcdefghijklmnopqrstuvwxyz';
+        $seed  .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $seed  .= '0123456789';
+
+        return  substr(str_shuffle($seed), 0, $length);
+    }
+
 }

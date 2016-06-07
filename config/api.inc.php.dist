@@ -1,0 +1,17 @@
+<?php
+return  array(
+    'url_white_list'    => array(
+        '/api/index.php',
+        '/api/test.php',
+    ),
+    'ip_white_list'     => array(
+        '192.168.1.109',
+        '127.0.0.1',
+    ),
+    'app_list'          => array(
+        'select'    => array(
+            'appId'    => 'dd51f30c317b42e0cdfe35d7a6f5e90f',
+            'appKey'   => '4954bf507d89b803436d9647474eb8488bd4143f',
+        ),
+    ),
+);
