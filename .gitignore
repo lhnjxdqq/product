@@ -1,0 +1,13 @@
+config/**/*.php
+config/**/*.sh
+config/*.sh
+config/*.php
+upload/
+*.swp
+logs/
+/log/
+compiled/
+shell/test.php
+.DS_Store
+.idea
+.gitignore
