@@ -49,4 +49,17 @@ class   Goods_Type_Spec_Value_Relationship {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据商品类型ID获取该商品类型的规格和规格值
+     *
+     * @param $goodsTypeId
+     * @return array
+     */
+    static public function getSpecValueByGoodsTypeId ($goodsTypeId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_id`="' . (int) $goodsTypeId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }

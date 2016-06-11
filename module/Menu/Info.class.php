@@ -9,7 +9,7 @@ class   Menu_Info {
     /**
      * 数据库配置
      */
-    const   DATABASE    = 'prod_system';
+    const   DATABASE    = 'product';
 
     /**
      * 表名
