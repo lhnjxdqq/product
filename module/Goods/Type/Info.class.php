@@ -1,10 +1,11 @@
 <?php
 /**
- * 模型 产品类型属性值关系
+ * 模型 商品类型
  */
-class   Goods_Type_Spec_Value_Relationship {
+class   Goods_Type_Info {
 
     use Base_MiniModel;
+
     /**
      * 数据库配置
      */
@@ -13,12 +14,12 @@ class   Goods_Type_Spec_Value_Relationship {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'goods_type_spec_value_relationship';
+    const   TABLE_NAME  = 'goods_type_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_type_id,spec_id,spec_value_id';
+    const   FIELDS      = 'goods_type_id,goods_type_name,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -28,7 +29,7 @@ class   Goods_Type_Spec_Value_Relationship {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'goods_type_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->insert(self::_tableName(), $newData);
@@ -43,23 +44,11 @@ class   Goods_Type_Spec_Value_Relationship {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'goods_type_id',
         );
-        $condition  = "";
+        $condition  = "`goods_type_id` = '" . addslashes($data['goods_type_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
-    /**
-     * 根据商品类型ID获取该商品类型的规格和规格值
-     *
-     * @param $goodsTypeId
-     * @return array
-     */
-    static public function getSpecValueByGoodsTypeId ($goodsTypeId) {
-
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_id`="' . (int) $goodsTypeId . '"';
-
-        return  self::_getStore()->fetchAll($sql);
-    }
 }

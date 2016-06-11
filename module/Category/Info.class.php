@@ -1,10 +1,11 @@
 <?php
 /**
- * 模型 产品类型属性值关系
+ * 模型 品类
  */
-class   Goods_Type_Spec_Value_Relationship {
+class   Category_Info {
 
     use Base_MiniModel;
+
     /**
      * 数据库配置
      */
@@ -13,12 +14,12 @@ class   Goods_Type_Spec_Value_Relationship {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'goods_type_spec_value_relationship';
+    const   TABLE_NAME  = 'category_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_type_id,spec_id,spec_value_id';
+    const   FIELDS      = 'category_id,category_alias,category_name,category_sn,category_level,parent_id,goods_type_id,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -28,7 +29,7 @@ class   Goods_Type_Spec_Value_Relationship {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'category_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->insert(self::_tableName(), $newData);
@@ -43,23 +44,23 @@ class   Goods_Type_Spec_Value_Relationship {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'category_id',
         );
-        $condition  = "";
+        $condition  = "`category_id` = '" . addslashes($data['category_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
     /**
-     * 根据商品类型ID获取该商品类型的规格和规格值
+     * 根据品类ID获取该品类的信息
      *
-     * @param $goodsTypeId
-     * @return array
+     * @param $categoryId   品类ID
+     * @return array        品类信息
      */
-    static public function getSpecValueByGoodsTypeId ($goodsTypeId) {
+    static public function getByCategoryId ($categoryId) {
 
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_id`="' . (int) $goodsTypeId . '"';
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `category_id`="' . (int) $categoryId . '"';
 
-        return  self::_getStore()->fetchAll($sql);
+        return  self::_getStore()->fetchOne($sql);
     }
 }

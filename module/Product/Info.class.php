@@ -1,8 +1,8 @@
 <?php
 /**
- * 模型 用户角色
+ * 模型 产品
  */
-class   User_RoleRelationship {
+class   Product_Info {
 
     use Base_MiniModel;
 
@@ -14,12 +14,12 @@ class   User_RoleRelationship {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'user_role';
+    const   TABLE_NAME  = 'product_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'user_id,role_id,create_time';
+    const   FIELDS      = 'product_id,product_sn,product_name,product_cost,source_id,goods_id,product_remark,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -30,11 +30,12 @@ class   User_RoleRelationship {
         $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'product_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData    += array(
             'create_time'   => $datetime,
+            'update_time'   => $datetime,
         );
         self::_getStore()->insert(self::_tableName(), $newData);
         return      self::_getStore()->lastInsertId();
@@ -49,36 +50,23 @@ class   User_RoleRelationship {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'product_id',
         );
-        $condition  = "`user_id` = '" . addslashes($data['user_id']) . "' AND `role_id` = '" . addslashes($data['role_id']) . "'";
+        $condition  = "`product_id` = '" . addslashes($data['product_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
     /**
-     * 根据用户ID 获取该用户的所有角色信息
+     * 生成产品编号的后7位
      *
-     * @param $userId   用户ID
-     * @return array    该用户的所有角色
+     * @return mixed
      */
-    static public function getByUserId ($userId) {
+    static public function createProductSn ($categorySn) {
 
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `user_id` = "' . (int) $userId . '"';
+        $sql    = 'SELECT MAX(`product_id`) AS `pid` FROM `' . self::_tableName() . '`';
+        $row    = self::_getStore()->fetchOne($sql);
 
-        return  self::_getStore()->fetchAll($sql);
-    }
-
-    /**
-     * 根据用户ID删除其所有角色
-     *
-     * @param $userId   用户ID
-     * @return int      受影响的条数
-     */
-    static public function delByUserId ($userId) {
-
-        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `user_id` = "' . (int) $userId . '"';
-
-        return  self::_getStore()->execute($sql);
+        return  'G' . $categorySn . (1010101 + (int) $row['pid']);
     }
 }

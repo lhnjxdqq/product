@@ -1,8 +1,8 @@
 <?php
 /**
- * 模型 角色
+ * 模型 买款
  */
-class   Role_Info {
+class   Source_Info {
 
     use Base_MiniModel;
 
@@ -14,12 +14,12 @@ class   Role_Info {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'role_info';
+    const   TABLE_NAME  = 'source_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'role_id,role_name,role_desc,create_time,update_time,delete_status';
+    const   FIELDS      = 'source_id,source_code,supplier_id,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -30,7 +30,7 @@ class   Role_Info {
         $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'role_id',
+            'filter'    => 'source_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData    += array(
@@ -48,33 +48,29 @@ class   Role_Info {
      */
     static  public  function update (array $data) {
 
-        $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'role_id',
+            'filter'    => 'source_id',
         );
-        $condition  = "`role_id` = '" . addslashes($data['role_id']) . "'";
+        $condition  = "`source_id` = '" . addslashes($data['source_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-        $newData    += array(
-            'update_time'   => $datetime,
-        );
-        return      self::_getStore()->update(self::_tableName(), $newData, $condition);
+        self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
     /**
      * 根据条件获取数据
      *
      * @param array $condition  条件
-     * @param array $order      排序
+     * @param array $orderBy    排序
      * @param null $offset      位置
-     * @param null $limit       数量
+     * @param $limit            数量
      * @return array            数据
      */
-    static public function listByCondition (array $condition, array $order = array(), $offset = null, $limit = null) {
+    static public function listByCondition (array $condition, array $orderBy = array(), $offset = null, $limit = null) {
 
         $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
-        $sqlOrder       = self::_order($order);
+        $sqlOrder       = self::_order($orderBy);
         $sqlLimit       = self::_limit($offset, $limit);
         $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
 
@@ -82,7 +78,7 @@ class   Role_Info {
     }
 
     /**
-     * 拼接WHERE子句
+     * 根据条件拼接WHERE子句
      *
      * @param array $condition  条件
      * @return string           WHERE子句
@@ -90,23 +86,34 @@ class   Role_Info {
     static private function _condition (array $condition) {
 
         $sql            = array();
-        $sql[]          = self::_conditionByDeleteStatus($condition);
+        $sql[]          = self::_conditionBySourceCode($condition);
+        $sql[]          = self::_conditionBySupplierId($condition);
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
     }
 
     /**
-     * 根据删除条件拼接WHERE子句
+     * 根据来款代码拼接WHERE子句
      *
-     * @param array $condition  条件
-     * @return string           WHERE子句
+     * @param $condition    条件
+     * @return string       WHERE子句
      */
-    static private function _conditionByDeleteStatus (array $condition) {
+    static private function _conditionBySourceCode ($condition) {
 
-        return !isset($condition['delete_status']) ? '' : '`delete_status` = \'' . (int) $condition['delete_status'] . '\'';
+        return !$condition['source_code'] ? '' : '`source_code` = "' . addslashes(trim($condition['source_code'])) . '"';
     }
 
+    /**
+     * 根据供应商ID拼接WHERE子句
+     *
+     * @param $condition    条件
+     * @return string       WHERE子句
+     */
+    static private function _conditionBySupplierId ($condition) {
+
+        return !$condition['supplier_id'] ? '' : '`supplier_id` = "' . (int) $condition['supplier_id'] . '"';
+    }
 
     /**
      * 拼接排序ORDER子句
@@ -146,47 +153,5 @@ class   Role_Info {
         }
 
         return ' LIMIT ' . (int) $offset . ',' . (int) $limit;
-    }
-
-    /**
-     * 根据条件获取数据条数
-     *
-     * @param array $condition  条件
-     * @return mixed            数量
-     */
-    static public function countByCondition (array $condition) {
-
-        $sqlBase        = 'SELECT COUNT(*) AS `total` FROM `' . self::_tableName() . '`';
-        $sqlCondition   = self::_condition($condition);
-        $sql            = $sqlBase . $sqlCondition;
-        $row            = self::_getStore()->fetchOne($sql);
-
-        return          $row['total'];
-    }
-
-    /**
-     * 根据角色名称获取角色信息
-     *
-     * @param $roleName 角色名称
-     * @return array    角色信息
-     */
-    static public function getByName ($roleName) {
-
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `role_name`="' . addslashes(trim($roleName)) . '"';
-
-        return  self::_getStore()->fetchOne($sql);
-    }
-
-    /**
-     * 根据角色ID获取角色信息
-     *
-     * @param $roleId   角色ID
-     * @return array    角色信息
-     */
-    static public function getById ($roleId) {
-
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `role_id`="' . (int) $roleId . '"';
-
-        return  self::_getStore()->fetchOne($sql);
     }
 }
