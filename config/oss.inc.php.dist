@@ -1,0 +1,48 @@
+<?php
+return  array(
+    'images-spu'    => array(
+        //OssClient的配置参数
+        'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
+        'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
+        'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
+        'isCName'           => false,//OSS域名绑定；true 绑定、false 不绑定
+        'securityToken'     => NULL,//OSS的STS临时token
+        //存储空间
+        'bucket'            => 'kuandd-product-dev',//OSS存储空间
+        //域名访问协议
+        'hostProtocol'      => 'http://',
+        'domain'            => '',
+        'prefix'            => 'imagesSPU',
+        'suffix'            => '.jpg',
+    ),
+    'images-sku'    => array(
+        //OssClient的配置参数
+        'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
+        'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
+        'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
+        'isCName'           => false,//OSS域名绑定；true 绑定、false 不绑定
+        'securityToken'     => NULL,//OSS的STS临时token
+        //存储空间
+        'bucket'            => 'kuandd-product-dev',//OSS存储空间
+        //域名访问协议
+        'hostProtocol'      => 'http://',
+        'domain'            => '',
+        'prefix'            => 'imagesSKU',
+        'suffix'            => '.jpg',
+    ),
+    'images-product'    => array(
+        //OssClient的配置参数
+        'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
+        'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
+        'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
+        'isCName'           => false,//OSS域名绑定；true 绑定、false 不绑定
+        'securityToken'     => NULL,//OSS的STS临时token
+        //存储空间
+        'bucket'            => 'kuandd-product-dev',//OSS存储空间
+        //域名访问协议
+        'hostProtocol'      => 'http://',
+        'domain'            => '',
+        'prefix'            => 'imagesProduct',
+        'suffix'            => '.jpg',
+    ),
+);
