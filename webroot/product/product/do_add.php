@@ -40,6 +40,18 @@ if (empty($productCost)) {
     Utility::notice('请填写进货工费');
 }
 
+$fileList       = $_FILES['product-image'];
+$imageIdList    = array();
+if ($fileList['tmp_name']) {
+    foreach ($fileList['tmp_name'] as $stream) {
+        $imageKey = AliyunOSS::getInstance('images-product')->create($stream);
+        $start = strpos($imageKey, '/') + 1;
+        $length = strpos($imageKey, '.') - $start;
+        $imageId = substr($imageKey, $start, $length);
+        $imageIdList[] = $imageId;
+    }
+}
+
 // 验证全部属性是否有相同商品
 $condition['style_id']      = $styleId;
 $condition['category_id']   = $categoryId;
@@ -81,7 +93,6 @@ $validateResult         = Goods_Spec_Value_RelationShip::validateGoods($specValu
 if ($validateResult && count($specValueList) == $validateResult['cnt']) {
 
     $productData['goods_id']    = $validateResult['goods_id'];
-    Product_Info::create($productData);
 } else {
     // 先新增一个商品
     $goodsData  = array(
@@ -102,7 +113,16 @@ if ($validateResult && count($specValueList) == $validateResult['cnt']) {
     }
     // 新增产品
     $productData['goods_id']    = $goodsId;
-    Product_Info::create($productData);
 }
 
+$productId                  = Product_Info::create($productData);
+// 产品和图片关系
+if ($imageIdList) {
+    foreach ($imageIdList as $imageId) {
+        Product_Images_RelationShip::create(array(
+            'product_id'    => $productId,
+            'image_key'     => $imageId,
+        ));
+    }
+}
 Utility::notice('新增产品成功');

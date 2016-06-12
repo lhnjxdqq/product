@@ -26,7 +26,18 @@ $listSupplier   = Supplier_Info::listAll();
 $listSupplier   = ArrayUtility::searchBy($listSupplier, array('delete_status'=>Supplier_DeleteStatus::NORMAL));
 $mapSupplier    = ArrayUtility::indexByField($listSupplier, 'supplier_id');
 
+// 图片
+$listImages     = Product_Images_RelationShip::getById($productId);
+if ($listImages) {
+
+    foreach ($listImages as $key => $item) {
+
+        $listImages[$key]['image_url']  = AliyunOSS::getInstance('images-product')->url($item['image_key']);
+    }
+}
+
 $data['productInfo']    = $productInfo;
+$data['listImages']     = $listImages;
 $data['mapSupplier']    = $mapSupplier;
 $data['specValueList']  = $specValueList;
 $data['mainMenu']       = Menu_Info::getMainMenu();

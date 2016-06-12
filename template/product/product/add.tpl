@@ -31,7 +31,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form class="form-horizontal" action="/product/product/do_add.php" method="post">
+                <form class="form-horizontal" action="/product/product/do_add.php" method="post" enctype="multipart/form-data">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">产品名称</label>

@@ -71,7 +71,7 @@ class   AliyunOSS {
      * @param   string  $config 配置项
      */
     private function __construct ($config) {
- 
+
         $configData = Config::get('oss|PHP', $config);
 
         if (!$configData) {
@@ -141,7 +141,7 @@ class   AliyunOSS {
 
         $host   = !empty($this->_domain)
                 ? $this->_protocol . $this->_domain . '/'
-                : $this->_protocol . $this->_bucket . $this->_endpoint . '/';
+                : $this->_protocol . $this->_bucket . '.' . $this->_endpoint . '/';
 
         return  $host . $this->_getKey($id);
     }

@@ -98,30 +98,14 @@
             <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <input type="checkbox" name="select-all"> 全选
-                        </div>
-                        <div class="col-md-2">
-                            <a href="" class="btn btn-primary btn-sm"><i class="fa fa-send"></i> 批量创建SPU</a>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="/product/sku/import.php" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> 批量创建产品</a>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="" class="btn btn-primary btn-sm"><i class="fa fa-trash"></i> 批量删除</a>
-                        </div>
-                        <div class="col-md-2 col-md-offset-3">
-                            <a href="/product/product/add.php" class="btn btn-primary btn-sm btn-block"><i class="fa fa-plus"></i> 添加产品</a>
-                        </div>
-                    </div>
+                    <a href="/product/sku/import.php" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> 批量创建产品</a>
+                    <a href="/product/product/add.php" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> 添加产品</a>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="sku-list">
                             <thead>
                                 <tr>
-                                    <th>选择</th>
                                     <th>产品编号</th>
                                     <th>产品名称</th>
                                     <th>产品图片</th>
@@ -138,10 +122,13 @@
                             <tbody>
                                 <{foreach from=$data.listProduct item=item}>
                                     <tr>
-                                        <td><input type="checkbox"></td>
                                         <td><{$item.product_sn}></td>
                                         <td><{$item.product_name}></td>
-                                        <td></td>
+                                        <td>
+                                            <{if $data.mapProductImage[$item.product_id]}>
+                                                <img src="<{$data.mapProductImage[$item.product_id]}>" height="60">
+                                            <{/if}>
+                                        </td>
                                         <td><{$data.mapCategory[$data.mapGoodsInfo[$item.goods_id]['category_id']]}></td>
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_unit']}></td>
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格尺寸']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['规格尺寸']['spec_unit']}></td>
@@ -151,7 +138,7 @@
                                         <td><{$item.product_cost}></td>
                                         <td>
                                             <a href="/product/product/edit.php?product_id=<{$item.product_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
-                                            <a href="" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
+                                            <a href="javascript:delProduct(<{$item.product_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                         </td>
                                     </tr>
                                 <{/foreach}>
@@ -192,6 +179,13 @@
 
 <{include file="section/foot.tpl"}>
 <script>
+    function delProduct(productId) {
+        if (confirm('确定删除该商品吗 ?')) {
+
+            var redirect    = '/product/product/del.php?product_id=' + productId;
+            location.href   = redirect;
+        }
+    }
     tableColumn({
         selector    : '#sku-list',
         container   : '#sku-list-vis'

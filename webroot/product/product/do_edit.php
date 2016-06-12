@@ -7,6 +7,7 @@ $supplierId     = (int) $_POST['supplier-id'];
 $sourceCode     = trim($_POST['source-code']);
 $productCost    = sprintf('%.2f', $_POST['product-cost']);
 $productRemark  = trim($_POST['product-remark']);
+$imageIdList    = $_POST['product-image'];
 
 if (empty($productName)) {
 
@@ -28,6 +29,17 @@ if (empty($productCost)) {
     Utility::notice('请填写进货工费');
 }
 
+$files  = $_FILES['product-image'];
+foreach ($files['tmp_name'] as $stream) {
+    if ($stream) {
+        $imageKey = AliyunOSS::getInstance('images-product')->create($stream);
+        $start = strpos($imageKey, '/') + 1;
+        $length = strpos($imageKey, '.') - $start;
+        $imageId = substr($imageKey, $start, $length);
+        $imageIdList[] = $imageId;
+    }
+}
+
 $sourceInfo = Source_Info::listByCondition(array(
     'source_code'   => $sourceCode,
     'supplier_id'   => $supplierId,
@@ -46,7 +58,16 @@ $data   = array(
 );
 
 if (Product_Info::update($data)) {
-
+    
+    if ($imageIdList) {
+        Product_Images_RelationShip::deleteById($productId);
+        foreach ($imageIdList as $imageId) {
+            Product_Images_RelationShip::create(array(
+                'product_id' => $productId,
+                'image_key' => $imageId,
+            ));
+        }
+    }
     Utility::notice('编辑产品成功', '/product/product/index.php');
 } else {
 

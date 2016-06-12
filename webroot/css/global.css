@@ -9,3 +9,22 @@
 .input-daterange .input-group-addon {
     background: #eee;
 }
+
+span.product-image-priview {
+    position: relative;
+}
+span.product-image-priview .close {
+    position: absolute;
+    z-index: 2;
+    right: 5px;
+    font-size: 14px;
+    padding: 2px 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+    background-color: #f00;
+}
+
+span.product-image-priview img.img-responsive.img-thumbnail {
+    position: relative;
+    z-index: 1;
+}

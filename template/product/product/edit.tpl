@@ -31,7 +31,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form class="form-horizontal" action="/product/product/do_edit.php" method="post">
+                <form class="form-horizontal" action="/product/product/do_edit.php" method="post" enctype="multipart/form-data">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">产品名称</label>
@@ -108,6 +108,17 @@
                         </div>
                         <!-- /.form-group -->
                         <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <{foreach from=$data.listImages item=item}>
+                                    <span class="product-image-priview">
+                                        <img src="<{$item.image_url}>" class="img-responsive img-thumbnail">
+                                        <span class="close">X</span>
+                                        <input type="hidden" name="product-image[]" value="<{$item.image_key}>">
+                                    </span>
+                                <{/foreach}>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label">备注</label>
                             <div class="col-sm-10">
                                 <textarea name="product-remark" class="form-control" rows="5" placeholder="请填写备注"><{$data.productInfo.product_remark}></textarea>
@@ -150,75 +161,6 @@
 
 <{include file="section/foot.tpl"}>
 <script>
-    <{if $data.groupStyle}>
-    // 款式下拉框联动
-    var subStyle    = {};
-    <{foreach from=$data.groupStyle[0] item=topStyle}>
-    subStyle[<{$topStyle.style_id}>] = {};
-    <{foreach from=$data.groupStyle[$topStyle.style_id] item=item}>
-    subStyle[<{$topStyle.style_id}>][<{$item.style_id}>] = '<{$item.style_name}>';
-    <{/foreach}>
-    <{/foreach}>
-    $(document).delegate('select[name="style-id"]', 'change', function () {
-        var styleId = $(this).val();
-        var thisSub = subStyle[styleId];
-        var subThis = '<select name="style-id" class="form-control" style="width: 200px; float: left;"><option value="0">请选择子款式</option>';
-        if (thisSub) {
-            $.each(thisSub, function (index, val) {
-                subThis += '<option value="' + index + '">' + val + '</option>';
-            });
-            subThis += '</select>';
-            $(this).nextAll().remove();
-            $(this).after(subThis);
-        }
-    });
-    <{/if}>
-    <{if $data.groupCategory}>
-    // 品类下拉框联动
-    var subCategory = {};
-    <{foreach from=$data.groupCategory item=category key=parentId}>
-    subCategory[<{$parentId}>] = {};
-    <{foreach from=$category item=subCategory}>
-    subCategory[<{$parentId}>][<{$subCategory.category_id}>] = '<{$subCategory.category_name}>';
-    <{/foreach}>
-    <{/foreach}>
-    $(document).delegate('select[name="category-id"]', 'change', function () {
-        var parentId    = $(this).val();
-        var thisSub     = subCategory[parentId];
-        var subThis     = '<select name="category-id" class="form-control" style="width: 200px; float: left; margin-right: 10px;"><option value="0">请选择品类</option>';
-        if (thisSub) {
-            $.each(thisSub, function (index, val) {
-                subThis += '<option value="' + index + '">' + val + '</option>';
-            });
-            subThis += '</select>';
-            $(this).nextAll().remove();
-            $(this).after(subThis);
-        }
-        $.ajax({
-            url: '/ajax/get_spec_value.php',
-            type: 'GET',
-            dataType: 'JSON',
-            data: {category_id: parentId},
-            success: function (data) {
-                if (data.statusCode == 'success') {
-                    var specString = '';
-                    $.each(data.resultData, function (specId, specData) {
-                        var tempString = '<div class="form-group"><label class="col-sm-2 control-label">' + specData[0].spec_name + '</label><div class="col-sm-10"><select name="spec-list[]" class="form-control" style="width: 200px;"><option value="0">请选择' + specData[0].spec_name + '</option>';
-                        $.each(specData, function (index, val) {
-                            tempString += '<option value="' + specId + "\t" + val.spec_value_id + '">' + val.spec_value_data + val.spec_unit + '</option>';
-                        });
-                        tempString += '</select></div></div>';
-                        specString += tempString;
-                    });
-                    console.log(specString);
-                    $('.attribute-list').empty().append(specString);
-                } else {
-                    $('.attribute-list').empty();
-                }
-            }
-        });
-    });
-    <{/if}>
     $(document).delegate('.product-image-list .add-line', 'click', function () {
         if ($(this).hasClass('btn-danger')) {
             $(this).parents('.product-image-list').remove();
@@ -228,6 +170,9 @@
         }
     });
 
+    $('span.product-image-priview .close').click(function () {
+        $(this).parents('.product-image-priview').remove();
+    });
 </script>
 
 </body>

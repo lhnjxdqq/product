@@ -26,6 +26,16 @@ $listGoodsId            = ArrayUtility::listField($listProduct, 'goods_id');
 $listGoodsInfo          = Goods_Info::getByMultiId($listGoodsId);
 $mapGoodsInfo           = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 
+$listProductId          = ArrayUtility::listField($listProduct, 'product_id');
+$listProductImages      = Product_Images_RelationShip::getByMultiId($listProductId);
+$mapProductImage        = array();
+if ($listProductImages) {
+    $indexProductImage      = ArrayUtility::indexByField($listProductImages, 'product_id', 'image_key');
+    foreach ($indexProductImage as $productId => $imageKey) {
+        $mapProductImage[$productId] = AliyunOSS::getInstance('images-product')->url($imageKey);
+    }
+}
+
 $listSourceId           = ArrayUtility::listField($listProduct, 'source_id');
 $listSourceInfo         = Source_Info::getByMultiId($listSourceId);
 $mapSourceInfo          = ArrayUtility::indexByField($listSourceInfo, 'source_id');
@@ -61,6 +71,7 @@ $listCategory           = ArrayUtility::searchBy($listCategory, array('delete_st
 $mapCategory            = ArrayUtility::indexByField($listCategory, 'category_id', 'category_name');
 
 $data['listProduct']        = $listProduct;
+$data['mapProductImage']    = $mapProductImage;
 $data['mapGoodsInfo']       = $mapGoodsInfo;
 $data['mapSourceInfo']      = $mapSourceInfo;
 $data['mapSupplierInfo']    = $mapSupplierInfo;

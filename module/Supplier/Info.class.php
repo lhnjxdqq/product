@@ -74,7 +74,7 @@ class   Supplier_Info {
     static public function getById ($supplierId) {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_id` = "' . (int) $supplierId . '"';
-echo $sql;
+
         return  self::_getStore()->fetchOne($sql);
     }
 }
