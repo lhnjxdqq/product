@@ -35,10 +35,10 @@
                             <form action="/quotation/do_quotation_import.php" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label>选择供应商: </label>
-                                    <select name="factory_id" class="form-control">
+                                    <select name="supplier_id" class="form-control">
                                         <option value="0">选择供应商</option>
-                                        <{foreach from=$listFactory item=item}>
-                                            <option value="<{$item.factory_id}>"><{$item.factory_code}></option>
+                                        <{foreach from=$listSupplier item=item}>
+                                            <option value="<{$item.supplier_id}>"><{$item.supplier_code}></option>
                                         <{/foreach}>
                                     </select>
                                 </div>

@@ -63,4 +63,23 @@ class   Category_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
+    
+    /**
+     * 根据品类名称获取该品类的信息
+     *
+     * @param  array    $listName       品类名称
+     * @return array                    品类信息
+     */
+    static public function getByCategoryName (array $listName) {
+
+        $names    = array_filter(array_unique($listName));
+        
+        if (empty($names)) {
+            
+            return ;
+        }
+        $sql      = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `category_name` IN ('" . implode("','", $names) . "')";
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }
