@@ -13,50 +13,104 @@ if($_FILES['quotation']['error'] != UPLOAD_ERR_OK) {
     throw   new ApplicationException('文件未上传成功');
 }
 $objPHPExcel        = ExcelFile::load($filePath);
-$sheet              = $objPHPExcel->getSheet(0); 
-$highestRow         = $sheet->getHighestRow();
-$highestColumn      = $sheet->getHighestColumn();
+$sheet              = $objPHPExcel->getActiveSheet(); 
+$rowIterator        = $sheet->getRowIterator(1);
 
-
-$csvHead        = array(
-    '买款ID'          => 'product_name',
-    '产品名称'          => 'product_sn',
-    '三级分类'          => 'categoryLv1',
-    '主料材质'          => 'categoryLv2',
-    '规格尺寸'          => 'categoryLv3',
-    '规格重量'          => 'material_name',
-    '进货工费'          => 'weight',
+$excelHead1         = array(
+    '买款ID'            => 'sku_code',
+    '产品名称'          => 'product_name',
+    '三级分类'          => 'categoryLv3',
+    '主料材质'          => 'material_main_name',
+    '规格尺寸'          => 'size_name',
+    '规格重量'          => 'weight_name',
+    '备注'              => 'remark',
+    '进货工费'          => 'cost',
 );
-for($line=1;$line<=$highestRow;$line++){
+
+$mapColumnField     = array();
+$mapColumnColor     = array();
+$list               = array();
+
+setlocale(LC_ALL, array('zh_CN.gbk','zh_CN.gb2312','zh_CN.gb18030'));
+foreach ($rowIterator as $offsetRow => $excelRow) {
     
-    for($list='A';$list<=$highestColumn;$list++){
+    if (1 == $offsetRow) {
         
-        if($line == 1 || $line == 2){
+        $cellIterator   = $excelRow->getCellIterator();
         
-            $str[] =$objPHPExcel->getActiveSheet()->getCell("$list$line")->getValue();
+        foreach ($cellIterator as $offsetCell => $cell) {
             
-            if($line == 2){
-                
-                $format = array();
-
-                foreach ($str as $offsetCell => $head) {
-
-                    if (isset($csvHead[$head])) {
-
-                        $format[$offsetCell]    = $csvHead[$head];
-                
-                    }
-                }
-
-                if (count($format) != count($csvHead)) {
-
-                    throw   new ApplicationException('无法识别表头');
-                }
-
-                continue;
+            $headText   = $cell->getValue();
+            
+            if (isset($excelHead1[$headText])) {
+            
+                $mapColumnField[$offsetCell]    = $excelHead1[$headText];
             }
         }
-    } 
         
-}  var_dump($format);die;
+        if (count($mapColumnField) != count($excelHead1)) {
+
+            throw   new ApplicationException('无法识别表头');
+        }
+        
+        continue;
+    }
+    
+    if (2 == $offsetRow) {
+        
+        $mapFieldColumn = array_flip($mapColumnField);
+        $cellIterator   = $excelRow->getCellIterator();
+        
+        foreach ($cellIterator as $offsetCell => $cell) {
+            
+            if ($offsetCell >= $mapFieldColumn['cost'] && !empty($cell->getValue())) {
+            
+                $mapColumnColor[$offsetCell]    = $cell->getValue();
+            }
+        }
+        
+        continue;
+    }
+    
+    $data   = array();
+    
+    foreach ($mapColumnField as $offsetColumn => $fieldName) {
+
+        $data[$fieldName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+    }
+    
+    foreach ($mapColumnColor as $offsetColumn => $colorName) {
+
+        $data[$colorName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+    }
+    
+    unset($data['cost']);
+    $list[] = $data;
+}
+
+$mapEnumeration = array();
+$addNums = 1;
+foreach ($list as $offsetRow => $row) {
+    
+    $row    = array_map('Utility::GbToUtf8', $row);
+    try{
+        
+        $data = Quotation::testQuotation($row,$mapEnumeration);
+        $addNums++;
+        echo "<pre>";
+        var_dump($data);die;
+    }catch(ApplicationException $e){
+        
+        $errorList[]            = array(
+            'content'   => $e->getMessage(),
+            'line'      => $line ,
+        );
+        continue;
+    }
+}
+
+setlocale(LC_ALL,NULL);
+$template           = Template::getInstance();
+$template->assign('errorList',   $errorList);
+$template->assign('addNums',   $addNums);
 $template       = Template::getInstance();
