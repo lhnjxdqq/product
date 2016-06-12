@@ -181,4 +181,22 @@ class   Source_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
+
+    /**
+     * 根据买款代码查询买款信息
+     *
+     * @param $sourceCode   买款代码
+     * @return array|void   买款信息
+     */
+    static public function getBySourceCode ($sourceCode) {
+
+        if (empty($sourceCode)) {
+
+            return;
+        }
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_code` = "' . addslashes(trim($sourceCode)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }
