@@ -19,7 +19,7 @@ class   Supplier_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'supplier_id,supplier_code,delete_status,create_time,update_time';
+    const   FIELDS      = 'supplier_id,supplier_code,supplier_type,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -49,5 +49,19 @@ class   Supplier_Info {
         $condition  = "`supplier_id` = '" . addslashes($data['supplier_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
+    }
+
+    /**
+     * 根据一组供应商ID获取该组供应商信息
+     *
+     * @param array $multiId    一组供应商ID
+     * @return array            该组供应商信息
+     */
+    static public function getByMultiId (array $multiId) {
+
+        $multiId    = array_map('intval', array_unique(array_filter($multiId)));
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
     }
 }

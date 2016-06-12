@@ -168,4 +168,18 @@ class   Goods_Info {
 
         return  'K' . $categorySn . (101011 + (int) $row['gid']);
     }
+
+    /**
+     * 根据一组商品ID获取商品信息
+     *
+     * @param $multiId  商品ID
+     * @return array    商品信息
+     */
+    static public function getByMultiId ($multiId) {
+
+        $multiId    = array_map('intval', array_unique(array_filter($multiId)));
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
 }

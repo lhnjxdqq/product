@@ -154,4 +154,18 @@ class   Source_Info {
 
         return ' LIMIT ' . (int) $offset . ',' . (int) $limit;
     }
+
+    /**
+     * 根据一组source_id 获取该组来款信息
+     *
+     * @param array $multiId    一组source_id
+     * @return array            该组来款信息
+     */
+    static public function getByMultiId (array $multiId) {
+
+        $multiId    = array_map('intval', array_unique(array_filter($multiId)));
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
 }

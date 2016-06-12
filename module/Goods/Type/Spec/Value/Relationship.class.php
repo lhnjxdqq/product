@@ -62,4 +62,18 @@ class   Goods_Type_Spec_Value_Relationship {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据一组商品类型ID 获取 该组商品类型绑定的规格和规格值
+     *
+     * @param array $multiGoodsTypeId   一组商品类型ID
+     * @return array                    改组商品类型绑定的规格和规格值
+     */
+    static public function getByMultiGoodsTypeId (array $multiGoodsTypeId) {
+
+        $multiGoodsTypeId   = array_map('intval', array_unique(array_filter($multiGoodsTypeId)));
+        $sql                = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_id` IN ("' . implode('","', $multiGoodsTypeId) . '")';
+
+        return              self::_getStore()->fetchAll($sql);
+    }
 }

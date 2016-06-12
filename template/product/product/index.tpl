@@ -136,10 +136,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                                <{foreach from=$data.listProduct item=item}>
+                                    <tr>
+                                        <td><input type="checkbox"></td>
+                                        <td><{$item.product_sn}></td>
+                                        <td><{$item.product_name}></td>
+                                        <td></td>
+                                        <td><{$data.mapCategory[$data.mapGoodsInfo[$item.goods_id]['category_id']]}></td>
+                                        <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_unit']}></td>
+                                        <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格尺寸']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['规格尺寸']['spec_unit']}></td>
+                                        <td><{$data.mapGoodsSpecValue[$item.goods_id]['颜色']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['颜色']['spec_unit']}></td>
+                                        <td><{$data.mapSupplierInfo[$data.mapSourceInfo[$item.source_id]['supplier_id']]['supplier_code']}></td>
+                                        <td><{$data.mapSourceInfo[$item.source_id]['source_code']}></td>
+                                        <td><{$item.product_cost}></td>
+                                        <td>
+                                            <a href="/product/product/edit.php?product_id=<{$item.product_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                            <a href="" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
+                                        </td>
+                                    </tr>
+                                <{/foreach}>
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <{include file="section/pagelist.tpl" viewData=$data.pageViewData}>
                 </div>
             </div>
             <!-- /.box -->
