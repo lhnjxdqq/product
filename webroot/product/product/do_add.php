@@ -42,8 +42,9 @@ if (empty($productCost)) {
 
 $fileList       = $_FILES['product-image'];
 $imageIdList    = array();
-if ($fileList['tmp_name']) {
-    foreach ($fileList['tmp_name'] as $stream) {
+
+foreach ($fileList['tmp_name'] as $stream) {
+    if ($stream) {
         $imageKey = AliyunOSS::getInstance('images-product')->create($stream);
         $start = strpos($imageKey, '/') + 1;
         $length = strpos($imageKey, '.') - $start;
@@ -90,20 +91,23 @@ foreach ($specList as $specData) {
 $validateResult         = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $styleId, $categoryId);
 
 // 根据当前款式ID 品类ID 和 条件 联结查询
-if ($validateResult && count($specValueList) == $validateResult['cnt']) {
+if ($validateResult && $validateResult['goods_id'] && count($specValueList) == $validateResult['cnt']) {
 
-    $productData['goods_id']    = $validateResult['goods_id'];
+    $goodsId                    = $validateResult['goods_id'];
+    $productData['goods_id']    = $goodsId;
 } else {
+
     // 先新增一个商品
     $goodsData  = array(
         'goods_sn'      => Goods_Info::createGoodsSn($categoryInfo['category_sn']),
         'goods_name'    => $productName,
         'goods_type_id' => $categoryInfo['goods_type_id'],
         'category_id'   => $categoryId,
-        'style_id'      => $styleId ? $styleId : null,
+        'style_id'      => $styleId ? $styleId : 0,
     );
     // 记录商品的规格 和 规格值
     $goodsId                    = Goods_Info::create($goodsData);
+
     foreach ($specValueList as $specValue) {
         Goods_Spec_Value_Relationship::create(array(
             'goods_id'      => $goodsId,
@@ -116,11 +120,15 @@ if ($validateResult && count($specValueList) == $validateResult['cnt']) {
 }
 
 $productId                  = Product_Info::create($productData);
-// 产品和图片关系
+// 产品和图片关系 商品和图片关系
 if ($imageIdList) {
     foreach ($imageIdList as $imageId) {
         Product_Images_RelationShip::create(array(
             'product_id'    => $productId,
+            'image_key'     => $imageId,
+        ));
+        Goods_Images_RelationShip::create(array(
+            'goods_id'      => $goodsId,
             'image_key'     => $imageId,
         ));
     }

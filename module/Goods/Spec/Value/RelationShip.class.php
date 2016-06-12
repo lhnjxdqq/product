@@ -73,7 +73,7 @@ class   Goods_Spec_Value_RelationShip {
             $where[] = '(`gsvr`.`spec_id` = "' . (int) $specValue['spec_id'] . '" AND `gsvr`.`spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
         }
 
-        $sql    .= implode(' OR ', $where) . ' AND `gi`.`style_id` = "' . (int) $styleId . '" AND `category_id` = "' . (int) $categoryId . '"';
+        $sql    .= implode(' OR ', $where) . ' AND `gi`.`style_id` = "' . (int) $styleId . '" AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id`';
 
         return  self::_getStore()->fetchOne($sql);
     }
