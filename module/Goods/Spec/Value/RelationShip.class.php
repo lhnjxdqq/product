@@ -91,4 +91,17 @@ class   Goods_Spec_Value_RelationShip {
 
         return          self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据商品ID查询该商品的规格和规格值ID
+     *
+     * @param $goodsId  商品ID
+     * @return array    该商品的规格和规格值ID
+     */
+    static public function getByGoodsId ($goodsId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }

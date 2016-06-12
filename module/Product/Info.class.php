@@ -54,7 +54,10 @@ class   Product_Info {
         );
         $condition  = "`product_id` = '" . addslashes($data['product_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-        self::_getStore()->update(self::_tableName(), $newData, $condition);
+        $newData    += array(
+            'update_time'   => date('Y-m-d H:i:s'),
+        );
+        return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
 
@@ -173,4 +176,16 @@ class   Product_Info {
         return  'G' . $categorySn . (1010101 + (int) $row['pid']);
     }
 
+    /**
+     * 根据产品ID查询产品信息
+     *
+     * @param $productId    产品ID
+     * @return array        产品信息
+     */
+    static public function getById ($productId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `product_id` = "' . (int) $productId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

@@ -168,4 +168,17 @@ class   Source_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据source_id获取买款信息
+     *
+     * @param $sourceId source_id
+     * @return array    买款信息
+     */
+    static public function getById ($sourceId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_id` = "' . (int) $sourceId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

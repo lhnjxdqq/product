@@ -182,4 +182,17 @@ class   Goods_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据商品ID 获取商品信息
+     *
+     * @param $goodsId  商品ID
+     * @return array    商品信息
+     */
+    static public function getById ($goodsId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

@@ -64,4 +64,17 @@ class   Supplier_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据供应商ID 获取供应商信息
+     *
+     * @param $supplierId   供应商ID
+     * @return array        供应商信息
+     */
+    static public function getById ($supplierId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_id` = "' . (int) $supplierId . '"';
+echo $sql;
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

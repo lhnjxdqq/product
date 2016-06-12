@@ -50,4 +50,17 @@ class   Style_Info {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据款式ID查询款式信息
+     *
+     * @param $styleId  款式ID
+     * @return array    款式信息
+     */
+    static public function getById ($styleId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `style_id` = "' . (int) $styleId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }
