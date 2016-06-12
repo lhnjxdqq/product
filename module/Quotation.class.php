@@ -1,51 +1,74 @@
 <?php
 /**
- * ±¨¼Ûµ¥
+ * æŠ¥ä»·å•
  */
 class   Quotation {
     
     /**
-     * ÑéÖ¤±¨¼Ûµ¥
+     * éªŒè¯æŠ¥ä»·å•
      *
-     * @param   array   $data   Êý¾Ý 
-     * @param   array   $data   Ã¶¾ÙÊý¾Ý
+     * @param   array   $data   æ•°æ® 
+     * @param   array   $data   æžšä¸¾æ•°æ®
      */
     static public function testQuotation (array $data, array $mapEnumeration) {
 
-        Validate::testNull($data['sku_code'],'Âò¿îID²»ÄÜÎª¿Õ');
-        Validate::testNull($data['categoryLv3'],'Èý¼¶·ÖÀà²»ÄÜÎª¿Õ');
-        Validate::testNull($data['material_main_name'],'Ö÷ÁÏ²ÄÖÊ²»ÄÜÎª¿Õ');
-        Validate::testNull($data['size_name'],'¹æ¸ñ³ß´ç²»ÄÜÎª¿Õ');
-        Validate::testNull($data['weight_name'],'¹æ¸ñÖØÁ¿²»ÄÜÎª¿Õ');
+        Validate::testNull($data['sku_code'],'ä¹°æ¬¾IDä¸èƒ½ä¸ºç©º');
+        Validate::testNull($data['categoryLv3'],'ä¸‰çº§åˆ†ç±»ä¸èƒ½ä¸ºç©º');
+        Validate::testNull($data['material_main_name'],'ä¸»æ–™æè´¨ä¸èƒ½ä¸ºç©º');
+        Validate::testNull($data['size_name'],'è§„æ ¼å°ºå¯¸ä¸èƒ½ä¸ºç©º');
+        Validate::testNull($data['weight_name'],'è§„æ ¼é‡é‡ä¸èƒ½ä¸ºç©º');
+        echo "<pre>";
+        $categoryInfo       = ArrayUtility::searchBy($mapEnumeration['mapCategory'], array("category_name"=>$data['categoryLv3'],'category_level'=>2));
+        
+        if(empty($categoryInfo)){
+            
+            throw   new ApplicationException('äº§å“åˆ†ç±»ä¸å­˜åœ¨');
+        }
+        $indexCategoryName      = ArrayUtility::indexByField($categoryInfo,'category_name','goods_type_id');
+        $goodsType              = $indexCategoryName[$data['categoryLv3']];
+        $listTypeSpecValue      = ArrayUtility::searchBy($mapEnumeration['mapTypeSpecValue'], array('goods_type_id'=>$goodsType));
+        $mapMatetialSpecValue   = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['material']));
+        $mapWeightSpecValue     = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['weight']));
+        $mapColorSpecValue      = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['color']));
+        
+        foreach($listTypeSpecValue as $key=>$val){
+            
+            if(in_array($val['spec_id'],$mapEnumeration['mapSizeId'])){
+                
+                $sizeSpecId = $val['spec_id'];
+                break;
+            }
+        }
+        $mapSizeSpecValue       = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$sizeSpecId));
+       
+        $data['material_id'] = self::_getSpecValueId($data['material_main_name'],$mapMatetialSpecValue,"ä¸»æ–™æè´¨ä¸æ­£ç¡®",$mapEnumeration);
+        $data['weight_id']   = self::_getSpecValueId($data['weight_name'],$mapWeightSpecValue,"è§„æ ¼é‡é‡ä¸æ­£ç¡®",$mapEnumeration);
+        //var_dump($mapEnumeration['mapSpecValue']);
+        //die;
+        
         return $data;
     }
     
     /**
-     * »ñÈ¡Ã¶¾ÙÖµµÄID
+     * åˆ¤æ–­å±žæ€§å€¼æ˜¯å¦æ­£ç¡®,è¿”å›žå±žæ€§ID
      *
-     * @param   string   $data      Ã¶¾ÙÖµ
-     * @param   array   $fieldName  Êý¾Ý
-     * @param   string  $idField    ¶ÔÓ¦ID×Ö¶ÎÃû
-     * @param   string  $nameField  ¶ÔÓ¦name×Ö¶ÎÃû
-     * @param   string  $message    ¶ÔÓ¦´íÎóÌáÊ¾
-     * @return  string              ·µ»ØÃ¶¾ÙÖµID
+     * @param   string  $data               å±žæ€§å€¼
+     * @param   array   $mapGoodsTypeValue  äº§å“ç±»åž‹å¯¹åº”å±žæ€§å€¼
+     * @param   string  $message            å¯¹åº”é”™è¯¯æç¤º
+     * @param   string  $mapEnumeration     æ•°æ®
+     * @return  string                      æžšä¸¾å€¼ID
      */
-    static private  function _getFieldId ($data, array $mapEnumeration, $idField, $nameField, $message) {
+    static  private function _getSpecValueId ($data,array $mapGoodsTypeValue,$message,$mapEnumeration){
+        //var_dump($mapGoodsTypeValue);
+        $specValueInfo      = ArrayUtility::searchBy($mapEnumeration['mapSpecValue'],array("spec_value_data"=>$data));
+        
+        if(empty($specValueInfo)){
 
-        if (empty($data)) {
-
-            $defaultValue   = ArrayUtility::searchBy($mapEnumeration, array('is_default'=>1));
-            $defaultInfo    = reset($defaultValue);
-            $dafaultid      = $defaultInfo[$idField];
-            
-            return  $dafaultid;
-            
+            throw   new ApplicationException($message);
         }
-        $mapIndex           = ArrayUtility::indexByField($mapEnumeration, $nameField, $idField);
-
-        Validate::isExist($data,array_keys($mapIndex),$message);
-
-        return $mapIndex[$data];
+        $indexSpecValue = ArrayUtility::indexByField($specValueInfo,'spec_value_data','spec_value_id');
+        $specGoodsValueInfo = ArrayUtility::searchBy($mapGoodsTypeValue,array("spec_value_id"=>'"'.$indexSpecValue[$data].'"'));
+        var_dump($specGoodsValueInfo);
         
     }
 }

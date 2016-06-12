@@ -2,9 +2,9 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-Validate::testNull($_POST['factory_id'], "供应商不能为空");
-$listFactory   = Factory_Info::listAll();
-validate::testNull(ArrayUtility::searchBy($listFactory,array('factory_id'=>$_POST['factory_id'])),"所选供应商不存在");
+Validate::testNull($_POST['supplier_id'], "供应商不能为空");
+$listSupplier   = Supplier_Info::listAll();
+validate::testNull(ArrayUtility::searchBy($listSupplier,array('supplier_id'=>$_POST['supplier_id'])),"所选供应商不存在");
 
 $filePath           = $_FILES['quotation']['tmp_name'];
 
@@ -78,10 +78,10 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
 
         $data[$fieldName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
     }
-    
+
     foreach ($mapColumnColor as $offsetColumn => $colorName) {
 
-        $data[$colorName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+        $data['price'][$colorName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
     }
     
     unset($data['cost']);
@@ -89,16 +89,32 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
 }
 
 $mapEnumeration = array();
+
 $addNums = 1;
+$listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
+$mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
+$listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
+validate::testNull($listGoodsType, "表中无匹配产品类型,请修改后重新上传");
+$mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
+$mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
+$mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
+$mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
+$mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
+$mapEnumeration =array(
+   'mapCategory'          => $mapCategoryName,
+   'mapTypeSpecValue'     => $mapTypeSpecValue,
+   'mapIndexSpecAlias'    => $mapIndexSpecAlias,
+   'mapSpecValue'         => $mapSpecValue,
+   'mapSizeId'            => $mapSizeId,
+);
+
 foreach ($list as $offsetRow => $row) {
     
-    $row    = array_map('Utility::GbToUtf8', $row);
     try{
         
         $data = Quotation::testQuotation($row,$mapEnumeration);
         $addNums++;
-        echo "<pre>";
-        var_dump($data);die;
+
     }catch(ApplicationException $e){
         
         $errorList[]            = array(
@@ -108,8 +124,9 @@ foreach ($list as $offsetRow => $row) {
         continue;
     }
 }
-
+var_dump($errorList);
 setlocale(LC_ALL,NULL);
+die;
 $template           = Template::getInstance();
 $template->assign('errorList',   $errorList);
 $template->assign('addNums',   $addNums);
