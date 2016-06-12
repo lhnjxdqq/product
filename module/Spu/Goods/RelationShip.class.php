@@ -50,4 +50,17 @@ class   Spu_Goods_RelationShip {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据SPUID获取该SPU下的所有商品信息
+     *
+     * @param $spuId    SPUID
+     * @return array    该SPU下的商品
+     */
+    static public function getBySpuId ($spuId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

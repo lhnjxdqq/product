@@ -19,7 +19,7 @@ class   Spu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'spu_id,spu_sn,spu_name,delete_status,create_time,update_time';
+    const   FIELDS      = 'spu_id,spu_sn,spu_name,spu_remark,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -58,6 +58,96 @@ class   Spu_Info {
             'update_time'   => date('Y-m-d H:i:s'),
         );
         return      self::_getStore()->update(self::_tableName(), $newData, $condition);
+    }
+
+    /**
+     * 根据条件获取数据
+     *
+     * @param array $condition  条件
+     * @param array $orderBy    排序
+     * @param null $offset      位置
+     * @param $limit            数量
+     * @return array            数据
+     */
+    static public function listByCondition (array $condition, array $orderBy = array(), $offset = null, $limit = null) {
+
+        $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sqlOrder       = self::_order($orderBy);
+        $sqlLimit       = self::_limit($offset, $limit);
+        $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 查询符合条件的SPU数量
+     *
+     * @param array $condition
+     * @return mixed
+     */
+    static public function countByCondition (array $condition) {
+
+        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sql            = $sqlBase . $sqlCondition;
+        $row            = self::_getStore()->fetchOne($sql);
+
+        return          $row['cnt'];
+    }
+
+    /**
+     * 根据条件拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
+    static private function _condition (array $condition) {
+
+        $sql            = array();
+        $sqlFiltered    = array_filter($sql);
+
+        return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
+    }
+
+    /**
+     * 拼接排序ORDER子句
+     *
+     * @param array $order  排序规则
+     * @return string       ORDER子句
+     */
+    static private function _order (array $order) {
+
+        if (!$order) {
+
+            return '';
+        }
+
+        $sql = array();
+        foreach ($order as $field => $direction) {
+
+            $field  = str_replace('`' , '', $field);
+            $sql[]  = '`' . addslashes($field) . '` ' . $direction;
+        }
+
+        return empty($sql) ? '' : ' ORDER BY ' . implode(',', $sql);
+    }
+
+    /**
+     * 拼接分页LIMIT子句
+     *
+     * @param null $offset  位置
+     * @param null $limit   数量
+     * @return string       LIMIT子句
+     */
+    static private function _limit ($offset = null, $limit = null) {
+
+        if ($offset === null || $limit === null) {
+
+            return '';
+        }
+
+        return ' LIMIT ' . (int) $offset . ',' . (int) $limit;
     }
 
     /**
