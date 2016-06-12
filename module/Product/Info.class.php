@@ -188,4 +188,29 @@ class   Product_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
+
+    /**
+     * 批量设置一组产品的删除状态
+     *
+     * @param array $multiProductId
+     * @param $deleteStatus
+     * @return int
+     */
+    static public function setDeleteStatusByMultiProductId (array $multiProductId, $deleteStatus) {
+
+        $statusList     = array(
+            Product_DeleteStatus::NORMAL,
+            Product_DeleteStatus::DELETED,
+        );
+        if (!in_array($deleteStatus, $statusList)) {
+
+            return;
+        }
+
+        $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
+
+        $sql            = 'UPDATE ' . self::_tableName() . ' SET `delete_status` = "' . (int) $deleteStatus . '" WHERE `product_id` IN ("' . implode('","', $multiProductId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
 }

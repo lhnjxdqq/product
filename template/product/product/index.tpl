@@ -24,6 +24,7 @@
 
         <!-- Main content -->
         <section class="content">
+            <!--
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">条件筛选</h3>
@@ -62,7 +63,7 @@
                             </select>
                         </div>
                     </div>
-                    <!-- /.row -->
+
                     <div class="row sku-filter">
                         <div class="col-md-2">
                             <select name="material-value" class="form-control">
@@ -83,6 +84,7 @@
                     </div>
                 </div>
             </div>
+            -->
             <!-- /.box -->
             <div class="box collapsed-box">
                 <div class="box-header with-border">
@@ -91,21 +93,23 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
-                <div class="box-body" id="sku-list-vis">
+                <div class="box-body" id="product-list-vis">
 
                 </div>
             </div>
             <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <a href="/product/sku/import.php" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> 批量创建产品</a>
+                    <input type="checkbox" name="select-all"> 全选
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-download"></i> 批量删除</a>
                     <a href="/product/product/add.php" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> 添加产品</a>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" id="sku-list">
+                        <table class="table table-bordered table-hover" id="product-list">
                             <thead>
                                 <tr>
+                                    <th>选择</th>
                                     <th>产品编号</th>
                                     <th>产品名称</th>
                                     <th>产品图片</th>
@@ -122,6 +126,7 @@
                             <tbody>
                                 <{foreach from=$data.listProduct item=item}>
                                     <tr>
+                                        <td><input type="checkbox" class="select" productid="<{$item.product_id}>"></td>
                                         <td><{$item.product_sn}></td>
                                         <td><{$item.product_name}></td>
                                         <td>
@@ -180,15 +185,31 @@
 <{include file="section/foot.tpl"}>
 <script>
     function delProduct(productId) {
-        if (confirm('确定删除该商品吗 ?')) {
-
-            var redirect    = '/product/product/del.php?product_id=' + productId;
-            location.href   = redirect;
+        if (productId) {
+            if (confirm('确定删除该商品吗 ?')) {
+                var redirect = '/product/product/del.php?product_id=' + productId;
+                location.href = redirect;
+            }
         }
     }
+    $('input[name="select-all"]').click(function () {
+        $('#product-list input').prop('checked', $(this).prop('checked') );
+    });
+    $('#delMulti').click(function () {
+        var checked         = $('#product-list input.select:checked');
+        var productIdStr    = '';
+        $.each(checked, function (index, val) {
+            productIdStr += $(val).attr('productid') + ',';
+        });
+        productIdStr = productIdStr.substr(0, productIdStr.length - 1);
+        if (confirm('确定要批量删除这些产品吗 ?')) {
+            var redirect    = '/product/product/del.php?multi_product_id=' + productIdStr;
+            location.href   = redirect;
+        }
+    });
     tableColumn({
-        selector    : '#sku-list',
-        container   : '#sku-list-vis'
+        selector    : '#product-list',
+        container   : '#product-list-vis'
     });
 </script>
 </body>

@@ -1,12 +1,20 @@
 <?php
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
-$data = array(
-    'product_id'    => (int) $_GET['product_id'],
-    'delete_status' => Product_DeleteStatus::DELETED,
-);
+//$multiProductId  = isset($_GET['product_id']) ? (array) $_GET['product_id'] : array();
+//$multiProductId  = isset($_GET['product_id']) ? explode(',', $_GET['multi_product_id']) : array();
 
-if (Product_Info::update($data)) {
+$productIdList      = array();
+
+if (isset($_GET['product_id'])) {
+
+    $productIdList  = (array) $_GET['product_id'];
+} elseif (isset($_GET['multi_product_id'])) {
+
+    $productIdList  = explode(',', $_GET['multi_product_id']);
+}
+
+if (Product_Info::setDeleteStatusByMultiProductId($productIdList, Product_DeleteStatus::DELETED)) {
 
     Utility::notice('删除商品成功');
 } else {
