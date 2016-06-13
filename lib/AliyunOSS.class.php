@@ -97,11 +97,12 @@ class   AliyunOSS {
     /**
      * 创建文件
      *
-     * @param   string  $stream 流
-     * @param   string  $id     远端ID | 默认自动新建
-     * @return  string          路径
+     * @param   string  $stream     流
+     * @param   string  $id         远端ID 默认自动新建
+     * @param   string  $returnId   是否返回远端ID 默认返回路径
+     * @return  string              路径|ID
      */
-    public  function create ($stream, $id = NULL) {
+    public  function create ($stream, $id = NULL, $returnId = false) {
 
         if (empty($id)) {
 
@@ -117,7 +118,7 @@ class   AliyunOSS {
 
         $this->_ossClient->uploadFile($this->_bucket, $key, $stream);
 
-        return  $key;
+        return  $returnId   ? $id   : $key;
     }
 
     /**
