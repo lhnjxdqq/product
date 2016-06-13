@@ -8,8 +8,9 @@ define('LIB', ROOT . '/lib/');
 define('MODULE', ROOT . '/module/');
 define('CONF', ROOT . '/config/');
 define('LOG', ROOT . '/logs/');
-define('TEMP', ROOT . '/tmp/');
+define('TEMP', '/tmp/product/');
 define('TIME_ZONE_DEFAULT', 'Asia/Shanghai');
+define('QUOTATION_IMPORT', '/home/shuishou/project/product.kuandd.com/data/quotation/');
 
 //code
 define('CODE_SUCCESS', 0);

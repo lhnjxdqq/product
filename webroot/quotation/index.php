@@ -7,4 +7,4 @@ $listSupplier   = Supplier_Info::listAll();
 $template       = Template::getInstance();
 
 $template->assign('listSupplier', $listSupplier);
-$template->display('quotation/import_page.tpl');
+$template->display('quotation/index.tpl');
