@@ -111,6 +111,7 @@
                                 <tr>
                                     <th>选择</th>
                                     <th>产品编号</th>
+                                    <th>SKU编号</th>
                                     <th>产品名称</th>
                                     <th>产品图片</th>
                                     <th>三级分类</th>
@@ -128,6 +129,7 @@
                                     <tr>
                                         <td><input type="checkbox" class="select" productid="<{$item.product_id}>"></td>
                                         <td><{$item.product_sn}></td>
+                                        <td><{$data.mapGoodsInfo[$item.goods_id]['goods_sn']}></td>
                                         <td><{$item.product_name}></td>
                                         <td>
                                             <{if $data.mapProductImage[$item.product_id]}>
