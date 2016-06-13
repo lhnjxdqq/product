@@ -82,4 +82,19 @@ class   Category_Info {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据一组品类ID查询品类信息
+     *
+     * @param $multiId  一组品类ID
+     * @return array    品类信息
+     */
+    static public function getByMultiId ($multiId) {
+
+        $multiId    = array_map('intval', array_unique(array_filter($multiId)));
+
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `category_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
 }

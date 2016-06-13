@@ -105,9 +105,15 @@ class   Spu_Info {
     static private function _condition (array $condition) {
 
         $sql            = array();
+        $sql[]          = self::_conditionByDeleteStatus($condition);
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
+    }
+
+    static private function _conditionByDeleteStatus (array $condition) {
+
+        return  !isset($condition['delete_status']) ? '' : '`delete_status` = "' . (int) $condition['delete_status'] . '"';
     }
 
     /**

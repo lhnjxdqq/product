@@ -190,6 +190,21 @@ class   Product_Info {
     }
 
     /**
+     * 根据一组商品ID 查询产品
+     *
+     * @param $multiGoodsId 一组商品ID
+     * @return array        产品
+     */
+    static public function getByMultiGoodsId ($multiGoodsId) {
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
+
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 批量设置一组产品的删除状态
      *
      * @param array $multiProductId

@@ -64,4 +64,5 @@ class   Spec_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+    
 }

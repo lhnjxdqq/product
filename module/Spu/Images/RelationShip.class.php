@@ -1,8 +1,8 @@
 <?php
 /**
- * 模型 SPU
+ * 模型 SPU 图片 关系
  */
-class   Spu_Goods_RelationShip {
+class   Spu_Images_RelationShip {
 
     use Base_MiniModel;
 
@@ -14,12 +14,12 @@ class   Spu_Goods_RelationShip {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'spu_goods_relationship';
+    const   TABLE_NAME  = 'spu_images_relationship';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'spu_id,goods_id,spu_goods_name';
+    const   FIELDS      = 'spu_id,image_key,create_time';
     /**
      * 新增
      *
@@ -32,6 +32,9 @@ class   Spu_Goods_RelationShip {
             'filter'    => '',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => date('Y-m-d H:i:s'),
+        );
         return      self::_getStore()->insert(self::_tableName(), $newData);
     }
 
@@ -44,36 +47,35 @@ class   Spu_Goods_RelationShip {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'spu_id,goods_id',
+            'filter'    => 'spu_id,image_key',
         );
-        $condition  = "`spu_id` = '" . addslashes($data['spu_id']) . "' AND `goods_id` = '" . addslashes($data['goods_id']) . "'";
+        $condition  = "`spu_id` = '" . addslashes($data['spu_id']) . "' AND `image_key` = '" . addslashes($data['image_key']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-        return      self::_getStore()->update(self::_tableName(), $newData, $condition);
+        self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
     /**
-     * 根据SPUID获取该SPU下的所有商品信息
+     * 根据SPUID 查询该SPU图片
      *
      * @param $spuId    SPUID
-     * @return array    该SPU下的商品
+     * @return array    该SPU图片
      */
     static public function getBySpuId ($spuId) {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '"';
 
-        return  self::_getStore()->fetchOne($sql);
+        return  self::_getStore()->fetchAll($spuId);
     }
 
     /**
-     * 根据一组SPUID 获取这组SPU下的所有商品
+     * 根据一组SPUID 查询该组SPU图片
      *
-     * @param array $multiSpuId 一组SPUID
-     * @return array
+     * @param $multiSpuId   一组SPUID
+     * @return array        该组SPU图片
      */
-    static public function getByMultiSpuId (array $multiSpuId) {
+    static public function getByMultiSpuId ($multiSpuId) {
 
         $multiSpuId = array_map('intval', array_unique(array_filter($multiSpuId)));
-
         $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
 
         return      self::_getStore()->fetchAll($sql);
