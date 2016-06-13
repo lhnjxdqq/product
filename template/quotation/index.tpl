@@ -43,6 +43,14 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label>是否忽略已存在买款ID: </label>
+                                    <select name="is_sku_code" class="form-control">
+                                            <option value="0">请选择</option>
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>选择报价单: </label>
                                     <input type="file" name="quotation"/>
                                 </div>

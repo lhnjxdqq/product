@@ -24,6 +24,8 @@ $excelHead1         = array(
     '规格尺寸'          => 'size_name',
     '规格重量'          => 'weight_name',
     '备注'              => 'remark',
+    '款式'              => 'style_one_level',
+    '子款式'            => 'style_two_level',
     '进货工费'          => 'cost',
 );
 
@@ -68,10 +70,14 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
                 $mapColumnColor[$offsetCell]    = $cell->getValue();
             }
         }
-        
+        $mapColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($mapColumnColor);
+        if( count($mapColorSpecValueInfo) != count($mapColumnColor)){
+            
+            throw   new ApplicationException('表头中颜色工费表头有误,请检查');
+        }
         continue;
     }
-    
+   
     $data   = array();
     
     foreach ($mapColumnField as $offsetColumn => $fieldName) {
@@ -87,11 +93,24 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
     unset($data['cost']);
     $list[] = $data;
 }
-
+if(empty($_POST['is_sku_code'])){
+    
+    $listSkuCode    = ArrayUtility::listField($list,'sku_code');
+    $skuCodeCount   = array_count_values($listSkuCode);
+    
+    foreach($skuCodeCount as $key=>$val){
+    
+        if($val>1){
+            
+            throw   new ApplicationException('买款ID为'.$key.'的记录重复,请检查表格');
+        }
+    }
+}
 $mapEnumeration = array();
 
 $addNums = 1;
 $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
+$mapStyleInfo       = Style_Info::listAll();
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
 $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
 validate::testNull($listGoodsType, "表中无匹配产品类型,请修改后重新上传");
@@ -106,13 +125,16 @@ $mapEnumeration =array(
    'mapIndexSpecAlias'    => $mapIndexSpecAlias,
    'mapSpecValue'         => $mapSpecValue,
    'mapSizeId'            => $mapSizeId,
+   'mapStyle'             => $mapStyleInfo,
+   'mapSpecInfo'          => $mapSpecInfo,
 );
 
 foreach ($list as $offsetRow => $row) {
     
+    $line  = $offsetRow+3;
     try{
         
-        $data = Quotation::testQuotation($row,$mapEnumeration);
+        $datas[] = Quotation::testQuotation($row,$mapEnumeration, $_POST['is_sku_code'], $_POST['supplier_id']);
         $addNums++;
 
     }catch(ApplicationException $e){
@@ -124,10 +146,43 @@ foreach ($list as $offsetRow => $row) {
         continue;
     }
 }
-var_dump($errorList);
 setlocale(LC_ALL,NULL);
-die;
+
 $template           = Template::getInstance();
-$template->assign('errorList',   $errorList);
-$template->assign('addNums',   $addNums);
-$template       = Template::getInstance();
+if(!empty($errorList)){
+     
+    $template->assign('errorList',   $errorList);
+    $template->assign('addNums',   $addNums);
+    $template->display('import_quotation.tpl');
+    exit;
+}
+
+$time        = microtime(true);
+$uploadPath  = QUOTATION_IMPORT . date('Ym',$time)."/";
+
+if(!is_dir($uploadPath)) {
+
+    mkdir($uploadPath,0777,true);
+}
+$quotationFilePath    = $uploadPath.$time.".xlsx";
+rename($filePath,$quotationFilePath);
+chmod($quotationFilePath, 0777);
+
+foreach ($datas as $offsetRow => $row) {
+    
+    $line  = $offsetRow+3;
+    try{
+        
+        $goodsIds[] = Quotation::createQuotation($row,$mapEnumeration,$_POST['is_sku_code'] ,$_POST['supplier_id']);
+        $addNums++;
+
+    }catch(ApplicationException $e){
+        
+        $errorList[]            = array(
+            'content'   => $e->getMessage(),
+            'line'      => $line ,
+        );
+        continue;
+    }
+}
+
