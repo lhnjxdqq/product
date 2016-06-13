@@ -133,4 +133,4 @@ if ($imageIdList) {
         ));
     }
 }
-Utility::notice('新增产品成功');
+Utility::notice('新增产品成功', '/product/product/index.php');

@@ -128,7 +128,7 @@
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <input type="hidden" name="product-id" value="<{$data.productInfo.product_id}>">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> 编辑</button>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> 确定</button>
                                 <a href="/product/product/index.php" class="btn btn-primary"><i class="fa fa-undo"></i> 取消</a>
                             </div>
                         </div>
