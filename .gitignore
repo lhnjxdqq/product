@@ -3,6 +3,7 @@ config/**/*.sh
 config/*.sh
 config/*.php
 upload/
+data/
 *.swp
 logs/
 /log/
