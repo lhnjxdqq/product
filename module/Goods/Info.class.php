@@ -78,6 +78,22 @@ class   Goods_Info {
     }
 
     /**
+     * 根据条件获取数据数量
+     *
+     * @param array $condition  条件
+     * @return int              数量
+     */
+    static public function countByCondition (array $condition) {
+
+        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sql            = $sqlBase . $sqlCondition;
+        $row            = self::_getStore()->fetchOne($sql);
+
+        return          (int) $row['cnt'];
+    }
+
+    /**
      * 根据条件拼接WHERE子句
      *
      * @param array $condition  条件
@@ -194,5 +210,33 @@ class   Goods_Info {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
 
         return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 根据商品编号获取商品信息
+     *
+     * @param $goodsSn  商品编号
+     * @return array    商品信息
+     */
+    static public function getByGoodsSn ($goodsSn) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_sn` = "' . addslashes(trim($goodsSn)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 根据一组商品编号获取商品信息
+     *
+     * @param $multiGoodsSn 一组商品编号
+     * @return array        商品信息
+     */
+    static public function getByMultiGoodsSn ($multiGoodsSn) {
+
+        $multiGoodsSn   = array_map('addslashes', array_map('trim', array_unique(array_filter($multiGoodsSn))));
+
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_sn` IN ("' . implode('","', $multiGoodsSn) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
     }
 }
