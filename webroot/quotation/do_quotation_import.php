@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . '/../../init.inc.php';
 Validate::testNull($_POST['supplier_id'], "供应商不能为空");
 $listSupplier   = Supplier_Info::listAll();
 validate::testNull(ArrayUtility::searchBy($listSupplier,array('supplier_id'=>$_POST['supplier_id'])),"所选供应商不存在");
-
+$mainMenu   = Menu_Info::getMainMenu();
 $filePath           = $_FILES['quotation']['tmp_name'];
 
 if($_FILES['quotation']['error'] != UPLOAD_ERR_OK) {
@@ -93,7 +93,7 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
     unset($data['cost']);
     $list[] = $data;
 }
-if(empty($_POST['is_sku_code'])){
+if(empty($_POST['is_table_sku_code'])){
     
     $listSkuCode    = ArrayUtility::listField($list,'sku_code');
     $skuCodeCount   = array_count_values($listSkuCode);
@@ -149,6 +149,7 @@ foreach ($list as $offsetRow => $row) {
 setlocale(LC_ALL,NULL);
 
 $template           = Template::getInstance();
+$template->assign('mainMenu', $mainMenu);
 if(!empty($errorList)){
      
     $template->assign('errorList',   $errorList);
@@ -167,7 +168,14 @@ if(!is_dir($uploadPath)) {
 $quotationFilePath    = $uploadPath.$time.".xlsx";
 rename($filePath,$quotationFilePath);
 chmod($quotationFilePath, 0777);
-
+Quotation_Info::create(
+    array(
+        'quotation_name' => $time.".xlsx",
+        'quotation_path' => $quotationFilePath,
+        'quotation_supplier_id' =>$_POST['supplier_id'],
+        'model_num'      => count($datas),
+    )
+);
 foreach ($datas as $offsetRow => $row) {
     
     $line  = $offsetRow+3;
@@ -185,4 +193,12 @@ foreach ($datas as $offsetRow => $row) {
         continue;
     }
 }
+if(!empty($errorList)){
+     
+    $template->assign('errorList',   $errorList);
+    $template->assign('addNums',   $addNums);
+    $template->display('import_quotation.tpl');
+    exit;
+}
+Utility::notice('导入报价单成功');
 
