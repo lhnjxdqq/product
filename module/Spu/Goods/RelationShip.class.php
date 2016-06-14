@@ -89,7 +89,7 @@ class   Spu_Goods_RelationShip {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '"';
 
-        return  self::_getStore()->fetchOne($sql);
+        return  self::_getStore()->fetchAll($sql);
     }
 
     /**
