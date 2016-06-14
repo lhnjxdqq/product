@@ -52,6 +52,34 @@ class   Spu_Goods_RelationShip {
     }
 
     /**
+     * 把一组商品和一个SPU进行关联
+     *
+     * @param array $multiGoods 一组商品, 每组商品信息如: array('goodsId'=>1, 'spuGoodsName'=>'abc')
+     * @param $spuId            SPU ID
+     * @return bool
+     */
+    static public function createMultiSpuGoodsRelationship (array $multiGoods, $spuId) {
+
+        $multiGoodsId   = ArrayUtility::listField($multiGoods, 'goodsId');
+        $listGoodsInfo  = Goods_Info::getByMultiId($multiGoodsId);
+        $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+
+        foreach ($multiGoods as $goods) {
+
+            $goodsId        = (int) $goods['goodsId'];
+            $spuGoodsName   = empty($goods['spuGoodsName']) ? $mapGoodsInfo[$goodsId]['goods_name'] : addslashes(trim($goods['spuGoodsName']));
+
+            $data   = array(
+                'spu_id'            => (int) $spuId,
+                'goods_id'          => $goodsId,
+                'spu_goods_name'    => $spuGoodsName,
+            );
+            self::create($data);
+        }
+        return  true;
+    }
+
+    /**
      * 根据SPUID获取该SPU下的所有商品信息
      *
      * @param $spuId    SPUID
