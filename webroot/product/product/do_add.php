@@ -74,10 +74,6 @@ $productData    = array(
     'product_remark'    => $productRemark,
 );
 
-// 根据子款式ID 和 品类ID 查询商品
-$listGoodsByCondition   = Goods_Info::listByCondition($condition);
-$listGoodsIdByCondition = $listGoodsIdByCondition ? ArrayUtility::listField($listGoodsByCondition, 'goods_id') : array();
-
 // 根据规格 规格值查询商品
 $specValueList          = array();
 foreach ($specList as $specData) {
@@ -88,12 +84,11 @@ foreach ($specList as $specData) {
         'spec_value_id' => $temp[1],
     );
 }
-$validateResult         = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $styleId, $categoryId);
+$goodsId                = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $styleId, $categoryId);
 
 // 根据当前款式ID 品类ID 和 条件 联结查询
-if ($validateResult && $validateResult['goods_id'] && count($specValueList) == $validateResult['cnt']) {
+if ($goodsId) {
 
-    $goodsId                    = $validateResult['goods_id'];
     $productData['goods_id']    = $goodsId;
 } else {
 
