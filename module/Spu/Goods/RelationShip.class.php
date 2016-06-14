@@ -106,4 +106,32 @@ class   Spu_Goods_RelationShip {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据商品ID 获取其关联的SPU
+     *
+     * @param $goodsId  商品ID
+     * @return array    关联的SPU
+     */
+    static public function getByGoodsId ($goodsId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据一组商品ID 获取 这组商品关联的SPU
+     *
+     * @param $multiGoodsId 一组商品ID
+     * @return array        和这种商品ID关联的SPU
+     */
+    static public function getByMultiGoodsId ($multiGoodsId) {
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
+
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
 }
