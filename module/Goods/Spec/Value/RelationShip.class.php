@@ -80,7 +80,7 @@ class   Goods_Spec_Value_RelationShip {
         }
 
         $sql    .= implode(' OR ', $where) . ' AND `gi`.`style_id` = "' . (int) $styleId . '" AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id`';
-echo $sql;
+
         $result = self::_getStore()->fetchAll($sql);
         if (!$result) {
 
