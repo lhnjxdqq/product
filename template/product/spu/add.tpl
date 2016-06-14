@@ -31,12 +31,12 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form class="form-horizontal" action="/product/product/do_add.php" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" action="/product/spu/do_add.php" method="post" enctype="multipart/form-data">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">SPU编号</label>
                             <div class="col-sm-10">
-                                xxxxxxx
+                                <input type="text" readonly class="form-control" name="spu-sn" value="<{$data.spuSn}>">
                             </div>
                         </div>
                         <div class="form-group">
@@ -48,8 +48,8 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">SKU编号</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control pull-left" name="sku-sn" style="width: 300px; margin-right: 10px;" placeholder="请输入SKU编号">
-                                <a href="javascript:void(0);" class="btn btn-primary pull-left">添加</a>
+                                <input type="text" class="form-control pull-left" id="add-sku-input" style="width: 300px; margin-right: 10px;" placeholder="请输入SKU编号">
+                                <a href="javascript:void(0);" class="btn btn-primary pull-left" id="add-sku-btn">添加</a>
                             </div>
                         </div>
                         <div class="form-group">
@@ -58,7 +58,7 @@
                                     <table class="table table-hover table-bordered" id="goods-list">
                                         <thead>
                                             <tr>
-                                                <th>商品名称</th>
+                                                <th width="200">商品名称</th>
                                                 <th>SKU编号</th>
                                                 <th>SKU名称</th>
                                                 <th>三级分类</th>
@@ -71,9 +71,23 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-
+                                            <{foreach from=$data.mapGoodsInfo item=item}>
+                                            <tr class="spu-goods">
+                                                <td>
+                                                    <input type="hidden" name="goods-id[]" value="<{$item.goods_id}>">
+                                                    <input type="text" name="spu-goods-name[]" class="form-control" value="<{$item.goods_name}>">
+                                                </td>
+                                                <td class="goods-sn" goodssn="<{$item.goods_sn}>"><{$item.goods_sn}></td>
+                                                <td><{$item.goods_name}></td>
+                                                <td class="goods-category-name" categoryid="<{$item.category_id}>"><{$item.category_name}></td>
+                                                <td><{$item.material}></td>
+                                                <td><{$item.size}></td>
+                                                <td class="goods-weight-value" weightvalueid="<{$data.weightValueId}>"><{$item.weight}></td>
+                                                <td><{$item.color}></td>
+                                                <td><{$item.sale_cost}></td>
+                                                <td><a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td>
                                             </tr>
+                                            <{/foreach}>
                                         </tbody>
                                     </table>
                                 </div>
@@ -135,6 +149,51 @@
             var cloneStr = '<div class="form-group spu-image"><div class="col-sm-offset-2 col-sm-3"><input type="file" class="form-control" name="spu-image[]"></div><div class="col-sm-1"><a href="javascript:void(0);" class="btn btn-danger add-line">删除本行</a></div></div>';
             $(this).parents('.spu-image').after(cloneStr);
         }
+    });
+    $(document).delegate('.del-spu-goods', 'click', function () {
+        if ($('.spu-goods').length == 1) {
+            alert('已经是最后一个, 不能删除');
+            return;
+        }
+        $(this).parents('.spu-goods').remove();
+    });
+    $('#add-sku-btn').click(function () {
+        var skuSn           = $('#add-sku-input').val();
+        var spuGoods        = $('.spu-goods')[0];
+        var categoryId      = $(spuGoods).find('td.goods-category-name').attr('categoryid');
+        var weightValueId   = $(spuGoods).find('td.goods-weight-value').attr('weightvalueid');
+        var skuSnObjList    = $('.spu-goods td.goods-sn');
+        var skuSnList       = [];
+        $.each(skuSnObjList, function (index, val) {
+            skuSnList.push($(val).attr('goodssn'));
+        });
+        if (skuSnList.indexOf(skuSn) >= 0) {
+            alert('列表中已存在该SKU');
+            return;
+        }
+
+        if (skuSn.length == 0) {
+
+            alert('请输入SKU编号');
+            return;
+        }
+
+        $.ajax({
+            url: '/ajax/get_goods_data.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {goods_sn: skuSn, category_id: categoryId, weight_value_id: weightValueId},
+            success: function (data) {
+                if (data.statusCode != 'success') {
+                    alert(data.statusInfo);
+                    return;
+                }
+                retData = data.resultData;
+                var goodsString = '<tr class="spu-goods"><td><input type="hidden" name="goods-id[]" value="' + retData.goods_id + '"><input type="text" name="spu-goods-name[]" class="form-control" value="' + retData.goods_name + '"></td><td class="goods-sn" goodssn="' + retData.goods_sn + '">' + retData.goods_sn + '</td><td>' + retData.goods_name + '</td><td class="goods-category-name" categoryid="' + retData.category_name + '">' + retData.category_name + '</td><td>' + retData.material + '</td><td>' + retData.size + '</td><td class="goods-weight-value" weightvalueid="' + retData.weight + '">' + retData.weight + '</td><td>' + retData.color + '</td><td>' + retData.sale_cost + '</td><td><a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td></tr>';
+                $('.spu-goods:last').after(goodsString);
+
+            }
+        });
     });
 </script>
 </body>
