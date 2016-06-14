@@ -167,7 +167,7 @@ class   Spu_Info {
         $sql    = 'SELECT MAX(`spu_id`) AS `sid` FROM `' . self::_tableName() . '`';
         $row    = self::_getStore()->fetchOne($sql);
 
-        return  'P' . $categorySn . (101011 + (int) $row['gid']);
+        return  'P' . $categorySn . (101011 + (int) $row['sid']);
     }
 
     /**
