@@ -134,4 +134,17 @@ class   Spu_Goods_RelationShip {
 
         return          self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据SPUID 删除SPU关联SKU
+     *
+     * @param $spuId    SPUID
+     * @return int
+     */
+    static public function delBySpuId ($spuId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '"';
+
+        return  self::_getStore()->execute($sql);
+    }
 }
