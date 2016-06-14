@@ -47,7 +47,7 @@
                                             </span>
                                             <span class="pull-right">
                                                 <a href="/product/spu/edit.php?spu_id=<{$item.spu_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
-                                                <a href="javascript:delSpu();" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+                                                <a href="javascript:delSpu(<{$item.spu_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
                                             </span>
                                         </p>
                                         <p class="clearfix"></p>
@@ -99,6 +99,15 @@
         $('.spu-single').height(maxHeight);
     }
     initSpuContainerHeight();
+    function delSpu(spuId) {
+        if (confirm('确定删除该SPU吗 ?')) {
+            if (spuId) {
+
+                var redirect    = '/product/spu/del.php?spu_id=' + spuId;
+                location.href   = redirect;
+            }
+        }
+    }
 </script>
 </body>
 </html>
