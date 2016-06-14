@@ -197,4 +197,32 @@ class   Spu_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据SPU编号获取SPU信息
+     *
+     * @param $spuSn    SPU编号
+     * @return array    SPU信息
+     */
+    static public function getBySpuSn ($spuSn) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_sn` = "' . addslashes(trim($spuSn)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 根据一组SPU编号获取SPU信息
+     *
+     * @param $multiSpuSn   一组SPU编号
+     * @return array        SPU信息
+     */
+    static public function getByMultiSpuSn ($multiSpuSn) {
+
+        $multiSpuSn = array_map('addslashes', array_map('trim', array_unique(array_filter($multiSpuSn))));
+
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_sn` IN ("' . implode('","', $multiSpuSn) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
 }
