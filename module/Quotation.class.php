@@ -168,14 +168,14 @@ class   Quotation {
     static private function _createGoods(array $data,$sizeId = null,$colorId,array $mapEnumeration,$supplierId) {
 
         $sourceInfo                 = Source_Info::listByCondition(array(
-            'source_code'   => $sourceCode,
+            'source_code'   => $data['sku_code'],
             'supplier_id'   => $supplierId,
         ));
         $sourceId                   = $sourceInfo ? current($sourceInfo)['source_id'] : Source_Info::create(array(
             'source_code' => $data['sku_code'],
             'supplier_id' => $supplierId,
         ));
-    
+        
         $content['product_name']    = self::getProductName($data,$sizeId,$colorId,$mapEnumeration);
         $content['product_cost']    = $data['cost'][$colorId];
         $indexCategoryId = ArrayUtility::indexByField($mapEnumeration['mapCategory'], 'category_id');
