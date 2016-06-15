@@ -27,6 +27,16 @@ $spuId  = Spu_Info::create(array(
 
 $files          = $_FILES['spu-image'];
 $imageKeyList   = array();
+// 复制sku图片到spu
+if ($_POST['sku-image']) {
+
+    foreach ($_POST['sku-image'] as $skuImageKey) {
+
+        $skuImageInstance   = AliyunOSS::getInstance('images-sku');
+        $spuImageKey        = AliyunOSS::getInstance('images-spu')->copyCreate($skuImageInstance, $skuImageKey, null, true);
+        $imageKeyList[]     = $spuImageKey;
+    }
+}
 foreach ($files['tmp_name'] as $stream) {
 
     if ($stream) {

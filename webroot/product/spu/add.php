@@ -74,9 +74,18 @@ $categoryId         = current($listGoodsInfo)['category_id'];
 $categoryInfo       = $mapCategoryInfo[$categoryId];
 $spuSn              = Spu_Info::createSpuSn($categoryInfo['category_sn']);
 
+$listGoodsImages    = Goods_Images_RelationShip::getByMultiGoodsId($multiGoodsId);
+$mapGoodsImages     = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+foreach ($mapGoodsImages as $goodsId => &$goodsImage) {
+
+    $imageKey                   = $goodsImage['image_key'];
+    $goodsImage['image_url']    = AliyunOSS::getInstance('images-sku')->url($imageKey);
+}
+
 $data['spuSn']          = $spuSn;
 $data['weightValueId']  = $weightValueId;
 $data['mapGoodsInfo']   = $mapGoodsInfo;
+$data['mapGoodsImages'] = $mapGoodsImages;
 $data['mainMenu']       = Menu_Info::getMainMenu();
 
 $template = Template::getInstance();
