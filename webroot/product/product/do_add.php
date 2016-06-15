@@ -101,9 +101,11 @@ if ($goodsId) {
         'goods_type_id' => $categoryInfo['goods_type_id'],
         'category_id'   => $categoryId,
         'style_id'      => $styleId ? $styleId : 0,
+        'self_cost'     => $productCost,
+        'sale_cost'     => $productCost,
     );
     // 记录商品的规格 和 规格值
-    $goodsId                    = Goods_Info::create($goodsData);
+    $goodsId    = Goods_Info::create($goodsData);
 
     foreach ($specValueList as $specValue) {
         Goods_Spec_Value_Relationship::create(array(
@@ -116,7 +118,11 @@ if ($goodsId) {
     $productData['goods_id']    = $goodsId;
 }
 
-$productId                  = Product_Info::create($productData);
+$productId  = Product_Info::create($productData);
+// 更新商品 成本工费和基础销售工费
+$goodsCost  = Goods_Info::getGoodsCost($goodsId);
+$goodsData  = array_merge(array('goods_id'=>$goodsId), $goodsCost);
+Goods_Info::update($goodsData);
 // 产品和图片关系 商品和图片关系
 if ($imageIdList['product']) {
     foreach ($imageIdList['product'] as $imageId) {

@@ -54,7 +54,10 @@ class   Goods_Info {
         );
         $condition  = "`goods_id` = '" . addslashes($data['goods_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-        self::_getStore()->update(self::_tableName(), $newData, $condition);
+        $newData    += array(
+            'update_time'   => date('Y-m-d H:i:s'),
+        );
+        return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
     /**
@@ -238,5 +241,24 @@ class   Goods_Info {
         $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_sn` IN ("' . implode('","', $multiGoodsSn) . '")';
 
         return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 获取成本工费
+     *
+     * @param $goodsId  商品ID
+     * @return mixed
+     */
+    static public function getGoodsCost ($goodsId) {
+
+        $listProduct    = Product_Info::getByGoodsId($goodsId);
+        $listCost       = ArrayUtility::listField($listProduct, 'product_cost');
+        asort($listCost);
+
+        $selfCost       = current($listCost) + 2;
+        return          array(
+            'self_cost' => $selfCost,
+            'sale_cost' => $selfCost,
+        );
     }
 }

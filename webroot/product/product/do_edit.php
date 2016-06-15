@@ -57,8 +57,15 @@ $data   = array(
     'product_remark'    => $productRemark,
 );
 
+$productInfo    = Product_Info::getById($productId);
+$goodsId        = (int) $productInfo['goods_id'];
 if (Product_Info::update($data)) {
 
+    // 更新商品 成本工费和基础销售工费
+    $goodsCost  = Goods_Info::getGoodsCost($goodsId);
+    $goodsData  = array_merge(array('goods_id'=>$goodsId), $goodsCost);
+    Goods_Info::update($goodsData);
+    // 更新图片关系
     Product_Images_RelationShip::deleteById($productId);
     if ($imageIdList) {
         foreach ($imageIdList as $imageId) {
