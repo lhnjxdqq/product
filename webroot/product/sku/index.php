@@ -46,11 +46,31 @@ foreach ($groupGoodsSpecValue as $goodsId => $specValueList) {
     $mapGoodsSpecValue[$goodsId]    = $specValueList;
 }
 
-$data['mapCategoryInfoLv3'] = $mapCategoryInfoLv3;
-$data['listGoodsInfo']      = $listGoodsInfo;
-$data['mapGoodsSpecValue']  = $mapGoodsSpecValue;
-$data['pageViewData']       = $page->getViewData();
-$data['mainMenu']           = Menu_Info::getMainMenu();
+$listGoodsProductInfo   = Product_Info::getByMultiGoodsId($listGoodsId);
+$groupGoodsProductInfo  = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
+$mapGoodsProductCost    = array();
+foreach ($groupGoodsProductInfo as $goodsId => $goodsProductList) {
+
+    $goodsProductCostList           = ArrayUtility::listField($goodsProductList, 'product_cost');
+    asort($goodsProductCostList);
+    $mapGoodsProductCost[$goodsId]  = current($goodsProductCostList);
+}
+
+$listGoodsImages        = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
+$mapGoodsImages         = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+foreach ($mapGoodsImages as $goodsId => &$goodsImage) {
+
+    $imageKey                   = $goodsImage['image_key'];
+    $goodsImage['image_url']    = AliyunOSS::getInstance('images-sku')->url($imageKey);
+}
+
+$data['mapCategoryInfoLv3']     = $mapCategoryInfoLv3;
+$data['listGoodsInfo']          = $listGoodsInfo;
+$data['mapGoodsSpecValue']      = $mapGoodsSpecValue;
+$data['mapGoodsProductCost']    = $mapGoodsProductCost;
+$data['mapGoodsImages']         = $mapGoodsImages;
+$data['pageViewData']           = $page->getViewData();
+$data['mainMenu']               = Menu_Info::getMainMenu();
 
 $template = Template::getInstance();
 $template->assign('data', $data);

@@ -37,15 +37,17 @@ $update = Spu_Info::update(array(
 ));
 
 if ($update) {
-
     Spu_Goods_RelationShip::delBySpuId($spuId);
     Spu_Goods_RelationShip::createMultiSpuGoodsRelationship($multiGoods, $spuId);
-    foreach ($imageKeyList as $imageKey) {
+    Spu_Images_RelationShip::delBySpuId($spuId);
+    if ($imageKeyList) {
+        foreach ($imageKeyList as $imageKey) {
 
-        Spu_Images_RelationShip::create(array(
-            'spu_id'    => $spuId,
-            'image_key' => $imageKey,
-        ));
+            Spu_Images_RelationShip::create(array(
+                'spu_id' => $spuId,
+                'image_key' => $imageKey,
+            ));
+        }
     }
 
     Utility::notice('编辑SPU成功', '/product/spu/index.php');

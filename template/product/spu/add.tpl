@@ -103,6 +103,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <{foreach from=$data.mapGoodsImages item=item}>
+                                    <span class="product-image-priview" style="height:300px;">
+                                        <img src="<{$item.image_url}>" height="300" alt="" class="img-responsive img-thumbnail">
+                                        <span class="close">X</span>
+                                        <input type="hidden" name="sku-image[]" value="<{$item.image_key}>">
+                                    </span>
+                                <{/foreach}>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label">备注</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control" name="spu-remark" rows="3"></textarea>
@@ -194,6 +205,9 @@
 
             }
         });
+    });
+    $('span.product-image-priview .close').click(function () {
+        $(this).parents('.product-image-priview').remove();
     });
 </script>
 </body>

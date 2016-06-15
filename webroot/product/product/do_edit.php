@@ -58,9 +58,9 @@ $data   = array(
 );
 
 if (Product_Info::update($data)) {
-    
+
+    Product_Images_RelationShip::deleteById($productId);
     if ($imageIdList) {
-        Product_Images_RelationShip::deleteById($productId);
         foreach ($imageIdList as $imageId) {
             Product_Images_RelationShip::create(array(
                 'product_id' => $productId,

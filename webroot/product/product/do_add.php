@@ -42,14 +42,16 @@ if (empty($productCost)) {
 
 $fileList       = $_FILES['product-image'];
 $imageIdList    = array();
-
+// 添加产品图片时 copy到sku
 foreach ($fileList['tmp_name'] as $stream) {
     if ($stream) {
-        $imageKey = AliyunOSS::getInstance('images-product')->create($stream);
-        $start = strpos($imageKey, '/') + 1;
-        $length = strpos($imageKey, '.') - $start;
-        $imageId = substr($imageKey, $start, $length);
-        $imageIdList[] = $imageId;
+        $productImageInstance       = AliyunOSS::getInstance('images-product');
+
+        $prodImageKey               = $productImageInstance->create($stream, null, true);
+        $imageIdList['product'][]   = $prodImageKey;
+
+        $goodsImageKey              = AliyunOSS::getInstance('images-sku')->copyCreate($productImageInstance, $prodImageKey, null, true);
+        $imageIdList['goods'][]     = $goodsImageKey;
     }
 }
 
@@ -116,12 +118,14 @@ if ($goodsId) {
 
 $productId                  = Product_Info::create($productData);
 // 产品和图片关系 商品和图片关系
-if ($imageIdList) {
-    foreach ($imageIdList as $imageId) {
+if ($imageIdList['product']) {
+    foreach ($imageIdList['product'] as $imageId) {
         Product_Images_RelationShip::create(array(
             'product_id'    => $productId,
             'image_key'     => $imageId,
         ));
+    }
+    foreach ($imageIdList['goods'] as $imageId) {
         Goods_Images_RelationShip::create(array(
             'goods_id'      => $goodsId,
             'image_key'     => $imageId,
