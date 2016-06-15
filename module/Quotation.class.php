@@ -135,7 +135,7 @@ class   Quotation {
             
             $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
             $spu['spu_remark']  = $data['remark'];
-            $spu['spu_name']    = $data['weight_id']."g".$data['product_name'];
+            $spu['spu_name']    = $data['weight_name'].$data['material_main_name'].$data['categoryLv3'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
         }
