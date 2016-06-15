@@ -76,7 +76,8 @@ foreach ($listSpecValue as $specValue) {
 $mapSpuSalerCostByColor = array();
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
-    $spuCost    = array();
+    $kRedCost   = array();
+    $costList   = array();
     foreach ($spuGoods as $goods) {
 
         $goodsId        = $goods['goods_id'];
@@ -86,16 +87,15 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
             if ($specValueData == 'K红') {
 
-                $spuCost[]  = $mapAllGoodsInfo[$goodsId]['sale_cost'];
-            } else {
-
-                $spuCost[]  = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+                $kRedCost[]  = $mapAllGoodsInfo[$goodsId]['sale_cost'];
             }
+            $costList[] = $mapAllGoodsInfo[$goodsId]['sale_cost'];
         }
 
     }
-    rsort($spuCost);
-    $mapSpuSalerCostByColor[$spuId]  = array_shift($spuCost);
+    rsort($kRedCost);
+    rsort($costList);
+    $mapSpuSalerCostByColor[$spuId]  = current($kRedCost) ? current($kRedCost) : current($costList);
 }
 
 // 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
