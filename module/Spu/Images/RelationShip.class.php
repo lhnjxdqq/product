@@ -80,4 +80,32 @@ class   Spu_Images_RelationShip {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据SPUID 删出该SPU下图片
+     *
+     * @param $spuId    SPUID
+     * @return int
+     */
+    static public function delBySpuId ($spuId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '"';
+
+        return  self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 根据一组SPUID 删除图片
+     *
+     * @param $multiSpuId   一组SPUID
+     * @return int
+     */
+    static public function delByMultiSpuId ($multiSpuId) {
+
+        $multiSpuId = array_map('intval', array_unique(array_filter($multiSpuId)));
+
+        $sql        = 'DELETE FROM `' . self::_tableName() . '` WHERE `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
+
+        return      self::_getStore()->execute($sql);
+    }
 }
