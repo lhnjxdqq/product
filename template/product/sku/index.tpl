@@ -60,7 +60,7 @@
                                     <th>最低进货工费</th>
                                     <th>成本工费</th>
                                     <th>基础销售工费</th>
-                                    <th>操作</th>
+                                    <th width="150">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,10 +74,13 @@
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['主料材质']['spec_value_data']}></td>
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}></td>
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['颜色']['spec_value_data']}></td>
-                                        <td></td>
+                                        <td><{$data.mapGoodsProductCost[$item.goods_id]}></td>
                                         <td><{$item.self_cost}></td>
                                         <td><{$item.sale_cost}></td>
-                                        <td></td>
+                                        <td>
+                                            <a href="javascript:alert('开发中...');" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                            <a href="javascript:alert('开发中...');" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
+                                        </td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>

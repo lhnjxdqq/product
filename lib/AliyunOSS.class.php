@@ -106,7 +106,7 @@ class   AliyunOSS {
 
         if (empty($id)) {
 
-            $id = $this->_generateUniqueId($id);
+            $id = $this->_generateUniqueId();
         }
 
         $key    = $this->_getKey($id);
@@ -145,6 +145,59 @@ class   AliyunOSS {
                 : $this->_protocol . $this->_bucket . '.' . $this->_endpoint . '/';
 
         return  $host . $this->_getKey($id);
+    }
+
+    /**
+     * 从一个bucket复制一个object到另一个bucket
+     *
+     * @param AliyunOSS $oss        当前类对象实例
+     * @param $fromId               源object id
+     * @param null $toId            新object id
+     * @param bool $returnId        是否返回$toId
+     * @return null|string
+     * @throws ApplicationException
+     */
+    public function copyCreate (AliyunOSS $oss, $fromId, $toId = NULL, $returnId = false) {
+
+        $fromBucket = $oss->getBucket();
+        $fromObject = $oss->getObject($fromId);
+
+        if (empty($toId)) {
+
+            $toId = $this->_generateUniqueId();
+        }
+
+        $key    = $this->_getKey($toId);
+
+        if ($this->_ossClient->doesObjectExist($this->_bucket, $key)) {
+
+            throw   new ApplicationException('创建文件失败 文件路径冲突');
+        }
+
+        $this->_ossClient->copyObject($fromBucket, $fromObject, $this->_bucket, $key);
+
+        return  $returnId   ? $toId : $key;
+    }
+
+    /**
+     * 获取bucket
+     *
+     * @return mixed
+     */
+    public function getBucket () {
+
+        return  $this->_bucket;
+    }
+
+    /**
+     * 获取
+     *
+     * @param $id
+     * @return string
+     */
+    public function getObject ($id) {
+
+        return  $this->_getKey($id);
     }
 
     /**
