@@ -28,7 +28,7 @@
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-shopping-cart"></i> 加入销售报价单</a>
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm pull-right"><i class="fa fa-shopping-cart"></i> 100</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"><{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
                 </div>
                 <div class="box-body">
                     <div class="row" id="spu-list">
@@ -42,7 +42,7 @@
                                         <p>K红进货工费: <{$item.sale_cost}></p>
                                         <p>供应商ID: <{$item.supplier_id}></p>
                                         <p>
-                                            <span class="pull-left">
+                                            <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a>
                                             </span>
                                             <span class="pull-right">
@@ -108,6 +108,32 @@
             }
         }
     }
+    
+    $(function() {
+
+        $('.act-cart-add').bind('click', function () {
+        
+            var $this       = $(this),
+                spuId       = $this.attr("spu-id");
+                
+            $.post('/sales_quotation/cart_spu_join.php', {
+                spu_id             : spuId,
+                '__output_format'   : 'JSON'
+            }, function (response) {
+
+                if (0 != response.code) {
+
+                    showMessage('错误', response.message);
+
+                    return  ;
+                }
+
+                $("#number").html(response.data.count);
+                $this.children('.btn-xs').attr('disabled', true);
+                $this.children('.btn-xs').removeClass("btn-primary");
+            }, 'json');    
+            });
+    });
 </script>
 </body>
 </html>

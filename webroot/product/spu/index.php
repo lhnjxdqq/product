@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $condition  = $_GET;
 $condition['delete_status'] = Spu_DeleteStatus::NORMAL;
-
+$userId     = (int) $_SESSION['user_id'];
 // 排序
 $sortBy     = isset($_GET['sortby']) ? $_GET['sortby'] : 'spu_id';
 $direction  = isset($_GET['direction']) ? $_GET['direction'] : 'DESC';
@@ -165,10 +165,12 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $listSpuInfo[$key]['supplier_id']   = $mapSpuSupplierId[$spuInfo['spu_id']];
 }
 
+$countCartSpu = Cart_Spu_Info::countByUser($userId);
 $data['listSpuInfo']    = $listSpuInfo;
 $data['pageViewData']   = $page->getViewData();
 $data['mainMenu']       = Menu_Info::getMainMenu();
 
 $template = Template::getInstance();
+$template->assign('countCartSpu', $countCartSpu);
 $template->assign('data', $data);
 $template->display('product/spu/index.tpl');
