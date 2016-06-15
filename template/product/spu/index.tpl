@@ -32,14 +32,14 @@
                 </div>
                 <div class="box-body">
                     <div class="row" id="spu-list">
-                        <{foreach from=$data.listSpuInfo item=item}>
+                        <{foreach from=$data.listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail">
                                     <img src="<{$item.image_url}>" alt="...">
                                     <div class="caption">
                                         <p>三级分类: <{$item.category_name}></p>
                                         <p>规格重量: <{$item.weight_value}></p>
-                                        <p>K红进货工费: <{$item.sale_cost}></p>
+                                        <p>K红出货工费: <{$item.sale_cost}></p>
                                         <p>供应商ID: <{$item.supplier_id}></p>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
@@ -55,6 +55,9 @@
                                 </div>
                             </div>
                             <!-- /.spu-single -->
+                            <{if ($item@index + 1) % 4 == 0}>
+                            <div class="clearfix"></div>
+                            <{/if}>
                         <{/foreach}>
                     </div>
                     <!-- /.row -->
@@ -89,16 +92,6 @@
 
 <{include file="section/foot.tpl"}>
 <script>
-    function initSpuContainerHeight() {
-        var spuList     = $('.spu-single');
-        var maxHeight   = [];
-        $.each(spuList, function (index, val) {
-            var height  = $(val).outerHeight();
-            maxHeight   = height > maxHeight ? height : maxHeight;
-        });
-        $('.spu-single').height(maxHeight);
-    }
-    initSpuContainerHeight();
     function delSpu(spuId) {
         if (confirm('确定删除该SPU吗 ?')) {
             if (spuId) {
