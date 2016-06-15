@@ -131,6 +131,9 @@
                 $("#number").html(response.data.count);
                 $this.children('.btn-xs').attr('disabled', true);
                 $this.children('.btn-xs').removeClass("btn-primary");
+                $this.children('.btn-xs').addClass("btn-success");
+                $this.find('.fa-plus').addClass("fa-check");
+                $this.find('.fa-plus').removeClass("fa-plus");
             }, 'json');    
             });
     });
