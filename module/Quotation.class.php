@@ -219,6 +219,8 @@ class   Quotation {
                 'goods_name'    => $content['product_name'],
                 'goods_type_id' => $data['goods_type_id'],
                 'category_id'   => $data['category_id'],
+                'self_cost'     => $productData['product_cost']+2,
+                'sale_cost'     => $productData['product_cost']+2,
                 'style_id'      => $data['style_id'] ? $data['style_id'] : 0,
             );
             
