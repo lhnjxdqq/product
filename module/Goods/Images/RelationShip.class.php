@@ -66,4 +66,19 @@ class   Goods_Images_RelationShip {
 
         return  self::_getStore()->execute($sql);
     }
+
+    /**
+     * 根据一组商品ID 获取图片
+     *
+     * @param $multiGoodsId 一组商品ID
+     * @return array
+     */
+    static public function getByMultiGoodsId ($multiGoodsId) {
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
+
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
 }

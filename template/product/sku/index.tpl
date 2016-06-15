@@ -69,7 +69,7 @@
                                         <td><input type="checkbox" class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}>"></td>
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>
-                                        <td></td>
+                                        <td><img src="<{$data.mapGoodsImages[$item.goods_id]['image_url']}>" height="60"></td>
                                         <td><{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></td>
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['主料材质']['spec_value_data']}></td>
                                         <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}></td>
