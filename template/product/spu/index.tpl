@@ -31,32 +31,33 @@
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm pull-right"><i class="fa fa-shopping-cart"></i> 100</a>
                 </div>
                 <div class="box-body">
-                    <div class="row">
+                    <div class="row" id="spu-list">
                         <{foreach from=$data.listSpuInfo item=item}>
-                        <div class="col-sm-6 col-md-3 spu-single">
-                            <div class="thumbnail">
-                                <img src="<{$item.image_url}>" alt="...">
-                                <div class="caption">
-                                    <p>三级分类: <{$item.category_name}></p>
-                                    <p>规格重量: <{$item.weight_value}></p>
-                                    <p>K红进货工费: <{$item.sale_cost}></p>
-                                    <p>供应商ID: <{$item.supplier_id}></p>
-                                    <p>
-                                        <span class="pull-left">
-                                            <a href="javascript:void(0);" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a>
-                                        </span>
-                                        <span class="pull-right">
-                                            <a href="/product/spu/index.php?spu_id=<{$item.spu_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
-                                            <a href="javascript:delSpu();" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
-                                        </span>
-                                    </p>
-                                    <p class="clearfix"></p>
+                            <div class="col-sm-6 col-md-3 spu-single">
+                                <div class="thumbnail">
+                                    <img src="<{$item.image_url}>" alt="...">
+                                    <div class="caption">
+                                        <p>三级分类: <{$item.category_name}></p>
+                                        <p>规格重量: <{$item.weight_value}></p>
+                                        <p>K红进货工费: <{$item.sale_cost}></p>
+                                        <p>供应商ID: <{$item.supplier_id}></p>
+                                        <p>
+                                            <span class="pull-left">
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a>
+                                            </span>
+                                            <span class="pull-right">
+                                                <a href="/product/spu/edit.php?spu_id=<{$item.spu_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
+                                                <a href="javascript:delSpu(<{$item.spu_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+                                            </span>
+                                        </p>
+                                        <p class="clearfix"></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- /.spu-single -->
+                            <!-- /.spu-single -->
                         <{/foreach}>
                     </div>
+                    <!-- /.row -->
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
@@ -87,5 +88,26 @@
 <!-- ./wrapper -->
 
 <{include file="section/foot.tpl"}>
+<script>
+    function initSpuContainerHeight() {
+        var spuList     = $('.spu-single');
+        var maxHeight   = [];
+        $.each(spuList, function (index, val) {
+            var height  = $(val).outerHeight();
+            maxHeight   = height > maxHeight ? height : maxHeight;
+        });
+        $('.spu-single').height(maxHeight);
+    }
+    initSpuContainerHeight();
+    function delSpu(spuId) {
+        if (confirm('确定删除该SPU吗 ?')) {
+            if (spuId) {
+
+                var redirect    = '/product/spu/del.php?spu_id=' + spuId;
+                location.href   = redirect;
+            }
+        }
+    }
+</script>
 </body>
 </html>

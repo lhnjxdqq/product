@@ -167,7 +167,7 @@ class   Spu_Info {
         $sql    = 'SELECT MAX(`spu_id`) AS `sid` FROM `' . self::_tableName() . '`';
         $row    = self::_getStore()->fetchOne($sql);
 
-        return  'P' . $categorySn . (101011 + (int) $row['gid']);
+        return  'P' . $categorySn . (101011 + (int) $row['sid']);
     }
 
     /**
@@ -194,6 +194,34 @@ class   Spu_Info {
         $multiId    = array_map('intval', array_unique(array_filter($multiId)));
 
         $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据SPU编号获取SPU信息
+     *
+     * @param $spuSn    SPU编号
+     * @return array    SPU信息
+     */
+    static public function getBySpuSn ($spuSn) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_sn` = "' . addslashes(trim($spuSn)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 根据一组SPU编号获取SPU信息
+     *
+     * @param $multiSpuSn   一组SPU编号
+     * @return array        SPU信息
+     */
+    static public function getByMultiSpuSn ($multiSpuSn) {
+
+        $multiSpuSn = array_map('addslashes', array_map('trim', array_unique(array_filter($multiSpuSn))));
+
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_sn` IN ("' . implode('","', $multiSpuSn) . '")';
 
         return      self::_getStore()->fetchAll($sql);
     }

@@ -64,7 +64,7 @@ class   Spu_Images_RelationShip {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '"';
 
-        return  self::_getStore()->fetchAll($spuId);
+        return  self::_getStore()->fetchAll($sql);
     }
 
     /**

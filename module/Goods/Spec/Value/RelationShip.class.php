@@ -66,6 +66,12 @@ class   Goods_Spec_Value_RelationShip {
             return;
         }
 
+        $listGoodsInfo  = Goods_Info::listByCondition(array(
+            'style_id'      => (int) $styleId,
+            'category_id'   => (int) $categoryId,
+        ));
+        $listGoodsId    = $listGoodsInfo ? ArrayUtility::listField($listGoodsInfo, 'goods_id') : array();
+
         $sql    = 'SELECT gi.goods_id, count(1) AS `cnt` FROM `' . self::_tableName() . '` AS `gsvr` LEFT JOIN `goods_info` AS `gi` ON `gsvr`.`goods_id`=`gi`.`goods_id` WHERE ';
         $where  = array();
         foreach ($specValueList as $specValue) {
@@ -75,7 +81,20 @@ class   Goods_Spec_Value_RelationShip {
 
         $sql    .= implode(' OR ', $where) . ' AND `gi`.`style_id` = "' . (int) $styleId . '" AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id`';
 
-        return  self::_getStore()->fetchOne($sql);
+        $result = self::_getStore()->fetchAll($sql);
+        if (!$result) {
+
+            return;
+        }
+        $result = ArrayUtility::indexByField($result, 'goods_id', 'cnt');
+        $count  = count($specValueList);
+        foreach ($result as $goodsId => $cnt) {
+
+            if ($cnt == $count) {
+
+                return  $goodsId;
+            }
+        }
     }
 
     /**

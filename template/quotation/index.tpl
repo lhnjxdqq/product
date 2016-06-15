@@ -8,7 +8,7 @@
     <{include file="section/navbar.tpl"}>
 
     <!-- Left side column. contains the sidebar -->
-    <{include file="section/navlist.tpl" mainMenu=$data.mainMenu}>
+    <{include file="section/navlist.tpl" mainMenu=$mainMenu}>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <form action="/quotation/do_quotation_import.php" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label>选择供应商: </label>
@@ -43,9 +43,15 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>是否忽略已存在买款ID: </label>
+                                    <label>是否忽略生产系统中已存在买款ID: </label>
                                     <select name="is_sku_code" class="form-control">
-                                            <option value="0">请选择</option>
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>是否忽略上传表中重复买款ID: </label>
+                                    <select name="is_table_sku_code" class="form-control">
                                             <option value="0">否</option>
                                             <option value="1">是</option>
                                     </select>

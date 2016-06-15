@@ -7,4 +7,5 @@ $listSupplier   = Supplier_Info::listAll();
 $template       = Template::getInstance();
 
 $template->assign('listSupplier', $listSupplier);
+$template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('quotation/index.tpl');

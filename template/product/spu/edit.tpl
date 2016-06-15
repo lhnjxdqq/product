@@ -14,11 +14,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>添加SPU</h1>
+            <h1>编辑SPU</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="javascript:void(0);">SPU管理</a></li>
-                <li class="active">添加SPU</li>
+                <li class="active">编辑SPU</li>
             </ol>
         </section>
 
@@ -31,18 +31,18 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form class="form-horizontal" action="/product/spu/do_add.php" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" action="/product/spu/do_edit.php" method="post" enctype="multipart/form-data">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">SPU编号</label>
                             <div class="col-sm-10">
-                                <input type="text" readonly class="form-control" name="spu-sn" value="<{$data.spuSn}>">
+                                <input type="text" readonly class="form-control" value="<{$data.spuInfo.spu_sn}>">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">SPU名称</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="spu-name" placeholder="请输入SPU名称">
+                                <input type="text" class="form-control" name="spu-name" placeholder="请输入SPU名称" value="<{$data.spuInfo.spu_name}>">
                             </div>
                         </div>
                         <div class="form-group">
@@ -57,25 +57,25 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover table-bordered" id="goods-list">
                                         <thead>
-                                            <tr>
-                                                <th width="200">商品名称</th>
-                                                <th>SKU编号</th>
-                                                <th>SKU名称</th>
-                                                <th>三级分类</th>
-                                                <th>主料材质</th>
-                                                <th>规格尺寸</th>
-                                                <th>规格重量</th>
-                                                <th>颜色</th>
-                                                <th>基础销售工费</th>
-                                                <th>操作</th>
-                                            </tr>
+                                        <tr>
+                                            <th width="200">商品名称</th>
+                                            <th>SKU编号</th>
+                                            <th>SKU名称</th>
+                                            <th>三级分类</th>
+                                            <th>主料材质</th>
+                                            <th>规格尺寸</th>
+                                            <th>规格重量</th>
+                                            <th>颜色</th>
+                                            <th>基础销售工费</th>
+                                            <th>操作</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            <{foreach from=$data.mapGoodsInfo item=item}>
+                                        <{foreach from=$data.mapGoodsInfo item=item}>
                                             <tr class="spu-goods">
                                                 <td>
                                                     <input type="hidden" name="goods-id[]" value="<{$item.goods_id}>">
-                                                    <input type="text" name="spu-goods-name[]" class="form-control" value="<{$item.goods_name}>">
+                                                    <input type="text" name="spu-goods-name[]" class="form-control" value="<{$item.spu_goods_name}>">
                                                 </td>
                                                 <td class="goods-sn" goodssn="<{$item.goods_sn}>"><{$item.goods_sn}></td>
                                                 <td><{$item.goods_name}></td>
@@ -103,14 +103,27 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <{foreach from=$data.listSpuImages item=item}>
+                                    <span class="product-image-priview">
+                                        <img src="<{$item.image_url}>" height="300" alt="" class="img-responsive img-thumbnail">
+                                        <span class="close">X</span>
+                                        <input type="hidden" name="spu-image[]" value="<{$item.image_key}>">
+                                    </span>
+                                <{/foreach}>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label">备注</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="spu-remark" rows="3"></textarea>
+                                <textarea class="form-control" name="spu-remark" rows="3"><{$data.spuInfo.spu_remark}></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> 新增</button>
+                                <input type="hidden" name="spu-id" value="<{$data.spuInfo.spu_id}>">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> 确定</button>
+                                <a href="/product/spu/index.php" class="btn btn-primary"><i class="fa fa-undo"></i> 取消</a>
                             </div>
                         </div>
                     </div>
@@ -194,6 +207,9 @@
 
             }
         });
+    });
+    $('span.product-image-priview .close').click(function () {
+        $(this).parents('.product-image-priview').remove();
     });
 </script>
 </body>
