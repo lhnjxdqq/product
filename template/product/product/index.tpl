@@ -101,7 +101,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-download"></i> 批量删除</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash"></i> 批量删除</a>
                     <a href="/product/product/add.php" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> 添加产品</a>
                 </div>
                 <div class="box-body">

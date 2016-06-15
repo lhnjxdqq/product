@@ -205,7 +205,6 @@
                             tempString += '</select></div></div>';
                             specString += tempString;
                         });
-                        console.log(specString);
                         $('.attribute-list').empty().append(specString);
                     } else {
                         $('.attribute-list').empty();
