@@ -205,6 +205,19 @@ class   Product_Info {
     }
 
     /**
+     * 根据商品ID 查询产品
+     *
+     * @param $goodsId  商品ID
+     * @return array    产品
+     */
+    static public function getByGoodsId ($goodsId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 批量设置一组产品的删除状态
      *
      * @param array $multiProductId
