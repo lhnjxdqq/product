@@ -17,8 +17,7 @@
             <h1>销售报价单</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="/system/user/index.php">报价单</a></li>
-                <li class="active">导入报价单</li>
+                <li><a href="/system/user/index.php">销售报价单</a></li>
             </ol>
         </section>
 

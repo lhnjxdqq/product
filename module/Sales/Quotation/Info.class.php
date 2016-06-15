@@ -19,7 +19,7 @@ class   Sales_Quotation_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_quotation_id,sales_quotation_code,sales_quotation_date,customer_id';
+    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id';
     /**
      * 新增
      *

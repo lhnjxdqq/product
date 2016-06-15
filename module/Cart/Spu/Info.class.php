@@ -47,6 +47,19 @@ class   Cart_Spu_Info {
 
         return  $row['total'];
     }
+        
+    /**
+     * 获取购物车列表
+     *
+     * $param   int   $userId  用户ID
+     * @return  array          数据
+     */
+     static  public function getByUserId ($userId) {
+
+        $sql    = 'SELECT '. self::FIELDS .' FROM `' . self::_tableName() . "` WHERE `user_id` = '" . (int) $userId . "'";
+        
+        return self::_getStore()->fetchAll($sql);
+     }
     /**
      * 更新
      *
