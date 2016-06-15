@@ -19,7 +19,9 @@ class   Quotation {
         Validate::testNull($data['categoryLv3'],'三级分类不能为空');
         Validate::testNull($data['material_main_name'],'主料材质不能为空');
         Validate::testNull($data['weight_name'],'规格重量不能为空');
-
+        
+        $data['weight_name'] = sprintf('%.2f', $data['weight_name']);
+        
         $categoryInfo       = ArrayUtility::searchBy($mapEnumeration['mapCategory'], array("category_name"=>$data['categoryLv3'],'category_level'=>2));
         
         if(!$isSkuCode){
@@ -135,7 +137,7 @@ class   Quotation {
             
             $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
             $spu['spu_remark']  = $data['remark'];
-            $spu['spu_name']    = $data['weight_name'].$data['material_main_name'].$data['categoryLv3'];
+            $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
         }
