@@ -107,6 +107,7 @@ class   Goods_Info {
         $sql            = array();
         $sql[]          = self::_conditionByStyleId($condition);
         $sql[]          = self::_conditionByCategoryId($condition);
+        $sql[]          = self::_conditionByDeleteStatus($condition);
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
@@ -132,6 +133,17 @@ class   Goods_Info {
     static private function _conditionByCategoryId ($condition) {
 
         return !$condition['category_id'] ? '' : '`category_id` = "' . (int) $condition['category_id'] . '"';
+    }
+
+    /**
+     * 根据删除状态拼接WHERE子句
+     *
+     * @param $condition    条件
+     * @return string       WHERE子句
+     */
+    static private function _conditionByDeleteStatus ($condition) {
+
+        return !isset($condition['delete_status']) ? '' : '`delete_status` = "' . (int) $condition['delete_status'] . '"';
     }
 
     /**

@@ -78,8 +78,8 @@
                                         <td><{$item.self_cost}></td>
                                         <td><{$item.sale_cost}></td>
                                         <td>
-                                            <a href="javascript:alert('开发中...');" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
-                                            <a href="javascript:alert('开发中...');" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
+                                            <a href="/product/sku/edit.php?goods_id=<{$item.goods_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                            <a href="javascript:delSku(<{$item.goods_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                         </td>
                                     </tr>
                                 <{/foreach}>
@@ -117,6 +117,15 @@
 
 <{include file="section/foot.tpl"}>
 <script>
+    function delSku(goodsId) {
+        if (confirm('确定要删除该SKU吗 ?')) {
+            if (goodsId) {
+
+                var redirect    = '/product/sku/del.php?goods_id='+goodsId;
+                location.href   = redirect;
+            }
+        }
+    }
     $('input[name="select-all"]').click(function () {
         $('#sku-list input').prop('checked', $(this).prop('checked') );
     });
