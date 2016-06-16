@@ -81,4 +81,17 @@ class   Goods_Images_RelationShip {
 
         return          self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据商品ID 获取图片
+     *
+     * @param $goodsId  商品ID
+     * @return array    图片
+     */
+    static public function getByGoodsId ($goodsId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }
