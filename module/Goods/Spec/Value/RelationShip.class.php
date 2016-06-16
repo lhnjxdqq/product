@@ -61,7 +61,7 @@ class   Goods_Spec_Value_RelationShip {
      */
     static public function validateGoods (array $specValueList, $styleId, $categoryId) {
 
-        if (!$specValueList) {
+        if (!$specValueList || !$styleId) {
 
             return;
         }
@@ -71,6 +71,10 @@ class   Goods_Spec_Value_RelationShip {
             'category_id'   => (int) $categoryId,
         ));
         $listGoodsId    = $listGoodsInfo ? ArrayUtility::listField($listGoodsInfo, 'goods_id') : array();
+        if (empty($listGoodsId)) {
+
+            return;
+        }
 
         $sql    = 'SELECT gi.goods_id, count(1) AS `cnt` FROM `' . self::_tableName() . '` AS `gsvr` LEFT JOIN `goods_info` AS `gi` ON `gsvr`.`goods_id`=`gi`.`goods_id` WHERE ';
         $where  = array();

@@ -2,6 +2,17 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
+// 是否有未生成的和正在生成中的文件
+$toGenerateFileList = Quotation_Info::getByMultiStatusCode(array(
+    Quotation_StatusCode::NOTGERERATE,
+    Quotation_StatusCode::GENERATING,
+));
+
+if ($toGenerateFileList) {
+
+    Utility::notice('系统中还有未处理完成的报价单, 请稍后上传新报价单');
+}
+
 Validate::testNull($_POST['supplier_id'], "供应商不能为空");
 $listSupplier   = Supplier_Info::listAll();
 validate::testNull(ArrayUtility::searchBy($listSupplier,array('supplier_id'=>$_POST['supplier_id'])),"所选供应商不存在");
@@ -158,47 +169,29 @@ if(!empty($errorList)){
     exit;
 }
 
-$time        = microtime(true);
-$uploadPath  = QUOTATION_IMPORT . date('Ym',$time)."/";
+$time       = microtime(true);
+$floderPath = date('Ym',$time)."/";
+$uploadPath = QUOTATION_IMPORT . $floderPath;
 
 if(!is_dir($uploadPath)) {
 
     mkdir($uploadPath,0777,true);
 }
-$quotationFilePath    = $uploadPath.$time.".xlsx";
+$fileName           = $time.".xlsx";
+$quotationFilePath  = $uploadPath.$fileName;
+$fileStoragePath    = $floderPath . $fileName;
 rename($filePath,$quotationFilePath);
 chmod($quotationFilePath, 0777);
-Quotation_Info::create(
-    array(
-        'quotation_name' => $time.".xlsx",
-        'quotation_path' => $quotationFilePath,
-        'quotation_supplier_id' =>$_POST['supplier_id'],
-        'model_num'      => count($datas),
-    )
-);
-foreach ($datas as $offsetRow => $row) {
-    
-    $line  = $offsetRow+3;
-    try{
-        
-        $goodsIds[] = Quotation::createQuotation($row,$mapEnumeration,$_POST['is_sku_code'] ,$_POST['supplier_id']);
-        $addNums++;
 
-    }catch(ApplicationException $e){
-        
-        $errorList[]            = array(
-            'content'   => $e->getMessage(),
-            'line'      => $line ,
-        );
-        continue;
-    }
-}
-if(!empty($errorList)){
-     
-    $template->assign('errorList',   $errorList);
-    $template->assign('addNums',   $addNums);
-    $template->display('import_quotation.tpl');
-    exit;
-}
-Utility::notice('导入报价单成功');
+Quotation_Info::create(array(
+    'quotation_name'            => $fileName,
+    'quotation_path'            => $fileStoragePath,
+    'quotation_supplier_id'     => $_POST['supplier_id'],
+    'model_num'                 => count($datas),
+    'supplier_id'               => (int) $_POST['supplier_id'],
+    'ignore_existed_sourceid'   => (int) $_POST['is_sku_code'],
+    'ignore_repeat_sourceid'    => (int) $_POST['is_table_sku_code'],
+    'status_code'               => Quotation_StatusCode::NOTGERERATE,
+));
 
+Utility::notice('上传报价单成功');
