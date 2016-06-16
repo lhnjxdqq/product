@@ -190,17 +190,18 @@ foreach ($list as $offsetRow => $row) {
 }
 setlocale(LC_ALL,NULL);
 
-/*
-$template           = Template::getInstance();
-$template->assign('mainMenu', $mainMenu);
+// $template           = Template::getInstance();
+// $template->assign('mainMenu', $mainMenu);
 if(!empty($errorList)){
 
+    /*
     $template->assign('errorList',   $errorList);
     $template->assign('addNums',   $addNums);
     $template->display('import_quotation.tpl');
     exit;
+    */
+    exit("提供的excel数据有误, 请通过表单上传\n");
 }
-*/
 
 $time        = microtime(true);
 $uploadPath  = QUOTATION_IMPORT . date('Ym',$time)."/";
