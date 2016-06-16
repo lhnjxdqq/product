@@ -49,7 +49,10 @@ $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
+
 $mapSpecValue   = array();
+$mapMaterialValue = array();
+$mapSizeValue = array();
 foreach ($listSpecValue as $specValue) {
 
     $specName       = $mapSpecInfo[$specValue['spec_id']]['spec_name'];
@@ -57,6 +60,14 @@ foreach ($listSpecValue as $specValue) {
     if ($specName == '规格重量') {
 
         $mapSpecValue[$specValue['goods_id']] = $specValueData;
+    }
+    if ($specName == '主料材质') {
+        
+        $mapMaterialValue[$specValue['goods_id']][] = $specValueData;
+    }
+    if ($specName == '规格尺寸') {
+
+        $mapSizeValue[$specValue['goods_id']][] = $specValueData;
     }
 }
 
@@ -72,19 +83,31 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
         foreach ($goodsSpecValue as $key => $val) {
 
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
-            if ($specValueData == 'K红') {
 
-                $spuCost[]  = $mapAllGoodsInfo[$goodsId]['sale_cost'];
-            } else {
-
-                $spuCost[]  = $mapAllGoodsInfo[$goodsId]['sale_cost'];
-            }
-            Utility::dump($mapAllGoodsInfo);die;
+            $spuCost['K红'][]      = Quotation::getGoodsCost("K红",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['K白'][]      = Quotation::getGoodsCost("K白",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['K黄'][]      = Quotation::getGoodsCost("K黄",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['红白'][]     = Quotation::getGoodsCost("红白",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['红黄'][]     = Quotation::getGoodsCost("红黄",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['白黄'][]     = Quotation::getGoodsCost("白黄",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['三色'][]     = Quotation::getGoodsCost("三色",$specValueData,$mapAllGoodsInfo,$goodsId);
         }
-
     }
-    rsort($spuCost);
-    $mapSpuSalerCostByColor[$spuId]  = array_shift($spuCost);
+    rsort($spuCost['K红']);
+    rsort($spuCost['K白']);
+    rsort($spuCost['K黄']);
+    rsort($spuCost['红白']);
+    rsort($spuCost['红黄']);
+    rsort($spuCost['白黄']);
+    rsort($spuCost['三色']);
+    $mapSpuSalerCostByColor[$spuId]['K红']   = array_shift($spuCost['K红']);
+    $mapSpuSalerCostByColor[$spuId]['K白']   = array_shift($spuCost['K白']);
+    $mapSpuSalerCostByColor[$spuId]['K黄']   = array_shift($spuCost['K黄']);
+    $mapSpuSalerCostByColor[$spuId]['红白']  = array_shift($spuCost['红白']);
+    $mapSpuSalerCostByColor[$spuId]['红黄']  = array_shift($spuCost['红黄']);
+    $mapSpuSalerCostByColor[$spuId]['白黄']  = array_shift($spuCost['白黄']);
+    $mapSpuSalerCostByColor[$spuId]['三色']  = array_shift($spuCost['三色']);
+
 }
 
 // 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
@@ -126,18 +149,27 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 
         $categoryId = $mapGoodsInfo[$goodsId]['category_id'];
         $listSpuInfo[$key]['category_name'] = $mapCategory[$categoryId]['category_name'];
+        $listSpuInfo[$key]['material_name'] = implode(",",$mapMaterialValue[$goodsId]);
+        $listSpuInfo[$key]['size_name']     = implode(",",$mapSizeValue[$goodsId]);
         $listSpuInfo[$key]['weight_value']  = $mapSpecValue[$goodsId];
     }
 
-    // K红最大工费
-    $listSpuInfo[$key]['sale_cost'] = $mapSpuSalerCostByColor[$spuInfo['spu_id']];
+    // 每种最大工费
+    $listSpuInfo[$key]['K红']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红'];
+    $listSpuInfo[$key]['K白']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白'];
+    $listSpuInfo[$key]['K黄']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄'];
+    $listSpuInfo[$key]['红白']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白'];
+    $listSpuInfo[$key]['红黄']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄'];
+    $listSpuInfo[$key]['白黄']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['白黄'];
+    $listSpuInfo[$key]['三色']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色'];
     $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
 
 }
-
+//Utility::dump($listSpuInfo);
 $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
+$template->assign('listSpuInfo',$listSpuInfo);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('sales_quotation/create.tpl');

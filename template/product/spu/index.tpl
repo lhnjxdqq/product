@@ -28,7 +28,7 @@
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-shopping-cart"></i> 加入销售报价单</a>
-                    <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"><{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
+                    <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> <{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
                 </div>
                 <div class="box-body">
                     <div class="row" id="spu-list">
@@ -121,7 +121,7 @@
                     return  ;
                 }
 
-                $("#number").html(response.data.count);
+                $("#number").html(" "+response.data.count);
                 $this.children('.btn-xs').attr('disabled', true);
                 $this.children('.btn-xs').removeClass("btn-primary");
                 $this.children('.btn-xs').addClass("btn-success");

@@ -79,25 +79,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><input type="checkbox" name="select-spu"></td>
-                                <td>SKU编号</td>
-                                <td>SKU名称</td>
-                                <td>产品图片</td>
-                                <td>三级分类</td>
-                                <td>规格重量</td>
-                                <td>规格尺寸</td>
-                                <td>主料材质</td>
-                                <td>K红</td>
-                                <td>K白</td>
-                                <td>K黄</td>
-                                <td>红白</td>
-                                <td>红黄</td>
-                                <td>白黄</td>
-                                <td>三色</td>
-                                <td>备注</td>
-                                <td>操作</td>
-                            </tr>
+<{foreach from=$listSpuInfo item=item name=foo}>                               
+                                <tr>
+                                    <td><input type="checkbox" name="select-spu"></td>
+                                    <td><{$item.spu_id}></td>
+                                    <td><{$item.spu_name}></td>
+                                    <td><img src="<{$item.image_url}>" class="width-100" alt="..."></td>
+                                    <td><{$item.category_name}></td>
+                                    <td><{$item.weight_value}></td>
+                                    <td><{$item.size_name}></td>
+                                    <td><{$item.material_name}></td>
+                                    <td><input type="text" size="4" value="<{$item['K红']}>"></td>
+                                    <td><input type="text" size="4" value="<{$item['K白']}>"></td>
+                                    <td><input type="text" size="4" value="<{$item['K黄']}>"></td>
+                                    <td><input type="text" size="4" value="<{$item['红白']}>"></td>
+                                    <td><input type="text" size="4" value="<{$item['红黄']}>"></td>
+                                    <td><input type="text" size="4" value="<{$item['白黄']}>"></td>
+                                    <td><input type="text" size="4" value="<{$item['三色']}>"></td>
+                                    <td><{$item.spu_remark}></td>
+                                    <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>"><i class="fa fa-trash-o"></i></a></td>
+                                </tr>
+<{/foreach}>                                
                             </tbody>
                         </table>
                     </div>

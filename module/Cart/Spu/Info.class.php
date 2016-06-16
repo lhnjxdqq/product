@@ -60,6 +60,36 @@ class   Cart_Spu_Info {
         
         return self::_getStore()->fetchAll($sql);
      }
+         
+    /**
+     * 清空个人用户
+     *
+     * @param   int   $user_id   用户
+     */
+    static  public  function cleanByUserId ($userId) {
+
+        Validate::testNull($userId, "无效用户id");
+        
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE user_id='.(int) $userId;
+
+        self::_getStore()->execute($sql);
+    }
+         
+    /**
+     * 删除
+     *
+     * @param   array   $data   数据
+     */
+    static  public  function delete (array $data) {
+
+        if(empty($data)){
+            
+            return ;
+        }
+        $condition  = "`user_id` = '" . addslashes($data['user_id']) . "' AND `spu_id` = '" . addslashes($data['spu_id']) . "'";
+
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
     /**
      * 更新
      *

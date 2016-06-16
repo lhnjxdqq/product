@@ -28,3 +28,7 @@ span.product-image-priview img.img-responsive.img-thumbnail {
     position: relative;
     z-index: 1;
 }
+
+.width-100{width:100px;}
+.width-150{width:150px;}
+.width-110{width:110px;}

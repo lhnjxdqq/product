@@ -310,7 +310,7 @@ class   Quotation {
      * @param    stying    $sizeId         颜色ID
      * @param    array     $mapEnumeration 枚举数据 
      */
-     static  public function _getGoodsColor($colorId,array $mapEnumeration){
+     static  private function _getGoodsColor($colorId,array $mapEnumeration){
         
         if(empty($colorId)){
             
@@ -331,7 +331,7 @@ class   Quotation {
      * @param    stying    $sizeId         尺寸ID
      * @param    array     $mapEnumeration 枚举数据
      */
-     static public function _getGoodsSize ($data, $sizeId = NUll,$mapEnumeration) {
+     static private function _getGoodsSize ($data, $sizeId = NUll,$mapEnumeration) {
          
         if(empty($sizeId)){
             
@@ -348,5 +348,17 @@ class   Quotation {
         $specSizeName           = $indexSpecSizeId[$sizeId]['spec_value_data']; 
         
         return $specSizeName.$sizeSpecUnit;
+    }
+    
+    /**
+     *  获取不同颜色商品下的工费
+     */
+    static public function getGoodsCost($colorName,$specValueData,$mapAllGoodsInfo,$goodsId){
+            
+        if ($specValueData == $colorName) {
+
+            return $mapAllGoodsInfo[$goodsId]['sale_cost'];
+        }
+        return 0;
     }
 }
