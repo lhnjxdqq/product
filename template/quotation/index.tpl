@@ -14,60 +14,63 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>导入报价单</h1>
+            <h1>工厂报价单</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="/system/user/index.php">报价单</a></li>
-                <li class="active">导入报价单</li>
+                <li><a href="javascript:void(0);">工厂报价单</a></li>
+                <li class="active">报价单管理</li>
             </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">
-            <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">导入报价单</h3> 
+                    <div class="box-title">任务列表</div>
+                    <div class="box-tools pull-right">
+                        <a href="/quotation/import.php" class="btn btn-primary btn-sm"><i class="fa fa-upload"></i> 上传工厂报价单</a>
+                    </div>
                 </div>
                 <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <form action="/quotation/do_quotation_import.php" method="post" enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <label>选择供应商: </label>
-                                    <select name="supplier_id" class="form-control">
-                                        <option value="0">选择供应商</option>
-                                        <{foreach from=$listSupplier item=item}>
-                                            <option value="<{$item.supplier_id}>"><{$item.supplier_code}></option>
-                                        <{/foreach}>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>是否忽略生产系统中已存在买款ID: </label>
-                                    <select name="is_sku_code" class="form-control">
-                                            <option value="0">否</option>
-                                            <option value="1">是</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>是否忽略上传表中重复买款ID: </label>
-                                    <select name="is_table_sku_code" class="form-control">
-                                            <option value="0">否</option>
-                                            <option value="1">是</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>选择报价单: </label>
-                                    <input type="file" name="quotation"/>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary"><i class="fa fa-save"></i> 导入</button>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="quotation-list">
+                            <thead>
+                            <tr>
+                                <th>供应商ID</th>
+                                <th>样板数量</th>
+                                <th>文件路径</th>
+                                <!--
+                                <th>忽略系统中已存在的买款ID</th>
+                                <th>忽略上传表中重复买款ID</th>
+                                -->
+                                <th>状态</th>
+                                <th>上传时间</th>
+                                <th>更新时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <{foreach from=$listQuotationInfo item=item}>
+                                    <tr>
+                                        <td><{$item.supplier_code}></td>
+                                        <td><{$item.model_num}></td>
+                                        <td><{$item.file_path}></td>
+                                        <!--
+                                        <td><{$item.ignore_existed_sourceid}></td>
+                                        <td><{$item.ignore_repeat_sourceid}></td>
+                                        -->
+                                        <td><{$item.status_text}></td>
+                                        <td><{$item.create_time}></td>
+                                        <td><{$item.update_time}></td>
+                                    </tr>
+                                <{/foreach}>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <!-- /.box-body -->
+                <div class="box-footer">
+                    <{include file="section/pagelist.tpl" viewData=$pageViewData}>
+                </div>
             </div>
             <!-- /.box -->
         </section>
@@ -91,7 +94,16 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+<style>
+    .sku-filter>div {margin-top: 10px;}
+</style>
 
 <{include file="section/foot.tpl"}>
+<script>
+    tableColumn({
+        selector    : '#quotation-list',
+        container   : '#quotation-list-vis'
+    });
+</script>
 </body>
 </html>
