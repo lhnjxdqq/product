@@ -1,6 +1,6 @@
 <?php
 /**
- * 模型 sales_quotation_info
+ * 模型 销售报价单
  */
 class   Sales_Quotation_Info {
 
@@ -19,7 +19,7 @@ class   Sales_Quotation_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id';
+    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id,spu_num,hash_code,run_status';
     /**
      * 新增
      *
@@ -27,12 +27,107 @@ class   Sales_Quotation_Info {
      */
     static  public  function create (array $data) {
 
+        $datetime   = date('Y-m-d H:i:s', time());
         $options    = array(
             'fields'    => self::FIELDS,
             'filter'    => 'sales_quotation_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+
+        $newData['sales_quotation_date'] = $datetime;
         self::_getStore()->insert(self::_tableName(), $newData);
+        
+        return      self::_getStore()->lastInsertId();
+    }
+    /**
+     * 根据条件获取数据列表
+     *
+     * @param   array   $condition  条件
+     * @param   array   $order      排序依据
+     * @param   int     $offset     位置
+     * @param   int     $limit      数量
+     * @return  array               列表
+     */
+    static  public  function listByCondition (array $condition, array $order, $offset, $limit) {
+
+        $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sqlOrder       = self::_order($order);
+        $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
+        $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据条件获取数据总数
+     *
+     * @param   array   $condition  条件
+     * @return  int                 总数
+     */
+    static  public  function countByCondition (array $condition) {
+
+        $sqlBase        = 'SELECT COUNT(1) AS `total` FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sql            = $sqlBase . $sqlCondition;
+        $row            = self::_getStore()->fetchOne($sql);
+
+        return          $row['total'];
+    }
+
+    /**
+     * 根据条件获取SQL子句
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句
+     */
+    static  private function _condition (array $condition) {
+
+        $sql        = array();
+        $sql[]      = self::_conditionRunStatus($condition);
+        $sqlFilterd = array_filter($sql);
+
+        return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
+    }
+    
+    static  private function _conditionRunStatus (array $condition) {
+
+        if (empty($condition['run_status'])) {
+
+            return  '';
+        }
+
+        return  "`run_status` = '" . addslashes($condition['run_status']) . "'";
+    }
+
+    /**
+     * 获取排序子句
+     *
+     * @param   array   $order  排序依据
+     * @return  string          SQL排序子句
+     */
+    static  private function _order (array $order) {
+
+        $sql    = array();
+
+        foreach ($order as $fieldName => $sequence) {
+
+            $fieldName  = str_replace('`', '', $fieldName);
+            $sql[]      = '`' . addslashes($fieldName) . '` ' . self::_sequence($sequence);
+        }
+
+        return  empty($sql) ? ''    : ' ORDER BY ' . implode(',', $sql);
+    }
+
+    /**
+     * 获取排序方向
+     *
+     * @param   string  $sequence   排序方向
+     * @return  string              排序方向
+     */
+    static  private function _sequence ($sequence) {
+
+        return  $sequence == 'ASC'  ? $sequence : 'DESC';
     }
 
     /**

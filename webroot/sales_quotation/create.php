@@ -2,6 +2,10 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
+if(is_numeric($_GET['plue_price']) || empty($_GET['plue_price'])){
+    
+    $_SESSION['plue_price'] = $_GET['plue_price'];
+}
 $userId          = $_SESSION['user_id'];
 $listCustomer    = Customer_Info::listAll();
 $listCartInfo    = Cart_Spu_Info::getByUserId($userId);
@@ -89,7 +93,7 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
             $spuCost['K黄'][]      = Quotation::getGoodsCost("K黄",$specValueData,$mapAllGoodsInfo,$goodsId);
             $spuCost['红白'][]     = Quotation::getGoodsCost("红白",$specValueData,$mapAllGoodsInfo,$goodsId);
             $spuCost['红黄'][]     = Quotation::getGoodsCost("红黄",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['白黄'][]     = Quotation::getGoodsCost("白黄",$specValueData,$mapAllGoodsInfo,$goodsId);
+            $spuCost['黄白'][]     = Quotation::getGoodsCost("黄白",$specValueData,$mapAllGoodsInfo,$goodsId);
             $spuCost['三色'][]     = Quotation::getGoodsCost("三色",$specValueData,$mapAllGoodsInfo,$goodsId);
         }
     }
@@ -98,17 +102,21 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
     rsort($spuCost['K黄']);
     rsort($spuCost['红白']);
     rsort($spuCost['红黄']);
-    rsort($spuCost['白黄']);
+    rsort($spuCost['黄白']);
     rsort($spuCost['三色']);
     $mapSpuSalerCostByColor[$spuId]['K红']   = array_shift($spuCost['K红']);
     $mapSpuSalerCostByColor[$spuId]['K白']   = array_shift($spuCost['K白']);
     $mapSpuSalerCostByColor[$spuId]['K黄']   = array_shift($spuCost['K黄']);
     $mapSpuSalerCostByColor[$spuId]['红白']  = array_shift($spuCost['红白']);
     $mapSpuSalerCostByColor[$spuId]['红黄']  = array_shift($spuCost['红黄']);
-    $mapSpuSalerCostByColor[$spuId]['白黄']  = array_shift($spuCost['白黄']);
+    $mapSpuSalerCostByColor[$spuId]['黄白']  = array_shift($spuCost['黄白']);
     $mapSpuSalerCostByColor[$spuId]['三色']  = array_shift($spuCost['三色']);
 
 }
+//查询颜色
+$listColorName  = array_keys($spuCost);
+$listColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($listColorName);
+$listIndexColorName     = ArrayUtility::indexByField($listColorSpecValueInfo,'spec_value_data','spec_value_id');
 
 // 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
 $listAllProductInfo     = Product_Info::getByMultiGoodsId($listAllGoodsId);
@@ -155,13 +163,13 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     }
 
     // 每种最大工费
-    $listSpuInfo[$key]['K红']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红'];
-    $listSpuInfo[$key]['K白']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白'];
-    $listSpuInfo[$key]['K黄']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄'];
-    $listSpuInfo[$key]['红白']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白'];
-    $listSpuInfo[$key]['红黄']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄'];
-    $listSpuInfo[$key]['白黄']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['白黄'];
-    $listSpuInfo[$key]['三色']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色'];
+    $listSpuInfo[$key]['K红']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']+$_SESSION['plue_price'];
+    $listSpuInfo[$key]['K白']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']+$_SESSION['plue_price'];
+    $listSpuInfo[$key]['K黄']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']+$_SESSION['plue_price'];
+    $listSpuInfo[$key]['红白']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']+$_SESSION['plue_price'];
+    $listSpuInfo[$key]['红黄']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']+$_SESSION['plue_price'];
+    $listSpuInfo[$key]['黄白']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']+$_SESSION['plue_price'];
+    $listSpuInfo[$key]['三色']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']+$_SESSION['plue_price'];
     $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
 
 }
@@ -171,5 +179,6 @@ $template       = Template::getInstance();
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
 $template->assign('listSpuInfo',$listSpuInfo);
+$template->assign('listIndexColorName',$listIndexColorName);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('sales_quotation/create.tpl');

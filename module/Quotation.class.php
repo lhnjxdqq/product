@@ -5,6 +5,11 @@
 class   Quotation {
     
     /**
+     * Excel导出缓冲区尺寸 (记录条数)
+     */
+    const   BUFFER_SIZE_EXCEL   = 100;
+    
+    /**
      * 验证报价单
      *
      * @param   array   $data             数据 
@@ -345,7 +350,7 @@ class   Quotation {
         $sizeSpecUnit           = $indexSizeSpecId[$specSizeId]['spec_unit'];
         $ValueBySize            = ArrayUtility::searchBy($mapEnumeration['mapSpecValue'],array('spec_value_id'=>$sizeId));
         $indexSpecSizeId        = ArrayUtility::indexByField($ValueBySize,'spec_value_id');
-        $specSizeName           = $indexSpecSizeId[$sizeId]['spec_value_data']; 
+        $specSizeName           = $indexSpecSizeId[$sizeId]['spec_value_data'];
         
         return $specSizeName.$sizeSpecUnit;
     }
@@ -360,5 +365,70 @@ class   Quotation {
             return $mapAllGoodsInfo[$goodsId]['sale_cost'];
         }
         return 0;
+    }
+    
+    static  public  function getExportExcelFileByHashCode ($code) {
+
+        return  EXCEL_EXPORT_DIR . $code . '.xlsx';
+    }
+    
+    /**
+     * 输出到流 excel格式
+     */
+     
+    static  public  function outputExcel ($salesQuotationInfo, $stream) {
+      
+        $order              = array();
+        $condition          = array(
+            'sales_quotation_id'    => $salesQuotationInfo['sales_quotation_id'],
+        );
+    
+        for ($offsetBuffer = 0;$offsetBuffer < $salesQuotationInfo['spu_num'];$offsetBuffer += self::BUFFER_SIZE_EXCEL) {
+ 
+            $listDraw           = array();
+            $excel              = ExcelFile::create();
+            $sheet              = $excel->getActiveSheet();
+            $sheet->getRowDimension(1)->setRowHeight(-1);
+            //$this->_saveExcelRow($sheet, 1, $tableHead);
+            $maxWidth           = 0;
+    
+            $listSalesQutationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $order, $offsetBuffer, self::BUFFER_SIZE_EXCEL);           
+
+            foreach ($listSalesQutationSpuInfo as $offsetInfo => $info) {
+
+                $row        = $this->_getExcelRow($info, $relation);
+                $numberRow  = $offsetInfo + 3;
+                $this->_saveExcelRow($sheet, $numberRow, array_values($row));
+                $draw       = $this->_appendExcelImage($sheet, $numberRow, $row, $info);
+
+                if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
+                    
+                    $imageWidth = $draw->getWidth();
+                    $maxWidth   = $maxWidth < $imageWidth   ? $imageWidth   : $maxWidth; 
+                    $sheet->getRowDimension($numberRow)->setRowHeight($draw->getHeight() * (3 / 4));
+                    $listDraw[] = $draw;
+                }
+            }
+
+            if ($maxWidth > 0) {
+            
+                $sheet->getColumnDimension('D')->setWidth($maxWidth / 7.2);
+            }
+            
+            $tempFile           = tempnam(TEMP, 'product_export_excel_');
+            $writer             = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+            $writer->save($tempFile);
+            $excel->garbageCollect();
+            $excel->disconnectWorksheets();
+
+            foreach ($listDraw as $draw) {
+                $drew   = NULL;
+                unset($drew);
+            }
+
+            unset($writer);
+            unset($excel);
+            $listTempFile[]     = $tempFile;
+        }
     }
 }
