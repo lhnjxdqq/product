@@ -1,14 +1,8 @@
 <?php
+// 客户端断开连接时不中断脚本的执行
+ignore_user_abort();
 
 require_once dirname(__FILE__) . '/../init.inc.php';
-
-/**
- * 参数列表
- * 1. EXCEL文件路径                    -- 文件路径
- * 2. 供应商CODE                       -- 131或91 必须在supplier_info表中存在
- * 3. 是否忽略生产系统中已存在买款ID      -- y:忽略/n:不忽略
- * 4. 是否忽略上传表中重复买款ID         -- y:忽略/n:不忽略
- */
 
 // 获取未生成的文件列表
 $toGenerateFileList = Quotation_Info::listByCondition(array(

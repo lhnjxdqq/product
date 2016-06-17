@@ -1,5 +1,5 @@
 <?php
-
+set_time_limit(0);
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
 // 是否有未生成的和正在生成中的文件
