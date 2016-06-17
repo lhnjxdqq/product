@@ -377,29 +377,134 @@ class   Quotation {
      */
      
     static  public  function outputExcel ($salesQuotationInfo, $stream) {
-      
+              
+        $tableHead = "SPU编号,SPU名称,商品图片,三级分类,主料材质,规格尺寸,规格重量,工费,备注";
+        $colorPriceHead = "K红,K白,K黄,红白,红黄,黄白,三色";
+        
+        $tableHead          = explode(",",$tableHead);
+        $colorPriceHead     = explode(",",$colorPriceHead);
+
         $order              = array();
         $condition          = array(
             'sales_quotation_id'    => $salesQuotationInfo['sales_quotation_id'],
         );
-    
+        $group              = 'spu_id';
+        $listColorName      = explode(",","K红,K白,K黄,红白,红黄,黄白,三色");
+        $colorSpecValueInfo = Spec_Value_Info::getByMultiValueData ($listColorName);
+        $indexColorName     = ArrayUtility::indexByField($colorSpecValueInfo,'spec_value_data','spec_value_id');
+        
         for ($offsetBuffer = 0;$offsetBuffer < $salesQuotationInfo['spu_num'];$offsetBuffer += self::BUFFER_SIZE_EXCEL) {
  
             $listDraw           = array();
             $excel              = ExcelFile::create();
             $sheet              = $excel->getActiveSheet();
+            $sheet->mergeCells('A1:A2');
+            $sheet->mergeCells('B1:B2');
+            $sheet->mergeCells('C1:C2');
+            $sheet->mergeCells('D1:D2');
+            $sheet->mergeCells('E1:E2');
+            $sheet->mergeCells('F1:F2');
+            $sheet->mergeCells('G1:G2');
+            $sheet->mergeCells('H1:N1');
+            $sheet->mergeCells('O1:O2');
             $sheet->getRowDimension(1)->setRowHeight(-1);
-            //$this->_saveExcelRow($sheet, 1, $tableHead);
+            self::_saveExcelRow($sheet, 1, $tableHead);
+            self::_saveExcelRow($sheet, 2, $colorPriceHead);
+            $sheet->setCellValue('O1', "备注");
+            $sheet->setCellValue('H2', "K红");
+            $sheet->setCellValue('I2', "K白");
+            $sheet->setCellValue('J2', "K黄");
+            $sheet->setCellValue('K2', "红白");
+            $sheet->setCellValue('L2', "红黄");
+            $sheet->setCellValue('M2', "黄白");
+            $sheet->setCellValue('N2', "三色");
             $maxWidth           = 0;
     
-            $listSalesQutationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $order, $offsetBuffer, self::BUFFER_SIZE_EXCEL);           
+            $listSalesQutationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $order, $group, $offsetBuffer, self::BUFFER_SIZE_EXCEL);
 
-            foreach ($listSalesQutationSpuInfo as $offsetInfo => $info) {
+            //获取SQU组合
+            $listSpuId       = ArrayUtility::listField($listSalesQutationSpuInfo,"spu_id");
+            $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
+          
+            //获取SPU图片
+            $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+            $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
+            foreach ($mapSpuImages as $spuId => $spuImage) {
 
-                $row        = $this->_getExcelRow($info, $relation);
+                $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
+            }
+
+            $listSpecInfo       = Spec_Info::listAll();
+            $listSpecInfo       = ArrayUtility::searchBy($listSpecInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+            $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
+
+            $listSpecValueInfo  = Spec_Value_Info::listAll();
+            $listSpecValueInfo  = ArrayUtility::searchBy($listSpecValueInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+            $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+
+            // 查询SPU下的商品
+            $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
+            $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
+            $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
+
+            // 查所当前所有SPU的商品 商品信息 规格和规格值
+            $allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
+            $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
+            $allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listAllGoodsId);
+            $mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
+
+            // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
+            $mapSpuGoods    = ArrayUtility::indexByField($listSpuGoods, 'spu_id', 'goods_id');
+            $listGoodsId    = array_values($mapSpuGoods);
+            $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
+            $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+
+            // 根据商品查询品类
+            $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
+            $listCategory   = Category_Info::getByMultiId($listCategoryId);
+            $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+
+            // 根据商品查询规格重量
+            $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
+
+            $mapSpecValue   = array();
+            $mapMaterialValue = array();
+            $mapSizeValue = array();
+            foreach ($listSpecValue as $specValue) {
+
+                $specName       = $mapSpecInfo[$specValue['spec_id']]['spec_name'];
+                $specValueData  = $mapSpecValueInfo[$specValue['spec_value_id']]['spec_value_data'];
+                if ($specName == '规格重量') {
+
+                    $mapWeightValue[$specValue['goods_id']] = $specValueData;
+                }
+                if ($specName == '主料材质') {
+                    
+                    $mapMaterialValue[$specValue['goods_id']][] = $specValueData;
+                }
+                if ($specName == '规格尺寸') {
+
+                    $mapSizeValue[$specValue['goods_id']][] = $specValueData;
+                }
+            }
+            
+            $mapEnumeration = array(
+                'sales_quotation_id'=> $salesQuotationInfo['sales_quotation_id'],
+                'mapSpuGoods'       => $mapSpuGoods,
+                'mapSizeValue'      => $mapSizeValue,
+                'mapMaterialValue'  => $mapMaterialValue,
+                'mapWeightValue'    => $mapWeightValue,
+                'mapGoodsInfo'      => $mapGoodsInfo,
+                'mapCategory'       => $mapCategory,
+                'indexColorName'    => $indexColorName,
+            );
+            foreach ($listSpuInfo as $offsetInfo => $info) {
+                
+                $row        = self::_getExcelRow($info,$mapEnumeration);
+
                 $numberRow  = $offsetInfo + 3;
-                $this->_saveExcelRow($sheet, $numberRow, array_values($row));
-                $draw       = $this->_appendExcelImage($sheet, $numberRow, $row, $info);
+                self::_saveExcelRow($sheet, $numberRow, array_values($row));
+                $draw       = self::_appendExcelImage($sheet, $numberRow, $row, $mapSpuImages[$info['spu_id']]['image_url']);
 
                 if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
                     
@@ -412,23 +517,163 @@ class   Quotation {
 
             if ($maxWidth > 0) {
             
-                $sheet->getColumnDimension('D')->setWidth($maxWidth / 7.2);
+                $sheet->getColumnDimension('C')->setWidth($maxWidth / 7.2);
             }
             
-            $tempFile           = tempnam(TEMP, 'product_export_excel_');
-            $writer             = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-            $writer->save($tempFile);
-            $excel->garbageCollect();
-            $excel->disconnectWorksheets();
 
-            foreach ($listDraw as $draw) {
-                $drew   = NULL;
-                unset($drew);
+                $writer   = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+                $writer->save($stream);
             }
+    }
+    
+    /**
+     *
+     */
+    static private function _getExcelRow($info,$mapEnumeration) {
 
-            unset($writer);
-            unset($excel);
-            $listTempFile[]     = $tempFile;
+        $goodsId    = $mapEnumeration['mapSpuGoods'][$info['spu_id']];
+
+        if (!$goodsId) {
+            
+            $categoryName = '';
+            $weightName   = '';
+        } else {
+
+            $categoryId   = $mapEnumeration['mapGoodsInfo'][$goodsId]['category_id'];
+            $categoryName = $mapEnumeration['mapCategory'][$categoryId]['category_name'];
+            $materialName = !empty($mapEnumeration['mapMaterialValue'][$goodsId]) ? implode(",",$mapEnumeration['mapMaterialValue'][$goodsId]): '';
+            $sizeName     = !empty($mapEnumeration['mapSizeValue'][$goodsId]) ? implode(",",$mapEnumeration['mapSizeValue'][$goodsId]) : '';
+            $weightName   = $mapEnumeration['mapWeightValue'][$goodsId];
+                
         }
+        $condition = array(
+            'spu_id'                => $info['spu_id'],
+            'sales_quotation_id'    => $mapEnumeration['sales_quotation_id'],
+        );
+        $order    = array();
+        $salesQuotationSquInfo = Sales_Quotation_Spu_Info::listByCondition($condition, $order, 0, 0, 100);
+        $indexColorId          = ArrayUtility::indexByField($salesQuotationSquInfo, 'color_id', 'cost');
+        return                  array(
+            'spu_sn'                => $info['spu_sn'],
+            'spu_name'              => $info['spu_name'],
+            'image'                 => '',
+            'category_name'         => $categoryName,
+            'material_name'         => $materialName,
+            'size_name'             => $sizeName,
+            'weight_name'           => $weightName,
+            'K红'                   => $indexColorId[$mapEnumeration['indexColorName']['K红']],
+            'K白'                   => $indexColorId[$mapEnumeration['indexColorName']['K白']],
+            'K黄'                   => $indexColorId[$mapEnumeration['indexColorName']['K黄']],
+            '红白'                  => $indexColorId[$mapEnumeration['indexColorName']['红白']],
+            '红黄'                  => $indexColorId[$mapEnumeration['indexColorName']['红黄']],
+            '黄白'                  => $indexColorId[$mapEnumeration['indexColorName']['黄白']],
+            '三色'                  => $indexColorId[$mapEnumeration['indexColorName']['三色']],
+            'remark'                => $info['spu_remark'],
+        );
+    }
+        
+    static private function _appendExcelImage ($sheet, $numberRow, array $row, $imagePath) {
+
+        if (empty($imagePath)) {
+
+            return  ;
+        }
+
+        if(!@fopen( $imagePath, 'r' ) ) 
+        { 
+            return ;
+        }
+
+        $coordinate = $sheet->getCellByColumnAndRow(2, $numberRow)->getCoordinate();
+        $draw       = self::_loadImage($imagePath);
+
+        if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
+
+            $draw->setWorksheet($sheet);
+            $draw->setCoordinates($coordinate);
+
+            return      $draw;
+        }
+    }
+    
+    
+    static private function _loadImage ($path) {
+
+        $info   = getimagesize($path);
+
+        switch ($info['mime']) {
+            case    'image/jpeg'    :
+                $image  = imagecreatefromjpeg($path);
+                break;
+
+            case    'image/png'     :
+                $image  = imagecreatefrompng($path);
+                break;
+
+            case    'image/gif'     :
+                $image  = imagecreatefromgif($path);
+                break;
+
+            default :
+                return  ;
+        }
+        // 更改图像资源大小
+        $height = 150;
+        $image = self::_resizeImage($image, $height);
+
+        $draw   = new PHPExcel_Worksheet_MemoryDrawing();
+        $draw->setImageResource($image);
+        $draw->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+        $draw->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+
+        return  $draw;
+    }
+    
+    
+    /**
+     * 重置图像资源大小
+     *
+     * @param  resource  $srcImage  源图像资源
+     * @param  int       $dstHeight 更改后的图像资源高度
+     * @return resource  $dstImage  更改后的图像资源
+     */
+    static private function _resizeImage ($srcImage, $dstHeight) {
+        $srcWidth = imagesx($srcImage);
+        $srcHeight = imagesy($srcImage);
+        if ($srcHeight <= $dstHeight) {
+
+            return $srcImage;
+        }
+        # 重新生成图像资源
+        $dstWidth = ($dstHeight/$srcHeight)*$srcWidth;
+        $dstImage = imagecreatetruecolor($dstWidth, $dstHeight);
+        imagecopyresized($dstImage, $srcImage, 0, 0, 0, 0, $dstWidth, $dstHeight, $srcWidth, $srcHeight);
+        return $dstImage;
+    }
+    
+    static private function _saveExcelRow ($sheet, $rowNumber, $listCell) {
+
+        foreach ($listCell  as $cellOffset => $cellValue) {
+
+            $sheet->setCellValueByColumnAndRow($cellOffset, $rowNumber, $cellValue);
+        }
+    }
+    
+    /**
+     * 获取已存在的异步导出文件
+     *
+     * @return  array   已存在的文件列表
+     */
+    static  public  function listExistsExportFile () {
+
+        $listFile   = glob(EXCEL_EXPORT_DIR . '*.xlsx');
+        $mapFile    = array();
+
+        foreach ($listFile as $filePath) {
+
+            $mapFile[basename($filePath, '.xlsx')]   = $filePath;
+        }
+
+        return      $mapFile;
     }
 }

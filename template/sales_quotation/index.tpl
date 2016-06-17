@@ -65,7 +65,7 @@
                                         <td><{$item.sales_quotation_name}></td>
                                         <td><{$item.sales_quotation_date}></td>
                                         <td><{$item.spu_num}></td>
-                                        <td><{if $mapFile[$item.hash_code]}><a href="/slaes_quotation/zip_download.php?code=<{$item.hash_code}>">下载</a><{else}>努力生成中....<{/if}></td>
+                                        <td><{if $mapFile[$item.hash_code]}><a href="/sales_quotation/zip_download.php?code=<{$item.hash_code}>&file_name=<{$item.sales_quotation_name}>">下载</a><{else}>努力生成中....<{/if}></td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>

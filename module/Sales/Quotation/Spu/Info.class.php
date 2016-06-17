@@ -43,13 +43,14 @@ class   Sales_Quotation_Spu_Info {
      * @param   int     $limit      数量
      * @return  array               列表
      */
-    static  public  function listByCondition (array $condition, array $order, $offset, $limit) {
+    static  public  function listByCondition (array $condition, array $order, $group, $offset, $limit) {
 
         $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = self::_order($order);
+        $sqlgroup       = !empty($group) ? " group by ".$group : '';
         $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
-        $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
+        $sql            = $sqlBase . $sqlCondition . $sqlgroup . $sqlOrder . $sqlLimit;
 
         return          self::_getStore()->fetchAll($sql);
     }
@@ -66,7 +67,7 @@ class   Sales_Quotation_Spu_Info {
         $sqlCondition   = self::_condition($condition);
         $sql            = $sqlBase . $sqlCondition;
         $row            = self::_getStore()->fetchOne($sql);
-echo $sql;
+
         return          $row['total'];
     }
 
@@ -80,6 +81,7 @@ echo $sql;
 
         $sql        = array();
         $sql[]      = self::_conditionSalesQuotationId($condition);
+        $sql[]      = self::_conditionSalesSpuId($condition);
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
@@ -93,6 +95,16 @@ echo $sql;
         }
 
         return  "`sales_quotation_id` = '" . addslashes($condition['sales_quotation_id']) . "'";
+    }
+    
+    static  private function _conditionSalesSpuId (array $condition) {
+
+        if (empty($condition['spu_id'])) {
+
+            return  '';
+        }
+
+        return  "`spu_id` = '" . addslashes($condition['spu_id']) . "'";
     }
 
     /**

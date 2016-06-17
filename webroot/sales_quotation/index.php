@@ -18,12 +18,13 @@ $page           = new PageList(array(
 ));
 
 $listSpuInfo    = Sales_Quotation_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+$mapFile        = Quotation::listExistsExportFile();
 
-//Utility::dump($listSpuInfo);
 $template       = Template::getInstance();
 
 $template->assign('listSupplier', $listSupplier);
 $template->assign('pageViewData',$page->getViewData());
 $template->assign('listSpuInfo',$listSpuInfo);
+$template->assign('mapFile',$mapFile);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('sales_quotation/index.tpl');

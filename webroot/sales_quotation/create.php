@@ -75,7 +75,6 @@ foreach ($listSpecValue as $specValue) {
     }
 }
 
-// K红最大工费: 查询该SPU下的所有商品的K红最大工费, 如果该SPU下没有颜色为K红的商品, 那么取该SPU所有商品的工费最大值
 $mapSpuSalerCostByColor = array();
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
