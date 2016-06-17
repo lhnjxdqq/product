@@ -10,7 +10,8 @@ define('CONF', ROOT . '/config/');
 define('LOG', ROOT . '/logs/');
 define('TEMP', '/tmp/product/');
 define('TIME_ZONE_DEFAULT', 'Asia/Shanghai');
-define('QUOTATION_IMPORT', ROOT . '/data/quotation/');
+define('QUOTATION_IMPORT', '/home/shuishou/project/product.kuandd.com/data/quotation/');
+define('EXCEL_EXPORT_DIR','/home/shuishou/project/product.kuandd.com/data/sales_quotation/');
 
 //code
 define('CODE_SUCCESS', 0);
@@ -18,5 +19,3 @@ define('CODE_SUCCESS', 0);
 define('CODE_SYSTEM_ERROR_FILE', 203000000);
 define('CODE_SYSTEM_ERROR_DATABASE', 202000000);
 define('CODE_SYSTEM_ERROR_LOGIC', 205000000);
-
-
