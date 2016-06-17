@@ -31,6 +31,8 @@
 
                     <div class="box-body">
                         
+                       <span class="col-md-4">加价规则   <input type="text" name="plue_price" size=3 value="<{$smarty.session.plue_price}>" id="plue_price">
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a></span>
                         <span class="col-md-5">报价单名称 <input type="text" name="sales_quotation_name" value=""></span>
                         <span class="col-md-3">客户名称 
                                     <select name="customer_id">
@@ -40,8 +42,6 @@
                                         <{/foreach}>
                                    </select>
                        </span>
-                       <span class="col-md-4">加价规则   <input type="text" name="plue_price" size=3 value="<{$smarty.session.plue_price}>" id="plue_price">
-                            <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a></span>
                     </div>
                 
                 </div>
