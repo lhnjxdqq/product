@@ -26,8 +26,8 @@
         <section class="content">
             <div class="box">
                 <div class="box-header with-border">
-                    <input type="checkbox" name="select-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-shopping-cart"></i> 加入销售报价单</a>
+                    <input type="checkbox" name="check-all"> 全选
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;"><i class="fa fa-shopping-cart"></i> 加入销售报价单</a>
                     <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> <{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
                 </div>
                 <div class="box-body">
@@ -35,6 +35,7 @@
                         <{foreach from=$data.listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail">
+                                    <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" value="<{$item.spu_id}>" /></td>
                                     <img src="<{$item.image_url}>" alt="...">
                                     <div class="caption">
                                         <p>三级分类: <{$item.category_name}></p>
@@ -43,7 +44,7 @@
                                         <p>供应商ID: <{$item.supplier_id}></p>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a>
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-plus"></i></a>
                                             </span>
                                             <span class="pull-right">
                                                 <a href="/product/spu/edit.php?spu_id=<{$item.spu_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
@@ -129,6 +130,51 @@
                 $this.find('.fa-plus').removeClass("fa-plus");
             }, 'json');    
             });
+
+        $('#addMulti').click(function(){
+
+            var chk_value =[]; 
+            $('input[name="spu_id[]"]:checked').each(function(){ 
+            
+                chk_value.push($(this).val()); 
+            });
+            
+            if(chk_value.length==0){
+                
+                alert("请选择SPU");
+                
+                return false; 
+            }
+
+            $.post('/product/spu/ajax_cart_spu_add.php', {
+                spu_id              : chk_value,
+                '__output_format'   : 'JSON'
+            }, function (response) {
+
+                if (0 != response.code) {
+
+                    showMessage('错误', response.message);
+
+                    return  ;
+                }else{
+                
+                    $("#number").html(" "+response.data.count);
+                    for(var i=0;i<chk_value.length;i++){
+                                
+                        $("#spu_"+chk_value[i]).parent().attr('disabled', true);
+                        $("#spu_"+chk_value[i]).parent().removeClass("btn-primary");
+                        $("#spu_"+chk_value[i]).parent().addClass("btn-success");
+                        $("#spu_"+chk_value[i]).addClass("fa-check");
+                        $("#spu_"+chk_value[i]).removeClass("fa-plus");                           
+                    }
+                }
+                
+            }, 'json');  
+        })            
+        $('input[name="check-all"]').click(function () {
+
+            $('input[name="spu_id[]"]').prop('checked', $(this).prop('checked'));
+        });
     });
 </script>
 </body>

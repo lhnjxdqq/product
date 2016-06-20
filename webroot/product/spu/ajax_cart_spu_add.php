@@ -1,8 +1,8 @@
 <?php
 /**
- * 从SPU购物车中删除
+ * 批量加入SPU购物车
  */
-require_once    dirname(__FILE__) . '/../../init.inc.php';
+require_once    dirname(__FILE__) . '/../../../init.inc.php';
 
 $userId     = (int) $_SESSION['user_id'];
 $spuId      =  $_POST['spu_id'];
@@ -16,13 +16,15 @@ foreach($spuId as $id){
         'spu_id'        => $id,
     );
 
-    Cart_Spu_Info::delete($data);
+    Cart_Spu_Info::create($data);
 }
+
+$countCartSpu = Cart_Spu_Info::countByUser($userId);
 
 echo    json_encode(array(
     'code'      => 0,
     'message'   => 'OK',
     'data'      => array(
-    
+        'count' => $countCartSpu,
     ),
 ));

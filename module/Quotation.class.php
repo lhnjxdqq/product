@@ -306,7 +306,7 @@ class   Quotation {
         $specColorName          = self::_getGoodsColor($colorId, $mapEnumeration);          
 
         
-        return $data['weight_name'].$weightSpecUnit.$data['product_name'].$sizeName.$specColorName;
+        return $data['weight_name'].$weightSpecUnit.$data['product_name'].$sizeName.$specColorName.$data['style_two_level'];
     }
     
     /**
