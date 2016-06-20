@@ -31,6 +31,8 @@
 
                     <div class="box-body">
                         
+                       <span class="col-md-4">加价规则   <input type="text" name="plue_price" size=3 value="<{$smarty.session.plue_price}>" id="plue_price">
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a></span>
                         <span class="col-md-5">报价单名称 <input type="text" name="sales_quotation_name" value=""></span>
                         <span class="col-md-3">客户名称 
                                     <select name="customer_id">
@@ -40,8 +42,6 @@
                                         <{/foreach}>
                                    </select>
                        </span>
-                       <span class="col-md-4">加价规则   <input type="text" name="plue_price" size=3 value="<{$smarty.session.plue_price}>" id="plue_price">
-                            <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a></span>
                     </div>
                 
                 </div>
@@ -54,8 +54,8 @@
                     <span class="col-md-2"><i class="fa fa-shopping-cart">共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品</i></span>
            
                 </div>
-                <div class="box-body">
-                    <div class="table-responsive">
+                <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
+                    <div class="table-responsive col-xls-12">
                         <table border="1">
                             <thead>
                                 <tr>
@@ -102,14 +102,12 @@
                                     <td><{$item.spu_remark}></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
-<{/foreach}>                                
+<{/foreach}>                     
+                                <tr>
+                                    <td colspan="17"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 提交报价单</button></td>
+                                </tr>
                             </tbody>
-                        </table> 
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2">
-                            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 提交报价单</button>
-                        </div>
+                        </table>
                     </div>
                     
                 </div>
