@@ -26,12 +26,13 @@
             <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
+                    <form class="form-inline" action="/sales_quotation/index.php" method="get">
                     <div class="pull-left" style="max-width: 400px;margin-right: 20px;">
                         <div class="input-daterange input-group input-group-sm">
                             <span class="input-group-addon" style="border-width:1px 0 1px 1px;">统计时间:</span>
-                            <input type="text" name="date-start" readonly class="form-control" value="<{$condition.date_start}>">
+                            <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
                             <span class="input-group-addon">到</span>
-                            <input type="text" name="date-end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
+                            <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
                         </div>
                     </div>
                     <div class="pull-left" style="width: 500px;">
@@ -39,10 +40,11 @@
                             <span class="input-group-addon">关键词搜索:</span>
                             <input type="text" class="form-control" name="keyword" class="form-control" value="<{$condition.keyword}>" placeholder="请输入销售报价单名称/关键词" />
                             <span class="input-group-btn">
-                                <a href="#" class="btn btn-primary"> 搜索</a>
+                                <button class="btn btn-primary" type="submit">搜索</button>
                             </span>
                         </div>
                     </div>
+                    </form>
                     <div class="pull-right">
                         <a href="/product/spu/index.php" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 创建销售报价单</a>
                     </div>

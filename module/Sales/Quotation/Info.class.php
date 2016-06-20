@@ -85,9 +85,37 @@ class   Sales_Quotation_Info {
 
         $sql        = array();
         $sql[]      = self::_conditionRunStatus($condition);
+        $sql[]      = self::_conditionKeywords($condition);
+        $sql[]      = self::_conditionrange(
+            array(
+                'fieldCondition'    => 'sales_quotation_date',
+                'paramA'            => 'date_start',
+                'paramB'            => 'date_end',
+                'condition'         => $condition,
+            )
+        );
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
+    }
+    
+    
+    /**
+     * 条件 抽象方法 当前实体模型 范围
+     *
+     * @param   array   $params 参数
+     * @return  string          条件SQL子句
+     */
+    static  private function _conditionRange ($params) {
+
+        extract($params);
+
+        if (empty($condition[$paramB]) && !is_numeric($condition[$paramB])) {
+
+            return  '';
+        }
+
+        return  "`" . $fieldCondition . "` BETWEEN '" . addslashes($condition[$paramA]) . "' AND '" . addslashes($condition[$paramB]) . "'";
     }
     
     static  private function _conditionRunStatus (array $condition) {
@@ -98,6 +126,23 @@ class   Sales_Quotation_Info {
         }
 
         return  "`run_status` = '" . addslashes($condition['run_status']) . "'";
+    }
+    /**
+     * 按关键词检索
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */
+    static  private function _conditionKeywords (array $condition) {
+
+        if (empty($condition['keyword'])) {
+
+            return  '';
+        }
+
+        $keyword   = preg_replace('~[%_]~', "/$0", $condition['keyword']);
+
+        return  "`sales_quotation_name` LIKE '%" . addslashes($keyword) . "%' ESCAPE '/'";
     }
 
     /**

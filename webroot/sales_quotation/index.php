@@ -2,10 +2,8 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-$listSupplier   = Supplier_Info::listAll();
-
 // 分页
-$condition  = array();
+$condition  = empty($_GET) ? array() : $_GET ;
 $orderBy    = array(
     'sales_quotation_date' => 'DESC',
 );
@@ -27,7 +25,6 @@ $mapFile        = Quotation::listExistsExportFile();
 
 $template       = Template::getInstance();
 
-$template->assign('listSupplier', $listSupplier);
 $template->assign('pageViewData',$page->getViewData());
 $template->assign('listSpuInfo',$listSpuInfo);
 $template->assign('condition',$condition);
