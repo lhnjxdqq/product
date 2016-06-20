@@ -20,6 +20,7 @@ $page           = new PageList(array(
 ));
 
 $condition['delete_status'] = Product_DeleteStatus::NORMAL;
+Search_Product::listByCondition($condition);
 
 $listProduct            = Product_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
 $listGoodsId            = ArrayUtility::listField($listProduct, 'goods_id');
@@ -40,9 +41,35 @@ $listSourceId           = ArrayUtility::listField($listProduct, 'source_id');
 $listSourceInfo         = Source_Info::getByMultiId($listSourceId);
 $mapSourceInfo          = ArrayUtility::indexByField($listSourceInfo, 'source_id');
 
-$listSupplierId         = ArrayUtility::listField($listSourceInfo, 'supplier_id');
-$listSupplierInfo       = Supplier_Info::getByMultiId($listSupplierId);
+$listSupplierInfo       = Supplier_Info::listAll();
+$listSupplierInfo       = ArrayUtility::searchBy($listSupplierInfo, array('delete_status'=>Supplier_DeleteStatus::NORMAL));
 $mapSupplierInfo        = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
+
+$listCategory           = Category_Info::listAll();
+$listCategory           = ArrayUtility::searchBy($listCategory, array('delete_status'=>Category_DeleteStatus::NORMAL));
+$mapCategory            = ArrayUtility::indexByField($listCategory, 'category_id', 'category_name');
+
+$listStyleInfo          = Style_Info::listAll();
+$listStyleInfo          = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
+$groupStyleInfo         = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
+
+$listSpecSizeInfo       = Spec_Info::getByName('规格尺寸');
+$listSpecValueSize      = Goods_Type_Spec_Value_Relationship::getByMultiSpecId(ArrayUtility::listField($listSpecSizeInfo, 'spec_id'));
+$listSpecValueSizeInfo  = Spec_Value_Info::getByMulitId(ArrayUtility::listField($listSpecValueSize, 'spec_value_id'));
+$mapSpecValueSizeInfo   = ArrayUtility::indexByField($listSpecValueSizeInfo, 'spec_value_id', 'spec_value_data');
+natsort($mapSpecValueSizeInfo);
+
+$listSpecColorInfo      = Spec_Info::getByName('颜色');
+$listSpecValueColor     = Goods_Type_Spec_Value_Relationship::getByMultiSpecId(ArrayUtility::listField($listSpecColorInfo, 'spec_id'));
+$listSpecValueColorInfo = Spec_Value_Info::getByMulitId(ArrayUtility::listField($listSpecValueColor, 'spec_value_id'));
+$mapSpecValueColorInfo  = ArrayUtility::indexByField($listSpecValueColorInfo, 'spec_value_id', 'spec_value_data');
+natsort($mapSpecValueColorInfo);
+
+$listSpecMaterialInfo       = Spec_Info::getByName('主料材质');
+$listSpecValueMaterial      = Goods_Type_Spec_Value_Relationship::getByMultiSpecId(ArrayUtility::listField($listSpecMaterialInfo, 'spec_id'));
+$listSpecValueMaterialInfo  = Spec_Value_Info::getByMulitId(ArrayUtility::listField($listSpecValueMaterial, 'spec_value_id'));
+$mapSpecValueMaterialInfo   = ArrayUtility::indexByField($listSpecValueMaterialInfo, 'spec_value_id', 'spec_value_data');
+natsort($mapSpecValueMaterialInfo);
 
 // 查询当前列表所有产品所属商品的规格和规格值
 $listGoodsSpecValue     = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
@@ -66,9 +93,12 @@ foreach ($groupGoodsSpecValue as $goodsId => $goodsSpecValueList) {
     $mapGoodsSpecValue[$goodsId]  = ArrayUtility::indexByField($goodsSpecValueList, 'spec_name');
 }
 
-$listCategory           = Category_Info::listAll();
-$listCategory           = ArrayUtility::searchBy($listCategory, array('delete_status'=>Category_DeleteStatus::NORMAL));
-$mapCategory            = ArrayUtility::indexByField($listCategory, 'category_id', 'category_name');
+$data['mapCategoryLv3']             = ArrayUtility::searchBy($listCategory, array('category_level'=>2));
+$data['mapSpecValueSizeInfo']       = $mapSpecValueSizeInfo;
+$data['mapSpecValueColorInfo']      = $mapSpecValueColorInfo;
+$data['mapSpecValueMaterialInfo']   = $mapSpecValueMaterialInfo;
+$data['groupStyleInfo']             = $groupStyleInfo;
+$data['searchType']                 = Search_Product::getSearchType();
 
 $data['listProduct']        = $listProduct;
 $data['mapProductImage']    = $mapProductImage;
