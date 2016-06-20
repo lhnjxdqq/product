@@ -95,13 +95,13 @@
                                     <td><{$item.weight_value}></td>
                                     <td><{$item.size_name}></td>
                                     <td><{$item.material_name}></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['K红']}>]" value="<{$item['K红']}>"></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['K白']}>]" value="<{$item['K白']}>"></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['K黄']}>]" value="<{$item['K黄']}>"></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['红白']}>]" value="<{$item['红白']}>"></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['红黄']}>]" value="<{$item['红黄']}>"></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['黄白']}>]" value="<{$item['黄白']}>"></td>
-                                    <td><input type="text" size="4" name="<{$item.spu_id}>[<{$listIndexColorName['三色']}>]" value="<{$item['三色']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['K红']}>]" value="<{$item['K红']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['K白']}>]" value="<{$item['K白']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['K黄']}>]" value="<{$item['K黄']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['红白']}>]" value="<{$item['红白']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['红黄']}>]" value="<{$item['红黄']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['黄白']}>]" value="<{$item['黄白']}>"></td>
+                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['三色']}>]" value="<{$item['三色']}>"></td>
                                     <td><{$item.spu_remark}></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
