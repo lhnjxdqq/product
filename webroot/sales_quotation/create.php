@@ -153,11 +153,11 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         $listSpuInfo[$key]['category_name'] = '';
         $listSpuInfo[$key]['weight_value']  = '';
     } else {
-
+//var_dump($mapSizeValue);die;
         $categoryId = $mapGoodsInfo[$goodsId]['category_id'];
         $listSpuInfo[$key]['category_name'] = $mapCategory[$categoryId]['category_name'];
-        $listSpuInfo[$key]['material_name'] = implode(",",$mapMaterialValue[$goodsId]);
-        $listSpuInfo[$key]['size_name']     = implode(",",$mapSizeValue[$goodsId]);
+        $listSpuInfo[$key]['material_name'] = !empty($mapMaterialValue[$goodsId]) ? implode(",",$mapMaterialValue[$goodsId]): '';
+        $listSpuInfo[$key]['size_name']     = !empty($mapSizeValue[$goodsId]) ? implode(",",$mapSizeValue[$goodsId]): '';
         $listSpuInfo[$key]['weight_value']  = $mapSpecValue[$goodsId];
     }
 
