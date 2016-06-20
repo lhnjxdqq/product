@@ -88,7 +88,7 @@
 <{foreach from=$listSpuInfo item=item name=foo}>                               
                                 <tr>
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
-                                    <td><{$item.spu_id}></td>
+                                    <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
                                     <td><img src="<{$item.image_url}>" class="width-100" alt="..."></td>
                                     <td><{$item.category_name}></td>
