@@ -14,40 +14,39 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-       <!-- Main content -->
-       
-            <div class="box collapsed-box">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-file"></i>销售报价单</h3>
-                </div>
-            </div>
-       </section>
+            <h1>销售报价单</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li>销售报价单</li>
+                <li class="active">销售报价单</li>
+            </ol>
+        </section>
         <section class="content">
             <!-- Default box -->
             <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
-                        <div class="form-group">
-                            <div class="pull-left col-lg-6 col-md-6 col-sm-6 col-xs-12" style="max-width: 400px;">
-                                <div class="input-daterange input-group input-group-sm">
-                                    <span class="input-group-addon" style="border-width:1px 0 1px 1px;">统计时间:</span>
-                                    <input type="text" name="date-start" readonly class="form-control" value="<{$condition.date_start}>">
-                                    <span class="input-group-addon">到</span>
-                                    <input type="text" name="date-end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
-                                </div>
-                            </div>
-                            <label for="buy-date-start" class="col-xs-2 control-label">关键词搜索:</label>
-                            <div class="col-xs-3">
-                                <input type="text" class="form-control" name="keyword" value="<{$condition.keyword}>" placeholder="请输入销售报价单名称/关键词" />
-                            </div>
-                            <div class="col-xs-1">
-                                <a href="#" class="btn btn-primary btn-xs"> 搜索</a>
-                            </div>
+                    <div class="pull-left" style="max-width: 400px;margin-right: 20px;">
+                        <div class="input-daterange input-group input-group-sm">
+                            <span class="input-group-addon" style="border-width:1px 0 1px 1px;">统计时间:</span>
+                            <input type="text" name="date-start" readonly class="form-control" value="<{$condition.date_start}>">
+                            <span class="input-group-addon">到</span>
+                            <input type="text" name="date-end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
                         </div>
                     </div>
-                        <div class="col-xs-1">
-                            <a href="/product/spu/index.php" class="btn btn-success btn-xs"><i class="fa fa-plus"></i> 销售报价单</a>
+                    <div class="pull-left" style="width: 500px;">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">关键词搜索:</span>
+                            <input type="text" class="form-control" name="keyword" class="form-control" value="<{$condition.keyword}>" placeholder="请输入销售报价单名称/关键词" />
+                            <span class="input-group-btn">
+                                <a href="#" class="btn btn-primary"> 搜索</a>
+                            </span>
                         </div>
+                    </div>
+                    <div class="pull-right">
+                        <a href="/product/spu/index.php" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 创建销售报价单</a>
+                    </div>
+                </div>
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">

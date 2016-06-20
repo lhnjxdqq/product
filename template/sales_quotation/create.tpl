@@ -25,38 +25,41 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
-            <form class="form-horizontal" action="/sales_quotation/add_sales_quotation.php" method="post">
+            <form class="form-inline" action="/sales_quotation/add_sales_quotation.php" method="post">
             <div class="box">
-                <div class="box-header with-border">
-
-                    <div class="box-body">
-                        
-                       <label class="col-md-4">加价规则   <input type="text" name="plue_price" size=3 value="<{$smarty.session.plue_price}>" id="plue_price">
-                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a></label>
-                        <label class="col-md-5">报价单名称 <input type="text" name="sales_quotation_name" value=""></label>
-                        <label class="col-md-3">客户名称 
-                                    <select name="customer_id">
-                                        <option value="0">请选择</option>
-                                        <{foreach from=$listCustomer item=item}>
-                                            <option value="<{$item.customer_id}>"><{$item.customer_name}></option>
-                                        <{/foreach}>
-                                   </select>
-                       </label>
+                <div class="box-body">
+                    <div class="form-group" style="margin-right: 25px;">
+                        <label>加价规则</label>
+                        <input type="text" name="plue_price" value="<{$smarty.session.plue_price}>" class="form-control" id="plue_price">
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a>
                     </div>
-                
+                    <div class="form-group" style="margin-right: 25px;">
+                        <label>报价单名称</label>
+                        <input type="text" name="sales_quotation_name" value="" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>客户名称</label>
+                        <select name="customer_id" class="form-control">
+                            <option value="0">请选择</option>
+                            <{foreach from=$listCustomer item=item}>
+                                <option value="<{$item.customer_id}>"><{$item.customer_name}></option>
+                            <{/foreach}>
+                       </select>
+                    </div>
+
                 </div>
                 <!-- /.box-body -->
             </div>
             <div class="box">
                 <div class="box-header with-border">
-                    <span class="col-md-2"><input type="checkbox" name="check-all"> 全选</span>
-                    <span class="col-md-2"><a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a></span>
-                    <span class="col-md-2"><i class="fa fa-shopping-cart">共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品</i></span>
+                    <input type="checkbox" name="check-all"> 全选
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
+                    <span class="btn btn-primary btn-sm pull-right"><i class="fa fa-shopping-cart">共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品</i></span>
            
                 </div>
                 <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
                     <div class="table-responsive col-xls-12">
-                        <table border="1">
+                        <table class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th rowspan="2">选择</th>
