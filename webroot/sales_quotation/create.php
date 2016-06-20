@@ -54,6 +54,11 @@ $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 
+$specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'主料材质')),'spec_name','spec_id');
+$specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'规格尺寸')),'spec_name','spec_id');
+$specMaterialId       = $specMaterialInfo['主料材质'];
+$specSizeId           = $specSizeInfo['规格尺寸'];
+
 $mapSpecValue   = array();
 $mapMaterialValue = array();
 $mapSizeValue = array();
@@ -65,17 +70,10 @@ foreach ($listSpecValue as $specValue) {
 
         $mapSpecValue[$specValue['goods_id']] = $specValueData;
     }
-    if ($specName == '主料材质') {
-        
-        $mapMaterialValue[$specValue['goods_id']][] = $specValueData;
-    }
-    if ($specName == '规格尺寸') {
-
-        $mapSizeValue[$specValue['goods_id']][] = $specValueData;
-    }
 }
 $spuCost    = array();
 $mapSpuSalerCostByColor = array();
+
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
     $spuCost    = array();
@@ -87,6 +85,15 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
 
+            if($val['spec_id']  == $specMaterialId){
+                
+                $mapMaterialValue[$spuId][]  = $specValueData;
+            }
+            if($val['spec_id']  == $specSizeId){
+                
+                $mapSizeValue[$spuId][]  = $specValueData;
+            }
+            
             $spuCost['K红'][]      = Quotation::getGoodsCost("K红",$specValueData,$mapAllGoodsInfo,$goodsId);
             $spuCost['K白'][]      = Quotation::getGoodsCost("K白",$specValueData,$mapAllGoodsInfo,$goodsId);
             $spuCost['K黄'][]      = Quotation::getGoodsCost("K黄",$specValueData,$mapAllGoodsInfo,$goodsId);
@@ -96,6 +103,8 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
             $spuCost['三色'][]     = Quotation::getGoodsCost("三色",$specValueData,$mapAllGoodsInfo,$goodsId);
         }
     }
+    $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
+    $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
     rsort($spuCost['K红']);
     rsort($spuCost['K白']);
     rsort($spuCost['K黄']);
@@ -153,11 +162,11 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         $listSpuInfo[$key]['category_name'] = '';
         $listSpuInfo[$key]['weight_value']  = '';
     } else {
-//var_dump($mapSizeValue);die;
+
         $categoryId = $mapGoodsInfo[$goodsId]['category_id'];
         $listSpuInfo[$key]['category_name'] = $mapCategory[$categoryId]['category_name'];
-        $listSpuInfo[$key]['material_name'] = !empty($mapMaterialValue[$goodsId]) ? implode(",",$mapMaterialValue[$goodsId]): '';
-        $listSpuInfo[$key]['size_name']     = !empty($mapSizeValue[$goodsId]) ? implode(",",$mapSizeValue[$goodsId]): '';
+        $listSpuInfo[$key]['material_name'] = !empty($mapMaterialValue[$spuInfo['spu_id']]) ? implode(",",$mapMaterialValue[$spuInfo['spu_id']]): '';
+        $listSpuInfo[$key]['size_name']     = !empty($mapSizeValue[$spuInfo['spu_id']]) ? implode(",",$mapSizeValue[$spuInfo['spu_id']]): '';
         $listSpuInfo[$key]['weight_value']  = $mapSpecValue[$goodsId];
     }
 

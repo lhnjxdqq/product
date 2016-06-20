@@ -21,6 +21,7 @@ $slaesQuotation = array(
         'hash_code'            => md5(time()),
         'run_status'           => Product_Export_RunStatus::STANDBY,
     );
+
 $salesQuotationId   = Sales_Quotation_Info::create($slaesQuotation);
 Validate::testNull($salesQuotationId,"添加报价单失败");
 foreach($data as $spuId => $colorCost){
@@ -34,7 +35,8 @@ foreach($data as $spuId => $colorCost){
                 'spu_id'                => $spuId,
                 'cost'                  => $cost,
                 'color_id'              => $colorId,
-            );
+                'sales_quotation_remark'=> $colorCost['spu_remark'],
+            );       
             Sales_Quotation_Spu_Info::create($content);
         }      
     }

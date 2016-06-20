@@ -68,9 +68,9 @@
                                     <th rowspan="2">产品图片</th>
                                     <th rowspan="2">三级分类</th>
                                     <th rowspan="2">规格重量(g)</th>
-                                    <th rowspan="2">规格尺寸</th>
-                                    <th rowspan="2">主料材质</th>
-                                    <th colspan="7">出货工费</th>
+                                    <th rowspan="2" style="text-align:center">规格尺寸</th>
+                                    <th rowspan="2" style="text-align:center">主料材质</th>
+                                    <th colspan="7" style="text-align:center">出货工费</th>
                                     <th rowspan="2">备注</th>
                                     <th rowspan="2">操作</th>
                                 </tr>
@@ -102,7 +102,7 @@
                                     <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['红黄']}>]" value="<{$item['红黄']}>"></td>
                                     <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['黄白']}>]" value="<{$item['黄白']}>"></td>
                                     <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['三色']}>]" value="<{$item['三色']}>"></td>
-                                    <td><{$item.spu_remark}></td>
+                                    <td><input type="text" name="<{$item.spu_id}>[spu_remark]" value="<{$item.spu_remark}>"></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
 <{/foreach}>                     

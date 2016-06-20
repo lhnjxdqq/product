@@ -19,7 +19,7 @@ class   Sales_Quotation_Spu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_quotation_id,spu_id,cost,color_id';
+    const   FIELDS      = 'sales_quotation_id,spu_id,cost,color_id,sales_quotation_remark';
     /**
      * 新增
      *

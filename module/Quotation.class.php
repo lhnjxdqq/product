@@ -441,6 +441,10 @@ class   Quotation {
             $listSpecValueInfo  = Spec_Value_Info::listAll();
             $listSpecValueInfo  = ArrayUtility::searchBy($listSpecValueInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
             $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+            $specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'主料材质')),'spec_name','spec_id');
+            $specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'规格尺寸')),'spec_name','spec_id');
+            $specMaterialId       = $specMaterialInfo['主料材质'];
+            $specSizeId           = $specSizeInfo['规格尺寸'];
 
             // 查询SPU下的商品
             $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
@@ -478,15 +482,33 @@ class   Quotation {
 
                     $mapWeightValue[$specValue['goods_id']] = $specValueData;
                 }
-                if ($specName == '主料材质') {
-                    
-                    $mapMaterialValue[$specValue['goods_id']][] = $specValueData;
-                }
-                if ($specName == '规格尺寸') {
-
-                    $mapSizeValue[$specValue['goods_id']][] = $specValueData;
-                }
             }
+            
+            foreach ($groupSpuGoods as $spuId => $spuGoods) {
+
+                $spuCost    = array();
+                foreach ($spuGoods as $goods) {
+
+                    $goodsId        = $goods['goods_id'];
+                    $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+                    foreach ($goodsSpecValue as $key => $val) {
+
+                        $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
+
+                        if($val['spec_id']  == $specMaterialId){
+                            
+                            $mapMaterialValue[$spuId][]  = $specValueData;
+                        }
+                        if($val['spec_id']  == $specSizeId){
+                            
+                            $mapSizeValue[$spuId][]  = $specValueData;
+                        }
+                    }
+                }
+                        $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
+                        $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
+
+                }
             
             $mapEnumeration = array(
                 'sales_quotation_id'=> $salesQuotationInfo['sales_quotation_id'],
@@ -541,8 +563,8 @@ class   Quotation {
 
             $categoryId   = $mapEnumeration['mapGoodsInfo'][$goodsId]['category_id'];
             $categoryName = $mapEnumeration['mapCategory'][$categoryId]['category_name'];
-            $materialName = !empty($mapEnumeration['mapMaterialValue'][$goodsId]) ? implode(",",$mapEnumeration['mapMaterialValue'][$goodsId]): '';
-            $sizeName     = !empty($mapEnumeration['mapSizeValue'][$goodsId]) ? implode(",",$mapEnumeration['mapSizeValue'][$goodsId]) : '';
+            $materialName = !empty($mapEnumeration['mapMaterialValue'][$info['spu_id']]) ? implode(",",$mapEnumeration['mapMaterialValue'][$info['spu_id']]): '';
+            $sizeName     = !empty($mapEnumeration['mapSizeValue'][$info['spu_id']]) ? implode(",",$mapEnumeration['mapSizeValue'][$info['spu_id']]) : '';
             $weightName   = $mapEnumeration['mapWeightValue'][$goodsId];
                 
         }
@@ -553,6 +575,8 @@ class   Quotation {
         $order    = array();
         $salesQuotationSquInfo = Sales_Quotation_Spu_Info::listByCondition($condition, $order, 0, 0, 100);
         $indexColorId          = ArrayUtility::indexByField($salesQuotationSquInfo, 'color_id', 'cost');
+        $indexSalesQuotationId = ArrayUtility::indexByField($salesQuotationSquInfo, 'spu_id', 'sales_quotation_remark');
+
         return                  array(
             'spu_sn'                => $info['spu_sn'],
             'spu_name'              => $info['spu_name'],
@@ -568,7 +592,7 @@ class   Quotation {
             '红黄'                  => $indexColorId[$mapEnumeration['indexColorName']['红黄']],
             '黄白'                  => $indexColorId[$mapEnumeration['indexColorName']['黄白']],
             '三色'                  => $indexColorId[$mapEnumeration['indexColorName']['三色']],
-            'remark'                => $info['spu_remark'],
+            'remark'                => $indexSalesQuotationId[$info['spu_id']],
         );
     }
         
