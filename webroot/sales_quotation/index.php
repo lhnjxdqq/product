@@ -9,6 +9,11 @@ $condition  = array();
 $orderBy    = array(
     'sales_quotation_date' => 'DESC',
 );
+
+// 默认获取最近两天的日志
+$condition['date_start']    = isset($_GET['date_start']) ? $_GET['date_start'] : date('Y-m-d', strtotime('-30 day'));
+$condition['date_end']      = isset($_GET['date_end']) ? date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime($_GET['date_end']))) + 3600 * 24 - 1) : date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
+
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countSpu   = Sales_Quotation_Info::countByCondition($condition);
 $page           = new PageList(array(
@@ -25,6 +30,7 @@ $template       = Template::getInstance();
 $template->assign('listSupplier', $listSupplier);
 $template->assign('pageViewData',$page->getViewData());
 $template->assign('listSpuInfo',$listSpuInfo);
+$template->assign('condition',$condition);
 $template->assign('mapFile',$mapFile);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('sales_quotation/index.tpl');

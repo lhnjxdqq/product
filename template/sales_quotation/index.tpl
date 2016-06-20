@@ -28,12 +28,12 @@
             <div class="box">
                 <div class="box-header with-border">
                         <div class="form-group">
-                            <label for="buy-date-start" class="col-xs-2 control-label">创建时间：</label>
-                            <div class="col-xs-4">
-                                <div class="input-daterange input-group">
-                                    <input type="text" id="create-date-start" name="create_date_start" class="form-control" readonly="true" value="<{$condition.create_date_start}>" />
+                            <div class="pull-left col-lg-6 col-md-6 col-sm-6 col-xs-12" style="max-width: 400px;">
+                                <div class="input-daterange input-group input-group-sm">
+                                    <span class="input-group-addon" style="border-width:1px 0 1px 1px;">统计时间:</span>
+                                    <input type="text" name="date-start" readonly class="form-control" value="<{$condition.date_start}>">
                                     <span class="input-group-addon">到</span>
-                                    <input type="text" id="create-date-end" name="create_date_end" class="form-control" readonly="true" value="<{$condition.create_date_end}>" />
+                                    <input type="text" name="date-end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
                                 </div>
                             </div>
                             <label for="buy-date-start" class="col-xs-2 control-label">关键词搜索:</label>
@@ -103,13 +103,15 @@
 
 <{include file="section/foot.tpl"}>
 <script>
-$(function(){
-    
-    $(".input-daterange").datepicker({
-        format      : 'yyyy-mm-dd',
-        language    : 'zh-CN'
+    // 日期选择
+    $('.input-daterange').datepicker({
+        format  : 'yyyy-mm-dd',
+        language: 'zh-CN'
     });
-})
+    tableColumn({
+        selector    : '#log-list',
+        container   : '#log-list-vis'
+    });
 </script>
 </body>
 </html>
