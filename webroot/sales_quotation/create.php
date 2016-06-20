@@ -74,7 +74,7 @@ foreach ($listSpecValue as $specValue) {
         $mapSizeValue[$specValue['goods_id']][] = $specValueData;
     }
 }
-
+$spuCost    = array();
 $mapSpuSalerCostByColor = array();
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 

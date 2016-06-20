@@ -54,8 +54,8 @@
                     <span class="col-md-2"><i class="fa fa-shopping-cart">共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品</i></span>
            
                 </div>
-                <div class="box-body">
-                    <div class="table-responsive">
+                <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
+                    <div class="table-responsive col-xls-12">
                         <table border="1">
                             <thead>
                                 <tr>
@@ -102,14 +102,12 @@
                                     <td><{$item.spu_remark}></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
-<{/foreach}>                                
+<{/foreach}>                     
+                                <tr>
+                                    <td colspan="17"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 提交报价单</button></td>
+                                </tr>
                             </tbody>
-                        </table> 
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2">
-                            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 提交报价单</button>
-                        </div>
+                        </table>
                     </div>
                     
                 </div>
