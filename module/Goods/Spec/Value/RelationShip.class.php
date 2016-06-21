@@ -127,4 +127,22 @@ class   Goods_Spec_Value_RelationShip {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 获取所有符合该组 规格 规格值得商品
+     *
+     * @param $multiSpecValueList
+     * @return array
+     */
+    static public function listByMultiSpecValueList ($multiSpecValueList) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE ';
+        $where  = array();
+        foreach ($multiSpecValueList as $specValue) {
+
+            $where[]    = '(`spec_id` = "' . (int) $specValue['spec_id'] . '" AND `spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
+        }
+        $sql    .= implode(' OR ', $where);
+        return  self::_getStore()->fetchAll($sql);
+    }
 }

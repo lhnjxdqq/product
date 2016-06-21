@@ -12,7 +12,8 @@ $orderBy    = array(
 
 // 分页
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
-$countProduct   = Product_Info::countByCondition($condition);
+$countProduct   = isset($condition['category_id']) ? Search_Product::countByCondition($condition) : Product_Info::countByCondition($condition);
+
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countProduct,
     PageList::OPT_URL       => '/product/product/index.php',
@@ -20,9 +21,11 @@ $page           = new PageList(array(
 ));
 
 $condition['delete_status'] = Product_DeleteStatus::NORMAL;
-Search_Product::listByCondition($condition);
 
-$listProduct            = Product_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+
+$listProduct            = isset($condition['category_id'])
+                        ? Search_Product::listByCondition($condition, $page->getOffset(), $perpage)
+                        : Product_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
 $listGoodsId            = ArrayUtility::listField($listProduct, 'goods_id');
 $listGoodsInfo          = Goods_Info::getByMultiId($listGoodsId);
 $mapGoodsInfo           = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
