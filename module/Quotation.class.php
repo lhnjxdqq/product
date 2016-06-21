@@ -369,7 +369,7 @@ class   Quotation {
     
     static  public  function getExportExcelFileByHashCode ($code) {
 
-        return  EXCEL_EXPORT_DIR . $code . '.xlsx';
+        return  Config::get('path|PHP', 'sales_quotation_export') . $code . '.xlsx';
     }
     
     /**
@@ -690,7 +690,7 @@ class   Quotation {
      */
     static  public  function listExistsExportFile () {
 
-        $listFile   = glob(EXCEL_EXPORT_DIR . '*.xlsx');
+        $listFile   = glob(Config::get('path|PHP', 'sales_quotation_export') . '*.xlsx');
         $mapFile    = array();
 
         foreach ($listFile as $filePath) {

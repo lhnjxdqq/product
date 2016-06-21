@@ -38,7 +38,7 @@
                             <tr>
                                 <th>供应商ID</th>
                                 <th>样板数量</th>
-                                <th>文件路径</th>
+                                <th>下载</th>
                                 <!--
                                 <th>忽略系统中已存在的买款ID</th>
                                 <th>忽略上传表中重复买款ID</th>
@@ -53,7 +53,7 @@
                                     <tr>
                                         <td><{$item.supplier_code}></td>
                                         <td><{$item.model_num}></td>
-                                        <td><{$item.file_path}></td>
+                                        <td><a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a></td>
                                         <!--
                                         <td><{$item.ignore_existed_sourceid}></td>
                                         <td><{$item.ignore_repeat_sourceid}></td>

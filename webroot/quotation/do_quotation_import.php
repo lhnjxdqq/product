@@ -171,7 +171,7 @@ if(!empty($errorList)){
 
 $time       = microtime(true);
 $floderPath = date('Ym',$time)."/";
-$uploadPath = QUOTATION_IMPORT . $floderPath;
+$uploadPath = Config::get('path|PHP', 'quotation_import') . $floderPath;
 
 if(!is_dir($uploadPath)) {
 

@@ -15,7 +15,7 @@ if (empty($toGenerateFileList)) {
 // 取一个文件
 $toGenerateFile = current($toGenerateFileList);
 
-$csvFile        = QUOTATION_IMPORT . $toGenerateFile['quotation_path'];
+$csvFile        = Config::get('path|PHP', 'quotation_import') . $toGenerateFile['quotation_path'];
 $supplierId     = $toGenerateFile['supplier_id'];
 $isSkuCode      = $toGenerateFile['ignore_existed_sourceid'];
 $isTableSkuCode = $toGenerateFile['ignore_repeat_sourceid'];
@@ -205,7 +205,7 @@ if(!empty($errorList)){
 }
 
 $time        = microtime(true);
-$uploadPath  = QUOTATION_IMPORT . date('Ym',$time)."/";
+$uploadPath  = Config::get('path|PHP', 'quotation_import') . date('Ym',$time)."/";
 
 if(!is_dir($uploadPath)) {
 

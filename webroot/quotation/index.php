@@ -27,7 +27,7 @@ $listQuotationInfo  = Quotation_Info::listByCondition($condition, $orderBy, $pag
 foreach ($listQuotationInfo as &$quotationInfo) {
 
     $quotationInfo['supplier_code'] = $mapSupplierInfo[$quotationInfo['supplier_id']]['supplier_code'];
-    $quotationInfo['file_path']     = str_replace(ROOT, '', QUOTATION_IMPORT . $quotationInfo['quotation_path']);
+    $quotationInfo['file_path']     = $quotationInfo['quotation_path'];
     $quotationInfo['status_text']   = $mapStatusCode[$quotationInfo['status_code']];
 }
 
