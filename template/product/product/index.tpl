@@ -249,8 +249,14 @@
     <{/if}>
 
     $('#search-product').click(function () {
-        var condition   = $('#search-form').serialize();
-        var redirect    = '/product/product/index.php?';
+        var condition       = $('#search-form').serialize();
+        var redirect        = '/product/product/index.php?';
+        var searchValueList = $('input[name="search_value_list"]').val();
+        var searchType      = $('select[name="search_type"]').val();
+        if (searchValueList && !searchType) {
+            alert('请选择搜索类型');
+            return;
+        }
         redirect        += condition;
         location.href   = redirect;
     });
