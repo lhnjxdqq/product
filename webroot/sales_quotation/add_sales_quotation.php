@@ -6,9 +6,8 @@ require_once    dirname(__FILE__) . '/../../init.inc.php';
 
 $data               = $_POST;
 
-$customerId         = $data['customer_id'];
+$customerId         = !empty($data['customer_id']) ? $data['customer_id'] : "0";
 $salesQuotationName = $data['sales_quotation_name'];
-Validate::testNull($customerId,"客户不能为空");
 Validate::testNull($salesQuotationName,"报价单名称不能为空");
 unset($data['customer_id']);
 unset($data['sales_quotation_name']);
@@ -23,9 +22,12 @@ $slaesQuotation = array(
     );
 
 $salesQuotationId   = Sales_Quotation_Info::create($slaesQuotation);
+
 Validate::testNull($salesQuotationId,"添加报价单失败");
 foreach($data as $spuId => $colorCost){
     
+    $remark = $colorCost['spu_remark'];
+    unset($colorCost['spu_remark']);
     foreach($colorCost as $colorId => $cost){
         
         if(!empty($cost)){
@@ -35,7 +37,7 @@ foreach($data as $spuId => $colorCost){
                 'spu_id'                => $spuId,
                 'cost'                  => $cost,
                 'color_id'              => $colorId,
-                'sales_quotation_remark'=> $colorCost['spu_remark'],
+                'sales_quotation_remark'=> $remark,
             );       
             Sales_Quotation_Spu_Info::create($content);
         }      

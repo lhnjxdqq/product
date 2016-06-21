@@ -86,6 +86,7 @@ class   Sales_Quotation_Info {
         $sql        = array();
         $sql[]      = self::_conditionRunStatus($condition);
         $sql[]      = self::_conditionKeywords($condition);
+        $sql[]      = self::_conditionCustomerId($condition);
         $sql[]      = self::_conditionrange(
             array(
                 'fieldCondition'    => 'sales_quotation_date',
@@ -126,6 +127,16 @@ class   Sales_Quotation_Info {
         }
 
         return  "`run_status` = '" . addslashes($condition['run_status']) . "'";
+    }
+    
+    static  private function _conditionCustomerId (array $condition) {
+
+        if (empty($condition['customer_id'])) {
+
+            return  '';
+        }
+
+        return  "`customer_id` = " . (int) $condition['customer_id'];
     }
     /**
      * 按关键词检索

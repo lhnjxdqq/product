@@ -29,24 +29,23 @@
             <div class="box">
                 <div class="box-body">
                     <div class="form-group" style="margin-right: 25px;">
+                        <label>客户名称</label>
+                        <select name="customer_id" class="form-control">
+                            <option value="0">请选择</option>
+                            <{foreach from=$listCustomer item=item}>
+                                <option <{if $customerId eq $item.customer_id}>selected<{/if}> value="<{$item.customer_id}>"><{$item.customer_name}></option>
+                            <{/foreach}>
+                       </select>
+                    </div>
+                    <div class="form-group" style="margin-right: 25px;">
                         <label>加价规则</label>
-                        <input type="text" name="plue_price" value="<{$smarty.session.plue_price}>" class="form-control" id="plue_price">
+                        <input type="text" name="plue_price" value="<{$plusPrice}>" class="form-control" id="plue_price">
                         <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a>
                     </div>
                     <div class="form-group" style="margin-right: 25px;">
                         <label>报价单名称</label>
                         <input type="text" name="sales_quotation_name" value="" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>客户名称</label>
-                        <select name="customer_id" class="form-control">
-                            <option value="0">请选择</option>
-                            <{foreach from=$listCustomer item=item}>
-                                <option value="<{$item.customer_id}>"><{$item.customer_name}></option>
-                            <{/foreach}>
-                       </select>
-                    </div>
-
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -61,7 +60,7 @@
                     <div class="table-responsive col-xls-12">
                         <table class="table table-bordered table-hover">
                             <thead>
-                                <tr>
+                                <tr class="bg-success">
                                     <th rowspan="2">选择</th>
                                     <th rowspan="2">SPU编号</th>
                                     <th rowspan="2">SPU名称</th>
@@ -74,7 +73,7 @@
                                     <th rowspan="2">备注</th>
                                     <th rowspan="2">操作</th>
                                 </tr>
-                                <tr>
+                                <tr class="bg-success">
                                     <th>K红</th>
                                     <th>K白</th>
                                     <th>K黄</th>
@@ -86,7 +85,7 @@
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                               
-                                <tr>
+                                <tr class="<{if $item.is_exist eq 1}>info<{/if}>">
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
@@ -189,8 +188,10 @@ $(function(){
     });
     $('#refresh').click(function(){
     
-        pluePrice = $("#plue_price").val();
-        location.href = "/sales_quotation/create.php?plue_price="+pluePrice;
+        pluePrice  = $("#plue_price").val();
+        customerId = $("[name = customer_id]").val();
+
+        location.href = "/sales_quotation/create.php?plue_price="+pluePrice+"&customer_id="+customerId;
     });
 })    
 </script>

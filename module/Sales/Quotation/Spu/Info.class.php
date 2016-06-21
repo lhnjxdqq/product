@@ -136,7 +136,20 @@ class   Sales_Quotation_Spu_Info {
 
         return  $sequence == 'ASC'  ? $sequence : 'DESC';
     }
-    
+
+    /**
+     * 根据一组报价单ID获取报价单信息
+     *
+     * @param $multiId  商品ID
+     * @return array    商品信息
+     */
+    static public function getBySalesQuotationId ($multiId) {
+
+        $multiId    = array_map('intval', array_unique(array_filter($multiId)));
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }    
     /**
      * 更新
      *
