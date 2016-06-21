@@ -35,7 +35,7 @@
                         <{foreach from=$data.listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail">
-                                    <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" value="<{$item.spu_id}>" /></td>
+                                    <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" /></td>
                                     <img src="<{$item.image_url}>" alt="...">
                                     <div class="caption">
                                         <p>三级分类: <{$item.category_name}></p>
@@ -44,7 +44,7 @@
                                         <p>供应商ID: <{$item.supplier_id}></p>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-plus"></i></a>
+                                                <a href="javascript:void(0);" class="btn btn-<{if $item.is_cart eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
                                             </span>
                                             <span class="pull-right">
                                                 <a href="/product/spu/edit.php?spu_id=<{$item.spu_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>

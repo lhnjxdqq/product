@@ -21,6 +21,10 @@ $page           = new PageList(array(
 ));
 
 $listSpuInfo    = Spu_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+
+//获取当前用户的购物车spu列表
+$cartSpuInfo    = Cart_Spu_Info::getByUserId($userId);
+$listCartSpuId  = ArrayUtility::listField($cartSpuInfo, 'spu_id');
 $listSpuId      = ArrayUtility::listField($listSpuInfo, 'spu_id');
 $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
@@ -146,6 +150,14 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 
     // 品类名 && 规格重量
     $goodsId    = $mapSpuGoods[$spuInfo['spu_id']];
+    
+    if(in_array($spuInfo['spu_id'], $listCartSpuId)){
+    
+        $listSpuInfo[$key]['is_cart']  = 1;
+    }else{
+        
+        $listSpuInfo[$key]['is_cart']  = 0;
+    }
     if (!$goodsId) {
 
         $listSpuInfo[$key]['category_name'] = '';
