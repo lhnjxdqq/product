@@ -127,4 +127,48 @@ class   Goods_Spec_Value_RelationShip {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 获取所有符合该组 规格 规格值得商品
+     *
+     * @param $multiSpecValueList
+     * @return array
+     */
+    static public function listByMultiSpecValueList ($multiSpecValueList) {
+
+        $result = array();
+        foreach ($multiSpecValueList as $specValueList) {
+
+            if (is_array($temp = self::getBySpecValueList($specValueList))) {
+                $result = array_merge($result, $temp);
+            }
+        }
+
+        return  $result;
+    }
+
+    static public function getBySpecValueList ($specValueList) {
+
+        $sql    = 'SELECT `goods_id`,COUNT(1) AS `cnt` FROM `' . self::_tableName() . '` WHERE ';
+        $where  = array();
+        foreach ($specValueList as $specValue) {
+
+            $where[]    = '( `spec_id` = "' . (int) $specValue['spec_id'] . '" AND `spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
+        }
+        $sql    .= implode(' OR ', $where) . ' GROUP BY `goods_id`';
+
+        $data   = self::_getStore()->fetchAll($sql);
+        if (!$data) {
+
+            return;
+        }
+        $result = array();
+        $count  = count($specValueList);
+        foreach ($data as $goods) {
+            if ($count == $goods['cnt']) {
+                $result[]   = $goods['goods_id'];
+            }
+        }
+        return  $result;
+    }
 }

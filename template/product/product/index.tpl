@@ -43,6 +43,16 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
+                                <select name="style_id_lv1" class="form-control">
+                                    <option value="0">请选择款式</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="style_id_lv2" class="form-control">
+                                    <option value="0">请选择子款式</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <select name="supplier_id" class="form-control">
                                     <option value="0">请选择供应商</option>
                                     <{foreach from=$data.mapSupplierInfo item=item}>
@@ -58,6 +68,17 @@
                                     <input type="text" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
                                 </div>
                             </div>
+                        </div>
+                        <!-- /.row -->
+                        <div class="row sku-filter">
+                            <div class="col-md-2">
+                                <select name="spec_value_material_id" class="form-control">
+                                    <option value="0">请选择主料材质</option>
+                                    <{foreach from=$data.mapSpecValueMaterialInfo item=specValueData key=specValueId}>
+                                <option value="<{$specValueId}>"<{if $smarty.get.spec_value_material_id eq $specValueId}> selected<{/if}>><{$specValueData}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
                             <div class="col-md-2">
                                 <select name="spec_value_size_id" class="form-control">
                                     <option value="0">请选择规格尺寸</option>
@@ -72,27 +93,6 @@
                                     <{foreach from=$data.mapSpecValueColorInfo item=specValueData key=specValueId}>
                                 <option value="<{$specValueId}>"<{if $smarty.get.spec_value_color_id eq $specValueId}> selected<{/if}>><{$specValueData}></option>
                                     <{/foreach}>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- /.row -->
-                        <div class="row sku-filter">
-                            <div class="col-md-2">
-                                <select name="spec_value_material_id" class="form-control">
-                                    <option value="0">请选择主料材质</option>
-                                    <{foreach from=$data.mapSpecValueMaterialInfo item=specValueData key=specValueId}>
-                                <option value="<{$specValueId}>"<{if $smarty.get.spec_value_material_id eq $specValueId}> selected<{/if}>><{$specValueData}></option>
-                                    <{/foreach}>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="style_id_lv1" class="form-control">
-                                    <option value="0">请选择款式</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="style_id_lv2" class="form-control">
-                                    <option value="0">请选择子款式</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -249,8 +249,14 @@
     <{/if}>
 
     $('#search-product').click(function () {
-        var condition   = $('#search-form').serialize();
-        var redirect    = '/product/product/index.php?';
+        var condition       = $('#search-form').serialize();
+        var redirect        = '/product/product/index.php?';
+        var searchValueList = $('input[name="search_value_list"]').val();
+        var searchType      = $('select[name="search_type"]').val();
+        if (searchValueList && !searchType) {
+            alert('请选择搜索类型');
+            return;
+        }
         redirect        += condition;
         location.href   = redirect;
     });

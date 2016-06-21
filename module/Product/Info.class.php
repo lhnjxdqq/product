@@ -241,4 +241,9 @@ class   Product_Info {
 
         return          self::_getStore()->execute($sql);
     }
+
+    static public function query ($sql) {
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }
