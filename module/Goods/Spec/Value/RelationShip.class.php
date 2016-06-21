@@ -136,13 +136,39 @@ class   Goods_Spec_Value_RelationShip {
      */
     static public function listByMultiSpecValueList ($multiSpecValueList) {
 
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE ';
-        $where  = array();
-        foreach ($multiSpecValueList as $specValue) {
+        $result = array();
+        foreach ($multiSpecValueList as $specValueList) {
 
-            $where[]    = '(`spec_id` = "' . (int) $specValue['spec_id'] . '" AND `spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
+            if (is_array($temp = self::getBySpecValueList($specValueList))) {
+                $result = array_merge($result, $temp);
+            }
         }
-        $sql    .= implode(' OR ', $where);
-        return  self::_getStore()->fetchAll($sql);
+
+        return  $result;
+    }
+
+    static public function getBySpecValueList ($specValueList) {
+
+        $sql    = 'SELECT `goods_id`,COUNT(1) AS `cnt` FROM `' . self::_tableName() . '` WHERE ';
+        $where  = array();
+        foreach ($specValueList as $specValue) {
+
+            $where[]    = '( `spec_id` = "' . (int) $specValue['spec_id'] . '" AND `spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
+        }
+        $sql    .= implode(' OR ', $where) . ' GROUP BY `goods_id`';
+
+        $data   = self::_getStore()->fetchAll($sql);
+        if (!$data) {
+
+            return;
+        }
+        $result = array();
+        $count  = count($specValueList);
+        foreach ($data as $goods) {
+            if ($count == $goods['cnt']) {
+                $result[]   = $goods['goods_id'];
+            }
+        }
+        return  $result;
     }
 }

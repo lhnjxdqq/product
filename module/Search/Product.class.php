@@ -120,13 +120,14 @@ class Search_Product {
      */
     static private function _listGoodsBySpecValueList (array $condition) {
 
-        $specValueList  = self::_createSpecValueList($condition);
-        $data           = Goods_Spec_Value_RelationShip::listByMultiSpecValueList($specValueList);
-        return          $data
-                        ? array_unique(ArrayUtility::listField($data, 'goods_id'))
-                        : ArrayUtility::listField(Goods_Info::listByCondition(array(
-                            'delete_status' => Goods_DeleteStatus::NORMAL
-                        )), 'goods_id');
+        $multiSpecValueList = self::_createSpecValueList($condition);
+        if (empty($multiSpecValueList[0])) {
+            $data   = array_unique(ArrayUtility::listField(Goods_Spec_Value_RelationShip::listAll(), 'goods_id'));
+        } else {
+            $data   = Goods_Spec_Value_RelationShip::listByMultiSpecValueList($multiSpecValueList);
+        }
+
+        return          $data;
     }
 
     /**
@@ -169,12 +170,17 @@ class Search_Product {
         }
 
         $weightValueList    = self::_createWeightValueList($condition);
+        $multiSpecValueList = array();
         if ($weightValueList) {
 
-            $specValueList  = array_merge($specValueList, $weightValueList);
+            foreach ($weightValueList as $weightValue) {
+                $multiSpecValueList[]  = array_merge($specValueList, array($weightValue));
+            }
+        } else {
+            $multiSpecValueList[]   = $specValueList;
         }
-        return              $specValueList;
 
+        return              $multiSpecValueList;
     }
 
     /**
@@ -185,11 +191,15 @@ class Search_Product {
      */
     static private function _createWeightValueList (array $condition) {
 
-        $weightStart    = $condition['weight_value_start'] ? $condition['weight_value_start'] * 100 : 1;
-        $weightEnd      = $condition['weight_value_end'] ? $condition['weight_value_end'] * 100 : 1;
+        $weightStart    = $condition['weight_value_start'] ? $condition['weight_value_start'] * 100 : 0;
+        $weightEnd      = $condition['weight_value_end'] ? $condition['weight_value_end'] * 100 : 0;
+        if ($weightStart == $weightEnd && $weightStart == 0) {
+            return;
+        }
         if (($weightEnd < $weightStart) || ($weightEnd >= 3000)) {
 
             Utility::notice('规格重量区间错误');
+            return;
         }
         $weightValue        = range($weightStart, $weightEnd, 1);
         $weightValue        = array_map(create_function('$value', 'return sprintf("%.2f", $value / 100);'), $weightValue);
