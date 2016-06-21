@@ -35,6 +35,7 @@ class Search_Product {
         $listGoodsId                = array_map('intval', array_unique(array_filter($listGoodsId)));
         $supplierWhere              = self::_whereBySupplier($condition);
         $sourceWhere                = self::_whereBySource($condition);
+        $productSnWhere             = self::_whereByProductSn($condition);
 
         if (null === $isCount) {
 
@@ -48,8 +49,19 @@ class Search_Product {
             $sqlLimit   = '';
         }
 
-        $sql    = 'SELECT ' . $fields . ' FROM `product_info` AS `pi` LEFT JOIN `source_info` AS `si` ON `pi`.`source_id`=`si`.`source_id` LEFT JOIN `supplier_info` AS `ssi` ON `si`.`supplier_id`=`ssi`.`supplier_id` WHERE `pi`.`goods_id` IN ("' . implode('","', $listGoodsId) . '")' . $supplierWhere . $sourceWhere . $sqlOrder . $sqlLimit;
+        $sql    = 'SELECT ' . $fields . ' FROM `product_info` AS `pi` LEFT JOIN `source_info` AS `si` ON `pi`.`source_id`=`si`.`source_id` LEFT JOIN `supplier_info` AS `ssi` ON `si`.`supplier_id`=`ssi`.`supplier_id` WHERE `pi`.`goods_id` IN ("' . implode('","', $listGoodsId) . '")' . $productSnWhere . $supplierWhere . $sourceWhere . $sqlOrder . $sqlLimit;
 
+        return  $sql;
+    }
+
+    static private function _whereByProductSn (array $condition) {
+
+        $sql    = '';
+        if ($condition['search_type'] == 'product_sn') {
+            $multiProductSn = explode(' ', $condition['search_value_list']);
+            $multiProductSn = array_map('addslashes', array_map('trim', array_unique(array_filter($multiProductSn))));
+            $sql    = ' AND `pi`.`product_sn` IN ("' . implode('","', $multiProductSn) . '")';
+        }
         return  $sql;
     }
 
@@ -228,6 +240,7 @@ class Search_Product {
         return array(
             'source_code'   => '买款ID',
             'goods_sn'      => 'SKU编号',
+            'product_sn'    => '产品编号',
         );
     }
 

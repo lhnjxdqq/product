@@ -96,7 +96,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <input type="text" class="form-control" name="search_value_list" placeholder="请输入供应商ID/买款ID/SKU编号" value="<{$smarty.get.search_value_list}>">
+                                <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/产品编号" value="<{$smarty.get.search_value_list}>">
                             </div>
                             <div class="col-md-2">
                                 <select name="search_type" class="form-control">
