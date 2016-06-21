@@ -48,6 +48,11 @@ class   Common_Auth {
 
         $userInfo   = User_Info::getByName($username);
 
+        if (!$userInfo) {
+
+            return;
+        }
+
         if ($userInfo['enable_status'] == User_EnableStatus::FORBIDDEN) {
 
             return false;

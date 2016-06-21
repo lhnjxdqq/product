@@ -150,4 +150,20 @@ class   Utility {
         return  substr(str_shuffle($seed), 0, $length);
     }
 
+    /**
+     * 输出错误内容
+     *
+     * @param   string  $message    提示信息
+     * @param   string  $toUrl      地址
+     */
+    static  public  function error ($message, $toUrl = '', $tmpl = null) {
+
+        $template   = Template::getInstance();
+        $template->assign('message', $message);
+        $template->assign('to_url', $toUrl);
+        $tmpl   = $tmpl ? $tmpl : 'error.tpl';
+        $template->display($tmpl);
+        exit;
+    }
+
 }
