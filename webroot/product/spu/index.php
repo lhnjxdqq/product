@@ -12,7 +12,7 @@ $orderBy    = array(
 );
 
 // 分页
-$perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 8;
+$perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countProduct   = Spu_Info::countByCondition($condition);
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countProduct,
