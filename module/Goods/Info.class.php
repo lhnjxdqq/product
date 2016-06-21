@@ -19,7 +19,7 @@ class   Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_id,goods_sn,goods_name,goods_type_id,goods_id_related,category_id,style_id,self_cost,sale_cost,delete_status,create_time,update_time';
+    const   FIELDS      = 'goods_id,goods_sn,goods_name,goods_type_id,goods_id_related,category_id,style_id,self_cost,sale_cost,goods_remark,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -271,6 +271,142 @@ class   Goods_Info {
         return          array(
             'self_cost' => $selfCost,
             'sale_cost' => $selfCost,
+        );
+    }
+
+    /**
+     * 取最大的商品ID
+     *
+     * @return mixed
+     */
+    static public function getMaxGoodsId () {
+
+        $sql    = 'SELECT MAX(`goods_id`) AS `max` FROM `' . self::_tableName() . '`';
+        $row    = self::_getStore()->fetchOne($sql);
+        return  $row['max'];
+    }
+
+    /**
+     * 推送修改商品数据
+     *
+     * @param string $appName
+     * @param $multiNewGoodsInfo
+     */
+    static public function updatePushGoodsData ($appName = 'select', $multiNewGoodsInfo) {
+
+        $config     = self::_getApiConfig($appName);
+        $apiUrl     = $config['apiConfig']['sku'];
+
+        $signRand   = Utility::createRandCode();
+        $config['appConfig']['signRand'] = $signRand;
+        $postData   = array(
+            'action'    => 'update',
+            'sign'      => array(
+                'signRand'  => $signRand,
+                'signFull'  => Common_Api::createSign($config['appConfig']),
+            ),
+            'data'      => array(
+                'goodsList' => array(),
+            ),
+        );
+        foreach ($multiNewGoodsInfo as $newGoodsInfo) {
+
+            $goodsData  = array(
+                'goodsSn'   => $newGoodsInfo['goods_sn'],
+                'skuName'   => $newGoodsInfo['goods_name'],
+                'selfCost'  => $newGoodsInfo['self_cost'],
+                'saleCost'  => $newGoodsInfo['sale_cost'],
+                'remark'    => $newGoodsInfo['goods_remark'],
+            );
+            $postData['data']['goodsList'][]    = $goodsData;
+        }
+
+        $res    = HttpRequest::getInstance($apiUrl)->post($postData);
+        $ret    = json_decode($res, true);
+        $listGoodsSn    = ArrayUtility::listField($multiNewGoodsInfo, 'goods_sn');
+        $listGoodsInfo  = self::getByMultiGoodsSn($listGoodsSn);
+        foreach ($listGoodsInfo as $goodsInfo) {
+
+            Push_Log::create(array(
+                'data_type'     => Push_DataType::SKU,
+                'data_id'       => $goodsInfo['goods_id'],
+                'action_type'   => Push_ActionType::UPDATE,
+                'status_code'   => $ret['statusCode'],
+                'status_info'   => $ret['statusInfo'],
+                'result_data'   => json_encode($ret['resultData']),
+            ));
+        }
+    }
+
+    /**
+     * 推送新增商品数据
+     *
+     * @param string $appName
+     * @param $startId
+     * @param $limit
+     */
+    static public function addPushGoodsData ($appName = 'select', $startId, $limit) {
+
+        $config     = self::_getApiConfig($appName);
+        $apiUrl     = $config['apiConfig']['sku'];
+
+        $signRand   = Utility::createRandCode();
+        $config['appConfig']['signRand'] = $signRand;
+        $postData   = array(
+            'action'    => 'add',
+            'sign'      => array(
+                'signRand'  => $signRand,
+                'signFull'  => Common_Api::createSign($config['appConfig']),
+            ),
+            'data'  => array(
+                'goodsList' => array(),
+            ),
+        );
+        $listGoodsInfo          = self::listByCondition(array(), array(), $startId, $limit);
+        $listGoodsSpecValue     = Goods_Spec_Value_RelationShip::getByMultiGoodsId(ArrayUtility::listField($listGoodsInfo, 'goods_id'));
+        $groupGoodsSpecValue    = ArrayUtility::groupByField($listGoodsSpecValue, 'goods_id');
+
+        foreach ($listGoodsInfo as $goodsInfo) {
+            $goodsId    = $goodsInfo['goods_id'];
+            $goodsData  = array(
+                'goodsSn'                           => $goodsInfo['goods_sn'],
+                'skuName'                           => $goodsInfo['goods_name'],
+                'categoryId'                        => $goodsInfo['category_id'],
+                'selfCost'                          => $goodsInfo['self_cost'],
+                'saleCost'                          => $goodsInfo['sale_cost'],
+                'remark'                            => $goodsInfo['goods_remark'],
+                'goodsSpecValueRelationshipList'    => $groupGoodsSpecValue[$goodsId],
+            );
+            $postData['data']['goodsList'][]    = $goodsData;
+        }
+
+        $res    = HttpRequest::getInstance($apiUrl)->post($postData);
+        $ret    = json_decode($res, true);
+        foreach ($listGoodsInfo as $goodsInfo) {
+            Push_Log::create(array(
+                'data_type'     => Push_DataType::SKU,
+                'data_id'       => $goodsInfo['goods_id'],
+                'action_type'   => Push_ActionType::ADD,
+                'status_code'   => $ret['statusCode'],
+                'status_info'   => $ret['statusInfo'],
+                'result_data'   => json_encode($ret['resultData']),
+            ));
+        }
+    }
+
+    /**
+     * 获取API配置
+     *
+     * @param string $appName
+     * @return array
+     * @throws Exception
+     */
+    static private function _getApiConfig ($appName = 'select') {
+        $appList    = Config::get('api|PHP', 'app_list');
+        $apiList    = Config::get('api|PHP', 'api_list');
+        return      array(
+            'appConfig' => $appList[$appName],
+            'apiConfig' => $apiList[$appName],
         );
     }
 }

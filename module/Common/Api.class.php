@@ -19,24 +19,18 @@ class Common_Api {
     /**
      * 生成签名
      *
-     * @param $app          键名为 app_id 和 app_key 的数组 ($appList['select'])
-     * @param $signRand     随机字符串
+     * @param $params       加密参数
      * @return string|void  签名
      */
-    static public function sign ($app, $signRand) {
+    static public function createSign ($params) {
 
-        if (!$app) {
+        ksort($params);
+        $result = '';
+        foreach ($params as $k => $v) {
 
-            return;
-        }
-        $buff               = '';
-        $app['signRand']   = $signRand;
-        ksort($app);
-        foreach ($app as $k => $v) {
-
-            $buff .= $k . '=' . $v;
+            $result .= $k . '=' . $v;
         }
 
-        return  sha1($buff);
+        return  sha1($result);
     }
 }
