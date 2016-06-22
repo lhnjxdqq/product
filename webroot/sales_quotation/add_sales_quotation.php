@@ -30,6 +30,10 @@ foreach($data as $spuId => $colorCost){
     unset($colorCost['spu_remark']);
     foreach($colorCost as $colorId => $cost){
         
+        if(!is_numeric($cost)){
+
+            continue;
+        }
         if(!empty($cost)){
              
             $content = array(

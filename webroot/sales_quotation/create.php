@@ -202,26 +202,26 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 
     if(!empty($indexCartColorId[$spuInfo['spu_id']]['color'])){
 
-        $listSpuInfo[$key]['K红']    = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K红']];
-        $listSpuInfo[$key]['K白']    = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K白']];
-        $listSpuInfo[$key]['K黄']    = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K黄']];
-        $listSpuInfo[$key]['红白']   = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K白']];
-        $listSpuInfo[$key]['红黄']   = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['红黄']];
-        $listSpuInfo[$key]['黄白']   = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['黄白']];
-        $listSpuInfo[$key]['三色']   = $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['三色']];
+        $listSpuInfo[$key]['K红']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K红']] : "-" ;
+        $listSpuInfo[$key]['K白']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K白']] : "-" ;
+        $listSpuInfo[$key]['K黄']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K黄']] : "-" ;
+        $listSpuInfo[$key]['红白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K白']] : "-" ;
+        $listSpuInfo[$key]['红黄']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['红黄']] : "-" ;
+        $listSpuInfo[$key]['黄白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['黄白']] : "-" ;
+        $listSpuInfo[$key]['三色']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['三色']] : "-" ;
         $listSpuInfo[$key]['spu_remark']      = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
         $listSpuInfo[$key]['is_exist']  = 1;
         
     }else{
  
         // 每种最大工费
-        $listSpuInfo[$key]['K红']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']+$plusPrice;
-        $listSpuInfo[$key]['K白']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']+$plusPrice;
-        $listSpuInfo[$key]['K黄']    = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']+$plusPrice;
-        $listSpuInfo[$key]['红白']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']+$plusPrice;
-        $listSpuInfo[$key]['红黄']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']+$plusPrice;
-        $listSpuInfo[$key]['黄白']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']+$plusPrice;
-        $listSpuInfo[$key]['三色']   = $mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']+$plusPrice;
+        $listSpuInfo[$key]['K红']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']+$plusPrice : "-" ;
+        $listSpuInfo[$key]['K白']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']+$plusPrice : "-" ;
+        $listSpuInfo[$key]['K黄']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']+$plusPrice : "-" ;
+        $listSpuInfo[$key]['红白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']+$plusPrice : "-" ;
+        $listSpuInfo[$key]['红黄']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']+$plusPrice : "-" ;
+        $listSpuInfo[$key]['黄白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']+$plusPrice : "-" ;
+        $listSpuInfo[$key]['三色']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']+$plusPrice : "-" ;
         $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
         $listSpuInfo[$key]['is_exist']  = 0;      
     }
