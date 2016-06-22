@@ -118,6 +118,15 @@ class   Quotation_Info {
 
         $sql            = array();
         $sql[]          = self::_conditionByStatusCode($condition);
+        $sql[]          = self::_conditionSupplierId($condition);
+        $sql[]          = self::_conditionrange(
+            array(
+                'fieldCondition'    => 'create_time',
+                'paramA'            => 'date_start',
+                'paramB'            => 'date_end',
+                'condition'         => $condition,
+            )
+        );
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
@@ -133,7 +142,42 @@ class   Quotation_Info {
 
         return  !isset($condition['status_code']) ? '' : '`status_code` = "' . (int) $condition['status_code'] . '"';
     }
+    
+    /**
+     * 条件 抽象方法 当前实体模型 范围
+     *
+     * @param   array   $params 参数
+     * @return  string          条件SQL子句
+     */
+    static  private function _conditionRange ($params) {
 
+        extract($params);
+
+        if (empty($condition[$paramB]) && !is_numeric($condition[$paramB])) {
+
+            return  '';
+        }
+
+        return  "`" . $fieldCondition . "` BETWEEN '" . addslashes($condition[$paramA]) . "' AND '" . addslashes($condition[$paramB]) . "'";
+    }
+    
+    /**
+     * 按关键词检索
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */
+    static  private function _conditionSupplierId (array $condition) {
+
+        if (empty($condition['supplier_id'])) {
+
+            return  '';
+        }
+
+        $supplierId    = array_map('intval', array_unique(array_filter($condition['supplier_id'])));
+
+        return  "`quotation_supplier_id`  IN ('" . implode(',', $supplierId) . "')";
+    }
     /**
      * 拼接排序ORDER子句
      *

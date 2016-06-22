@@ -60,7 +60,7 @@
                     <div class="table-responsive col-xls-12">
                         <table class="table table-bordered table-hover">
                             <thead>
-                                <tr class="bg-success">
+                                <tr class="info">
                                     <th rowspan="2">选择</th>
                                     <th rowspan="2">SPU编号</th>
                                     <th rowspan="2">SPU名称</th>
@@ -73,7 +73,7 @@
                                     <th rowspan="2">备注</th>
                                     <th rowspan="2">操作</th>
                                 </tr>
-                                <tr class="bg-success">
+                                <tr class="info">
                                     <th>K红</th>
                                     <th>K白</th>
                                     <th>K黄</th>
@@ -85,7 +85,7 @@
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                               
-                                <tr class="<{if $item.is_exist eq 1}>info<{/if}>">
+                                <tr class="<{if $item.is_exist eq 1}>bg-success<{/if}>">
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>

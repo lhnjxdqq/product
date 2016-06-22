@@ -46,7 +46,7 @@
                     </div>
                     </form>
                     <div class="pull-right">
-                        <a href="/product/spu/index.php" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 创建销售报价单</a>
+                        <a href="/product/spu/index.php" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 创建销售报价单</a>
                     </div>
                 </div>
                 <div class="box-body">

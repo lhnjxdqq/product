@@ -26,8 +26,26 @@
         <section class="content">
             <div class="box">
                 <div class="box-header with-border">
-                    <div class="box-title">任务列表</div>
-                    <div class="box-tools pull-right">
+                    <form class="form-inline" action="/quotation/index.php" method="get">
+                    <div class="col-md-5 pull-left" style="">
+                        <div class="input-daterange input-group input-group-sm">
+                            <span class="input-group-addon" style="border-width:1px 0 1px 1px;">上传时间:</span>
+                            <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
+                            <span class="input-group-addon">到</span>
+                            <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
+                        </div>
+                    </div>
+                    <div class="col-md-5 pull-left">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">供应商ID:</span>
+                            <input type="text" class="form-control" name="keyword" class="form-control" value="<{$condition.keyword}>" placeholder="请输入供应商ID" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">搜索</button>
+                            </span>
+                        </div>
+                    </div>
+                    </form>
+                    <div class="col-md-2 box-tools pull-right" style="margin-top:5px">
                         <a href="/quotation/import.php" class="btn btn-primary btn-sm"><i class="fa fa-upload"></i> 上传工厂报价单</a>
                     </div>
                 </div>
@@ -100,6 +118,10 @@
 
 <{include file="section/foot.tpl"}>
 <script>
+    $('.input-daterange').datepicker({
+        format  : 'yyyy-mm-dd',
+        language: 'zh-CN'
+    });
     tableColumn({
         selector    : '#quotation-list',
         container   : '#quotation-list-vis'
