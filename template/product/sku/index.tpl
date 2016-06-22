@@ -60,7 +60,7 @@
                                     <th>最低进货工费</th>
                                     <th>成本工费</th>
                                     <th>基础销售工费</th>
-                                    <th width="150">操作</th>
+                                    <th width="80">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,7 +79,6 @@
                                         <td><{$item.sale_cost}></td>
                                         <td>
                                             <a href="/product/sku/edit.php?goods_id=<{$item.goods_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
-                                            <a href="javascript:delSku(<{$item.goods_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                         </td>
                                     </tr>
                                 <{/foreach}>
