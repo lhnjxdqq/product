@@ -53,7 +53,8 @@
                 <div class="box-header with-border">
                     <input type="checkbox" name="check-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
-                    <span class="btn btn-primary btn-sm pull-right"><i class="fa fa-shopping-cart">共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品</i></span>
+                    <a href="/product/spu/index.php" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加商品</a>
+                    共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品
            
                 </div>
                 <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
