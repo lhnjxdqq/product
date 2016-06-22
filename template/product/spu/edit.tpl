@@ -74,8 +74,8 @@
                                         <{foreach from=$data.mapGoodsInfo item=item}>
                                             <tr class="spu-goods">
                                                 <td>
-                                                    <input type="hidden" name="goods-id[]" value="<{$item.goods_id}>">
-                                                    <input type="text" name="spu-goods-name[]" class="form-control" value="<{$item.spu_goods_name}>">
+                                                    <input type="hidden" name="goods-id[]" class="goods-id" value="<{$item.goods_id}>">
+                                                    <input type="text" name="spu-goods-name[]" class="form-control spu-goods-name" value="<{$item.spu_goods_name}>">
                                                 </td>
                                                 <td class="goods-sn" goodssn="<{$item.goods_sn}>"><{$item.goods_sn}></td>
                                                 <td><{$item.goods_name}></td>
@@ -85,7 +85,10 @@
                                                 <td class="goods-weight-value" weightvalueid="<{$data.weightValueId}>"><{$item.weight}></td>
                                                 <td><{$item.color}></td>
                                                 <td><{$item.sale_cost}></td>
-                                                <td><a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-warning btn-xs edit-spu-goods"><i class="fa fa-edit"></i> 更新</a>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a>
+                                                </td>
                                             </tr>
                                             <{/foreach}>
                                         </tbody>
@@ -165,10 +168,62 @@
     });
     $(document).delegate('.del-spu-goods', 'click', function () {
         if ($('.spu-goods').length == 1) {
-            alert('已经是最后一个, 不能删除');
+
+            if (!confirm('已经是最后一个, 确定要删除吗 ? 点是, 该SPU也将被删除 !')) {
+
+                return;
+            }
+        }
+        var parentNode  = $(this).parents('.spu-goods');
+        var goodsId     = parentNode.find('input.goods-id').val();
+        var spuId       = '<{$smarty.get.spu_id}>';
+        if (!spuId || !goodsId) {
+            alert('数据有误');
             return;
         }
-        $(this).parents('.spu-goods').remove();
+        $.ajax({
+            url: '/product/spu/ajax_spu_goods_del.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {spu_id: spuId, goods_id: goodsId},
+            success: function (data) {
+                alert(data.statusInfo);
+                if (data.statusCode != 0) {
+
+                    return;
+                } else {
+
+                    parentNode.remove();
+                    if (data.redirect) {
+
+                        location.href = data.redirect;
+                    }
+                }
+            }
+        });
+    });
+    $(document).delegate('.edit-spu-goods', 'click', function () {
+        var parentNode      = $(this).parents('.spu-goods');
+        var goodsId         = parentNode.find('input.goods-id').val();
+        var spuId           = '<{$smarty.get.spu_id}>';
+        var spuGoodsName    = parentNode.find('input.spu-goods-name').val();
+        if (!spuId || !goodsId) {
+            alert('数据有误');
+            return;
+        }
+        $.ajax({
+            url: '/product/spu/ajax_spu_goods_edit.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {spu_id: spuId, goods_id: goodsId, spu_goods_name: spuGoodsName},
+            success: function (data) {
+                alert(data.statusInfo);
+                if (data.statusCode != 0) {
+
+                    return;
+                }
+            }
+        });
     });
     $('#add-sku-btn').click(function () {
         var skuSn           = $('#add-sku-input').val();
@@ -177,6 +232,9 @@
         var weightValueId   = $(spuGoods).find('td.goods-weight-value').attr('weightvalueid');
         var skuSnObjList    = $('.spu-goods td.goods-sn');
         var skuSnList       = [];
+        var spuId           = '<{$smarty.get.spu_id}>';
+        var goodsId         = '';
+        var spuGoodsName    = '';
         $.each(skuSnObjList, function (index, val) {
             skuSnList.push($(val).attr('goodssn'));
         });
@@ -190,11 +248,12 @@
             alert('请输入SKU编号');
             return;
         }
-
+        // 查询该SKU信息
         $.ajax({
             url: '/ajax/get_goods_data.php',
             type: 'POST',
             dataType: 'JSON',
+            async: false,
             data: {goods_sn: skuSn, category_id: categoryId, weight_value_id: weightValueId},
             success: function (data) {
                 if (data.statusCode != 'success') {
@@ -202,9 +261,23 @@
                     return;
                 }
                 retData = data.resultData;
-                var goodsString = '<tr class="spu-goods"><td><input type="hidden" name="goods-id[]" value="' + retData.goods_id + '"><input type="text" name="spu-goods-name[]" class="form-control" value="' + retData.goods_name + '"></td><td class="goods-sn" goodssn="' + retData.goods_sn + '">' + retData.goods_sn + '</td><td>' + retData.goods_name + '</td><td class="goods-category-name" categoryid="' + retData.category_name + '">' + retData.category_name + '</td><td>' + retData.material + '</td><td>' + retData.size + '</td><td class="goods-weight-value" weightvalueid="' + retData.weight + '">' + retData.weight + '</td><td>' + retData.color + '</td><td>' + retData.sale_cost + '</td><td><a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td></tr>';
+                var goodsString = '<tr class="spu-goods"><td><input type="hidden" name="goods-id[]" class="goods-id" value="' + retData.goods_id + '"><input type="text" name="spu-goods-name[]" class="form-control spu-goods-name" value="' + retData.goods_name + '"></td><td class="goods-sn" goodssn="' + retData.goods_sn + '">' + retData.goods_sn + '</td><td>' + retData.goods_name + '</td><td class="goods-category-name" categoryid="' + retData.category_name + '">' + retData.category_name + '</td><td>' + retData.material + '</td><td>' + retData.size + '</td><td class="goods-weight-value" weightvalueid="' + retData.weight + '">' + retData.weight + '</td><td>' + retData.color + '</td><td>' + retData.sale_cost + '</td><td><a href="javascript:void(0);" class="btn btn-warning btn-xs edit-spu-goods"><i class="fa fa-edit"></i> 更新</a> <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td></tr>';
                 $('.spu-goods:last').after(goodsString);
-
+                goodsId         = retData.goods_id;
+                spuGoodsName    = retData.goods_name;
+            }
+        });
+        // 把该SKU添加到当前SPU
+        $.ajax({
+            url: '/product/spu/ajax_spu_goods_add.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {spu_id: spuId, goods_id: goodsId, spu_goods_name: spuGoodsName},
+            success: function (data) {
+                alert(data.statusInfo);
+                if (data.statusCode != 0) {
+                    location.reload();
+                }
             }
         });
     });

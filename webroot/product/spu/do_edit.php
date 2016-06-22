@@ -37,8 +37,8 @@ $update = Spu_Info::update(array(
 ));
 
 if ($update) {
-    Spu_Goods_RelationShip::delBySpuId($spuId);
-    Spu_Goods_RelationShip::createMultiSpuGoodsRelationship($multiGoods, $spuId);
+    //Spu_Goods_RelationShip::delBySpuId($spuId);
+    //Spu_Goods_RelationShip::createMultiSpuGoodsRelationship($multiGoods, $spuId);
     Spu_Images_RelationShip::delBySpuId($spuId);
     if ($imageKeyList) {
         foreach ($imageKeyList as $imageKey) {
