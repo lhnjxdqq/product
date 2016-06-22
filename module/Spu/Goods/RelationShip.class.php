@@ -161,4 +161,18 @@ class   Spu_Goods_RelationShip {
 
         return  self::_getStore()->execute($sql);
     }
+
+    /**
+     * 根据SPUID 和 GOODSID 获取SKU在这个SPU下的信息
+     *
+     * @param $spuId    SPUID
+     * @param $goodsId  SKUID
+     * @return array
+     */
+    static public function getBySpuIdAndGoodsId ($spuId, $goodsId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '" AND `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }
