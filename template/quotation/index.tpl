@@ -35,13 +35,14 @@
                             <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
                         </div>
                         <div class="input-group input-group-sm">
-                            <span class="input-group-addon">供应商ID:</span>
                             <select class="form-control" name="supplier_id">
-                                <option value="">请选择</option>
+                                <option value="">请选择供应商ID</option>
 <{foreach from=$listSupplierInfo item=item}>                                
                                 <option value="<{$item.supplier_id}>" <{if $condition.supplier_id eq $item.supplier_id}>selected=selected<{/if}>><{$item.supplier_code}></option>
 <{/foreach}>
                             </select>
+                        </div>
+                        <div class="input-group input-group-sm">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit">搜索</button>
                             </span>
