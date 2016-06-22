@@ -225,4 +225,16 @@ class   Spu_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 取最大的SPUID
+     *
+     * @return mixed
+     */
+    static public function getMaxSpuId () {
+
+        $sql    = 'SELECT MAX(`spu_id`) AS `max` FROM `' . self::_tableName() . '`';
+        $row    = self::_getStore()->fetchOne($sql);
+        return  $row['max'];
+    }
 }
