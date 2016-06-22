@@ -174,9 +174,7 @@ class   Quotation_Info {
             return  '';
         }
 
-        $supplierId    = array_map('intval', array_unique(array_filter($condition['supplier_id'])));
-
-        return  "`quotation_supplier_id`  IN ('" . implode(',', $supplierId) . "')";
+        return  "`quotation_supplier_id`=" . (int) $condition['supplier_id'];
     }
     /**
      * 拼接排序ORDER子句
