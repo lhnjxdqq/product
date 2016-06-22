@@ -27,26 +27,29 @@
             <div class="box">
                 <div class="box-header with-border">
                     <form class="form-inline" action="/quotation/index.php" method="get">
-                    <div class="col-md-5 pull-left" style="">
+                    <div class="col-md-10 pull-left" style="">
                         <div class="input-daterange input-group input-group-sm">
                             <span class="input-group-addon" style="border-width:1px 0 1px 1px;">上传时间:</span>
                             <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
                             <span class="input-group-addon">到</span>
                             <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
                         </div>
-                    </div>
-                    <div class="col-md-5 pull-left">
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon">供应商ID:</span>
-                            <input type="text" class="form-control" name="keyword" class="form-control" value="<{$condition.keyword}>" placeholder="请输入供应商ID" />
+                            <select class="form-control" name="supplier_id">
+                                <option value="">请选择</option>
+<{foreach from=$listSupplierInfo item=item}>                                
+                                <option value="<{$item.supplier_id}>" <{if $condition.supplier_id eq $item.supplier_id}>selected=selected<{/if}>><{$item.supplier_code}></option>
+<{/foreach}>
+                            </select>
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit">搜索</button>
                             </span>
                         </div>
                     </div>
                     </form>
-                    <div class="col-md-2 box-tools pull-right" style="margin-top:5px">
-                        <a href="/quotation/import.php" class="btn btn-primary btn-sm"><i class="fa fa-upload"></i> 上传工厂报价单</a>
+                    <div class="col-md-2">
+                        <a href="/quotation/import.php" class="btn btn-success btn-sm pull-right"><i class="fa fa-upload"></i> 上传工厂报价单</a>
                     </div>
                 </div>
                 <div class="box-body">
@@ -57,10 +60,6 @@
                                 <th>供应商ID</th>
                                 <th>样板数量</th>
                                 <th>下载</th>
-                                <!--
-                                <th>忽略系统中已存在的买款ID</th>
-                                <th>忽略上传表中重复买款ID</th>
-                                -->
                                 <th>状态</th>
                                 <th>上传时间</th>
                                 <th>更新时间</th>
