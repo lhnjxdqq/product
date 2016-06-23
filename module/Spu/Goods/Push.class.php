@@ -82,7 +82,7 @@ class Spu_Goods_Push {
         Push_Log::create(array(
             'data_type'     => Push_DataType::SPU_SKU,
             'data_id'       => $spuId . '_' . $goodsId,
-            'action_type'   => Push_ActionType::UPDATE,
+            'action_type'   => Push_ActionType::DELETE,
             'status_code'   => $ret['statusCode'],
             'status_info'   => $ret['statusInfo'],
             'result_data'   => json_encode($ret['resultData']),
