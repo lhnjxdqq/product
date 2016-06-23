@@ -413,18 +413,9 @@ class   Quotation {
             $sheet->mergeCells('F1:F2');
             $sheet->mergeCells('G1:G2');
             $sheet->mergeCells('H1:N1');
-            $sheet->mergeCells('O1:O2');
-            $sheet->getRowDimension(1)->setRowHeight(-1);
             self::_saveExcelRow($sheet, 1, $tableHead);
             self::_saveExcelRow($sheet, 2, $colorPriceHead);
-            $sheet->setCellValue('O1', "备注");
-            $sheet->setCellValue('H2', "K红");
-            $sheet->setCellValue('I2', "K白");
-            $sheet->setCellValue('J2', "K黄");
-            $sheet->setCellValue('K2', "红白");
-            $sheet->setCellValue('L2', "红黄");
-            $sheet->setCellValue('M2', "黄白");
-            $sheet->setCellValue('N2', "三色");
+ 
             $maxWidth           = 0;
     
             $listSalesQutationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $order, $group, $offsetBuffer, self::BUFFER_SIZE_EXCEL);
@@ -448,10 +439,13 @@ class   Quotation {
             $listSpecValueInfo  = Spec_Value_Info::listAll();
             $listSpecValueInfo  = ArrayUtility::searchBy($listSpecValueInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
             $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
-            $specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'主料材质')),'spec_name','spec_id');
-            $specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'规格尺寸')),'spec_name','spec_id');
-            $specMaterialId       = $specMaterialInfo['主料材质'];
-            $specSizeId           = $specSizeInfo['规格尺寸'];
+            //获取规格尺寸和主料材质的属性ID
+            $specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'material')),'spec_alias','spec_id');
+            $specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'size')),'spec_alias','spec_id');
+            $specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+            $specMaterialId       = $specMaterialInfo['material'];
+            $specSizeId           = $specSizeInfo['size'];
+            $specColorId          = $specColorInfo['color'];
 
             // 查询SPU下的商品
             $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
@@ -510,13 +504,55 @@ class   Quotation {
                             
                             $mapSizeValue[$spuId][]  = $specValueData;
                         }
+                        if($val['spec_id'] == $specColorId) {
+
+                            $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+                        }
                     }
                 }
-                        $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
-                        $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
+                $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
+                $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
 
+                foreach($mapColor as $spuIdKey => $colorInfo){
+
+                    foreach($colorInfo as $colorId => $cost){
+
+                        rsort($cost);
+                        $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+                    }
                 }
+             
+  
+            }         
+            //获取颜色属性Id列表
+            $listSpecValueColotId   = array();
+
+            foreach($mapColorInfo as $spuId=>$colorCost){
+                
+                foreach($colorCost as $specColorId=>$cost){
+                    
+                    $listSpecValueColotId[$specColorId] = $specColorId;
+                }
+            }
             
+            $countColor         = count($listSpecValueColotId);
+            $mapColorValueInfo  = Spec_Value_Info::getByMulitId($listSpecValueColotId);
+            //确定颜色表头
+            $mapSpecColorId     = ArrayUtility::indexByField($mapColorValueInfo,'spec_value_id', 'spec_value_data');
+                        
+            $col = 0;
+            foreach($mapSpecColorId as $colorId=>$colorName){
+            
+                $row = chr(ord(H)+$col).'2';
+                $sheet->setCellValue($row, $colorName);
+                $col++;
+            }
+            $remarkCol  = chr(ord(H)+$col);
+            $remarkCol1 = $remarkCol."1"; 
+            $remarkCol2 = $remarkCol."2"; 
+            $sheet->mergeCells($remarkCol1 .':'. $remarkCol2);
+            $sheet->setCellValue($remarkCol.'1', "备注");
+    
             $mapEnumeration = array(
                 'sales_quotation_id'=> $salesQuotationInfo['sales_quotation_id'],
                 'mapSpuGoods'       => $mapSpuGoods,
@@ -526,7 +562,9 @@ class   Quotation {
                 'mapGoodsInfo'      => $mapGoodsInfo,
                 'mapCategory'       => $mapCategory,
                 'indexColorName'    => $indexColorName,
+                'mapSpecColorId'    => $mapSpecColorId,
             );
+            
             foreach ($listSpuInfo as $offsetInfo => $info) {
                 
                 $row        = self::_getExcelRow($info,$mapEnumeration);
@@ -584,7 +622,12 @@ class   Quotation {
         $indexColorId          = ArrayUtility::indexByField($salesQuotationSquInfo, 'color_id', 'cost');
         $indexSalesQuotationId = ArrayUtility::indexByField($salesQuotationSquInfo, 'spu_id', 'sales_quotation_remark');
 
-        return                  array(
+        foreach($mapEnumeration['mapSpecColorId'] as $colorId=>$colorName){
+            
+            $color[$colorId]    = $indexColorId[$colorId];
+        }
+        $spuInfo                = array(
+        
             'spu_sn'                => $info['spu_sn'],
             'spu_name'              => $info['spu_name'],
             'image'                 => '',
@@ -592,15 +635,11 @@ class   Quotation {
             'material_name'         => $materialName,
             'size_name'             => $sizeName,
             'weight_name'           => $weightName,
-            'K红'                   => $indexColorId[$mapEnumeration['indexColorName']['K红']],
-            'K白'                   => $indexColorId[$mapEnumeration['indexColorName']['K白']],
-            'K黄'                   => $indexColorId[$mapEnumeration['indexColorName']['K黄']],
-            '红白'                  => $indexColorId[$mapEnumeration['indexColorName']['红白']],
-            '红黄'                  => $indexColorId[$mapEnumeration['indexColorName']['红黄']],
-            '黄白'                  => $indexColorId[$mapEnumeration['indexColorName']['黄白']],
-            '三色'                  => $indexColorId[$mapEnumeration['indexColorName']['三色']],
-            'remark'                => $indexSalesQuotationId[$info['spu_id']],
         );
+        $spuInfo = array_merge($spuInfo,$color);
+        $spuInfo['remark']      = $indexSalesQuotationId[$info['spu_id']];
+        
+        return $spuInfo;
     }
         
     static private function _appendExcelImage ($sheet, $numberRow, array $row, $imagePath) {

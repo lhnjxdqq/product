@@ -29,6 +29,7 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
         }
     }
 }
+
 $userId          = $_SESSION['user_id'];
 $listCustomer    = Customer_Info::listAll();
 $listCartInfo    = Cart_Spu_Info::getByUserId($userId);
@@ -45,12 +46,13 @@ foreach ($mapSpuImages as $spuId => $spuImage) {
     $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
 }
 
+//属性列表
 $listSpecInfo       = Spec_Info::listAll();
 $listSpecInfo       = ArrayUtility::searchBy($listSpecInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
 $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
 
-$listSpecValueInfo  = Spec_Value_Info::listAll();
-$listSpecValueInfo  = ArrayUtility::searchBy($listSpecValueInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+//获取属性值
+$listSpecValueInfo  = ArrayUtility::searchBy(Spec_Value_Info::listAll(), array('delete_status'=>Spec_DeleteStatus::NORMAL));
 $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
 
 // 查询SPU下的商品
@@ -79,10 +81,13 @@ $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 
-$specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'主料材质')),'spec_name','spec_id');
-$specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_name'=>'规格尺寸')),'spec_name','spec_id');
-$specMaterialId       = $specMaterialInfo['主料材质'];
-$specSizeId           = $specSizeInfo['规格尺寸'];
+//获取规格尺寸和主料材质的属性ID
+$specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'material')),'spec_alias','spec_id');
+$specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'size')),'spec_alias','spec_id');
+$specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+$specMaterialId       = $specMaterialInfo['material'];
+$specSizeId           = $specSizeInfo['size'];
+$specColorId          = $specColorInfo['color'];
 
 $mapSpecValue   = array();
 $mapMaterialValue = array();
@@ -101,51 +106,58 @@ $mapSpuSalerCostByColor = array();
 
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
-    $spuCost    = array();
+    $mapColor   = array();
     foreach ($spuGoods as $goods) {
 
         $goodsId        = $goods['goods_id'];
         $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+
         foreach ($goodsSpecValue as $key => $val) {
 
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
 
-            if($val['spec_id']  == $specMaterialId){
+            if($val['spec_id']  == $specMaterialId) {
                 
                 $mapMaterialValue[$spuId][]  = $specValueData;
             }
-            if($val['spec_id']  == $specSizeId){
+            if($val['spec_id']  == $specSizeId) {
                 
                 $mapSizeValue[$spuId][]  = $specValueData;
             }
-            
-            $spuCost['K红'][]      = Quotation::getGoodsCost("K红",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['K白'][]      = Quotation::getGoodsCost("K白",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['K黄'][]      = Quotation::getGoodsCost("K黄",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['红白'][]     = Quotation::getGoodsCost("红白",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['红黄'][]     = Quotation::getGoodsCost("红黄",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['黄白'][]     = Quotation::getGoodsCost("黄白",$specValueData,$mapAllGoodsInfo,$goodsId);
-            $spuCost['三色'][]     = Quotation::getGoodsCost("三色",$specValueData,$mapAllGoodsInfo,$goodsId);
+            if($val['spec_id'] == $specColorId) {
+                
+                $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+            }
         }
     }
+
     $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
     $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
-    rsort($spuCost['K红']);
-    rsort($spuCost['K白']);
-    rsort($spuCost['K黄']);
-    rsort($spuCost['红白']);
-    rsort($spuCost['红黄']);
-    rsort($spuCost['黄白']);
-    rsort($spuCost['三色']);
-    $mapSpuSalerCostByColor[$spuId]['K红']   = array_shift($spuCost['K红']);
-    $mapSpuSalerCostByColor[$spuId]['K白']   = array_shift($spuCost['K白']);
-    $mapSpuSalerCostByColor[$spuId]['K黄']   = array_shift($spuCost['K黄']);
-    $mapSpuSalerCostByColor[$spuId]['红白']  = array_shift($spuCost['红白']);
-    $mapSpuSalerCostByColor[$spuId]['红黄']  = array_shift($spuCost['红黄']);
-    $mapSpuSalerCostByColor[$spuId]['黄白']  = array_shift($spuCost['黄白']);
-    $mapSpuSalerCostByColor[$spuId]['三色']  = array_shift($spuCost['三色']);
 
+    foreach($mapColor as $spuIdKey => $colorInfo){
+
+        foreach($colorInfo as $colorId => $cost){
+            
+            rsort($cost);
+            $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+        }
+    }
 }
+
+//获取颜色属性Id列表
+$listSpecValueColotId   = array();
+
+foreach($mapColorInfo as $spuId=>$colorCost){
+    
+    foreach($colorCost as $specColorId=>$cost){
+        
+        $listSpecValueColotId[$specColorId] = $specColorId;
+    }
+}
+$countColor         = count($listSpecValueColotId);
+$mapColorValueInfo  = Spec_Value_Info::getByMulitId($listSpecValueColotId);
+$mapSpecColorId     = ArrayUtility::indexByField($mapColorValueInfo,'spec_value_id', 'spec_value_data');
+
 //查询颜色
 $listColorName  = array_keys($spuCost);
 $listColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($listColorName);
@@ -199,42 +211,36 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         $listSpuInfo[$key]['size_name']     = !empty($mapSizeValue[$spuInfo['spu_id']]) ? implode(",",$mapSizeValue[$spuInfo['spu_id']]): '';
         $listSpuInfo[$key]['weight_value']  = $mapSpecValue[$goodsId];
     }
-
-    if(!empty($indexCartColorId[$spuInfo['spu_id']]['color'])){
-
-        $listSpuInfo[$key]['K红']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K红']] : "-" ;
-        $listSpuInfo[$key]['K白']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K白']] : "-" ;
-        $listSpuInfo[$key]['K黄']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K黄']] : "-" ;
-        $listSpuInfo[$key]['红白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['K白']] : "-" ;
-        $listSpuInfo[$key]['红黄']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['红黄']] : "-" ;
-        $listSpuInfo[$key]['黄白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['黄白']] : "-" ;
-        $listSpuInfo[$key]['三色']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$listIndexColorName['三色']] : "-" ;
-        $listSpuInfo[$key]['spu_remark']      = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
-        $listSpuInfo[$key]['is_exist']  = 1;
-        
-    }else{
  
-        // 每种最大工费
-        $listSpuInfo[$key]['K红']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K红']+$plusPrice : "-" ;
-        $listSpuInfo[$key]['K白']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K白']+$plusPrice : "-" ;
-        $listSpuInfo[$key]['K黄']    = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['K黄']+$plusPrice : "-" ;
-        $listSpuInfo[$key]['红白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红白']+$plusPrice : "-" ;
-        $listSpuInfo[$key]['红黄']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['红黄']+$plusPrice : "-" ;
-        $listSpuInfo[$key]['黄白']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['黄白']+$plusPrice : "-" ;
-        $listSpuInfo[$key]['三色']   = !empty($mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']) ? $mapSpuSalerCostByColor[$spuInfo['spu_id']]['三色']+$plusPrice : "-" ;
+    $listSpuInfo[$key]['color'] = array();
+    
+    foreach($mapSpecColorId as $colorId=>$colorName){
+        
+        if($indexCartColorId[$spuInfo['spu_id']]['color']){
+            
+            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+            $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
+            $listSpuInfo[$key]['is_exist']  = 1;
+        } else {
+        
+            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $_GET['plue_price'] : "-";
+            $listSpuInfo[$key]['is_exist']  = 0;    
+        }
         $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
-        $listSpuInfo[$key]['is_exist']  = 0;      
+                
     }
-
 }
-
 $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
 $template->assign('plusPrice',$plusPrice);
 $template->assign('customerId',$customerId);
+$template->assign('listSpecValueId',$listSpecValueId);
 $template->assign('listSpuInfo',$listSpuInfo);
+$template->assign('countColor',$countColor);
+$template->assign('mapSpecColorId',$mapSpecColorId);
+$template->assign('mapSpecValueInfo',$mapSpecValueInfo);
 $template->assign('listIndexColorName',$listIndexColorName);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('sales_quotation/create.tpl');

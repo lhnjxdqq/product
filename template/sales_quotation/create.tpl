@@ -70,18 +70,14 @@
                                     <th rowspan="2">规格重量(g)</th>
                                     <th rowspan="2" style="text-align:center">规格尺寸</th>
                                     <th rowspan="2" style="text-align:center">主料材质</th>
-                                    <th colspan="7" style="text-align:center">出货工费</th>
+                                    <th colspan="<{$countColor}>" style="text-align:center">出货工费</th>
                                     <th rowspan="2">备注</th>
                                     <th rowspan="2">操作</th>
                                 </tr>
                                 <tr class="info">
-                                    <th>K红</th>
-                                    <th>K白</th>
-                                    <th>K黄</th>
-                                    <th>红白</th>
-                                    <th>红黄</th>
-                                    <th>黄白</th>
-                                    <th>三色</th>
+                                    <{foreach from=$mapSpecColorId item=item}>
+                                    <th><{$item}></th>
+                                    <{/foreach}>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,13 +91,9 @@
                                     <td><{$item.weight_value}></td>
                                     <td><{$item.size_name}></td>
                                     <td><{$item.material_name}></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['K红']}>]" <{if $item['K红'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['K红']}>"></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['K白']}>]" <{if $item['K白'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['K白']}>"></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['K黄']}>]" <{if $item['K黄'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['K黄']}>"></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['红白']}>]" <{if $item['红白'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['红白']}>"></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['红黄']}>]" <{if $item['红黄'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['红黄']}>"></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['黄白']}>]" <{if $item['黄白'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['黄白']}>"></td>
-                                    <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$listIndexColorName['三色']}>]" <{if $item['三色'] eq '-'}> disabled="disabled" <{/if}> value="<{$item['三色']}>"></td>
+                                    <{foreach from = $item.color item=cost key=colorId}>
+                                        <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{sprintf("%0.2f",$cost)}>"></td>
+                                    <{/foreach}>
                                     <td><input type="text" name="<{$item.spu_id}>[spu_remark]" value="<{$item.spu_remark}>"></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
