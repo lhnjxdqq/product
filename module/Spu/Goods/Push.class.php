@@ -13,7 +13,13 @@ class Spu_Goods_Push {
         $apiUrl         = $config['apiConfig']['spu_goods'];
 
         $postData       = self::_getPushSpuGoodsBaseData('add');
-        $spuGoodsInfo   = self::_getPushSpuGoodsInfo($spuId, $goodsId);
+        $spuInfo        = Spu_Info::getById($spuId);
+        $goodsInfo      = Goods_Info::getById($goodsId);
+        $spuGoodsInfo   = array(
+            'spuSn'         => $spuInfo['spu_sn'],
+            'goodsSn'       => $goodsInfo['goods_sn'],
+            'spuGoodsName'  => $goodsInfo['goods_name'],
+        );
         $postData['data']['spuGoodsRelationshipInfo']  = $spuGoodsInfo;
 
         $res            = HttpRequest::getInstance($apiUrl)->post($postData);
@@ -93,8 +99,8 @@ class Spu_Goods_Push {
     static private function _getPushSpuGoodsInfo ($spuId, $goodsId) {
 
         $spuGoodsData   = Spu_Goods_RelationShip::getBySpuIdAndGoodsId($spuId, $goodsId);
-        $spuInfo        = Spu_Info::getById($spuGoodsData['spu_id']);
-        $goodsInfo      = Goods_Info::getById($spuGoodsData['goods_id']);
+        $spuInfo        = Spu_Info::getById($spuId);
+        $goodsInfo      = Goods_Info::getById($goodsId);
         $spuGoodsInfo   = array(
             'spuSn'         => $spuInfo['spu_sn'],
             'goodsSn'       => $goodsInfo['goods_sn'],
