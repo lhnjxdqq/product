@@ -31,6 +31,8 @@ $data   = array(
 
 if (Spu_Goods_RelationShip::create($data)) {
 
+    // 推送新增SPU SKU到选货工具
+    Spu_Goods_Push::addPushSpuGoodsData($spuId, $goodsId);
     echo json_encode(array(
         'statusCode'    => 0,
         'statusInfo'    => '添加SKU成功',

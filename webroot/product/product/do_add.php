@@ -114,6 +114,8 @@ if ($goodsId) {
             'spec_value_id' => $specValue['spec_value_id'],
         ));
     }
+    // 推送SKU新增数据到选货工具
+    Goods_Push::addPushGoodsData($goodsId);
     // 新增产品
     $productData['goods_id']    = $goodsId;
 }
@@ -123,6 +125,8 @@ $productId  = Product_Info::create($productData);
 $goodsCost  = Goods_Info::getGoodsCost($goodsId);
 $goodsData  = array_merge(array('goods_id'=>$goodsId), $goodsCost);
 Goods_Info::update($goodsData);
+// 推送SKU更新数据到选货工具
+Goods_Push::updatePushGoodsData($goodsId);
 // 产品和图片关系 商品和图片关系
 if ($imageIdList['product']) {
     foreach ($imageIdList['product'] as $imageId) {

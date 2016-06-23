@@ -31,6 +31,8 @@ $data   = array(
 
 if (Spu_Goods_RelationShip::update($data)) {
 
+    // 推送编辑SPU SKU到选货工具
+    Spu_Goods_Push::updatePushSpuGoodsData($spuId, $goodsId);
     echo json_encode(array(
         'statusCode'    => 0,
         'statusInfo'    => '更新成功',

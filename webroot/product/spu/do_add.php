@@ -56,6 +56,8 @@ if ($spuId) {
             'image_key' => $imageKey,
         ));
     }
+    // 推送新增SPU数据到选货工具
+    Spu_Push::addPushSpuData($spuId);
 
     Utility::notice('添加SPU成功', '/product/spu/index.php');
 }

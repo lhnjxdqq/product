@@ -75,6 +75,8 @@ if (Product_Info::update($data)) {
             ));
         }
     }
+    // 推送SKU更新数据到选货工具
+    Goods_Push::updatePushGoodsData($goodsId);
     Utility::notice('编辑产品成功', '/product/product/index.php');
 } else {
 

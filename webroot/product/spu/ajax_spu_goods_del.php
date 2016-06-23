@@ -24,6 +24,8 @@ if (!$goodsId || !$spuId) {
 
 if (Spu_Goods_RelationShip::delSpuGoods($spuId, $goodsId)) {
 
+    // 推送删除SPU SKU到选货工具
+    Spu_Goods_Push::deletePushSpuGoodsData($spuId, $goodsId);
     $statusInfo = '删除成功';
     $redirect   = '';
     // 判断该SPU下是否有SKU, 如果没有删除该SPU
@@ -34,6 +36,8 @@ if (Spu_Goods_RelationShip::delSpuGoods($spuId, $goodsId)) {
             'spu_id'        => $spuId,
             'delete_status' => Spu_DeleteStatus::DELETED,
         ));
+        // 推送删除SPU数据到选货工具
+        Spu_Push::deletePushSpuData($spuId);
         $statusInfo = '最后一个SKU已经删除, SPU删除成功';
         $redirect   = '/product/spu/index.php';
     }
