@@ -197,6 +197,6 @@ class   Source_Info {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_code` = "' . addslashes(trim($sourceCode)) . '"';
 
-        return  self::_getStore()->fetchOne($sql);
+        return  self::_getStore()->fetchAll($sql);
     }
 }

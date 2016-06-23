@@ -32,9 +32,15 @@ class   Quotation {
         if(!$isSkuCode){
         
             $sourceInfo         = Source_Info::getBySourceCode($data['sku_code']);
+            
             if(!empty($sourceInfo)){
                 
-                throw   new ApplicationException('买款ID已经存在');
+                $searchSupplier     = ArrayUtility::searchBy($sourceInfo,array("supplier_id"=>$supplierId));
+
+                if(!empty($searchSupplier)){
+                 
+                    throw   new ApplicationException('买款ID已经存在');   
+                }
             }
         }
         
@@ -78,6 +84,7 @@ class   Quotation {
             }
             $data['size'] = array_unique($data['size']);
         }
+        
         foreach($data['price'] as $key=>$val){
             
             if(!empty($val)){
