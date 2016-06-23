@@ -171,4 +171,17 @@ class   Goods_Spec_Value_RelationShip {
         }
         return  $result;
     }
+
+    /**
+     * 根据SKUID 删除SPEC_ID SPEC_VALUE_ID关系
+     *
+     * @param $goodsId  SKUID
+     * @return int
+     */
+    static public function deleteByGoodsId ($goodsId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->execute($sql);
+    }
 }

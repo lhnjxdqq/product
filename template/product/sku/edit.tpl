@@ -54,37 +54,31 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">主料材质</label>
+                            <label class="col-sm-2 control-label">款式</label>
                             <div class="col-sm-10">
-                                <select class="form-control" disabled style="width: 200px;">
-                                    <option><{$data.goodsInfo.material}></option>
+                                <select name="style-id-lv1" class="form-control" style="width: 200px; float: left; margin-right: 20px;">
+                                    <option value="0">请选择款式</option>
+                                    <{foreach from=$data.mapStyleInfo[0] item=topStyleInfo}>
+                                        <option value="<{$topStyleInfo.style_id}>"<{if $data.goodsStyleInfo.parent_id eq $topStyleInfo.style_id}> selected<{/if}>><{$topStyleInfo.style_name}></option>
+                                    <{/foreach}>
+                                </select>
+                                <select name="style-id-lv2" class="form-control" style="width: 200px; float: left; margin-right: 20px; display: none;">
+
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">规格尺寸</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" disabled style="width: 200px;">
-                                    <option><{$data.goodsInfo.size}></option>
-                                </select>
+                        <{foreach from=$data.mapTypeSpecValue item=typeSpecValueList key=specId}>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><{$data.mapSpecInfo[$specId]['spec_name']}></label>
+                                <div class="col-sm-10">
+                                    <select name="spec-list[]" class="form-control" style="width: 200px;">
+                                        <{foreach from=$typeSpecValueList item=specValueId}>
+                                            <option value="<{$specId}>~<{$specValueId}>"<{if $data.mapGoodsSpecValue[$specId] eq $specValueId}> selected<{/if}>><{$data.mapSpecValueInfo[$specValueId]['spec_value_data']}></option>
+                                        <{/foreach}>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">主料重量</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" disabled style="width: 200px;">
-                                    <option><{$data.goodsInfo.weight}></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">颜色</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" disabled style="width: 200px;">
-                                    <option><{$data.goodsInfo.color}></option>
-                                </select>
-                            </div>
-                        </div>
+                        <{/foreach}>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">成本工费</label>
                             <div class="col-sm-10">
@@ -158,7 +152,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">备注</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="spu-remark" rows="3"><{$data.goodsInfo.goods_remark}></textarea>
+                                <textarea class="form-control" name="goods-remark" rows="3"><{$data.goodsInfo.goods_remark}></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -208,6 +202,33 @@
     $('span.product-image-priview .close').click(function () {
         $(this).parents('.product-image-priview').remove();
     });
+    <{if $data.mapStyleInfo}>
+        var styleList   = {};
+        <{foreach from=$data.mapStyleInfo[0] item=topStyle}>
+            styleList[<{$topStyle.style_id}>] = {};
+            <{foreach from=$data.mapStyleInfo[$topStyle.style_id] item=subStyle}>
+                styleList[<{$topStyle.style_id}>][<{$subStyle.style_id}>] = {
+                    'style_id': '<{$subStyle.style_id}>',
+                    'style_name': '<{$subStyle.style_name}>',
+                };
+            <{/foreach}>
+        <{/foreach}>
+        function initStyle() {
+            var styleId         = $('select[name="style-id-lv1"]').val();
+            var subStyleList    = styleList[styleId];
+            var styleLv2String  = '<option value="0">请选择子款式</option>';
+            var thisStyleId     = <{$data.goodsStyleInfo.style_id|default:0}>;
+            $.each(subStyleList, function (subStyleId, subStyle) {
+                var selected    = subStyle.style_id == thisStyleId ? ' selected' : '';
+                styleLv2String  += '<option value="' + subStyle.style_id + '"' + selected + '>' + subStyle.style_name + '</option>';
+            });
+            $('select[name="style-id-lv2"]').show().empty().append(styleLv2String);
+        }
+        initStyle();
+        $(document).delegate('select[name="style-id-lv1"]', 'change', function () {
+            initStyle();
+        });
+    <{/if}>
 </script>
 </body>
 </html>

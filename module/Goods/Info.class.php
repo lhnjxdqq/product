@@ -286,4 +286,29 @@ class   Goods_Info {
         return  $row['max'];
     }
 
+    /**
+     * 批量设置一组SKU的删除状态
+     *
+     * @param array $multiGoodsId
+     * @param $deleteStatus
+     * @return int
+     */
+    static public function setDeleteStatusByMultiGoodsId (array $multiGoodsId, $deleteStatus) {
+
+        $statusList     = array(
+            Goods_DeleteStatus::NORMAL,
+            Goods_DeleteStatus::DELETED,
+        );
+        if (!in_array($deleteStatus, $statusList)) {
+
+            return;
+        }
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
+
+        $sql            = 'UPDATE ' . self::_tableName() . ' SET `delete_status` = "' . (int) $deleteStatus . '" WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
+
 }

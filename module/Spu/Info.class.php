@@ -237,4 +237,29 @@ class   Spu_Info {
         $row    = self::_getStore()->fetchOne($sql);
         return  $row['max'];
     }
+
+    /**
+     * 批量设置一组SPU的删除状态
+     *
+     * @param array $multiSpuId
+     * @param $deleteStatus
+     * @return int
+     */
+    static public function setDeleteStatusByMultiSpuId ($multiSpuId, $deleteStatus) {
+
+        $statusList     = array(
+            Spu_DeleteStatus::NORMAL,
+            Spu_DeleteStatus::DELETED,
+        );
+        if (!in_array($deleteStatus, $statusList)) {
+
+            return;
+        }
+
+        $multiSpuId = array_map('intval', array_unique(array_filter($multiSpuId)));
+
+        $sql        = 'UPDATE ' . self::_tableName() . ' SET `delete_status` = "' . (int) $deleteStatus . '" WHERE `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
 }

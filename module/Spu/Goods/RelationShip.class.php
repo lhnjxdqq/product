@@ -175,4 +175,19 @@ class   Spu_Goods_RelationShip {
 
         return  self::_getStore()->fetchOne($sql);
     }
+
+    /**
+     * 删除一组SKUID 和SPU的关联关系
+     *
+     * @param $multiGoodsId 一组SKUID
+     * @return int
+     */
+    static public function deleteRelationShipByMultiGoodsId ($multiGoodsId) {
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
+
+        $sql            = 'DELETE FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
 }

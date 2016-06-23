@@ -7,44 +7,28 @@ $listSpecInfo       = Spec_Info::listAll();
 $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
 $listSpecValueInfo  = Spec_Value_Info::listAll();
 $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+$listStyleInfo      = Style_Info::listAll();
+$mapStyleInfo       = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
 
 $goodsId            = (int) $_GET['goods_id'];
 $goodsInfo          = Goods_Info::getById($goodsId);
 $categoryInfo       = Category_Info::getByCategoryId($goodsInfo['category_id']);
+$goodsStyleInfo     = Style_Info::getById($goodsInfo['style_id']);
+$goodsTypeSpecValue = Goods_Type_Spec_Value_Relationship::getSpecValueByGoodsTypeId($goodsInfo['goods_type_id']);
+$mapTypeSpecValue   = ArrayUtility::groupByField($goodsTypeSpecValue, 'spec_id', 'spec_value_id');
 $listGoodsSpecValue = Goods_Spec_Value_RelationShip::getByGoodsId($goodsId);
-foreach ($listGoodsSpecValue as $specValue) {
+$mapGoodsSpecValue  = ArrayUtility::indexByField($listGoodsSpecValue, 'spec_id', 'spec_value_id');
 
-    $specId         = $specValue['spec_id'];
-    $specValueId    = $specValue['spec_value_id'];
-    $specName       = $mapSpecInfo[$specId]['spec_name'];
-    $specUnit       = $mapSpecInfo[$specId]['spec_unit'];
-    $specValueData  = $mapSpecValueInfo[$specValueId]['spec_value_data'];
-    switch ($specName) {
-        case '主料材质' :
-            $goodsInfo['material']  = $specValueData . $specUnit;
-        break;
-        case '规格尺寸' :
-            $goodsInfo['size']      = $specValueData . $specUnit;
-        break;
-        case '规格重量' :
-            $goodsInfo['weight']    = $specValueData . $specUnit;
-        break;
-        case '颜色' :
-            $goodsInfo['color']     = $specValueData . $specUnit;
-        break;
-    }
-}
-
-$listProductInfo            = Product_Info::getByGoodsId($goodsId);
-$listProductId              = ArrayUtility::listField($listProductInfo, 'product_id');
-$listSourceId               = ArrayUtility::listField($listProductInfo, 'source_id');
-$listSourceInfo             = Source_Info::getByMultiId($listSourceId);
-$mapSourceInfo              = ArrayUtility::indexByField($listSourceInfo, 'source_id');
-$listSupplierId             = ArrayUtility::listField($listSourceInfo, 'supplier_id');
-$listSupplierInfo           = Supplier_Info::getByMultiId($listSupplierId);
-$mapSupplierInfo            = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
-$listProductImages          = Product_Images_RelationShip::getByMultiId($listProductId);
-$mapProductImages           = ArrayUtility::indexByField($listProductImages, 'product_id');
+$listProductInfo    = Product_Info::getByGoodsId($goodsId);
+$listProductId      = ArrayUtility::listField($listProductInfo, 'product_id');
+$listSourceId       = ArrayUtility::listField($listProductInfo, 'source_id');
+$listSourceInfo     = Source_Info::getByMultiId($listSourceId);
+$mapSourceInfo      = ArrayUtility::indexByField($listSourceInfo, 'source_id');
+$listSupplierId     = ArrayUtility::listField($listSourceInfo, 'supplier_id');
+$listSupplierInfo   = Supplier_Info::getByMultiId($listSupplierId);
+$mapSupplierInfo    = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
+$listProductImages  = Product_Images_RelationShip::getByMultiId($listProductId);
+$mapProductImages   = ArrayUtility::indexByField($listProductImages, 'product_id');
 foreach ($mapSourceInfo as &$sourceInfo) {
 
     $supplierId = $sourceInfo['supplier_id'];
@@ -69,6 +53,12 @@ foreach ($listGoodsImages as &$goodsImage) {
 
 $goodsInfo['category_name'] = $categoryInfo['category_name'];
 
+$data['mapSpecInfo']        = $mapSpecInfo;
+$data['mapSpecValueInfo']   = $mapSpecValueInfo;
+$data['mapStyleInfo']       = $mapStyleInfo;
+$data['goodsStyleInfo']     = $goodsStyleInfo;
+$data['mapTypeSpecValue']   = $mapTypeSpecValue;
+$data['mapGoodsSpecValue']  = $mapGoodsSpecValue;
 $data['goodsInfo']          = $goodsInfo;
 $data['listProductInfo']    = $listProductInfo;
 $data['listGoodsImages']    = $listGoodsImages;

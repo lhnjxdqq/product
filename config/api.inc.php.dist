@@ -14,4 +14,11 @@ return  array(
             'appKey'   => '4954bf507d89b803436d9647474eb8488bd4143f',
         ),
     ),
+    'api_list'          => array(
+        'select'    => array(
+            'sku'       => 'http://sansan.xuanhuo.com/api/production_tools/goods.php',
+            'spu'       => 'http://sansan.xuanhuo.com/api/production_tools/spu.php',
+            'spu_goods' => 'http://sansan.xuanhuo.com/api/production_tools/spu_goods.php',
+        ),
+    ),
 );
