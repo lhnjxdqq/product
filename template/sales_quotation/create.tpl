@@ -25,7 +25,7 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
-            <form class="form-inline" action="/sales_quotation/add_sales_quotation.php" method="post">
+            <form class="form-inline" action="/sales_quotation/add_sales_quotation.php" method="post" onsubmit="return disableForm()">
             <div class="box">
                 <div class="box-body">
                     <div class="form-group" style="margin-right: 25px;">
@@ -186,7 +186,20 @@ $(function(){
 
         location.href = "/sales_quotation/create.php?plue_price="+pluePrice+"&customer_id="+customerId;
     });
-})    
+    
+})
+function disableForm(){
+
+    quotationName = $("[name=sales_quotation_name]").val();
+
+    if(quotationName.length>0){
+       
+        return true;
+    }else{
+    
+        return false;
+    }
+}    
 </script>
 </body>
 </html>
