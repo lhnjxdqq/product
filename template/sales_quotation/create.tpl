@@ -196,7 +196,8 @@ function disableForm(){
        
         return true;
     }else{
-    
+        
+        alert("报价单名称不能为空");
         return false;
     }
 }    
