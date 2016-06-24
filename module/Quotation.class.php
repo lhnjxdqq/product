@@ -412,7 +412,6 @@ class   Quotation {
             $sheet->mergeCells('E1:E2');
             $sheet->mergeCells('F1:F2');
             $sheet->mergeCells('G1:G2');
-            $sheet->mergeCells('H1:N1');
             self::_saveExcelRow($sheet, 1, $tableHead);
             self::_saveExcelRow($sheet, 2, $colorPriceHead);
  
@@ -485,6 +484,7 @@ class   Quotation {
                 }
             }
             
+            $mapColorInfo           = array();
             foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
                 $spuCost    = array();
@@ -526,7 +526,7 @@ class   Quotation {
             }         
             //获取颜色属性Id列表
             $listSpecValueColotId   = array();
-
+            
             foreach($mapColorInfo as $spuId=>$colorCost){
                 
                 foreach($colorCost as $specColorId=>$cost){
@@ -547,6 +547,9 @@ class   Quotation {
                 $sheet->setCellValue($row, $colorName);
                 $col++;
             }
+
+            $colorCosrCol       = chr(ord(H)+($col-1))."1";
+            $sheet->mergeCells("H1:".$colorCosrCol);
             $remarkCol  = chr(ord(H)+$col);
             $remarkCol1 = $remarkCol."1"; 
             $remarkCol2 = $remarkCol."2"; 
