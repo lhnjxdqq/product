@@ -19,7 +19,7 @@ class   Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_id,goods_sn,goods_name,goods_type_id,goods_id_related,category_id,style_id,self_cost,sale_cost,delete_status,create_time,update_time';
+    const   FIELDS      = 'goods_id,goods_sn,goods_name,goods_type_id,goods_id_related,category_id,style_id,self_cost,sale_cost,goods_remark,delete_status,create_time,update_time';
     /**
      * 新增
      *
