@@ -92,7 +92,7 @@
                                     <td><{$item.size_name}></td>
                                     <td><{$item.material_name}></td>
                                     <{foreach from = $item.color item=cost key=colorId}>
-                                        <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{sprintf("%0.2f",$cost)}>"></td>
+                                        <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{if $cost eq '-'}>-<{else}><{sprintf("%0.2f",$cost)}><{/if}>"></td>
                                     <{/foreach}>
                                     <td><input type="text" name="<{$item.spu_id}>[spu_remark]" value="<{$item.spu_remark}>"></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
