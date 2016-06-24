@@ -28,7 +28,7 @@ $goodsInfo      = Goods_Info::getById($goodsId);
 $categoryId     = $goodsInfo['category_id'];
 $isGoodsExists  = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $styleId, $categoryId);
 
-if ($isGoodsExists) {
+if ($isGoodsExists && ($isGoodsExists != $goodsId)) {
 
     $existedGoodsInfo   = Goods_Info::getById($isGoodsExists);
     Utility::notice('SKU已经存在, 编号为: ' . $existedGoodsInfo['goods_sn']);
