@@ -10,6 +10,8 @@ $data   = array(
 
 if (Spu_Info::update($data)) {
 
+    // 推送删除SPU数据到生产工具
+    Spu_Push::deletePushSpuData((int) $_GET['spu_id']);
     Utility::notice('删除成功');
 } else {
 
