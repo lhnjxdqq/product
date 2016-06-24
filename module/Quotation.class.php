@@ -627,7 +627,7 @@ class   Quotation {
 
         foreach($mapEnumeration['mapSpecColorId'] as $colorId=>$colorName){
             
-            $color[$colorId]    = $indexColorId[$colorId];
+            $color[$colorId]    = !empty($indexColorId[$colorId]) ? $indexColorId[$colorId] : "-";
         }
         $spuInfo                = array(
         
