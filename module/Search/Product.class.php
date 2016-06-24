@@ -1,233 +1,256 @@
 <?php
 class Search_Product {
 
+    /**
+     * 根据筛选条件获取数据
+     *
+     * @param array $condition  筛选条件
+     * @param null $offset      位置
+     * @param null $limit       数量
+     */
     static public function listByCondition (array $condition, $offset = null, $limit = null) {
 
-        $sql    = self::_getSql($condition, null, $offset, $limit);
-        return  Product_Info::query($sql);
+        $fields         = implode(',', self::_getQueryFields());
+        $sqlBase        = 'SELECT ' . $fields . ' FROM `product_info` AS `pi` LEFT JOIN ';
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlCondition   = self::_condition($condition);
+        $sqlOrder       = ' ORDER BY `pi`.`product_id` DESC ';
+        $sqlLimit       = self::_limit($offset, $limit);
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlOrder . $sqlLimit;
+
+        return          Product_Info::query($sql);
+
     }
 
     static public function countByCondition (array $condition) {
 
-        $sql    = self::_getSql($condition, true);
-        $row    = Product_Info::query($sql);
+        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM `product_info` AS `pi` LEFT JOIN ';
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlCondition   = self::_condition($condition);
+        $sqlOrder       = ' ORDER BY `pi`.`product_id` DESC ';
+        $sqlLimit       = self::_limit($offset, $limit);
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlOrder . $sqlLimit;
+        $data           = Product_Info::query($sql);
+        $row            = current($data);
 
-        return  $row[0]['cnt'];
+        return          $row['cnt'];
     }
 
     /**
-     * 获取SQL语句
+     * 根据条件拼接WHERE子句
+     *
+     * @param array $condition  筛选条件
+     * @return string           WHERE子句
+     */
+    static private function _condition (array $condition) {
+
+        $sql        = array();
+        $sql[]      = self::_conditionByCategoryId($condition);
+        $sql[]      = self::_conditionByStyleId($condition);
+        $sql[]      = self::_conditionBySupplierId($condition);
+        $sql[]      = self::_conditionByWeightRange($condition);
+        $sql[]      = self::_conditionByMaterialId($condition);
+        $sql[]      = self::_conditionBySizeId($condition);
+        $sql[]      = self::_conditionByColorId($condition);
+        $sql[]      = self::_conditionBySearchType($condition);
+        $sqlFilter  = array_filter($sql);
+
+        return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    /**
+     * 根据三级分类拼接WHERE子句
      *
      * @param array $condition  条件
-     * @param null $isCount     是否统计
-     * @param null $offset      位置
-     * @param null $limit       数量
      * @return string
      */
-    static private function _getSql (array $condition, $isCount = null, $offset = null, $limit = null) {
+    static private function _conditionByCategoryId (array $condition) {
 
-        $listGoodsIdByCondition     = self::_listGoodsByCondition($condition);
-        $listGoodsIdBySpecValueList = self::_listGoodsBySpecValueList($condition);
-        $listGoodsIdByGoodsSn       = self::_listGoodsByGoodsSn($condition);
-
-        $listGoodsId                = array_intersect($listGoodsIdByCondition, $listGoodsIdBySpecValueList, $listGoodsIdByGoodsSn);
-
-        $listGoodsId                = array_map('intval', array_unique(array_filter($listGoodsId)));
-        $supplierWhere              = self::_whereBySupplier($condition);
-        $sourceWhere                = self::_whereBySource($condition);
-        $productSnWhere             = self::_whereByProductSn($condition);
-
-        if (null === $isCount) {
-
-            $fields     = '`pi`.*';
-            $sqlOrder   = ' ORDER BY `pi`.`product_id` DESC';
-            $sqlLimit   = ' LIMIT ' . (int) $offset . ',' . (int) $limit;
-        } else {
-
-            $fields = 'COUNT(`pi`.`product_id`) AS `cnt`';
-            $sqlOrder   = '';
-            $sqlLimit   = '';
-        }
-
-        $sql    = 'SELECT ' . $fields . ' FROM `product_info` AS `pi` LEFT JOIN `source_info` AS `si` ON `pi`.`source_id`=`si`.`source_id` LEFT JOIN `supplier_info` AS `ssi` ON `si`.`supplier_id`=`ssi`.`supplier_id` WHERE `pi`.`goods_id` IN ("' . implode('","', $listGoodsId) . '")' . $productSnWhere . $supplierWhere . $sourceWhere . $sqlOrder . $sqlLimit;
-
-        return  $sql;
-    }
-
-    static private function _whereByProductSn (array $condition) {
-
-        $sql    = '';
-        if ($condition['search_type'] == 'product_sn') {
-            $multiProductSn = explode(' ', $condition['search_value_list']);
-            $multiProductSn = array_map('addslashes', array_map('trim', array_unique(array_filter($multiProductSn))));
-            $sql    = ' AND `pi`.`product_sn` IN ("' . implode('","', $multiProductSn) . '")';
-        }
-        return  $sql;
+        return  $condition['category_id']
+                ? '`gi`.`category_id` = "' . (int) $condition['category_id'] . '"'
+                : '';
     }
 
     /**
-     * 根据买款ID拼接WHERE语句
-     *
-     * @param array $condition
-     * @return string
-     */
-    static private function _whereBySource (array $condition) {
-
-        $listSourceCode = $condition['search_type'] == 'source_code' ? explode(' ', $condition['search_value_list']) : array();
-        $listSourceCode = array_map('addslashes', array_map('trim', array_unique(array_filter($listSourceCode))));
-        return          $listSourceCode ? ' AND `si`.`source_code` IN ("' . implode('","', $listSourceCode) . '")' : '';
-    }
-
-    /**
-     * 根据买款供应商拼接WHERE子句
-     *
-     * @param array $condition
-     * @return string
-     */
-    static private function _whereBySupplier (array $condition) {
-
-        return  $condition['supplier_id'] ? ' AND `ssi`.`supplier_id` = "' . (int) $condition['supplier_id'] . '"' : '';
-    }
-
-    /**
-     * 根据goodsSn获取商品
-     *
-     * @param array $condition
-     * @return array
-     */
-    static private function _listGoodsByGoodsSn (array $condition) {
-
-        $listGoodsId    = ArrayUtility::listField(Goods_Info::listByCondition(array(
-            'delete_status' => Goods_DeleteStatus::NORMAL
-        )), 'goods_id');
-        if ($condition['search_type'] == 'goods_sn') {
-            $multiGoodsSn   = explode(' ', $condition['search_value_list']);
-            $listGoodsInfo  = Goods_Info::getByMultiGoodsSn($multiGoodsSn);
-            $listGoodsId    = ArrayUtility::listField($listGoodsInfo, 'goods_id');
-        }
-        return          $listGoodsId;
-    }
-
-    /**
-     * 按三级分类 和 款式获取商品
-     *
-     * @param array $condition
-     * @return array
-     */
-    static private function _listGoodsByCondition (array $condition) {
-
-        $data   = Goods_Info::listByCondition(array(
-            'category_id'   => (int) $condition['category_id'],
-            'style_id'      => (int) $condition['style_id_lv2'],
-            'delete_status' => Goods_DeleteStatus::NORMAL,
-        ));
-        return  $data ? ArrayUtility::listField($data, 'goods_id') : array();
-    }
-
-    /**
-     * 根据规格 规格值 获取商品
+     * 根据子款式ID拼接WHERE子句
      *
      * @param array $condition  条件
-     * @return array
+     * @return string
      */
-    static private function _listGoodsBySpecValueList (array $condition) {
+    static private function _conditionByStyleId (array $condition) {
 
-        $multiSpecValueList = self::_createSpecValueList($condition);
-        if (empty($multiSpecValueList[0])) {
-            $data   = array_unique(ArrayUtility::listField(Goods_Spec_Value_RelationShip::listAll(), 'goods_id'));
-        } else {
-            $data   = Goods_Spec_Value_RelationShip::listByMultiSpecValueList($multiSpecValueList);
-        }
-
-        return          $data;
+        return  $condition['style_id_lv2']
+                ? '`gi`.`style_id` = "' . (int) $condition['style_id_lv2'] . '"'
+                : '';
     }
 
     /**
-     * 生成规格 规格值条件
+     * 根据供应商ID拼接WHERE子句
      *
      * @param array $condition  条件
-     * @return array
+     * @return string
      */
-    static private function _createSpecValueList (array $condition) {
+    static private function _conditionBySupplierId (array $condition) {
 
-        $specValueList  = array();
-        if ($condition['spec_value_material_id']) {
-            $specInfoList   = Spec_Info::getByName('主料材质');
-            foreach ($specInfoList as $specInfo) {
-                $specValueList[]    = array(
-                    'spec_id'       => $specInfo['spec_id'],
-                    'spec_value_id' => $condition['spec_value_material_id'],
-                );
-            }
-        }
-
-        if ($condition['spec_value_size_id']) {
-            $specInfoList   = Spec_Info::getByName('规格尺寸');
-            foreach ($specInfoList as $specInfo) {
-                $specValueList[]    = array(
-                    'spec_id'       => $specInfo['spec_id'],
-                    'spec_value_id' => $condition['spec_value_size_id'],
-                );
-            }
-        }
-
-        if ($condition['spec_value_color_id']) {
-            $specInfoList   = Spec_Info::getByName('颜色');
-            foreach ($specInfoList as $specInfo) {
-                $specValueList[]    = array(
-                    'spec_id'       => $specInfo['spec_id'],
-                    'spec_value_id' => $condition['spec_value_color_id'],
-                );
-            }
-        }
-
-        $weightValueList    = self::_createWeightValueList($condition);
-        $multiSpecValueList = array();
-        if ($weightValueList) {
-
-            foreach ($weightValueList as $weightValue) {
-                $multiSpecValueList[]  = array_merge($specValueList, array($weightValue));
-            }
-        } else {
-            $multiSpecValueList[]   = $specValueList;
-        }
-
-        return              $multiSpecValueList;
+        return  $condition['supplier_id']
+                ? '`si`.`supplier_id` = "' . (int) $condition['supplier_id'] . '"'
+                : '';
     }
 
     /**
-     * 生成规格重量区间条件
+     * 根据重量范围拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByWeightRange (array $condition) {
+
+        $weightValueStart   = $condition['weight_value_start']
+                              ? sprintf('%.2f', $condition['weight_value_start'])
+                              : 0;
+        $weightValueEnd     = $condition['weight_value_end']
+                              ? sprintf('%.2f', $condition['weight_value_end'])
+                              : 0;
+
+        if ($weightValueEnd && ($weightValueEnd > 0) && ($weightValueEnd >= $weightValueStart)) {
+
+            $weightRangeList    = range($weightValueStart * 100, $weightValueEnd * 100);
+            $weightRangeList    = array_map(create_function('$value', 'return sprintf("%.2f", $value / 100);'), $weightRangeList);
+            $listSpecValueInfo  = Spec_Value_Info::getByMultiValueData($weightRangeList);
+            $listSpecValueId    = array_unique(ArrayUtility::listField($listSpecValueInfo, 'spec_value_id'));
+            return              empty($listSpecValueId)
+                                ? ''
+                                : '`weight_info`.`spec_value_id` IN ("' . implode('","', $listSpecValueId) . '")';
+        }
+        return '';
+    }
+
+    /**
+     * 根据材质拼接WHERE子句
      *
      * @param array $condition
+     * @return string
+     */
+    static private function _conditionByMaterialId (array $condition) {
+
+        return  $condition['spec_value_material_id']
+                ? '`material_info`.`spec_value_id` = "' . (int) $condition['spec_value_material_id'] . '"'
+                : '';
+    }
+
+    /**
+     * 根据规格尺寸拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionBySizeId (array $condition) {
+
+        return  $condition['spec_value_size_id']
+                ? '`size_info`.`spec_value_id`= "' . (int) $condition['spec_value_size_id'] . '"'
+                : '';
+    }
+
+    /**
+     * 根据颜色拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionByColorId (array $condition) {
+
+        return  $condition['spec_value_color_id']
+                ? '`color_info`.`spec_value_id` = "' . (int) $condition['spec_value_color_id'] . '"'
+                : '';
+    }
+
+    static private function _conditionBySearchType (array $condition) {
+
+        $searchType         = trim($condition['search_type']);
+        $searchValueString  = trim($condition['search_value_list']);
+
+        if (!$searchType || !$searchValueString) {
+
+            return '';
+        }
+        $searchValueList    = explode(' ', $searchValueString);
+        $searchValueList    = array_map('addslashes', array_map('trim', array_unique(array_filter($searchValueList))));
+        $filed              = '';
+        switch ($searchType) {
+            case 'source_code' :
+                $filed      = '`si`.`source_code`';
+            break;
+            case 'goods_sn' :
+                $filed      = '`gi`.`goods_sn`';
+            break;
+            case 'product_sn' :
+                $filed      = '`pi`.`product_sn`';
+            break;
+        }
+        return              $filed
+                            ? $filed . ' IN ("' . implode('","', $searchValueList) . '")'
+                            : '';
+    }
+
+    /**
+     * 拼接LIMIT子句
+     *
+     * @param $offset   位置
+     * @param $limit    数量
+     * @return string
+     */
+    static private function _limit ($offset, $limit) {
+
+        return  (null === $offset || null === $limit) ? '' : ' LIMIT ' . (int) $offset . ',' . (int) $limit;
+    }
+
+    /**
+     * 查询表
+     *
      * @return array
      */
-    static private function _createWeightValueList (array $condition) {
+    static private function _getJoinTables () {
 
-        $weightStart    = $condition['weight_value_start'] ? $condition['weight_value_start'] * 100 : 0;
-        $weightEnd      = $condition['weight_value_end'] ? $condition['weight_value_end'] * 100 : 0;
-        if ($weightStart == $weightEnd && $weightStart == 0) {
-            return;
-        }
-        if (($weightEnd < $weightStart) || ($weightEnd >= 3000)) {
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias', 'spec_id');
+        $weightId       = $mapSpecInfo['weight'];
+        $sizeId         = $mapSpecInfo['size'];
+        $colorId        = $mapSpecInfo['color'];
+        $materialId     = $mapSpecInfo['material'];
 
-            Utility::notice('规格重量区间错误');
-            return;
-        }
-        $weightValue        = range($weightStart, $weightEnd, 1);
-        $weightValue        = array_map(create_function('$value', 'return sprintf("%.2f", $value / 100);'), $weightValue);
-        $specValueInfoList  = Spec_Value_Info::getByMultiValueData($weightValue);
-        $listSpecInfo       = Spec_Info::getByName('规格重量');
-        $specValueList      = array();
-        foreach ($listSpecInfo as $specInfo) {
-            foreach ($specValueInfoList as $specValue) {
-                $specValueList[]    = array(
-                    'spec_id'       => $specInfo['spec_id'],
-                    'spec_value_id' => $specValue['spec_value_id'],
-                );
-            }
-        }
+        return  array(
+            '`goods_info` AS `gi` ON `gi`.`goods_id`=`pi`.`goods_id`',
+            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`pi`.`goods_id` AND `weight_info`.`spec_id` = ' . $weightId,
+            '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`pi`.`goods_id` AND `size_info`.`spec_id` = ' . $sizeId,
+            '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`pi`.`goods_id` AND `color_info`.`spec_id` = ' . $colorId,
+            '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`pi`.`goods_id` AND `material_info`.`spec_id` = ' . $materialId,
+            '`source_info` AS `si` ON `si`.`source_id`=`pi`.`source_id`',
+        );
+    }
 
-        return              $specValueList;
+    /**
+     * 查询字段
+     *
+     * @return array
+     */
+    static private function _getQueryFields () {
+
+        return  array(
+            '`pi`.`product_id`',
+            '`pi`.`product_sn`',
+            '`pi`.`product_name`',
+            '`gi`.`goods_sn`',
+            '`gi`.`category_id`',
+            '`weight_info`.`spec_value_id` AS `weight_value_id`',
+            '`size_info`.`spec_value_id` AS `size_value_id`',
+            '`color_info`.`spec_value_id` AS `color_value_id`',
+            '`material_info`.`spec_value_id` AS `material_value_id`',
+            '`si`.`supplier_id`',
+            '`si`.`source_code`',
+            '`pi`.`product_cost`',
+            '`pi`.`goods_id`',
+            '`pi`.`source_id`'
+        );
     }
 
     /**
@@ -243,5 +266,4 @@ class Search_Product {
             'product_sn'    => '产品编号',
         );
     }
-
 }
