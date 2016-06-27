@@ -90,4 +90,17 @@ class   Goods_Type_Spec_Value_Relationship {
 
         return          self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据规格ID查询所有规格值
+     *
+     * @param $specId
+     * @return array
+     */
+    static public function getBySpecId ($specId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_id` = "' . (int) $specId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }

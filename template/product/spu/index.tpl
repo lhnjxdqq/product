@@ -26,6 +26,87 @@
         <section class="content">
             <div class="box">
                 <div class="box-header with-border">
+                    <h3 class="box-title">条件筛选</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <form action="/product/spu/index.php" method="get">
+                    <div class="box-body">
+                        <div class="row spu-filter">
+                            <div class="col-md-2">
+                                <select name="category_id" class="form-control">
+                                    <option value="0">请选择三级分类</option>
+                                    <{foreach from=$data.mapCategoryInfo item=item}>
+                                        <option value="<{$item.category_id}>"<{if $smarty.get.category_id eq $item.category_id}> selected<{/if}>><{$item.category_name}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="supplier_id" class="form-control">
+                                    <option value="0">请选择供应商ID</option>
+                                    <{foreach from=$data.mapSupplierInfo item=item}>
+                                        <option value="<{$item.supplier_id}>"<{if $smarty.get.supplier_id eq $item.supplier_id}> selected<{/if}>><{$item.supplier_code}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="size_value_id" class="form-control">
+                                    <option value="0">请选择规格尺寸</option>
+                                    <{foreach from=$data.mapSizeSpecValueInfo item=item}>
+                                        <option value="<{$item.spec_value_id}>"<{if $smarty.get.size_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="color_value_id" class="form-control">
+                                    <option value="0">请选择颜色</option>
+                                    <{foreach from=$data.mapColorSpecValueInfo item=item}>
+                                        <option value="<{$item.spec_value_id}>"<{if $smarty.get.color_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">规格重量:</span>
+                                    <input type="number" name="weight_value_start" class="form-control" value="<{$smarty.get.weight_value_start}>">
+                                    <span class="input-group-addon">到</span>
+                                    <input type="number" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.row -->
+                        <div class="row spu-filter">
+                            <div class="col-md-2">
+                                <select name="material_value_id" class="form-control">
+                                    <option value="0">请选择材质</option>
+                                    <{foreach from=$data.mapMaterialSpecValueInfo item=item}>
+                                    <option value="<{$item.spec_value_id}>"<{if $smarty.get.material_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/产品编号" value="<{$smarty.get.search_value_list}>">
+                            </div>
+                            <div class="col-md-2">
+                                <select name="search_type" class="form-control">
+                                    <option value="0">请选择搜索类型</option>
+                                    <{foreach from=$data.searchType item=typeName key=typeId}>
+                                        <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
+                            </div>
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
                     <input type="checkbox" name="check-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;"><i class="fa fa-shopping-cart"></i> 加入销售报价单</a>
                     <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> <{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
@@ -38,10 +119,11 @@
                                     <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" /></td>
                                     <img src="<{$item.image_url}>" alt="...">
                                     <div class="caption">
-                                        <p>三级分类: <{$item.category_name}></p>
-                                        <p>规格重量: <{$item.weight_value}></p>
-                                        <p>K红出货工费: <{$item.sale_cost}></p>
-                                        <p>供应商ID: <{$item.supplier_id}></p>
+                                        <p>三级分类: <{$data.mapCategoryInfo[$item.category_id]['category_name']}></p>
+                                        <p>规格重量: <{$data.mapWeightSpecValueInfo[$item.spec_value_id]['spec_value_data']}></p>
+                                        <{foreach from=$item.list_cost item=cost key=supplierId}>
+                                        <p><{$data.mapSupplierInfo[$supplierId]['supplier_code']}> K红出货工费: <{$cost}></p>
+                                        <{/foreach}>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
                                                 <a href="javascript:void(0);" class="btn btn-<{if $item.is_cart eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
@@ -90,7 +172,9 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-
+<style>
+    .spu-filter {margin-bottom: 10px;}
+</style>
 <{include file="section/foot.tpl"}>
 <script>
     function delSpu(spuId) {

@@ -79,4 +79,17 @@ class   Spec_Value_Info {
 
         return          self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据规格值查询规格ID
+     *
+     * @param $specValueData    规格值
+     * @return array
+     */
+    static public function getBySpecValueData ($specValueData) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_value_data` = "' . addslashes(trim($specValueData)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

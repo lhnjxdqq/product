@@ -77,5 +77,18 @@ class   Spec_Info {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据规格别名获取规格信息
+     *
+     * @param $alias    规格别名
+     * @return array    规格信息
+     */
+    static public function getByAlias ($alias) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_alias` = "' . addslashes(trim($alias)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
     
 }
