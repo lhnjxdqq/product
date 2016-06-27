@@ -5,10 +5,15 @@ $condition                  = $_GET;
 $userId                     = (int) $_SESSION['user_id'];
 
 $listCategoryInfo           = Category_Info::listAll();
-$mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
+$listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
+$mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, 'category_id');
 
 $listSupplierInfo           = Supplier_Info::listAll();
 $mapSupplierInfo            = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
+
+$listStyleInfo          = Style_Info::listAll();
+$listStyleInfo          = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
+$groupStyleInfo         = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
 
 $weightSpecInfo             = Spec_Info::getByAlias('weight');
 $listWeightSpecValue        = Goods_Type_Spec_Value_Relationship::getBySpecId($weightSpecInfo['spec_id']);
@@ -37,8 +42,11 @@ $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueI
 $condition['delete_status'] = Spu_DeleteStatus::NORMAL;
 
 $perpage                    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$countSpuTotal              = isset($condition['category_id'])
+                              ? Search_Spu::countByCondition($condition)
+                              : Spu_List::countByCondition($condition);
 $page                       = new PageList(array(
-    PageList::OPT_TOTAL     => Spu_List::countByCondition($condition),
+    PageList::OPT_TOTAL     => $countSpuTotal,
     PageList::OPT_URL       => '/product/spu/index.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
@@ -48,7 +56,9 @@ $kRedSpecValueData          = $configData['spec_value_data'];
 $kRedSpecValueInfo          = Spec_Value_Info::getBySpecValueData($kRedSpecValueData);
 $kRedSpecValueId            = $kRedSpecValueInfo['spec_value_id'];
 
-$listSpuInfo                = Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
+$listSpuInfo                = isset($condition['category_id'])
+                              ? Search_Spu::listByCondition($condition, array(), $page->getOffset(), $perpage)
+                              : Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 $listSpuId                  = ArrayUtility::listField($listSpuInfo, 'spu_id');
 $listSpuImages              = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages               = ArrayUtility::indexByField($listSpuImages, 'spu_id');
@@ -100,8 +110,9 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 $countCartSpu                       = Cart_Spu_Info::countByUser($userId);
 $data['searchType']                 = Search_Spu::getSearchType();
 $data['mainMenu']                   = Menu_Info::getMainMenu();
-$data['mapCategoryInfo']            = $mapCategoryInfo;
+$data['mapCategoryInfoLv3']         = $mapCategoryInfoLv3;
 $data['mapSupplierInfo']            = $mapSupplierInfo;
+$data['groupStyleInfo']             = $groupStyleInfo;
 $data['mapWeightSpecValueInfo']     = $mapWeightSpecValueInfo;
 $data['mapSizeSpecValueInfo']       = $mapSizeSpecValueInfo;
 $data['mapColorSpecValueInfo']      = $mapColorSpecValueInfo;

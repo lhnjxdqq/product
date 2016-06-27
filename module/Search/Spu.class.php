@@ -1,6 +1,202 @@
 <?php
 class Search_Spu {
 
+    static public function listByCondition (array $condition, $orderBy = array(), $offset = null, $limit = null) {
+
+        $fields         = implode(',', self::_getQueryFields());
+        $sqlBase        = 'SELECT ' . $fields . ' FROM `spu_info` AS `spu_info` LEFT JOIN ';
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlCondition   = self::_condition($condition);
+        $sqlGroup       = self::_group();
+        $sqlOrder       = self::_order($orderBy);
+        $sqlLimit       = self::_limit($offset, $limit);
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
+
+        return          Spu_Info::query($sql);
+    }
+
+    static public function countByCondition (array $condition) {
+
+        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM ( SELECT `spu_info`.`spu_id` FROM `spu_info` AS `spu_info` LEFT JOIN ';
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlCondition   = self::_condition($condition);
+        $sqlGroup       = self::_group();
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . ' ) AS `count_total`';
+        $data           = Spu_Info::query($sql);
+        $row            = current($data);
+
+        return          $row['cnt'];
+    }
+
+    static private function _condition (array $condition) {
+
+        $sql        = array();
+        $sql[]      = self::_conditionByCategoryId($condition);
+        $sql[]      = self::_conditionByStyleId($condition);
+        $sql[]      = self::_conditionBySupplierId($condition);
+        $sql[]      = self::_conditionByWeightRange($condition);
+        $sql[]      = self::_conditionByMaterialId($condition);
+        $sql[]      = self::_conditionByColorId($condition);
+        $sql[]      = self::_conditionBySizeId($condition);
+        $sql[]      = self::_conditionBySearchType($condition);
+        $sqlFilter  = array_filter($sql);
+
+        return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    static private function _conditionByCategoryId (array $condition) {
+
+        return  $condition['category_id']
+                ? '`goods_info`.`category_id` = "' . (int) $condition['category_id'] . '"'
+                : '';
+    }
+
+    static private function _conditionByStyleId (array $condition) {
+
+        return  $condition['style_id_lv2']
+                ? '`goods_info`.`style_id` = "' . (int) $condition['style_id_lv2'] . '"'
+                : '';
+    }
+
+    static private function _conditionBySupplierId (array $condition) {
+
+        return  $condition['supplier_id']
+                ? '`source_info`.`supplier_id` = "' . (int) $condition['supplier_id'] . '"'
+                : '';
+    }
+
+    static private function _conditionByWeightRange (array $condition) {
+
+        $weightValueStart   = $condition['weight_value_start']
+            ? sprintf('%.2f', $condition['weight_value_start'])
+            : 0;
+        $weightValueEnd     = $condition['weight_value_end']
+            ? sprintf('%.2f', $condition['weight_value_end'])
+            : 0;
+
+        if ($weightValueEnd && ($weightValueEnd > 0) && ($weightValueEnd >= $weightValueStart)) {
+
+            $weightRangeList    = range($weightValueStart * 100, $weightValueEnd * 100);
+            $weightRangeList    = array_map(create_function('$value', 'return sprintf("%.2f", $value / 100);'), $weightRangeList);
+            $listSpecValueInfo  = Spec_Value_Info::getByMultiValueData($weightRangeList);
+            $listSpecValueId    = array_unique(ArrayUtility::listField($listSpecValueInfo, 'spec_value_id'));
+            return              empty($listSpecValueId)
+                ? ''
+                : '`weight_info`.`spec_value_id` IN ("' . implode('","', $listSpecValueId) . '")';
+        }
+        return '';
+    }
+
+    /**
+     * 根据材质拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionByMaterialId (array $condition) {
+
+        return  $condition['material_value_id']
+            ? '`material_info`.`spec_value_id` = "' . (int) $condition['material_value_id'] . '"'
+            : '';
+    }
+
+    /**
+     * 根据规格尺寸拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionBySizeId (array $condition) {
+
+        return  $condition['size_value_id']
+            ? '`size_info`.`spec_value_id`= "' . (int) $condition['size_value_id'] . '"'
+            : '';
+    }
+
+    /**
+     * 根据颜色拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionByColorId (array $condition) {
+
+        return  $condition['color_value_id']
+            ? '`color_info`.`spec_value_id` = "' . (int) $condition['color_value_id'] . '"'
+            : '';
+    }
+
+    static private function _conditionBySearchType (array $condition) {
+
+        $searchType         = trim($condition['search_type']);
+        $searchValueString  = trim($condition['search_value_list']);
+
+        if (!$searchType || !$searchValueString) {
+
+            return '';
+        }
+        $searchValueList    = explode(' ', $searchValueString);
+        $searchValueList    = array_map('addslashes', array_map('trim', array_unique(array_filter($searchValueList))));
+        $filed              = '';
+        switch ($searchType) {
+            case 'source_code' :
+                $filed      = '`source_info`.`source_code`';
+                break;
+            case 'goods_sn' :
+                $filed      = '`goods_info`.`goods_sn`';
+                break;
+            case 'spu_sn' :
+                $filed      = '`spu_info`.`spu_sn`';
+                break;
+        }
+        return              $filed
+            ? $filed . ' IN ("' . implode('","', $searchValueList) . '")'
+            : '';
+    }
+
+    static private function _group () {
+
+        return  ' GROUP BY `spu_info`.`spu_id`';
+    }
+
+    static private function _order ($order) {
+
+        return  ' ORDER BY `spu_info`.`spu_id` DESC';
+    }
+
+    static private function _limit ($offset, $limit) {
+
+        return  (null === $offset || null === $limit)
+                ? ''
+                : ' LIMIT ' . (int) $offset . ',' . (int) $limit;
+    }
+
+    static private function _getJoinTables () {
+
+        return  array(
+            '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
+            '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
+            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id` = 4',
+            '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id` = 2',
+            '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id` = 3',
+            '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id` = 1',
+            '`product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`',
+            '`source_info` AS `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`',
+        );
+    }
+
+    static private function _getQueryFields () {
+
+        return  array(
+            '`spu_info`.`spu_id`',
+            '`spu_info`.`spu_sn`',
+            '`spu_info`.`spu_name`',
+            '`goods_info`.`goods_id`',
+            '`goods_info`.`category_id`',
+            '`weight_info`.`spec_value_id` AS `weight_value_id`'
+        );
+    }
+
     /**
      * 获取搜索类型
      *
