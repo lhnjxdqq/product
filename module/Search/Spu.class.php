@@ -1,6 +1,15 @@
 <?php
 class Search_Spu {
 
+    /**
+     * 根据条件获取数据
+     *
+     * @param array $condition  条件
+     * @param array $orderBy    排序
+     * @param null $offset      位置
+     * @param null $limit       数量
+     * @return array            数据
+     */
     static public function listByCondition (array $condition, $orderBy = array(), $offset = null, $limit = null) {
 
         $fields         = implode(',', self::_getQueryFields());
@@ -15,6 +24,12 @@ class Search_Spu {
         return          Spu_Info::query($sql);
     }
 
+    /**
+     * 根据条件获取数据数量
+     *
+     * @param array $condition  条件
+     * @return mixed            数量
+     */
     static public function countByCondition (array $condition) {
 
         $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM ( SELECT `spu_info`.`spu_id` FROM `spu_info` AS `spu_info` LEFT JOIN ';
@@ -28,6 +43,12 @@ class Search_Spu {
         return          $row['cnt'];
     }
 
+    /**
+     * 根据条件拼接WHERE语句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _condition (array $condition) {
 
         $sql        = array();
@@ -44,6 +65,12 @@ class Search_Spu {
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
     }
 
+    /**
+     * 根据分类ID条件拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _conditionByCategoryId (array $condition) {
 
         return  $condition['category_id']
@@ -51,6 +78,12 @@ class Search_Spu {
                 : '';
     }
 
+    /**
+     * 根据款式拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _conditionByStyleId (array $condition) {
 
         return  $condition['style_id_lv2']
@@ -58,6 +91,12 @@ class Search_Spu {
                 : '';
     }
 
+    /**
+     * 根据供应商拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _conditionBySupplierId (array $condition) {
 
         return  $condition['supplier_id']
@@ -65,6 +104,12 @@ class Search_Spu {
                 : '';
     }
 
+    /**
+     * 根据重量范围拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _conditionByWeightRange (array $condition) {
 
         $weightValueStart   = $condition['weight_value_start']
@@ -126,6 +171,12 @@ class Search_Spu {
             : '';
     }
 
+    /**
+     * 根据搜索类型拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _conditionBySearchType (array $condition) {
 
         $searchType         = trim($condition['search_type']);
@@ -154,16 +205,35 @@ class Search_Spu {
             : '';
     }
 
+    /**
+     * 拼接GROUP子句
+     *
+     * @return string
+     */
     static private function _group () {
 
         return  ' GROUP BY `spu_info`.`spu_id`';
     }
 
+    /**
+     * 拼接ORDER BY 子句
+     *
+     * @param $order
+     * @return string
+     */
     static private function _order ($order) {
 
         return  ' ORDER BY `spu_info`.`spu_id` DESC';
     }
 
+
+    /**
+     * 拼接LIMIT子句
+     *
+     * @param $offset   位置
+     * @param $limit    数量
+     * @return string
+     */
     static private function _limit ($offset, $limit) {
 
         return  (null === $offset || null === $limit)
@@ -171,20 +241,33 @@ class Search_Spu {
                 : ' LIMIT ' . (int) $offset . ',' . (int) $limit;
     }
 
+    /**
+     * 查询表
+     *
+     * @return array
+     */
     static private function _getJoinTables () {
+
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
         return  array(
             '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
             '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
-            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id` = 4',
-            '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id` = 2',
-            '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id` = 3',
-            '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id` = 1',
+            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id` = ' . $mapSpecInfo['weight']['spec_id'],
+            '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id` = ' . $mapSpecInfo['size']['spec_id'],
+            '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id` = ' . $mapSpecInfo['color']['spec_id'],
+            '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id` = ' . $mapSpecInfo['material']['spec_id'],
             '`product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`',
             '`source_info` AS `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`',
         );
     }
 
+    /**
+     * 查询字段
+     *
+     * @return array
+     */
     static private function _getQueryFields () {
 
         return  array(

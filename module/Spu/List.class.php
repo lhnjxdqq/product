@@ -39,10 +39,12 @@ class Spu_List {
 
         $spuGoodsList   = Spu_Goods_RelationShip::getBySpuId($spuId);
         $spuGoodsIdList = ArrayUtility::listField($spuGoodsList, 'goods_id');
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
         $fields         = '`gi`.`goods_id`,`color_info`.`spec_value_id`,`gi`.`sale_cost`,`si`.`supplier_id`';
         $sql            = 'SELECT ' . $fields . ' FROM `goods_info` AS `gi` '
-                        . 'LEFT JOIN `goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`gi`.`goods_id` AND `color_info`.`spec_id`=3 '
+                        . 'LEFT JOIN `goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`gi`.`goods_id` AND `color_info`.`spec_id`=' . $mapSpecInfo['color']['spec_id'] . ' '
                         . 'LEFT JOIN `product_info` AS `pi` ON `gi`.`goods_id`=`pi`.`goods_id` '
                         . 'LEFT JOIN `source_info` AS `si` ON `si`.`source_id`=`pi`.`source_id` '
                         . 'WHERE `gi`.`goods_id` IN ("' . implode('","', $spuGoodsIdList) . '")';
@@ -92,10 +94,13 @@ class Spu_List {
      */
     static private function _getJoinTables () {
 
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
+
         return  array(
             '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`si`.`spu_id`',
             '`goods_info` AS `gi` ON `gi`.`goods_id`=`sgr`.`goods_id`',
-            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`gi`.`goods_id` AND `weight_info`.`spec_id`=4',
+            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`gi`.`goods_id` AND `weight_info`.`spec_id`=' . $mapSpecInfo['weight']['spec_id'],
         );
     }
 
