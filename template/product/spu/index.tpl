@@ -132,7 +132,7 @@
                                         <p>三级分类: <{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></p>
                                         <p>规格重量: <{$data.mapWeightSpecValueInfo[$item.weight_value_id]['spec_value_data']}></p>
                                         <{foreach from=$item.list_cost item=cost key=supplierId}>
-                                        <p><{$data.mapSupplierInfo[$supplierId]['supplier_code']}> K红出货工费: <{$cost}></p>
+                                        <p><{$data.mapSupplierInfo[$supplierId]['supplier_code']}> 出货工费: <{$cost}></p>
                                         <{/foreach}>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">

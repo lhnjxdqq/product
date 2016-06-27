@@ -11,9 +11,9 @@ $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, '
 $listSupplierInfo           = Supplier_Info::listAll();
 $mapSupplierInfo            = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
 
-$listStyleInfo          = Style_Info::listAll();
-$listStyleInfo          = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
-$groupStyleInfo         = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
+$listStyleInfo              = Style_Info::listAll();
+$listStyleInfo              = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
+$groupStyleInfo             = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
 
 $weightSpecInfo             = Spec_Info::getByAlias('weight');
 $listWeightSpecValue        = Goods_Type_Spec_Value_Relationship::getBySpecId($weightSpecInfo['spec_id']);
