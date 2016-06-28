@@ -58,6 +58,7 @@
                                     <th>客户</th>
                                     <th>创建时间</th>
                                     <th>商品数量</th>
+                                    <th>状态</th>
                                     <th>创建人</th>
                                     <th>操作人</th>
                                     <th style="text-align:center;width:340px">操作</th>
@@ -70,6 +71,7 @@
                                         <td><{if $item.customer_id eq 0}><{else}><{$mapCustomer[$item.customer_id]['customer_name']}><{/if}></td>
                                         <td><{$item.sales_quotation_date}></td>
                                         <td><{$item.spu_num}></td>
+                                        <td><{if $item.is_confirm != $yesConfireCode}>未确认<{else}>已确认<{/if}></td>
                                         <td><{$mapUser[$item.author_id]['username']}></td>
                                         <td><{$mapUser[$item.operatior_id]['username']}></td>
                                         <td>
