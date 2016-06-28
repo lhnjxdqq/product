@@ -133,9 +133,7 @@ class Search_Spu {
 
             $listSpecValueInfo  = Spec_Value_Info::getByMultiValueData($weightRangeList);
             $listSpecValueId    = array_unique(ArrayUtility::listField($listSpecValueInfo, 'spec_value_id'));
-            return              empty($listSpecValueId)
-                ? ''
-                : '`weight_info`.`spec_value_id` IN ("' . implode('","', $listSpecValueId) . '")';
+            return              '`weight_info`.`spec_value_id` IN ("' . implode('","', $listSpecValueId) . '")';
         }
         return '';
     }
