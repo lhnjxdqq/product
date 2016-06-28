@@ -17,6 +17,15 @@ $listGoodsInfo          = Goods_List::listByCondition($condition, array(), $page
 $listGoodsId            = ArrayUtility::listField($listGoodsInfo, 'goods_id');
 $listGoodsImages        = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages         = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+$listGoodsProductInfo   = Product_Info::getByMultiGoodsId($listGoodsId);
+$groupGoodsProductInfo  = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
+$mapGoodsProductMinCost = array();
+foreach ($groupGoodsProductInfo as $goodsId => $goodsProductList) {
+
+    $goodsProductList   = ArrayUtility::sortMultiArrayByField($goodsProductList, 'product_cost');
+    $goodsProductInfo   = current($goodsProductList);
+    $mapGoodsProductMinCost[$goodsId]   = $goodsProductInfo['product_cost'];
+}
 
 $listMaterialValueId    = ArrayUtility::listField($listGoodsInfo, 'material_value_id');
 $listSizeValueId        = ArrayUtility::listField($listGoodsInfo, 'size_value_id');
@@ -38,6 +47,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['image_url']     = $imageKey
         ? AliyunOSS::getInstance('images-sku')->url($imageKey)
         : '';
+    $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
 }
 
 $data['mapCategoryInfo']    = $mapCategoryInfo;

@@ -349,4 +349,26 @@ class ArrayUtility {
         $cData  = $dom->ownerDocument->createCDATASection($content);
         $dom->appendChild($cData);
     }
+
+    /**
+     * 对一个二维数组按字段值进行排序
+     *
+     * @param array $multiArray 二维数组
+     * @param $fieldName        字段名
+     * @param int $sortBy       排序
+     * @return array|void
+     */
+    static public function sortMultiArrayByField (array $multiArray, $fieldName, $sortBy = SORT_ASC) {
+
+        $temp = array();
+        foreach ($multiArray as $key => $array) {
+            if (!$array[$fieldName]) {
+
+                return;
+            }
+            $temp[$key] = $array[$fieldName];
+        }
+        array_multisort($temp, $sortBy, $multiArray);
+        return  $multiArray;
+    }
 }

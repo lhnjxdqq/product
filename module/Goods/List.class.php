@@ -75,7 +75,7 @@ class Goods_List {
      */
     static private function _order (array $order) {
 
-        return  ' ORDER BY `goods_info`.`goods_id` DESC,`product_info`.`product_cost` ASC';
+        return  ' ORDER BY `goods_info`.`goods_id` DESC';
     }
 
     /**
@@ -104,7 +104,6 @@ class Goods_List {
             '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id`=2',
             '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id`=3',
             '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id`=4',
-            '`product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`',
         );
     }
 
@@ -126,7 +125,6 @@ class Goods_List {
             '`goods_info`.`category_id`',
             '`goods_info`.`self_cost`',
             '`goods_info`.`sale_cost`',
-            '`product_info`.`product_cost`',
         );
     }
 }
