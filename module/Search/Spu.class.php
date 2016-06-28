@@ -60,6 +60,7 @@ class Search_Spu {
         $sql[]      = self::_conditionByColorId($condition);
         $sql[]      = self::_conditionBySizeId($condition);
         $sql[]      = self::_conditionBySearchType($condition);
+        $sql[]      = self::_conditionByDeleteStatus($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
@@ -203,6 +204,17 @@ class Search_Spu {
         return              $filed
             ? $filed . ' IN ("' . implode('","', $searchValueList) . '")'
             : '';
+    }
+
+    /**
+     * 按SPU删除状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByDeleteStatus (array $condition) {
+
+        return  '`spu_info`.`delete_status` = "' . (int) $condition['delete_status'] . '"';
     }
 
     /**
