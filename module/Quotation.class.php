@@ -7,7 +7,7 @@ class   Quotation {
     /**
      * Excel导出缓冲区尺寸 (记录条数)
      */
-    const   BUFFER_SIZE_EXCEL   = 100;
+    const   BUFFER_SIZE_EXCEL   = 1000;
     
     /**
      * 验证报价单
