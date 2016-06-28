@@ -239,7 +239,6 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 
 foreach($listSpuInfo as $key => $spuInfo){
 
-    Utility::dump($spuInfo);
     if(in_array($spuInfo['spu_id'],$listOldSpuId)){
         
         continue;
