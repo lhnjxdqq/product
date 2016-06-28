@@ -66,15 +66,15 @@
                             <tbody>
                                 <{foreach from=$data.listGoodsInfo item=item}>
                                     <tr>
-                                        <td><input type="checkbox" class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}>"></td>
+                                        <td><input type="checkbox" class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>
-                                        <td><img src="<{$data.mapGoodsImages[$item.goods_id]['image_url']}>" height="60"></td>
-                                        <td><{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></td>
-                                        <td><{$data.mapGoodsSpecValue[$item.goods_id]['主料材质']['spec_value_data']}></td>
-                                        <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}></td>
-                                        <td><{$data.mapGoodsSpecValue[$item.goods_id]['颜色']['spec_value_data']}></td>
-                                        <td><{$data.mapGoodsProductCost[$item.goods_id]}></td>
+                                        <td><img src="<{$item.image_url}>" height="60"></td>
+                                        <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>
+                                        <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
+                                        <td><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}></td>
+                                        <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
+                                        <td><{$item.product_cost}></td>
                                         <td><{$item.self_cost}></td>
                                         <td><{$item.sale_cost}></td>
                                         <td>
