@@ -105,22 +105,27 @@ class Search_Product {
      */
     static private function _conditionByWeightRange (array $condition) {
 
-        $weightValueStart   = $condition['weight_value_start']
-                              ? sprintf('%.2f', $condition['weight_value_start'])
-                              : 0;
-        $weightValueEnd     = $condition['weight_value_end']
-                              ? sprintf('%.2f', $condition['weight_value_end'])
-                              : 0;
+        $weightValueStart   = '0' === $condition['weight_value_start']
+            ? 0
+            : sprintf('%.2f', $condition['weight_value_start']);
+        $weightValueEnd     = '0' === $condition['weight_value_end']
+            ? 0
+            : sprintf('%.2f', $condition['weight_value_end']);
+
+        if ($weightValueStart == $weightValueEnd && 0 === $weightValueStart) {
+
+            $specValueInfo  = Spec_Value_Info::getBySpecValueData('0.00');
+            $specValueId    = $specValueInfo['spec_value_id'];
+            return          '`weight_info`.`spec_value_id` = "' . (int) $specValueId . '"';
+        }
 
         if ($weightValueEnd && ($weightValueEnd > 0) && ($weightValueEnd >= $weightValueStart)) {
-
-            $weightRangeList    = range($weightValueStart * 100, $weightValueEnd * 100);
+            $weightRangeList    = range(floor($weightValueStart * 100), ceil($weightValueEnd * 100));
             $weightRangeList    = array_map(create_function('$value', 'return sprintf("%.2f", $value / 100);'), $weightRangeList);
+
             $listSpecValueInfo  = Spec_Value_Info::getByMultiValueData($weightRangeList);
             $listSpecValueId    = array_unique(ArrayUtility::listField($listSpecValueInfo, 'spec_value_id'));
-            return              empty($listSpecValueId)
-                                ? ''
-                                : '`weight_info`.`spec_value_id` IN ("' . implode('","', $listSpecValueId) . '")';
+            return              '`weight_info`.`spec_value_id` IN ("' . implode('","', $listSpecValueId) . '")';
         }
         return '';
     }
