@@ -149,7 +149,38 @@ class   Sales_Quotation_Spu_Info {
         $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id` IN ("' . implode('","', $multiId) . '")';
 
         return      self::_getStore()->fetchAll($sql);
-    }    
+    }
+        
+    /**
+     * 根据报价单ID删除报价单 
+     *
+     * @param   string $salesQuotationId  报价单ID
+     */
+    static public function delete($salesQuotationId) {
+    
+        Validate::testNull($salesQuotationId,"报价单ID不能为空");
+        
+        $condition = " `sales_quotation_id` = " . (int)$salesQuotationId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
+    
+    /**
+     * 根据报价单ID SpuID删除报价单中的SPU 
+     *
+     * @param   string $salesQuotationId  报价单ID
+     * @param   string $spuId             spuID
+     */
+    static public function getBySpuIdAndSalesQuotationIdDelete($salesQuotationId,$spuId) {
+    
+        Validate::testNull($salesQuotationId,"报价单ID不能为空");
+        Validate::testNull($spuId,"SpuId不能为空");
+        
+        $condition = " `sales_quotation_id` = " . (int)$salesQuotationId . " AND `spu_id` =" .(int)$spuId;
+
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
+    
     /**
      * 更新
      *
@@ -159,9 +190,9 @@ class   Sales_Quotation_Spu_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'sales_quotation_id,spu_id,color_id',
         );
-        $condition  = "";
+        $condition  = "`sales_quotation_id` = '" . addslashes($data['sales_quotation_id']) . "' AND `spu_id` ='". addslashes($data['spu_id']) ."' AND `color_id` = '". addslashes($data['color_id']) ."'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }

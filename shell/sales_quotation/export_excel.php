@@ -1,6 +1,6 @@
 <?php
 /**
- * µ¼³öexcel
+ * å¯¼å‡ºexcel
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
