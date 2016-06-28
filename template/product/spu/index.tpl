@@ -202,7 +202,11 @@
         var searchType      = $('select[name="search_type"]').val();
         var weightStart     = parseFloat($('input[name="weight_value_start"]').val());
         var weightEnd       = parseFloat($('input[name="weight_value_end"]').val());
-
+        var searchTypeList  = {
+            'source_code': '买款ID',
+            'goods_sn': 'SKU编号',
+            'spu_sn': 'SPU编号',
+        };
         if (weightEnd < weightStart) {
 
             alert('规格重量输入有误');
@@ -211,6 +215,11 @@
         if (searchValueList && '0' == searchType) {
 
             alert('请选择搜索类型');
+            return false;
+        }
+        if (searchType && !searchValueList) {
+
+            alert('请输入' + searchTypeList[searchType]);
             return false;
         }
     });
