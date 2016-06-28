@@ -217,7 +217,7 @@
             alert('请选择搜索类型');
             return false;
         }
-        if (searchType && !searchValueList) {
+        if ('0' !== searchType && '' === searchValueList) {
 
             alert('请输入' + searchTypeList[searchType]);
             return false;
