@@ -113,14 +113,14 @@ class Search_Spu {
      */
     static private function _conditionByWeightRange (array $condition) {
 
-        $weightValueStart   = $condition['weight_value_start']
-            ? sprintf('%.2f', $condition['weight_value_start'])
-            : 0;
-        $weightValueEnd     = $condition['weight_value_end']
-            ? sprintf('%.2f', $condition['weight_value_end'])
-            : 0;
+        $weightValueStart   = '0' === $condition['weight_value_start']
+                              ? 0
+                              : sprintf('%.2f', $condition['weight_value_start']);
+        $weightValueEnd     = '0' === $condition['weight_value_end']
+                              ? 0
+                              : sprintf('%.2f', $condition['weight_value_end']);
 
-        if ($weightValueStart == $weightValueEnd && $weightValueStart == 0) {
+        if ($weightValueStart == $weightValueEnd && 0 === $weightValueStart) {
 
             $specValueInfo  = Spec_Value_Info::getBySpecValueData('0.00');
             $specValueId    = $specValueInfo['spec_value_id'];
