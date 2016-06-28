@@ -63,9 +63,9 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon">规格重量:</span>
-                                    <input type="number" name="weight_value_start" class="form-control" value="<{$smarty.get.weight_value_start}>">
+                                    <input type="text" name="weight_value_start" class="form-control" value="<{$smarty.get.weight_value_start}>">
                                     <span class="input-group-addon">到</span>
-                                    <input type="number" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
+                                    <input type="text" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
                                 </div>
                             </div>
                         </div>

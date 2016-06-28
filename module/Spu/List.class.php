@@ -1,6 +1,15 @@
 <?php
 class Spu_List {
 
+    /**
+     * 根据条件查询数据
+     *
+     * @param array $condition  条件
+     * @param array $orderBy    排序
+     * @param null $offset      位置
+     * @param null $limit       数量
+     * @return array
+     */
     static public function listByCondition (array $condition, array $orderBy = array(), $offset = null, $limit = null) {
 
         $fields         = implode(',', self::_getQueryFields());
@@ -15,6 +24,12 @@ class Spu_List {
         return          Spu_Info::query($sql);
     }
 
+    /**
+     * 根据条件查询数据数量
+     *
+     * @param array $condition  条件
+     * @return int
+     */
     static public function countByCondition (array $condition) {
 
         $sqlBase        = 'SELECT `si`.`spu_id` FROM `spu_info` AS `si` LEFT JOIN ';
@@ -26,6 +41,12 @@ class Spu_List {
         return          count($data);
     }
 
+    /**
+     * 根据条件拼接WHERE语句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
     static private function _condition (array $condition) {
 
         $sql        = array();
@@ -35,6 +56,12 @@ class Spu_List {
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
     }
 
+    /**
+     * 查询某个SPU下的SKU信息
+     *
+     * @param $spuId    SPUID
+     * @return array
+     */
     static public function listSpuGoodsInfo ($spuId) {
 
         $spuGoodsList   = Spu_Goods_RelationShip::getBySpuId($spuId);
