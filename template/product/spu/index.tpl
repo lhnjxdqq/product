@@ -200,7 +200,14 @@
     $('form.search-spu').submit(function () {
         var searchValueList = $('input[name="search_value_list"]').val();
         var searchType      = $('select[name="search_type"]').val();
+        var weightStart     = parseFloat($('input[name="weight_value_start"]').val());
+        var weightEnd       = parseFloat($('input[name="weight_value_end"]').val());
 
+        if (weightEnd < weightStart) {
+
+            alert('规格重量输入有误');
+            return false;
+        }
         if (searchValueList && '0' == searchType) {
 
             alert('请选择搜索类型');
