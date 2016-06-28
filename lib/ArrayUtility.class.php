@@ -362,7 +362,7 @@ class ArrayUtility {
 
         $temp = array();
         foreach ($multiArray as $key => $array) {
-            if (!$array[$fieldName]) {
+            if (!isset($array[$fieldName])) {
 
                 return;
             }
