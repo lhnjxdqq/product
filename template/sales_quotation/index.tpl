@@ -55,18 +55,33 @@
                             <thead>
                                 <tr>
                                     <th>报价单名称</th>
+                                    <th>客户</th>
                                     <th>创建时间</th>
                                     <th>商品数量</th>
-                                    <th style="width: 200px;">操作</th>
+                                    <th>状态</th>
+                                    <th>创建人</th>
+                                    <th>操作人</th>
+                                    <th style="text-align:center;width:270px">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <{foreach from=$listSpuInfo item=item}>
                                     <tr>
                                         <td><{$item.sales_quotation_name}></td>
+                                        <td><{if $item.customer_id eq 0}><{else}><{$mapCustomer[$item.customer_id]['customer_name']}><{/if}></td>
                                         <td><{$item.sales_quotation_date}></td>
                                         <td><{$item.spu_num}></td>
-                                        <td><{if $mapFile[$item.hash_code]}><a href="/sales_quotation/zip_download.php?code=<{$item.hash_code}>&file_name=<{$item.sales_quotation_name}>">下载</a><{else}>努力生成中....<{/if}></td>
+                                        <td><{if $item.is_confirm != $yesConfireCode}>未确认<{else}>已确认<{/if}></td>
+                                        <td><{$mapUser[$item.author_id]['username']}></td>
+                                        <td><{$mapUser[$item.operatior_id]['username']}></td>
+                                        <td>
+                                            <{if $item.is_confirm != $yesConfireCode}>
+                                            <a href="/sales_quotation/edit.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                            <a href="/sales_quotation/do_delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
+                                            <{/if}>
+                                            <a href="javascript:void(0);" class="btn btn-success btn-xs sales-quotaiton-copy" spu-quotation-id=<{$item.sales_quotation_id}>><i class="fa fa-copy"></i> 复制</a>
+                                            <{if $mapFile[$item.hash_code]}><a href="/sales_quotation/zip_download.php?code=<{$item.hash_code}>&file_name=<{$item.sales_quotation_name}>" class="btn btn-info btn-xs"><i class="fa fa-cloud-download"></i>下载</a><{else}>努力生成中....<{/if}>    
+                                        </td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
@@ -113,6 +128,37 @@
         selector    : '#log-list',
         container   : '#log-list-vis'
     });
+
+    $('.delete-confirm').click(function () {
+
+        return  confirm('确认删除？');
+    });
+$(function(){
+
+    $('.sales-quotaiton-copy').click(function () {
+    
+        spuQuotationId = $(this).attr('spu-quotation-id');
+
+        $.post('/sales_quotation/copy_sales_quotation.php', {
+            sales_quotation_id  : spuQuotationId,
+            '__output_format'   : 'JSON'
+        }, function (response) {
+
+            if (0 != response.code) {
+
+                showMessage('错误', response.message);
+
+                return  ;
+            }else{
+                
+                history.go(0);
+            }
+            
+        }, 'json');  
+        
+    });
+
+});    
 </script>
 </body>
 </html>

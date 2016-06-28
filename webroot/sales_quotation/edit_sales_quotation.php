@@ -1,32 +1,35 @@
 <?php
 /**
- * 加入报价单
+ * 修改报价单
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
-$data               = $_POST;
-$userId             = $_SESSION['user_id'];
-$customerId         = !empty($data['customer_id']) ? $data['customer_id'] : "0";
-$salesQuotationName = $data['sales_quotation_name'];
-$markupRule         = $data['plue_price'];
+$data                       = $_POST;
+
+$customerId                 = !empty($data['customer_id']) ? $data['customer_id'] : "0";
+$salesQuotationId           = $_POST['sales_quotation_id'];
+$salesQuotationName         = $data['sales_quotation_name'];
+$salesQuotationMarkupRule   = $data['plue_price'];
 Validate::testNull($salesQuotationName,"报价单名称不能为空");
+Validate::testNull($salesQuotationId,"报价单ID不能为空");
 unset($data['customer_id']);
 unset($data['sales_quotation_name']);
+unset($data['sales_quotation_id']);
 unset($data['plue_price']);
 
 $slaesQuotation = array(
-        'markup_rule'          => $markupRule,
-        'author_id'            => $userId,
+        'sales_quotation_id'   => $salesQuotationId,
         'sales_quotation_name' => $salesQuotationName,
-        'customer_id'          => $customerId,
         'spu_num'              => count($data),
+        'customer_id'          => (int) $customerId,
         'hash_code'            => md5(time()),
+        'operatior_id'         => $_SESSION['user_id'],
+        'markup_rule'          => (float) $salesQuotationMarkupRule,
         'run_status'           => Product_Export_RunStatus::STANDBY,
     );
+    
+Sales_Quotation_Info::update($slaesQuotation);
 
-$salesQuotationId   = Sales_Quotation_Info::create($slaesQuotation);
-
-Validate::testNull($salesQuotationId,"添加报价单失败");
 foreach($data as $spuId => $colorCost){
     
     $remark = $colorCost['spu_remark'];
@@ -46,9 +49,8 @@ foreach($data as $spuId => $colorCost){
                 'color_id'              => $colorId,
                 'sales_quotation_remark'=> $remark,
             );       
-            Sales_Quotation_Spu_Info::create($content);
+            Sales_Quotation_Spu_Info::update($content);
         }      
     }
 }
-Cart_Spu_Info::cleanByUserId($_SESSION['user_id']);
-Utility::notice('报价单生成成功', '/sales_quotation/index.php');
+Utility::notice('报价单修改成功', '/sales_quotation/index.php');

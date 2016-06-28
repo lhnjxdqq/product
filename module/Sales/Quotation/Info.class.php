@@ -19,7 +19,7 @@ class   Sales_Quotation_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id,spu_num,hash_code,run_status';
+    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id,spu_num,author_id,operatior_id,is_confirm,hash_code,markup_rule,run_status';
     /**
      * 新增
      *
@@ -87,6 +87,7 @@ class   Sales_Quotation_Info {
         $sql[]      = self::_conditionRunStatus($condition);
         $sql[]      = self::_conditionKeywords($condition);
         $sql[]      = self::_conditionCustomerId($condition);
+        $sql[]      = self::_conditionIsConfirm($condition);
         $sql[]      = self::_conditionrange(
             array(
                 'fieldCondition'    => 'sales_quotation_date',
@@ -127,6 +128,16 @@ class   Sales_Quotation_Info {
         }
 
         return  "`run_status` = '" . addslashes($condition['run_status']) . "'";
+    }
+    
+    static  private function _conditionIsConfirm (array $condition) {
+
+        if (empty($condition['is_confirm'])) {
+
+            return  '';
+        }
+
+        return  "`is_confirm` = '" . addslashes($condition['is_confirm']) . "'";
     }
     
     static  private function _conditionCustomerId (array $condition) {
@@ -185,7 +196,34 @@ class   Sales_Quotation_Info {
 
         return  $sequence == 'ASC'  ? $sequence : 'DESC';
     }
+    
+    /**
+     * 根据报价单ID删除报价单 
+     *
+     * @param   string $salesQuotationId  报价单ID
+     */
+    static public function delete($salesQuotationId) {
+    
+        Validate::testNull($salesQuotationId,"报价单ID不能为空");
+        
+        $condition = " `sales_quotation_id` = " . $salesQuotationId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
 
+    /**
+     * 根据一组报价单ID获取报价单信息
+     *
+     * @param $multiId  报价单ID
+     * @return array    报价单信息
+     */
+    static public function getBySalesQuotationId ($salesQuotationId) {
+
+        Validate::testNull($salesQuotationId, "报价单ID不能为空");
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id` = '.(int)$salesQuotationId;
+
+        return      self::_getStore()->fetchOne($sql);
+    }
     /**
      * 更新
      *

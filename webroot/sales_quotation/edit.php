@@ -2,16 +2,18 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-if(is_numeric($_GET['plue_price']) && !empty($_GET['plue_price'])){
-    
-    $plusPrice  = $_GET['plue_price'];
-}
-$customerId = '';
+$salesQuotationId           = (int) $_GET['sales_quotation_id'];
+$salesQuotationMarkupRule   = (int) $_GET['plue_price'];
+Validate::testNull($salesQuotationId, "报价单ID不能为空");
+//获取报价单信息
+$salesQuotationInfo = Sales_Quotation_Info::getBySalesQuotationId($salesQuotationId);
+
 $indexCartColorId   = array();
-if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
+if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($salesQuotationMarkupRule))){
  
     $order      = array();   
     $customerId = $_GET['customer_id'];
+    $salesQuotationInfo['customer_id'] = $customerId;
     $salesCondition = array(
         'customer_id'   => $customerId,
         'is_confirm'    => Sales_Quotation_ConfirmStatus::YES,
@@ -20,22 +22,32 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
     if(!empty($mapCartSpuInfo)){
         
         //该用户下所有销售出货单的记录ID
-        $salesQuotationInfo         = ArrayUtility::listField($mapCartSpuInfo, 'sales_quotation_id');
-        $mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationId($salesQuotationInfo);
+        $listSalesQuotation         = ArrayUtility::listField($mapCartSpuInfo, 'sales_quotation_id');
+        $mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationId($listSalesQuotation);
         $spuInfo                    = ArrayUtility::groupByField($mapSalesQuotationSpuInfo,'spu_id');
         foreach($spuInfo as $spuId=>$info){
             
-            $indexCartColorId[$spuId]['color'] = ArrayUtility::indexByField($info, 'color_id', 'cost');
-            $indexCartColorId[$spuId]['sales_quotation_remark'] = ArrayUtility::indexByField($info, 'spu_id', 'sales_quotation_remark');
+            $indexOldCartColorId[$spuId]['color'] = ArrayUtility::indexByField($info, 'color_id', 'cost');
+            $indexOldCartColorId[$spuId]['sales_quotation_remark'] = ArrayUtility::indexByField($info, 'spu_id', 'sales_quotation_remark');
         }
     }
 }
 
-$userId          = $_SESSION['user_id'];
-$listCustomer    = Customer_Info::listAll();
-$listCartInfo    = Cart_Spu_Info::getByUserId($userId);
-//获取sqlID的组合
-$listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");
+//获取客户列表
+$listCustomer       = Customer_Info::listAll();
+$indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
+
+//获取颜色工费和备注
+$indexCartColorId   = array();
+$mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesQuotationId));
+$spuInfo                    = ArrayUtility::groupByField($mapSalesQuotationSpuInfo,'spu_id');
+$listSpuId          = array();
+foreach($spuInfo as $spuId=>$info){
+    
+    $listSpuId[]  = $spuId;
+    $indexCartColorId[$spuId]['color'] = ArrayUtility::indexByField($info, 'color_id', 'cost');
+    $indexCartColorId[$spuId]['sales_quotation_remark'] = ArrayUtility::indexByField($info, 'spu_id', 'sales_quotation_remark');
+}
 
 $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
 //获取SPU数量
@@ -170,6 +182,7 @@ $indexColorName     = ArrayUtility::indexByField($colorSpecValueInfo,'spec_value
 
 
 // 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
+$listAllSourceId        = array();
 $listAllProductInfo     = Product_Info::getByMultiGoodsId($listAllGoodsId);
 $listAllSourceId        = ArrayUtility::listField($listAllProductInfo, 'source_id');
 $listSourceInfo         = Source_Info::getByMultiId($listAllSourceId);
@@ -182,12 +195,7 @@ foreach ($listAllProductInfo as &$productInfo) {
     $productInfo['supplier_code']   = $mapSupplierInfo[$supplierId]['supplier_code'];
 }
 $groupGoodsProduct      = ArrayUtility::groupByField($listAllProductInfo, 'goods_id');
-// 商品和供应商ID关系
-$mapGoodsSupplierCode   = array();
-foreach ($groupGoodsProduct as $goodsId => $goodsProductList) {
 
-    $mapGoodsSupplierCode[$goodsId] = implode(',', array_unique(ArrayUtility::listField($goodsProductList, 'supplier_code')));
-}
 // 每个SPU下有哪些goodsId
 $groupSpuGoodsId    = array();
 foreach ($groupSpuGoods as $spuId => $spuGoodsList) {
@@ -216,32 +224,49 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $listSpuInfo[$key]['color'] = array();
     $listSpuInfo[$key]['is_exist']  = 0; 
     
-    foreach($mapSpecColorId as $colorId=>$colorName){
+    if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($salesQuotationMarkupRule))){
         
-        if($indexCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
-            
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
-            $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
-            $listSpuInfo[$key]['is_exist']  = 1;
-        } else {
-        
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $_GET['plue_price'] : "-"; 
-        }
-        $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
+        foreach($mapSpecColorId as $colorId=>$colorName){
                 
-    }
+            if($indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
+                
+                $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+                $listSpuInfo[$key]['spu_remark'] = $indexOldCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
+                $listSpuInfo[$key]['is_exist']  = 1;
+            } else {
+            
+                $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $salesQuotationMarkupRule : "-"; 
+            }      
+        }
+    }else{
+ 
+        foreach($mapSpecColorId as $colorId=>$colorName){
+            
+            if($indexCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
+                
+                $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+                $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
+            }else{
+                $listSpuInfo[$key]['color'][$colorId] = "-";
+            }
+            $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
+                    
+        }
+    } 
 }
 $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
-$template->assign('plusPrice',$plusPrice);
-$template->assign('customerId',$customerId);
+$template->assign('plusPrice',$salesQuotationMarkupRule);
 $template->assign('listSpecValueId',$listSpecValueId);
 $template->assign('listSpuInfo',$listSpuInfo);
 $template->assign('countColor',$countColor);
+$template->assign('salesQuotationInfo',$salesQuotationInfo);
+$template->assign('indexCustomerId',$indexCustomerId);
 $template->assign('mapSpecColorId',$mapSpecColorId);
 $template->assign('mapSpecValueInfo',$mapSpecValueInfo);
+$template->assign('salesQuotationId',$salesQuotationId);
 $template->assign('listIndexColorName',$listIndexColorName);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
-$template->display('sales_quotation/create.tpl');
+$template->display('sales_quotation/edit.tpl');

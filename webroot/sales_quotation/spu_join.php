@@ -2,16 +2,17 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-if(is_numeric($_GET['plue_price']) && !empty($_GET['plue_price'])){
-    
-    $plusPrice  = $_GET['plue_price'];
-}
-$customerId = '';
+$salesQuotationId =  $_POST['sales_quotation_id'];
+Validate::testNull($salesQuotationId,"报价单ID不能为空");
+$salesQuotationInfo = Sales_Quotation_Info::getBySalesQuotationId($salesQuotationId);
+Validate::testNull($salesQuotationInfo,"不存在此报价单");
+
+$plusPrice  = $salesQuotationInfo['markup_rule'];
+$customerId = !empty($salesQuotationInfo['customer_id'])? $salesQuotationInfo['customer_id'] : '' ;
 $indexCartColorId   = array();
-if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
+if(is_numeric($customerId) && !empty($customerId)){
  
-    $order      = array();   
-    $customerId = $_GET['customer_id'];
+    $order      = array();
     $salesCondition = array(
         'customer_id'   => $customerId,
         'is_confirm'    => Sales_Quotation_ConfirmStatus::YES,
@@ -30,6 +31,8 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
         }
     }
 }
+$mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesQuotationId));
+$listOldSpuId               = array_unique(ArrayUtility::listField($mapSalesQuotationSpuInfo,'spu_id'));
 
 $userId          = $_SESSION['user_id'];
 $listCustomer    = Customer_Info::listAll();
@@ -93,6 +96,7 @@ $specColorId          = $specColorInfo['color'];
 $mapSpecValue   = array();
 $mapMaterialValue = array();
 $mapSizeValue = array();
+$mapColorInfo = array();
 foreach ($listSpecValue as $specValue) {
 
     $specName       = $mapSpecInfo[$specValue['spec_id']]['spec_name'];
@@ -225,23 +229,55 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             $listSpuInfo[$key]['is_exist']  = 1;
         } else {
         
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $_GET['plue_price'] : "-"; 
+            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $plusPrice : "-"; 
         }
         $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
                 
+    } 
+  
+}
+
+foreach($listSpuInfo as $key => $spuInfo){
+
+    Utility::dump($spuInfo);
+    if(in_array($spuInfo['spu_id'],$listOldSpuId)){
+        
+        continue;
+    }
+    foreach($listSpuInfo[$key]['color'] as $colorId => $cost){
+        
+        if(!is_numeric($cost) && empty($cost)){
+            
+            continue;
+        }
+        $content = array(
+            'sales_quotation_id'        => $salesQuotationId,
+            'spu_id'                    => $spuInfo['spu_id'],
+            'cost'                      => $cost,
+            'color_id'                  => $colorId,
+            'sales_quotation_remark'    => $spuInfo['remark'],
+        );
+        Sales_Quotation_Spu_Info::create($content);
     }
 }
-$template       = Template::getInstance();
+Cart_Spu_Info::cleanByUserId($_SESSION['user_id']);
 
-$template->assign('listCustomer', $listCustomer);
-$template->assign('countSpu',$countSpu);
-$template->assign('plusPrice',$plusPrice);
-$template->assign('customerId',$customerId);
-$template->assign('listSpecValueId',$listSpecValueId);
-$template->assign('listSpuInfo',$listSpuInfo);
-$template->assign('countColor',$countColor);
-$template->assign('mapSpecColorId',$mapSpecColorId);
-$template->assign('mapSpecValueInfo',$mapSpecValueInfo);
-$template->assign('listIndexColorName',$listIndexColorName);
-$template->assign('mainMenu',Menu_Info::getMainMenu());
-$template->display('sales_quotation/create.tpl');
+$mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesQuotationId));
+
+$spuInfo                    = ArrayUtility::groupByField($mapSalesQuotationSpuInfo,'spu_id');
+$spuCount                   = count($spuInfo);
+
+Sales_Quotation_Info::update(
+    array(
+        'sales_quotation_id' => $salesQuotationId,
+        'run_status'         => Product_Export_RunStatus::STANDBY,
+        'spu_num'            => $spuCount,
+    )
+);
+echo    json_encode(array(
+    'code'      => 0,
+    'message'   => 'OK',
+    'data'      => array(
+    
+    ),
+));
