@@ -249,10 +249,11 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             }else{
                 $listSpuInfo[$key]['color'][$colorId] = "-";
             }
-            $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
                     
         }
-    } 
+    }
+
+    $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
 }
 $template       = Template::getInstance();
 
