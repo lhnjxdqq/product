@@ -31,7 +31,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form action="/product/spu/index.php" method="get">
+                <form action="/product/spu/index.php" method="get" class="search-spu">
                     <div class="box-body">
                         <div class="row spu-filter">
                             <div class="col-md-2">
@@ -107,7 +107,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <button class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
                             </div>
                         </div>
                         <!-- /.row -->
@@ -196,6 +196,17 @@
             }
         }
     }
+
+    $('form.search-spu').submit(function () {
+        var searchValueList = $('input[name="search_value_list"]').val();
+        var searchType      = $('select[name="search_type"]').val();
+
+        if (searchValueList && '0' == searchType) {
+
+            alert('请选择搜索类型');
+            return false;
+        }
+    });
 
     <{if $data.groupStyleInfo}>
     var styleList   = {};
