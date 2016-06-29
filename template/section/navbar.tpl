@@ -1,6 +1,6 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="/" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><b>I</b>MS</span>
         <!-- logo for regular state and mobile devices -->
@@ -29,7 +29,7 @@
                         <li class="user-header">
                             <img src="/images/user2-160x160.jpg" class="img-circle" alt="User Image">
                             <p>
-                                生产系统
+                               款多多生产管理系统 
                                 <small>IFMUSE.COM</small>
                             </p>
                         </li>
