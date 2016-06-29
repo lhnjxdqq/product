@@ -58,6 +58,7 @@
                         <table class="table table-bordered table-hover" id="quotation-list">
                             <thead>
                             <tr>
+                                <rh>名称</th>
                                 <th>供应商ID</th>
                                 <th>样板数量</th>
                                 <th>下载</th>
@@ -69,6 +70,7 @@
                             <tbody>
                                 <{foreach from=$listQuotationInfo item=item}>
                                     <tr>
+                                        <td><{$item.quotation_name}></td>
                                         <td><{$item.supplier_code}></td>
                                         <td><{$item.model_num}></td>
                                         <td><a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a></td>

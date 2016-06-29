@@ -32,7 +32,11 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <form action="/quotation/do_quotation_import.php" method="post" enctype="multipart/form-data">
+                            <form action="/quotation/do_quotation_import.php" method="post" enctype="multipart/form-data" onsubmit="return disableForm()">
+                                <div class="form-group">
+                                    <label>工厂报价单名称: </label>
+                                    <input type="text" name="quotation_name" value="" class="form-control"/>
+                                </div>
                                 <div class="form-group">
                                     <label>选择供应商: </label>
                                     <select name="supplier_id" class="form-control">
@@ -93,5 +97,20 @@
 <!-- ./wrapper -->
 
 <{include file="section/foot.tpl"}>
+<script>
+function disableForm(){
+
+    quotationName = $("[name=quotation_name]").val();
+
+    if(quotationName.length>0){
+       
+        return true;
+    }else{
+        
+        alert("工厂报价单名称不能为空");
+        return false;
+    }
+} 
+</script>
 </body>
 </html>

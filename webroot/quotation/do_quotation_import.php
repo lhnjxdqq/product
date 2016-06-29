@@ -14,6 +14,7 @@ if ($toGenerateFileList) {
 }
 
 Validate::testNull($_POST['supplier_id'], "供应商不能为空");
+Validate::testNull($_POST['quotation_name'], "报价单名称不能为空");
 $listSupplier   = Supplier_Info::listAll();
 validate::testNull(ArrayUtility::searchBy($listSupplier,array('supplier_id'=>$_POST['supplier_id'])),"所选供应商不存在");
 $mainMenu   = Menu_Info::getMainMenu();
@@ -184,7 +185,7 @@ rename($filePath,$quotationFilePath);
 chmod($quotationFilePath, 0777);
 
 Quotation_Info::create(array(
-    'quotation_name'            => $fileName,
+    'quotation_name'            => $_POST['quotation_name'],
     'quotation_path'            => $fileStoragePath,
     'quotation_supplier_id'     => $_POST['supplier_id'],
     'model_num'                 => count($datas),
