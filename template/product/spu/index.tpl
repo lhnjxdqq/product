@@ -134,6 +134,9 @@
                                         <{foreach from=$item.list_cost item=cost key=supplierId}>
                                         <p><{$data.mapSupplierInfo[$supplierId]['supplier_code']}> 出货工费: <{$cost}></p>
                                         <{/foreach}>
+                                        <{if $item.spu_remark}>
+                                        <p>备注: <{$item.spu_remark}></p>
+                                        <{/if}>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
                                                 <a href="javascript:void(0);" class="btn btn-<{if $item.is_cart eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
