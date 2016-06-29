@@ -58,7 +58,7 @@
                         <table class="table table-bordered table-hover" id="quotation-list">
                             <thead>
                             <tr>
-                                <rh>名称</th>
+                                <th>名称</th>
                                 <th>供应商ID</th>
                                 <th>样板数量</th>
                                 <th>下载</th>
@@ -73,7 +73,7 @@
                                         <td><{$item.quotation_name}></td>
                                         <td><{$item.supplier_code}></td>
                                         <td><{$item.model_num}></td>
-                                        <td><a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a></td>
+                                        <td><a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import&file_name=<{$item.quotation_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a></td>
                                         <!--
                                         <td><{$item.ignore_existed_sourceid}></td>
                                         <td><{$item.ignore_repeat_sourceid}></td>
