@@ -32,11 +32,10 @@ class Search_Spu {
      */
     static public function countByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM ( SELECT `spu_info`.`spu_id` FROM `spu_info` AS `spu_info` LEFT JOIN ';
+        $sqlBase        = 'SELECT COUNT(DISTINCT(`spu_info`.`spu_id`)) AS `cnt` FROM `spu_info` AS `spu_info` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
-        $sqlGroup       = self::_group();
-        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . ' ) AS `count_total`';
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition;
         $data           = Spu_Info::query($sql);
         $row            = current($data);
 
