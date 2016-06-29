@@ -32,13 +32,13 @@ class Spu_List {
      */
     static public function countByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT `si`.`spu_id` FROM `spu_info` AS `si` LEFT JOIN ';
+        $sqlBase        = 'SELECT COUNT(DISTINCT(`si`.`spu_id`)) AS `cnt` FROM `spu_info` AS `si` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
-        $sqlGroup       = ' GROUP BY `si`.`spu_id`';
-        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup;
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition;
         $data           = Spu_Info::query($sql);
-        return          count($data);
+        $row            = current($data);
+        return          (int) $row['cnt'];
     }
 
     /**
