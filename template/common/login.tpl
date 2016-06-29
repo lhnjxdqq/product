@@ -1,7 +1,7 @@
 <{include file="section/head.tpl"}>
 <body class="hold-transition login-page">
 <div class="login-box">
-    <div class="login-logo"><b>生产系统</b></div>
+    <div class="login-logo"><b>款多多生产管理系统</b></div>
     <!-- /.login-logo -->
     <div class="login-box-body">
 
