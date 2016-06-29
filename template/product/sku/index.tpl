@@ -24,6 +24,97 @@
 
         <!-- Main content -->
         <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">条件筛选</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <form action="/product/sku/index.php" method="get" class="search-sku">
+                    <div class="box-body">
+                        <div class="row sku-filter">
+                            <div class="col-md-2">
+                                <select name="category_id" class="form-control">
+                                    <option value="0">请选择三级分类</option>
+                                    <{foreach from=$data.mapCategoryInfoLv3 item=item}>
+                                <option value="<{$item.category_id}>"<{if $smarty.get.category_id eq $item.category_id}> selected<{/if}>><{$item.category_name}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="style_id_lv1" class="form-control">
+                                    <option value="0">请选择款式</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="style_id_lv2" class="form-control">
+                                    <option value="0">请选择子款式</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="supplier_id" class="form-control">
+                                    <option value="0">请选择供应商ID</option>
+                                    <{foreach from=$data.mapSupplierInfo item=item}>
+                                <option value="<{$item.supplier_id}>"<{if $smarty.get.supplier_id eq $item.supplier_id}> selected<{/if}>><{$item.supplier_code}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">规格重量:</span>
+                                    <input type="text" name="weight_value_start" class="form-control" value="<{$smarty.get.weight_value_start}>">
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.row -->
+                        <div class="row sku-filter">
+                            <div class="col-md-2">
+                                <select name="material_value_id" class="form-control">
+                                    <option value="0">请选择材质</option>
+                                    <{foreach from=$data.mapMaterialSpecValueInfo item=item}>
+                                <option value="<{$item.spec_value_id}>"<{if $smarty.get.material_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="size_value_id" class="form-control">
+                                    <option value="0">请选择规格尺寸</option>
+                                    <{foreach from=$data.mapSizeSpecValueInfo item=item}>
+                                <option value="<{$item.spec_value_id}>"<{if $smarty.get.size_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="color_value_id" class="form-control">
+                                    <option value="0">请选择颜色</option>
+                                    <{foreach from=$data.mapColorSpecValueInfo item=item}>
+                                <option value="<{$item.spec_value_id}>"<{if $smarty.get.color_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/SPU编号" value="<{$smarty.get.search_value_list}>">
+                            </div>
+                            <div class="col-md-2">
+                                <select name="search_type" class="form-control">
+                                    <option value="0">请选择搜索类型</option>
+                                    <{foreach from=$data.searchType item=typeName key=typeId}>
+                                <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
+                            </div>
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
             <div class="box collapsed-box">
                 <div class="box-header with-border">
                     <h3 class="box-title">表格操作</h3>
@@ -115,7 +206,9 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-
+<style>
+    .sku-filter {margin-bottom: 10px;}
+</style>
 <{include file="section/foot.tpl"}>
 <script>
     function delSku(goodsId) {
@@ -127,6 +220,64 @@
             }
         }
     }
+    $('form.search-sku').submit(function () {
+        var searchValueList = $('input[name="search_value_list"]').val();
+        var searchType      = $('select[name="search_type"]').val();
+        var weightStart     = parseFloat($('input[name="weight_value_start"]').val());
+        var weightEnd       = parseFloat($('input[name="weight_value_end"]').val());
+        var searchTypeList  = {
+            'source_code': '买款ID',
+            'goods_sn': 'SKU编号',
+            'spu_sn': 'SPU编号',
+        };
+        if (weightEnd < weightStart) {
+
+            alert('规格重量输入有误');
+            return false;
+        }
+        if (searchValueList && '0' == searchType) {
+
+            alert('请选择搜索类型');
+            return false;
+        }
+        if ('0' !== searchType && '' === searchValueList) {
+
+            alert('请输入' + searchTypeList[searchType]);
+            return false;
+        }
+    });
+    <{if $data.groupStyleInfo}>
+    var styleList   = {};
+    var styleIdLv1  = <{$smarty.get.style_id_lv1|default:0}>;
+    var styleIdLv2  = <{$smarty.get.style_id_lv2|default:0}>;
+    <{foreach from=$data.groupStyleInfo item=listStyleInfo key=parentId}>
+    styleList[<{$parentId}>] = {};
+    <{foreach from=$listStyleInfo item=item}>
+    styleList[<{$parentId}>][<{$item.style_id}>] = '<{$item.style_name}>';
+    <{/foreach}>
+    <{/foreach}>
+    var styleLv1String = '';
+    $.each(styleList[0], function(styleId, styleName) {
+        var selected    = styleId == styleIdLv1 ? ' selected' : '';
+        styleLv1String += '<option value="' + styleId + '"' + selected + '>' + styleName + '</option>';
+    });
+    $('select[name="style_id_lv1"] option').after(styleLv1String);
+    $(document).delegate('select[name="style_id_lv1"]', 'change', function () {
+        initStyleLv2();
+    });
+    function initStyleLv2() {
+        var parentId    = $('select[name="style_id_lv1"]').val();
+        if (parentId == 0) return;
+        var childStyle  = styleList[parentId];
+        var styleLv2String  = '<option value="0">请选择子款式</option>';
+        $.each(childStyle, function (styleId, styleName) {
+            var selected    = styleId == styleIdLv2 ? ' selected' : '';
+            styleLv2String  += '<option value="' + styleId + '"' + selected + '>' + styleName + '</option>';
+        });
+        $('select[name="style_id_lv2"]').empty().append(styleLv2String);
+    }
+    initStyleLv2();
+    <{/if}>
     $('input[name="select-all"]').click(function () {
         $('#sku-list input').prop('checked', $(this).prop('checked') );
     });

@@ -61,7 +61,7 @@
                                 <th>名称</th>
                                 <th>供应商ID</th>
                                 <th>样板数量</th>
-                                <th>下载</th>
+                                <th width="150px">操作</th>
                                 <th>状态</th>
                                 <th>上传时间</th>
                                 <th>更新时间</th>
@@ -73,11 +73,10 @@
                                         <td><{$item.quotation_name}></td>
                                         <td><{$item.supplier_code}></td>
                                         <td><{$item.model_num}></td>
-                                        <td><a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import&file_name=<{$item.quotation_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a></td>
-                                        <!--
-                                        <td><{$item.ignore_existed_sourceid}></td>
-                                        <td><{$item.ignore_repeat_sourceid}></td>
-                                        -->
+                                        <td>
+                                            <a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import&file_name=<{$item.quotation_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a>
+                                            <a href="/quotation/search_spu.php?file=<{$item.file_path|urlencode}>&module=quotation_import" class="btn btn-info btn-xs"><i class="fa fa-list-alt"></i> 查看SPU</a>
+                                        </td>
                                         <td><{$item.status_text}></td>
                                         <td><{$item.create_time}></td>
                                         <td><{$item.update_time}></td>
