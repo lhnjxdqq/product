@@ -11,7 +11,7 @@ $styleId        = (int) $_POST['style-id-lv2'];
 $specList       = $_POST['spec-list'];
 $selfCost       = sprintf('%.2f', $_POST['self-cost']);
 $saleCost       = sprintf('%.2f', $_POST['sale-cost']);
-$goodsRemark    = trim($goodsRemark);
+$goodsRemark    = trim($_POST['goods-remark']);
 $goodsId        = (int) $_POST['goods-id'];
 
 $specValueList  = array();

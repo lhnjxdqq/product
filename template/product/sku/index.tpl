@@ -58,8 +58,8 @@
                                     <th>规格重量</th>
                                     <th>颜色</th>
                                     <th>最低进货工费</th>
-                                    <th>成本工费</th>
                                     <th>基础销售工费</th>
+                                    <th>备注</th>
                                     <th width="80">操作</th>
                                 </tr>
                             </thead>
@@ -77,8 +77,8 @@
                                         <td><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$item.product_cost}></td>
-                                        <td><{$item.self_cost}></td>
                                         <td><{$item.sale_cost}></td>
+                                        <td><{$item.goods_remark}></td>
                                         <td>
                                             <a href="/product/sku/edit.php?goods_id=<{$item.goods_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                         </td>

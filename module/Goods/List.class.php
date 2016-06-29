@@ -125,6 +125,7 @@ class Goods_List {
             '`goods_info`.`category_id`',
             '`goods_info`.`self_cost`',
             '`goods_info`.`sale_cost`',
+            '`goods_info`.`goods_remark`',
         );
     }
 }
