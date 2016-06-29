@@ -162,7 +162,9 @@
                                     <td><{$item.product_name}></td>
                                     <td>
                                         <{if $data.mapProductImage[$item.product_id]}>
-                                    <img src="<{$data.mapProductImage[$item.product_id]}>" height="60">
+                                            <img src="<{$data.mapProductImage[$item.product_id]}>" height="60">
+                                        <{else}>
+                                            <img src="/images/product_default.png" height="60">
                                         <{/if}>
                                     </td>
                                     <td><{$data.mapCategory[$data.mapGoodsInfo[$item.goods_id]['category_id']]}></td>

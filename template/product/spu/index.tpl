@@ -127,13 +127,16 @@
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail">
                                     <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" /></td>
-                                    <img src="<{$item.image_url}>" alt="...">
+                                    <img src="<{$item.image_url|default:'/images/spu_default.png'}>" alt="...">
                                     <div class="caption">
                                         <p>三级分类: <{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></p>
                                         <p>规格重量: <{$data.mapWeightSpecValueInfo[$item.weight_value_id]['spec_value_data']}></p>
                                         <{foreach from=$item.list_cost item=cost key=supplierId}>
                                         <p><{$data.mapSupplierInfo[$supplierId]['supplier_code']}> 出货工费: <{$cost}></p>
                                         <{/foreach}>
+                                        <{if $item.spu_remark}>
+                                        <p>备注: <{$item.spu_remark}></p>
+                                        <{/if}>
                                         <p>
                                             <span class="pull-left act-cart-add" spu-id="<{$item.spu_id}>">
                                                 <a href="javascript:void(0);" class="btn btn-<{if $item.is_cart eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
