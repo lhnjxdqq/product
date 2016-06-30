@@ -12,6 +12,10 @@ $mapStyleInfo       = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
 
 $goodsId            = (int) $_GET['goods_id'];
 $goodsInfo          = Goods_Info::getById($goodsId);
+if ($goodsInfo['online_status'] == Goods_OnlineStatus::OFFLINE) {
+
+    Utility::notice('下架状态的SKU不允许编辑');
+}
 $categoryInfo       = Category_Info::getByCategoryId($goodsInfo['category_id']);
 $goodsStyleInfo     = Style_Info::getById($goodsInfo['style_id']);
 $goodsTypeSpecValue = Goods_Type_Spec_Value_Relationship::getSpecValueByGoodsTypeId($goodsInfo['goods_type_id']);

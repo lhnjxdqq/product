@@ -119,6 +119,10 @@ $data['mapColorSpecValueInfo']      = $mapColorSpecValueInfo;
 $data['mapMaterialSpecValueInfo']   = $mapMaterialSpecValueInfo;
 $data['listSpuInfo']                = $listSpuInfo;
 $data['pageViewData']               = $page->getViewData();
+$data['onlineStatus']               = array(
+    'online'    => Spu_OnlineStatus::ONLINE,
+    'offline'   => Spu_OnlineStatus::OFFLINE,
+);
 
 $template = Template::getInstance();
 $template->assign('data', $data);

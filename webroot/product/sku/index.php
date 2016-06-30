@@ -100,6 +100,10 @@ $data['mapSpecValueInfo']           = $mapSpecValueInfo;
 $data['listGoodsInfo']              = $listGoodsInfo;
 $data['pageViewData']               = $page->getViewData();
 $data['mainMenu']                   = Menu_Info::getMainMenu();
+$data['onlineStatus']               = array(
+    'online'    => Goods_OnlineStatus::ONLINE,
+    'offline'   => Goods_OnlineStatus::OFFLINE,
+);
 
 $template = Template::getInstance();
 $template->assign('data', $data);

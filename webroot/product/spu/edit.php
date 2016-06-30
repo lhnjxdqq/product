@@ -5,6 +5,10 @@ Validate::testNull($_GET['spu_id'], 'spu_id is missing', '/product/spu/index.php
 
 $spuId                  = (int) $_GET['spu_id'];
 $spuInfo                = Spu_Info::getById($spuId);
+if ($spuInfo['online_status'] == Spu_OnlineStatus::OFFLINE) {
+
+    Utility::notice('下架状态的SPU不允许编辑');
+}
 $spuGoodsList           = Spu_Goods_RelationShip::getBySpuId($spuId);
 $mapSpuGoodsList        = ArrayUtility::indexByField($spuGoodsList, 'goods_id');
 $listGoodsId            = ArrayUtility::listField($spuGoodsList, 'goods_id');

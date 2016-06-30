@@ -112,6 +112,10 @@ $data['mapCategory']        = $mapCategory;
 $data['mapGoodsSpecValue']  = $mapGoodsSpecValue;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
+$data['onlineStatus']       = array(
+    'online'    => Product_OnlineStatus::ONLINE,
+    'offline'   => Product_OnlineStatus::OFFLINE,
+);
 
 $template = Template::getInstance();
 $template->assign('data', $data);

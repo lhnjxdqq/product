@@ -143,6 +143,7 @@ class Spu_List {
             '`si`.`spu_sn`',
             '`si`.`spu_name`',
             '`si`.`spu_remark`',
+            '`si`.`online_status`',
             '`gi`.`category_id`',
             '`weight_info`.`spec_value_id` AS `weight_value_id`',
         );

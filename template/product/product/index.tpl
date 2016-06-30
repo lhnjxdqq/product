@@ -155,7 +155,7 @@
                             </thead>
                             <tbody>
                             <{foreach from=$data.listProduct item=item}>
-                                <tr<{if $item.online_status eq 2}> class="danger"<{/if}>>
+                                <tr<{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
                                     <td><input type="checkbox" class="select" productid="<{$item.product_id}>"></td>
                                     <td><{$item.product_sn}></td>
                                     <td><{$data.mapGoodsInfo[$item.goods_id]['goods_sn']}></td>
@@ -180,7 +180,7 @@
                                         <{else}>
                                         <a href="javascript:changeOnlineStatus(<{$item.product_id}>, 'online');" class="btn btn-info btn-xs"><i class="fa fa-arrow-up"></i> 上架</a>
                                         <{/if}>
-                                        <a href="/product/product/edit.php?product_id=<{$item.product_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                        <a href="javascript:editProduct(<{$item.product_id}>, <{$item.online_status}>);" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                         <a href="javascript:delProduct(<{$item.product_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                     </td>
                                 </tr>
@@ -305,6 +305,16 @@
                 location.href   = redirect;
             }
         }
+    }
+    function editProduct(productId, onlineStatus) {
+
+        if (onlineStatus == 2) {
+
+            alert('下架状态的产品不允许编辑');
+            return;
+        }
+        var redirect    = '/product/product/edit.php?product_id=' + productId;
+        location.href   = redirect;
     }
     $('input[name="select-all"]').click(function () {
         $('#product-list input').prop('checked', $(this).prop('checked') );
