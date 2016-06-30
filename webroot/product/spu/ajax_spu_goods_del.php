@@ -25,7 +25,7 @@ if (!$goodsId || !$spuId) {
 if (Spu_Goods_RelationShip::delSpuGoods($spuId, $goodsId)) {
 
     // 推送删除SPU SKU到选货工具
-    Spu_Goods_Push::deletePushSpuGoodsData($spuId, $goodsId);
+    Spu_Goods_Push::changePushSpuGoodsDataStatus($spuId, $goodsId, 'delete');
     $statusInfo = '删除成功';
     $redirect   = '';
     // 判断该SPU下是否有SKU, 如果没有删除该SPU

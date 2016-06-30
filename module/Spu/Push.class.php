@@ -42,7 +42,7 @@ class Spu_Push {
         $spuData        = Spu_Info::getById($spuId);
         $listSpuImages  = Spu_Images_RelationShip::getBySpuId($spuId);
         $spuImage       = current($listSpuImages);
-        $imagePath      = $spuImage ? $spuImageConfig['prefix'] . '/' . $spuImage['image_key'] : '';
+        $imagePath      = $spuImage ? $spuImageConfig['prefix'] . '/' . $spuImage['image_key'] . '.jpg' : '';
 
         $postData['data']['spuInfo']  = array(
             'spuSn'         => $spuData['spu_sn'],
@@ -112,7 +112,7 @@ class Spu_Push {
         );
 
         $res        = HttpRequest::getInstance($apiUrl)->post($postData);
-        $ret        = json_encode($res, true);
+        $ret        = json_decode($res, true);
         Push_Log::create(array(
             'data_type'     => Push_DataType::SPU,
             'data_id'       => $spuId,

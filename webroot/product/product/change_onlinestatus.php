@@ -48,7 +48,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
 
             // 执行SKU上架操作
             Goods_Info::setOnlineStatusByMultiGoodsId($listOnlineGoodsId, Goods_OnlineStatus::ONLINE);
-            foreach ($listOnlineSpuId as $goodsId) {
+            foreach ($listOnlineGoodsId as $goodsId) {
 
                 Goods_Push::changePushGoodsDataStatus($goodsId, 'online');
             }

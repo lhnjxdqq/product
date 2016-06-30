@@ -95,13 +95,13 @@ class Goods_Push {
         $postData   = self::_getPushGoodsBaseData('status');
         $goodsData  = Goods_Info::getById($goodsId);
         $goodsInfo  = array(
-            'goods_sn'  => $goodsData['goods_sn'],
+            'goodsSn'   => $goodsData['goods_sn'],
             'status'    => $statusList[$status],
         );
         $postData['data']['goodsInfo']  = $goodsInfo;
 
         $res        = HttpRequest::getInstance($apiUrl)->post($postData);
-        $ret        = json_encode($res, true);
+        $ret        = json_decode($res, true);
         Push_Log::create(array(
             'data_type'     => Push_DataType::SKU,
             'data_id'       => $goodsId,
