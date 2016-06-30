@@ -6,7 +6,19 @@ require_once    dirname(__FILE__) . '/../../init.inc.php';
 
 $quotationData              = $_POST;
 
-parse_str($quotationData['quotation_data'], $data);
+$json                       = json_decode($quotationData['quotation_data'], true);
+$data                       = array();
+foreach ($json as $key => $item) {
+
+    if (0 < $pos = strpos($key, '[')) {
+        $attr           = substr($key, 0, $pos);
+        $data[$attr]    = isset($data[$attr])   ? $data[$attr]  : array();
+        $subAttr        = substr($key, $pos + 1, strlen($key) - $pos - 2);
+        $data[$attr][$subAttr]  = $item;
+    } else {
+        $data[$key] = $item;
+    }
+}
 
 $customerId                 = !empty($data['customer_id']) ? $data['customer_id'] : "0";
 $salesQuotationId           = $data['sales_quotation_id'];
