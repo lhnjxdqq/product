@@ -93,6 +93,27 @@ class Spu_Push {
     }
 
     /**
+     * 推送更改SPU状态数据
+     *
+     * @param $spuId    SPUID
+     * @param $status   状态
+     */
+    static public function changePushSpuDataStatus ($spuId, $status) {
+
+        $config     = self::_getPushSpuApiConfig();
+        $apiUrl     = $config['apiConfig']['spu'];
+        $statusList = self::_getStatusList();
+
+        $postData   = self::_getPushSpuBaseData('status');
+        $spuData    = Spu_Info::getById($spuId);
+        $postData['data']['spuInfo']    = array(
+            'spuSn'     => $spuData['spu_sn'],
+            'status'    => $statusList[$status],
+        );
+        print_r($postData);exit;
+    }
+
+    /**
      * 获取推送的SPU数据
      *
      * @param $spuId
@@ -106,7 +127,7 @@ class Spu_Push {
         $spuData        = Spu_Info::getById($spuId);
         $listSpuImages  = Spu_Images_RelationShip::getBySpuId($spuId);
         $spuImage       = current($listSpuImages);
-        $imagePath      = $spuImage ? $spuImageConfig['prefix'] . '/' . $spuImage['image_key'] : '';
+        $imagePath      = $spuImage ? $spuImageConfig['prefix'] . '/' . $spuImage['image_key'] . '.jpg' : '';
         $listSpuGoods   = Spu_Goods_RelationShip::getBySpuId($spuId);
         $listGoodsId    = ArrayUtility::listField($listSpuGoods, 'goods_id');
         $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
@@ -166,6 +187,20 @@ class Spu_Push {
         return      array(
             'appConfig' => $appList['select'],
             'apiConfig' => $apiList['select'],
+        );
+    }
+
+    /**
+     * 获取状态列表
+     *
+     * @return array
+     */
+    static private function _getStatusList () {
+
+        return  array(
+            'online'    => 1,   # SKU上架
+            'offline'   => 2,   # SKU下架
+            'delete'    => 3,   # SKU删除
         );
     }
 }

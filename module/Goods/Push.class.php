@@ -92,14 +92,14 @@ class Goods_Push {
         $apiUrl     = $config['apiConfig']['sku'];
         $statusList = self::_getStatusList();
 
-        $postData   = self::_getPushGoodsBaseData('delete');
+        $postData   = self::_getPushGoodsBaseData('status');
         $goodsData  = Goods_Info::getById($goodsId);
         $goodsInfo  = array(
             'goods_sn'  => $goodsData['goods_sn'],
             'status'    => $statusList[$status],
         );
         $postData['data']['goodsInfo']  = $goodsInfo;
-        
+
         $res        = HttpRequest::getInstance($apiUrl)->post($postData);
         $ret        = json_encode($res, true);
         Push_Log::create(array(
