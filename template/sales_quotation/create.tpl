@@ -195,8 +195,12 @@ $(function(){
         quotationName = $("[name=sales_quotation_name]").val();
 
         if(quotationName.length>0){
-           
-            $("#quotation_data").val($(this).serialize());
+            var json = {},
+                formSerialize   = $(this).serializeArray();
+            for (var offset = 0; offset < formSerialize.length; offset ++) {
+                json[formSerialize[offset].name] = formSerialize[offset].value;
+            }
+            $("#quotation_data").val(JSON.stringify(json));
             $("#quotation").submit();
         }else{
         
