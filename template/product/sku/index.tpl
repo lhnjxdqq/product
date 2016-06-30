@@ -156,7 +156,7 @@
                             </thead>
                             <tbody>
                                 <{foreach from=$data.listGoodsInfo item=item}>
-                                    <tr>
+                                    <tr <{if $item.online_status eq 2}> class="danger"<{/if}>>
                                         <td><input type="checkbox" class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>

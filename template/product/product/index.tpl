@@ -155,7 +155,7 @@
                             </thead>
                             <tbody>
                             <{foreach from=$data.listProduct item=item}>
-                                <tr>
+                                <tr<{if $item.online_status eq 2}> class="danger"<{/if}>>
                                     <td><input type="checkbox" class="select" productid="<{$item.product_id}>"></td>
                                     <td><{$item.product_sn}></td>
                                     <td><{$data.mapGoodsInfo[$item.goods_id]['goods_sn']}></td>
@@ -175,6 +175,11 @@
                                     <td><{$data.mapSourceInfo[$item.source_id]['source_code']}></td>
                                     <td><{$item.product_cost}></td>
                                     <td>
+                                        <{if $item.online_status eq 1}>
+                                        <a href="javascript:changeOnlineStatus(<{$item.product_id}>, 'offline');" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i> 下架</a>
+                                        <{else}>
+                                        <a href="javascript:changeOnlineStatus(<{$item.product_id}>, 'online');" class="btn btn-info btn-xs"><i class="fa fa-arrow-up"></i> 上架</a>
+                                        <{/if}>
                                         <a href="/product/product/edit.php?product_id=<{$item.product_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                         <a href="javascript:delProduct(<{$item.product_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                     </td>
@@ -283,6 +288,21 @@
             if (confirm('确定删除该商品吗 ?')) {
                 var redirect = '/product/product/del.php?product_id=' + productId;
                 location.href = redirect;
+            }
+        }
+    }
+    function changeOnlineStatus (productId, onlineStatus) {
+
+        var onlineText = {
+            'offline':  '下架',
+            'online':   '上架',
+        };
+        if (confirm('确定要' + onlineText[onlineStatus] + '该产品吗 ? ')) {
+
+            if (productId && onlineStatus) {
+
+                var redirect    = '/product/product/change_onlinestatus.php?product_id=' + productId + '&online_status=' + onlineStatus;
+                location.href   = redirect;
             }
         }
     }

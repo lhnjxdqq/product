@@ -304,6 +304,7 @@ class Search_Sku {
             '`goods_info`.`self_cost`',
             '`goods_info`.`sale_cost`',
             '`goods_info`.`goods_remark`',
+            '`goods_info`.`online_status`',
             '`material_info`.`spec_value_id` AS `material_value_id`',
             '`size_info`.`spec_value_id` AS `size_value_id`',
             '`color_info`.`spec_value_id` AS `color_value_id`',
