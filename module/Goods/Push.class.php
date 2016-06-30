@@ -82,6 +82,37 @@ class Goods_Push {
     }
 
     /**
+     * 推送更新商品状态
+     *
+     * @param $goodsId
+     */
+    static public function changePushGoodsDataStatus ($goodsId, $status) {
+
+        $config     = self::_getPushGoodsApiConfig();
+        $apiUrl     = $config['apiConfig']['sku'];
+        $statusList = self::_getStatusList();
+
+        $postData   = self::_getPushGoodsBaseData('delete');
+        $goodsData  = Goods_Info::getById($goodsId);
+        $goodsInfo  = array(
+            'goods_sn'  => $goodsData['goods_sn'],
+            'status'    => $statusList[$status],
+        );
+        $postData['data']['goodsInfo']  = $goodsInfo;
+        
+        $res        = HttpRequest::getInstance($apiUrl)->post($postData);
+        $ret        = json_encode($res, true);
+        Push_Log::create(array(
+            'data_type'     => Push_DataType::SKU,
+            'data_id'       => $goodsId,
+            'action_type'   => Push_ActionType::STATUS,
+            'status_code'   => $ret['statusCode'],
+            'status_info'   => $ret['statusInfo'],
+            'result_data'   => json_encode($ret['resultData']),
+        ));
+    }
+
+    /**
      * 获取推送商品的数据
      *
      * @param $goodsId  商品ID
@@ -147,6 +178,20 @@ class Goods_Push {
         return      array(
             'appConfig' => $appList['select'],
             'apiConfig' => $apiList['select'],
+        );
+    }
+
+    /**
+     * 获取状态列表
+     *
+     * @return array
+     */
+    static private function _getStatusList () {
+
+        return  array(
+            'online'    => 1,   # SKU上架
+            'offline'   => 2,   # SKU下架
+            'delete'    => 3,   # SKU删除
         );
     }
 }

@@ -9,4 +9,7 @@ class Push_ActionType extends SplEnum {
 
     // 删除
     const   DELETE  = 3;
+
+    // 更改状态
+    const   STATUS  = 4;
 }
