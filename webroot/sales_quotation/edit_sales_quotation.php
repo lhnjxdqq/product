@@ -4,12 +4,14 @@
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
-$data                       = $_POST;
+$quotationData              = $_POST;
+
+parse_str($quotationData['quotation_data'], $data);
 
 $customerId                 = !empty($data['customer_id']) ? $data['customer_id'] : "0";
-$salesQuotationId           = $_POST['sales_quotation_id'];
+$salesQuotationId           = $data['sales_quotation_id'];
 $salesQuotationName         = $data['sales_quotation_name'];
-$salesQuotationMarkupRule   = $data['plue_price'];
+$salesQuotationMarkupRule   = !empty($data['plue_price']) ? $data['plue_price'] : "0.00";;
 Validate::testNull($salesQuotationName,"报价单名称不能为空");
 Validate::testNull($salesQuotationId,"报价单ID不能为空");
 unset($data['customer_id']);
