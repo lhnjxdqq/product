@@ -110,7 +110,17 @@ class Spu_Push {
             'spuSn'     => $spuData['spu_sn'],
             'status'    => $statusList[$status],
         );
-        print_r($postData);exit;
+
+        $res        = HttpRequest::getInstance($apiUrl)->post($postData);
+        $ret        = json_encode($res, true);
+        Push_Log::create(array(
+            'data_type'     => Push_DataType::SPU,
+            'data_id'       => $spuId,
+            'action_type'   => Push_ActionType::STATUS,
+            'status_code'   => $ret['statusCode'],
+            'status_info'   => $ret['statusInfo'],
+            'result_data'   => json_encode($ret['resultData']),
+        ));
     }
 
     /**
