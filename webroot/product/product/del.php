@@ -20,6 +20,10 @@ if (Product_Info::setDeleteStatusByMultiProductId($productIdList, Product_Delete
     if (!empty($listOffLineGoodsId)) {
         // 执行SKU下架操作
         Goods_Info::setOnlineStatusByMultiGoodsId($listOffLineGoodsId, Goods_OnlineStatus::OFFLINE);
+        foreach ($listOffLineGoodsId as $goodsId) {
+
+            Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
+        }
 
         // 查这些下架的SKU关联了哪些SPU
         $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listOffLineGoodsId);
