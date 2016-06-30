@@ -88,6 +88,37 @@ class Spu_Goods_Push {
             'result_data'   => json_encode($ret['resultData']),
         ));
     }
+
+    /**
+     * 推送SPU SKU状态数据
+     *
+     * @param $spuId    SPUID
+     * @param $goodsId  SKUID
+     * @param $status
+     */
+    static public function changePushSpuGoodsDataStatus ($spuId, $goodsId, $status) {
+
+        $config         = self::_getPushSpuGoodsApiConfig();
+        $apiUrl         = $config['apiConfig']['spu_goods'];
+        $statusList     = self::_getStatusList();
+
+        $postData       = self::_getPushSpuGoodsBaseData('status');
+        $spuGoodsInfo   = self::_getPushSpuGoodsInfo($spuId, $goodsId);
+        $spuGoodsInfo['status'] = $statusList[$status];
+        unset($spuGoodsInfo['spuGoodsName']);
+        $postData['data']['spuGoodsRelationshipInfo']  = $spuGoodsInfo;
+
+        $res            = HttpRequest::getInstance($apiUrl)->post($postData);
+        $ret            = json_decode($res, true);
+        Push_Log::create(array(
+            'data_type'     => Push_DataType::SPU_SKU,
+            'data_id'       => $spuId . '_' . $goodsId,
+            'action_type'   => Push_ActionType::STATUS,
+            'status_code'   => $ret['statusCode'],
+            'status_info'   => $ret['statusInfo'],
+            'result_data'   => json_encode($ret['resultData']),
+        ));
+    }
     
     /**
      * 获取推送的SPU SKU的信息
@@ -146,6 +177,20 @@ class Spu_Goods_Push {
         return      array(
             'appConfig' => $appList['select'],
             'apiConfig' => $apiList['select'],
+        );
+    }
+
+    /**
+     * 获取状态列表
+     *
+     * @return array
+     */
+    static private function _getStatusList () {
+
+        return  array(
+            'online'    => 1,   # SKU上架
+            'offline'   => 2,   # SKU下架
+            'delete'    => 3,   # SKU删除
         );
     }
 }
