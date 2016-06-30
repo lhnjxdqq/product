@@ -19,7 +19,7 @@ class   Product_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'product_id,product_sn,product_name,product_cost,source_id,goods_id,product_remark,delete_status,create_time,update_time';
+    const   FIELDS      = 'product_id,product_sn,product_name,product_cost,source_id,goods_id,product_remark,online_status,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -253,6 +253,28 @@ class   Product_Info {
         $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
 
         $sql            = 'UPDATE ' . self::_tableName() . ' SET `delete_status` = "' . (int) $deleteStatus . '" WHERE `product_id` IN ("' . implode('","', $multiProductId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 批量设置产品上下线状态
+     *
+     * @param array $multiProductId 产品ID
+     * @param $onlineStatus
+     * @return int|void
+     */
+    static public function setOnlineStatusByMultiProductId (array $multiProductId, $onlineStatus) {
+
+        $statusList = Product_OnlineStatus::getOnlineStatus();
+        if (!array_key_exists($onlineStatus, $statusList)) {
+
+            return;
+        }
+
+        $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
+
+        $sql            = 'UPDATE ' . self::_tableName() . ' SET `online_status` = "' . (int) $onlineStatus . '" WHERE `product_id` IN ("' . implode('","', $multiProductId) . '")';
 
         return          self::_getStore()->execute($sql);
     }

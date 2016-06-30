@@ -19,7 +19,7 @@ class   Spu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'spu_id,spu_sn,spu_name,spu_remark,delete_status,create_time,update_time';
+    const   FIELDS      = 'spu_id,spu_sn,spu_name,spu_remark,online_status,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -259,6 +259,28 @@ class   Spu_Info {
         $multiSpuId = array_map('intval', array_unique(array_filter($multiSpuId)));
 
         $sql        = 'UPDATE ' . self::_tableName() . ' SET `delete_status` = "' . (int) $deleteStatus . '" WHERE `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 批量下架SPU
+     *
+     * @param array $multiSpuId 一组SPUID
+     * @param $onlineStatus
+     * @return int|void
+     */
+    static public function setOnlineStatusByMultiSpuId (array $multiSpuId, $onlineStatus) {
+
+        $statusList = Spu_OnlineStatus::getOnlineStatus();
+        if (!array_key_exists($onlineStatus, $statusList)) {
+
+            return;
+        }
+
+        $multiSpuId = array_map('intval', array_unique(array_filter($multiSpuId)));
+
+        $sql        = 'UPDATE ' . self::_tableName() . ' SET `online_status` = "' . (int) $onlineStatus . '" WHERE `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
 
         return          self::_getStore()->execute($sql);
     }

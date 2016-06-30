@@ -25,7 +25,10 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
-            <form class="form-inline" action="/sales_quotation/edit_sales_quotation.php" method="post" onsubmit="return disableForm()">
+            <form class="form-inline" action="/sales_quotation/edit_sales_quotation.php" method="post" id="quotation">
+                <input type='hidden' value="[]" name="quotation_data" id="quotation_data">
+            </form>
+            <form class="form-inline" action="/sales_quotation/edit_sales_quotation.php" method="post" id="form-quotation">
             <div class="box">
                 <div class="box-body">
                     <div class="form-group" style="margin-right: 25px;">
@@ -239,21 +242,23 @@ $(function(){
 
         location.href = "/sales_quotation/edit.php?plue_price="+pluePrice+"&customer_id="+customerId+"&sales_quotation_id="+salesQuotationId;
     });
-    
-})
-function disableForm(){
 
-    quotationName = $("[name=sales_quotation_name]").val();
+    $("#form-quotation").submit(function(){
 
-    if(quotationName.length>0){
-       
-        return true;
-    }else{
+        quotationName = $("[name=sales_quotation_name]").val();
+
+        if(quotationName.length>0){
+           
+            $("#quotation_data").val($(this).serialize());
+            $("#quotation").submit();
+        }else{
         
-        alert("报价单名称不能为空");
-        return false;
-    }
-}    
+            alert("报价单名称不能为空");
+        }
+        
+            return false;
+    });    
+})    
 </script>
 </body>
 </html>

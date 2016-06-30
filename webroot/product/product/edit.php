@@ -3,6 +3,10 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $productId      = (int) $_GET['product_id'];
 $productInfo    = Product_Info::getById($productId);
+if ($productInfo['online_status'] == Product_OnlineStatus::OFFLINE) {
+
+    Utility::notice('下架状态的产品不允许编辑');
+}
 $productInfo['sourceInfo']      = Source_Info::getById($productInfo['source_id']);
 $productInfo['supplierInfo']    = Supplier_Info::getById($productInfo['sourceInfo']['supplier_id']);
 $productInfo['goodsInfo']       = Goods_Info::getById($productInfo['goods_id']);

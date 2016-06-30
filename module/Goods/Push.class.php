@@ -103,6 +103,7 @@ class Goods_Push {
             'goodsSn'       => $goodsData['goods_sn'],
             'skuName'       => $goodsData['goods_name'],
             'categoryId'    => $goodsData['category_id'],
+            'styleId'       => $goodsData['style_id'],
             'selfCost'      => $goodsData['self_cost'],
             'saleCost'      => $goodsData['sale_cost'],
             'remark'        => $goodsData['goods_remark'],

@@ -4,11 +4,14 @@
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
-$data               = $_POST;
+$quotationData              = $_POST;
+
+parse_str($quotationData['quotation_data'], $data);
+
 $userId             = $_SESSION['user_id'];
 $customerId         = !empty($data['customer_id']) ? $data['customer_id'] : "0";
 $salesQuotationName = $data['sales_quotation_name'];
-$markupRule         = $data['plue_price'];
+$markupRule         = !empty($data['plue_price']) ? $data['plue_price'] : "0.00";
 Validate::testNull($salesQuotationName,"报价单名称不能为空");
 unset($data['customer_id']);
 unset($data['sales_quotation_name']);
@@ -26,11 +29,11 @@ $slaesQuotation = array(
 
 $salesQuotationId   = Sales_Quotation_Info::create($slaesQuotation);
 
-Validate::testNull($salesQuotationId,"添加报价单失败");
 foreach($data as $spuId => $colorCost){
-    
+ 
     $remark = $colorCost['spu_remark'];
     unset($colorCost['spu_remark']);
+
     foreach($colorCost as $colorId => $cost){
         
         if(!is_numeric($cost)){
@@ -45,7 +48,8 @@ foreach($data as $spuId => $colorCost){
                 'cost'                  => $cost,
                 'color_id'              => $colorId,
                 'sales_quotation_remark'=> $remark,
-            );       
+            ); 
+            
             Sales_Quotation_Spu_Info::create($content);
         }      
     }

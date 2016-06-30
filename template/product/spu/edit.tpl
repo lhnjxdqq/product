@@ -72,7 +72,7 @@
                                         </thead>
                                         <tbody>
                                         <{foreach from=$data.mapGoodsInfo item=item}>
-                                            <tr class="spu-goods">
+                                            <tr class="spu-goods<{if $item.online_status eq $data.onlineStatus.offline}> danger<{/if}>">
                                                 <td>
                                                     <input type="hidden" name="goods-id[]" class="goods-id" value="<{$item.goods_id}>">
                                                     <input type="text" name="spu-goods-name[]" class="form-control spu-goods-name" value="<{$item.spu_goods_name}>">

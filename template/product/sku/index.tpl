@@ -156,7 +156,7 @@
                             </thead>
                             <tbody>
                                 <{foreach from=$data.listGoodsInfo item=item}>
-                                    <tr>
+                                    <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
                                         <td><input type="checkbox" class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>
@@ -171,7 +171,7 @@
                                         <td><{$item.sale_cost}></td>
                                         <td><{$item.goods_remark}></td>
                                         <td>
-                                            <a href="/product/sku/edit.php?goods_id=<{$item.goods_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                            <a href="javascript:editSku(<{$item.goods_id}>, <{$item.online_status}>);" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                         </td>
                                     </tr>
                                 <{/foreach}>
@@ -219,6 +219,16 @@
                 location.href   = redirect;
             }
         }
+    }
+    function editSku(goodsId, onlineStatus) {
+
+        if (onlineStatus == 2) {
+
+            alert('下架状态的SKU不允许编辑');
+            return;
+        }
+        var redirect    = '/product/sku/edit.php?goods_id=' + goodsId;
+        location.href   = redirect;
     }
     $('form.search-sku').submit(function () {
         var searchValueList = $('input[name="search_value_list"]').val();

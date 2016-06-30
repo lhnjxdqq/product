@@ -125,7 +125,7 @@
                     <div class="row" id="spu-list">
                         <{foreach from=$data.listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
-                                <div class="thumbnail">
+                                <div class="thumbnail"<{if $item.online_status eq $data.onlineStatus.offline}> style="border:1px solid #e08e0b;"<{/if}>>
                                     <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" /></td>
                                     <img src="<{$item.image_url|default:'/images/spu_default.png'}>" alt="...">
                                     <div class="caption">
@@ -142,7 +142,7 @@
                                                 <a href="javascript:void(0);" class="btn btn-<{if $item.is_cart eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
                                             </span>
                                             <span class="pull-right">
-                                                <a href="/product/spu/edit.php?spu_id=<{$item.spu_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
+                                                <a href="javascript:editSpu(<{$item.spu_id}>, <{$item.online_status}>)" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></a>
                                                 <a href="javascript:delSpu(<{$item.spu_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
                                             </span>
                                         </p>
@@ -199,7 +199,16 @@
             }
         }
     }
+    function editSpu(spuId, onlineStatus) {
 
+        if (onlineStatus == 2) {
+
+            alert('下架状态的SPU不允许编辑');
+            return;
+        }
+        var redirect    = '/product/spu/edit.php?spu_id=' + spuId;
+        location.href   = redirect;
+    }
     $('form.search-spu').submit(function () {
         var searchValueList = $('input[name="search_value_list"]').val();
         var searchType      = $('select[name="search_type"]').val();

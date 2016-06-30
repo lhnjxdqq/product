@@ -254,7 +254,8 @@ class Search_Product {
             '`si`.`source_code`',
             '`pi`.`product_cost`',
             '`pi`.`goods_id`',
-            '`pi`.`source_id`'
+            '`pi`.`source_id`',
+            '`pi`.`online_status`',
         );
     }
 

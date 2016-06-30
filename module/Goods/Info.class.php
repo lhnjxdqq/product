@@ -19,7 +19,7 @@ class   Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_id,goods_sn,goods_name,goods_type_id,goods_id_related,category_id,style_id,self_cost,sale_cost,goods_remark,delete_status,create_time,update_time';
+    const   FIELDS      = 'goods_id,goods_sn,goods_name,goods_type_id,goods_id_related,category_id,style_id,self_cost,sale_cost,goods_remark,online_status,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -307,6 +307,28 @@ class   Goods_Info {
         $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
 
         $sql            = 'UPDATE ' . self::_tableName() . ' SET `delete_status` = "' . (int) $deleteStatus . '" WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        return          self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 批量设置SKU的上下架状态
+     *
+     * @param array $multiGoodsId   一组SKUID
+     * @param $onlineStatus
+     * @return int|void
+     */
+    static public function setOnlineStatusByMultiGoodsId (array $multiGoodsId, $onlineStatus) {
+
+        $statusList = Goods_OnlineStatus::getOnlineStatus();
+        if (!array_key_exists($onlineStatus, $statusList)) {
+
+            return;
+        }
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($multiGoodsId)));
+
+        $sql            = 'UPDATE ' . self::_tableName() . ' SET `online_status` = "' . (int) $onlineStatus . '" WHERE `goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
 
         return          self::_getStore()->execute($sql);
     }

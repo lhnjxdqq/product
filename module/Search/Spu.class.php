@@ -291,6 +291,7 @@ class Search_Spu {
             '`spu_info`.`spu_sn`',
             '`spu_info`.`spu_name`',
             '`spu_info`.`spu_remark`',
+            '`spu_info`.`online_status`',
             '`goods_info`.`goods_id`',
             '`goods_info`.`category_id`',
             '`weight_info`.`spec_value_id` AS `weight_value_id`'
