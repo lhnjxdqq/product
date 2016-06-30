@@ -32,11 +32,10 @@ class Search_Sku {
      */
     static public function countByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM ( SELECT `goods_info`.`goods_id` FROM `goods_info` LEFT JOIN ';
+        $sqlBase        = 'SELECT COUNT(DISTINCT(`goods_info`.`goods_id`)) AS `cnt` FROM `goods_info` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
-        $sqlGroup       = self::_group();
-        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . ' ) AS `count_total`';
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition;
         $data           = Goods_Info::query($sql);
         $row            = current($data);
 
