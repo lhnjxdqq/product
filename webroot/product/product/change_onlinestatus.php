@@ -32,4 +32,8 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
         $listOffLineSpuId   = Common_Product::getOffLineSpu($listSpuId);
         !empty($listOffLineSpuId) && Spu_Info::setOnlineStatusByMultiSpuId($listOffLineSpuId, Spu_OnlineStatus::OFFLINE);
     }
+    Utility::notice('下架成功');
+} else {
+
+    Utility::notice('下架失败');
 }
