@@ -131,6 +131,8 @@
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash"></i> 批量删除</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="offlineMulti"><i class="fa fa-arrow-down"></i> 批量下架</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="onlineMulti"><i class="fa fa-arrow-up"></i> 批量上架</a>
                     <a href="/product/product/add.php" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> 添加产品</a>
                 </div>
                 <div class="box-body">
@@ -320,17 +322,35 @@
         $('#product-list input').prop('checked', $(this).prop('checked') );
     });
     $('#delMulti').click(function () {
+        var productIdStr = getCheckedProductList();
+        if (confirm('确定要批量删除这些产品吗 ?')) {
+            var redirect    = '/product/product/del.php?multi_product_id=' + productIdStr;
+            location.href   = redirect;
+        }
+    });
+    $('#offlineMulti').click(function () {
+        var productIdStr = getCheckedProductList();
+        if (confirm('确定要批量下架这些产品吗 ?')) {
+            var redirect    = '/product/product/change_onlinestatus.php?multi_product_id=' + productIdStr + '&online_status=offline';
+            location.href   = redirect;
+        }
+    });
+    $('#onlineMulti').click(function () {
+        var productIdStr = getCheckedProductList();
+        if (confirm('确定要批量上架这些产品吗 ?')) {
+            var redirect    = '/product/product/change_onlinestatus.php?multi_product_id=' + productIdStr + '&online_status=online';
+            location.href   = redirect;
+        }
+    });
+    function getCheckedProductList() {
         var checked         = $('#product-list input.select:checked');
         var productIdStr    = '';
         $.each(checked, function (index, val) {
             productIdStr += $(val).attr('productid') + ',';
         });
         productIdStr = productIdStr.substr(0, productIdStr.length - 1);
-        if (confirm('确定要批量删除这些产品吗 ?')) {
-            var redirect    = '/product/product/del.php?multi_product_id=' + productIdStr;
-            location.href   = redirect;
-        }
-    });
+        return  productIdStr;
+    }
     tableColumn({
         selector    : '#product-list',
         container   : '#product-list-vis'
