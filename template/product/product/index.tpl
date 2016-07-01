@@ -323,6 +323,11 @@
     });
     $('#delMulti').click(function () {
         var productIdStr = getCheckedProductList();
+        if ('' == productIdStr) {
+
+            alert('请选选择产品');
+            return;
+        }
         if (confirm('确定要批量删除这些产品吗 ?')) {
             var redirect    = '/product/product/del.php?multi_product_id=' + productIdStr;
             location.href   = redirect;
@@ -330,6 +335,11 @@
     });
     $('#offlineMulti').click(function () {
         var productIdStr = getCheckedProductList();
+        if ('' == productIdStr) {
+
+            alert('请选选择产品');
+            return;
+        }
         if (confirm('确定要批量下架这些产品吗 ?')) {
             var redirect    = '/product/product/change_onlinestatus.php?multi_product_id=' + productIdStr + '&online_status=offline';
             location.href   = redirect;
@@ -337,6 +347,11 @@
     });
     $('#onlineMulti').click(function () {
         var productIdStr = getCheckedProductList();
+        if ('' == productIdStr) {
+
+            alert('请选选择产品');
+            return;
+        }
         if (confirm('确定要批量上架这些产品吗 ?')) {
             var redirect    = '/product/product/change_onlinestatus.php?multi_product_id=' + productIdStr + '&online_status=online';
             location.href   = redirect;
