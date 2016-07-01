@@ -94,4 +94,17 @@ class   Goods_Images_RelationShip {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据SKUID删除图片
+     *
+     * @param $goodsId
+     * @return int
+     */
+    static public function deleteById ($goodsId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+
+        return  self::_getStore()->execute($sql);
+    }
 }
