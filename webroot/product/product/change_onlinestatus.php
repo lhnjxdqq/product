@@ -25,13 +25,24 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
         if (!empty($listOffLineGoodsId)) {
             // 执行SKU下架操作
             Goods_Info::setOnlineStatusByMultiGoodsId($listOffLineGoodsId, Goods_OnlineStatus::OFFLINE);
+            foreach ($listOffLineGoodsId as $goodsId) {
+
+                Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
+            }
 
             // 查这些下架的SKU关联了哪些SPU
             $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listOffLineGoodsId);
             $listSpuId          = array_unique(ArrayUtility::listField($listSpuGoods, 'spu_id'));
             // 获取需要下架的SPU列表, 并且对SPU进行下架
             $listOffLineSpuId   = Common_Product::getOffLineSpu($listSpuId);
-            !empty($listOffLineSpuId) && Spu_Info::setOnlineStatusByMultiSpuId($listOffLineSpuId, Spu_OnlineStatus::OFFLINE);
+            if (!empty($listOffLineSpuId)) {
+
+                Spu_Info::setOnlineStatusByMultiSpuId($listOffLineSpuId, Spu_OnlineStatus::OFFLINE);
+                foreach ($listOffLineSpuId as $spuId) {
+
+                    Spu_Push::changePushSpuDataStatus($spuId, 'offline');
+                }
+            }
         }
         Utility::notice('下架成功');
     } elseif (trim($_GET['online_status']) == 'online') {// 产品上架逻辑
@@ -44,6 +55,10 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
 
             // 执行SKU上架操作
             Goods_Info::setOnlineStatusByMultiGoodsId($listOnlineGoodsId, Goods_OnlineStatus::ONLINE);
+            foreach ($listOnlineGoodsId as $goodsId) {
+
+                Goods_Push::changePushGoodsDataStatus($goodsId, 'online');
+            }
 
             // 查这些SKU关联了哪些SPU
             $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listOnlineGoodsId);
@@ -52,7 +67,14 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
             $listSpuInfo        = Spu_Info::getByMultiId($listSpuId);
             $listOnlineSpuInfo  = ArrayUtility::searchBy($listSpuInfo, array('online_status'=>Spu_OnlineStatus::OFFLINE));
             $listOnlineSpuId    = ArrayUtility::listField($listOnlineSpuInfo, 'spu_id');
-            !empty($listOnlineSpuId) && Spu_Info::setOnlineStatusByMultiSpuId($listOnlineSpuId, Spu_OnlineStatus::ONLINE);
+            if (!empty($listOnlineSpuId)) {
+
+                Spu_Info::setOnlineStatusByMultiSpuId($listOnlineSpuId, Spu_OnlineStatus::ONLINE);
+                foreach ($listOnlineSpuId as $spuId) {
+
+                    Spu_Push::changePushSpuDataStatus($spuId, 'online');
+                }
+            }
         }
         Utility::notice('上架成功');
     } else {

@@ -6,12 +6,7 @@ class HttpRequest {
 
     static public function getInstance ($url) {
 
-        if (!self::$_instance instanceof self) {
-
-            self::$_instance    = new self($url);
-        }
-
-        return  self::$_instance;
+        return new self($url);
     }
 
     private function __construct($url) {

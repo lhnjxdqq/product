@@ -20,13 +20,24 @@ if (Product_Info::setDeleteStatusByMultiProductId($productIdList, Product_Delete
     if (!empty($listOffLineGoodsId)) {
         // 执行SKU下架操作
         Goods_Info::setOnlineStatusByMultiGoodsId($listOffLineGoodsId, Goods_OnlineStatus::OFFLINE);
+        foreach ($listOffLineGoodsId as $goodsId) {
+
+            Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
+        }
 
         // 查这些下架的SKU关联了哪些SPU
         $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listOffLineGoodsId);
         $listSpuId          = array_unique(ArrayUtility::listField($listSpuGoods, 'spu_id'));
         // 获取需要下架的SPU列表, 并且对SPU进行下架
         $listOffLineSpuId   = Common_Product::getOffLineSpu($listSpuId);
-        !empty($listOffLineSpuId) && Spu_Info::setOnlineStatusByMultiSpuId($listOffLineSpuId, Spu_OnlineStatus::OFFLINE);
+        if (!empty($listOffLineSpuId)) {
+
+            Spu_Info::setOnlineStatusByMultiSpuId($listOffLineSpuId, Spu_OnlineStatus::OFFLINE);
+            foreach ($listOffLineSpuId as $spuId) {
+
+                Spu_Push::changePushSpuDataStatus($spuId, 'offline');
+            }
+        }
 
     }
     Utility::notice('删除商品成功');
