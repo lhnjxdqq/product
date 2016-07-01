@@ -13,6 +13,15 @@ $selfCost       = sprintf('%.2f', $_POST['self-cost']);
 $saleCost       = sprintf('%.2f', $_POST['sale-cost']);
 $goodsRemark    = trim($_POST['goods-remark']);
 $goodsId        = (int) $_POST['goods-id'];
+$imageIdList    = $_POST['sku-image'];
+
+$files  = $_FILES['sku-image'];
+foreach ($files['tmp_name'] as $stream) {
+    if ($stream) {
+        $imageId        = AliyunOSS::getInstance('images-sku')->create($stream, null, true);
+        $imageIdList[]  = $imageId;
+    }
+}
 
 $specValueList  = array();
 foreach ($specList as $specValue) {
@@ -51,10 +60,20 @@ if (Goods_Info::update($data)) {
         $specValue['goods_id']  = $goodsId;
         Goods_Spec_Value_RelationShip::create($specValue);
     }
+    // 更新图片关系
+    Goods_Images_RelationShip::deleteById($goodsId);
+    if ($imageIdList) {
+        foreach ($imageIdList as $imageId) {
+            Goods_Images_RelationShip::create(array(
+                'goods_id'  => $goodsId,
+                'image_key' => $imageId,
+            ));
+        }
+    }
 
     // 推送更新SKU数据到生产工具
     Goods_Push::updatePushGoodsData($goodsId);
-    Utility::notice('编辑成功');
+    Utility::notice('编辑成功', '/product/sku/index.php');
 } else {
 
     Utility::notice('编辑失败');
