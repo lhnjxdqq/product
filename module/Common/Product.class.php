@@ -100,4 +100,65 @@ class Common_Product {
             'pendingDeletedList' => $listToDeletedSpu,
         );
     }
+
+    static public function createImportGoodsData ($goodsId) {
+
+        $goodsInfo      = Goods_Info::getById($goodsId);
+        $listGoodsSpecValue = Goods_Spec_Value_RelationShip::getByGoodsId($goodsId);
+        $goodsSpecValueList = array();
+        foreach ($listGoodsSpecValue as $specValue) {
+            $goodsSpecValueList[]   = array(
+                'specId'        => $specValue['spec_id'],
+                'specValueId'   => $specValue['spec_value_id'],
+            );
+        }
+        $data           = array(
+            'goodsSn'       => $goodsInfo['goods_sn'],
+            'skuName'       => $goodsInfo['goods_name'],
+            'categoryId'    => $goodsInfo['category_id'],
+            'styleId'       => $goodsInfo['style_id'],
+            'selfCost'      => $goodsInfo['self_cost'],
+            'saleCost'      => $goodsInfo['sale_cost'],
+            'remark'        => $goodsInfo['goods_remark'],
+            'goodsSpecValueRelationshipList'    => $goodsSpecValueList,
+        );
+        $dirPath    = Config::get('path|PHP', 'goods_import') . date('Ym') . '/';
+        is_dir($dirPath) || mkdir($dirPath, 0777, true);
+        $fileName   = 'sku_' . date('Ymd') . '.log';
+        $filePath   = $dirPath . $fileName;
+        file_put_contents($filePath, json_encode($data) . "\n", FILE_APPEND);
+    }
+
+    static public function createImportSpuData ($spuId) {
+
+        $spuInfo        = Spu_Info::getById($spuId);
+        $listSpuGoods   = Spu_Goods_RelationShip::getBySpuId($spuId);
+        $listGoodsId    = ArrayUtility::listField($listSpuGoods, 'goods_id');
+        $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
+        $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+        $listSpuImages  = Spu_Images_RelationShip::getBySpuId($spuId);
+        $spuImage       = array_pop($listSpuImages);
+        $imagePath      = $spuImage ? $spuImage['image_key'] . '.jpg' : '';
+        $relationShip   = array();
+        foreach ($listSpuGoods as $spuGoods) {
+            $goodsId        = $spuGoods['goods_id'];
+            $relationShip[] = array(
+                'goodsSn'       => $mapGoodsInfo[$goodsId]['goods_sn'],
+                'spuGoodsName'  => $spuGoods['spu_goods_name'],
+            );
+        }
+        $data           = array(
+            'spuSn'         => $spuInfo['spu_sn'],
+            'spuName'       => $spuInfo['spu_name'],
+            'thumbnailPath' => $imagePath,
+            'imagePath'     => $imagePath,
+            'remark'        => $spuInfo['spu_remark'],
+            'spuGoodsRelationshipList'  => $relationShip,
+        );
+        $dirPath    = Config::get('path|PHP', 'spu_import') . date('Ym') . '/';
+        is_dir($dirPath) || mkdir($dirPath, 0777, true);
+        $fileName   = 'spu_' . date('Ymd') . '.log';
+        $filePath   = $dirPath . $fileName;
+        file_put_contents($filePath, json_encode($data) . "\n", FILE_APPEND);
+    }
 }

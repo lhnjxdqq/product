@@ -19,7 +19,7 @@ class   Supplier_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'supplier_id,supplier_code,supplier_type,delete_status,create_time,update_time';
+    const   FIELDS      = 'supplier_id,supplier_code,supplier_type,area_id,supplier_address,supplier_sort,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -27,12 +27,18 @@ class   Supplier_Info {
      */
     static  public  function create (array $data) {
 
+        $datetime   = date('Y-m-d H:i:s');
         $options    = array(
             'fields'    => self::FIELDS,
             'filter'    => 'supplier_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => $datetime,
+            'update_time'   => $datetime,
+        );
         self::_getStore()->insert(self::_tableName(), $newData);
+        return      self::_getStore()->lastInsertId();
     }
 
     /**
@@ -48,7 +54,10 @@ class   Supplier_Info {
         );
         $condition  = "`supplier_id` = '" . addslashes($data['supplier_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-        self::_getStore()->update(self::_tableName(), $newData, $condition);
+        $newData    += array(
+            'update_time'   => date('Y-m-d H:i:s'),
+        );
+        return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
     /**
      * 根据条件获取数据列表
@@ -174,5 +183,33 @@ class   Supplier_Info {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_id` = "' . (int) $supplierId . '"';
 
         return  self::_getStore()->fetchOne($sql);
+    }
+
+    static public function toSort ($supplierId, $action) {
+
+        $supplierInfo       = self::getById($supplierId);
+        $operactor          = $action == 'up' ? '>' : '<';
+        $sql                = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_sort` ' . $operactor . ' ' . $supplierInfo['supplier_sort'] . ' ORDER BY `supplier_sort` DESC LIMIT 1';
+        $uponSupplierInfo   = self::_getStore()->fetchOne($sql);
+
+        if (!$uponSupplierInfo) {
+
+            return;
+        }
+        $updateData = array(
+            array(
+                'supplier_id'   => $supplierInfo['supplier_id'],
+                'supplier_sort' => $uponSupplierInfo['supplier_sort'],
+            ),
+            array(
+                'supplier_id'   => $uponSupplierInfo['supplier_id'],
+                'supplier_sort' => $supplierInfo['supplier_sort'],
+            ),
+        );
+        foreach ($updateData as $data) {
+
+            self::update($data);
+        }
+        return true;
     }
 }

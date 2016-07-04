@@ -165,7 +165,7 @@ class   Quotation {
                 Spu_Goods_RelationShip::create($content);
             }
         }
-        
+        Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
     }
     
     /**
@@ -248,6 +248,7 @@ class   Quotation {
                     'spec_value_id' => $specValue['spec_value_id'],
                 ));
             }
+            Common_Product::createImportGoodsData($goodsId);
             // 新增产品
             $productData['goods_id']    = $goodsId;
         }
