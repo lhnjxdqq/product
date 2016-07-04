@@ -19,7 +19,7 @@ class   Supplier_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'supplier_id,supplier_code,supplier_type,delete_status,create_time,update_time';
+    const   FIELDS      = 'supplier_id,supplier_code,supplier_type,area_id,supplier_address,supplier_sort,delete_status,create_time,update_time';
     /**
      * 新增
      *
