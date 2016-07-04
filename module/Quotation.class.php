@@ -163,10 +163,9 @@ class   Quotation {
                     'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                 );
                 Spu_Goods_RelationShip::create($content);
-                Common_Product::createImportSpuData($spuInfo['spu_id']);
             }
         }
-        
+        Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
     }
     
     /**
