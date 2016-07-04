@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-// header('Content-Type: application/json; charset=utf8');
+header('Content-Type: application/json; charset=utf8');
 
 $areaId     = (int) $_GET['area_id'];
 

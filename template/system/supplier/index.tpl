@@ -64,17 +64,17 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <{foreach from=$data.listSupplierInfo item=item}>
+                            <{foreach from=$data.listSupplierInfo item=item name=supplier}>
                                 <tr>
-                                    <td><{$item.supplier_code}></td>
+                                    <td class="supplier-code" supplierid="<{$item.supplier_id}>"><{$item.supplier_code}></td>
                                     <td><{$data.mapAreaFullName[$item.area_id]['province']}></td>
                                     <td><{$data.mapAreaFullName[$item.area_id]['city']}></td>
                                     <td><{$data.mapAreaFullName[$item.area_id]['district']}></td>
                                     <td><{$item.supplier_address}></td>
                                     <td><{$item.supplier_type_name}></td>
                                     <td>
-                                        <a href="" class="btn btn-info btn-xs"><i class="fa fa-arrow-up"></i> 上移</a>
-                                        <a href="" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i> 下移</a>
+                                        <a href="javascript:void(0);" opt="up" class="btn btn-info btn-xs to-sort"<{if $smarty.foreach.supplier.first}> style="visibility: hidden;"<{/if}>><i class="fa fa-arrow-up"></i> 上移</a>
+                                        <a href="javascript:void(0);" opt="down" class="btn btn-info btn-xs to-sort"<{if $smarty.foreach.supplier.last}> style="visibility: hidden;"<{/if}>><i class="fa fa-arrow-down"></i> 下移</a>
                                     </td>
                                     <td>
                                         <a href="/system/supplier/edit.php?supplier_id=<{$item.supplier_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
@@ -125,6 +125,28 @@
             }
         }
     }
+    $('.to-sort').click(function () {
+        var operation   = $(this).attr('opt');
+        var supplierId  = $(this).parent().siblings('.supplier-code').attr('supplierid');
+        $.ajax({
+            url: '/system/supplier/ajax_sort.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {action: operation, supplier_id: supplierId},
+            success: function (data) {
+                if (data.statusCode == 'error') {
+
+                    alert('排序失败');
+                    return;
+                }
+                if (data.statusCode == 'success') {
+
+                    alert('排序成功');
+                    location.reload();
+                }
+            }
+        });
+    });
     tableColumn({
         selector    : '#supplier-list',
         container   : '#supplier-list-vis'

@@ -23,8 +23,12 @@ $data   = array(
     'supplier_address'  => $supplierAddress,
 );
 
-if (Supplier_Info::create($data)) {
+if ($supplierId = Supplier_Info::create($data)) {
 
+    Supplier_Info::update(array(
+        'supplier_id'   => $supplierId,
+        'supplier_sort' => $supplierId,
+    ));
     Utility::notice('新增供应商成功', '/system/supplier/index.php');
 } else {
 

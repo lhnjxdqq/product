@@ -184,4 +184,32 @@ class   Supplier_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
+
+    static public function toSort ($supplierId, $action) {
+
+        $supplierInfo       = self::getById($supplierId);
+        $operactor          = $action == 'up' ? '>' : '<';
+        $sql                = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_sort` ' . $operactor . ' ' . $supplierInfo['supplier_sort'] . ' ORDER BY `supplier_sort` DESC LIMIT 1';
+        $uponSupplierInfo   = self::_getStore()->fetchOne($sql);
+
+        if (!$uponSupplierInfo) {
+
+            return;
+        }
+        $updateData = array(
+            array(
+                'supplier_id'   => $supplierInfo['supplier_id'],
+                'supplier_sort' => $uponSupplierInfo['supplier_sort'],
+            ),
+            array(
+                'supplier_id'   => $uponSupplierInfo['supplier_id'],
+                'supplier_sort' => $supplierInfo['supplier_sort'],
+            ),
+        );
+        foreach ($updateData as $data) {
+
+            self::update($data);
+        }
+        return true;
+    }
 }
