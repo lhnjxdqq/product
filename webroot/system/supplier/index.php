@@ -30,7 +30,7 @@ foreach ($listSupplierInfo as &$supplierInfo) {
 
 $data['listSupplierInfo']   = $listSupplierInfo;
 $data['mapAreaFullName']    = $mapAreaFullName;
-$data['maninMenu']          = Menu_Info::getMainMenu();
+$data['mainMenu']          = Menu_Info::getMainMenu();
 $data['pageViewData']       = $page->getViewData();
 
 $template = Template::getInstance();

@@ -122,4 +122,46 @@ class   Area_Info {
         }
         return  $result;
     }
+
+    /**
+     * 获取省份
+     *
+     * @return array
+     */
+    static public function getProvince () {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `area_type` = "1"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 获取子地区
+     *
+     * @param $areaId
+     */
+    static public function getChildArea ($areaId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `parent_id` = "' . (int) $areaId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 获取父级地区
+     *
+     * @param $areaId
+     * @return array
+     */
+    static public function getParentArea ($areaId) {
+
+        $allArea    = ArrayUtility::indexByField(self::listAll(), 'area_id');
+        $result     = array();
+        while ($area    = $allArea[$areaId]) {
+            $result[]   = $area;
+            $areaId     = $area['parent_id'];
+        }
+        array_pop($result);
+        return      $result;
+    }
 }
