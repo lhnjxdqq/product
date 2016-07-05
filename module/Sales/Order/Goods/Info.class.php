@@ -19,7 +19,8 @@ class   Sales_Order_Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_id,goods_id,goods_number,reference_weight,actual_weight,shipment,transaction_price';
+    const   FIELDS      = 'sales_order_id,goods_id,goods_quantity,reference_weight,actual_weight,shipment,transaction_price';
+
     /**
      * 新增
      *
