@@ -105,6 +105,7 @@ class   Supplier_Info {
 
         $sql        = array();
         $sql[]      = self::_conditionKeywords($condition);
+        $sql[]      = self::_conditionByDeleteStatus($condition);
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
@@ -127,7 +128,20 @@ class   Supplier_Info {
 
         return  "`supplier_code` LIKE '%" . addslashes($keyword) . "%' ESCAPE '/'";
     }
-    
+
+    /**
+     * 根据删除状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByDeleteStatus (array $condition) {
+
+        return  isset($condition['delete_status'])
+                ? '`delete_status` = "' . (int) $condition['delete_status'] . '"'
+                : '';
+    }
+
     /**
      * 根据一组供应商ID获取该组供应商信息
      *
