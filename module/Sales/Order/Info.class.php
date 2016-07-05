@@ -50,4 +50,32 @@ class   Sales_Order_Info {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据销售订单ID 查询销售订单信息
+     *
+     * @param $salesOrderId 销售订单ID
+     * @return array        销售订单信息
+     */
+    static public function getById ($salesOrderId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 根据一组销售订单ID 查询销售订单信息
+     *
+     * @param array $multiSalesOrderId  一组销售订单ID
+     * @return array                    销售订单信息
+     */
+    static public function getByMultiId (array $multiSalesOrderId) {
+
+        $multiSalesOrderId  = array_map('intval', $multiSalesOrderId);
+
+        $sql                = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` IN ("' . implode('","', $multiSalesOrderId) . '")';
+
+        return              self::_getStore()->fetchAll($sql);
+    }
 }
