@@ -19,7 +19,7 @@ class   Sales_Order_Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_id,goods_id,spu_id,goods_number,reference_weight,actual_weight,shipment,transaction_price';
+    const   FIELDS      = 'sales_order_id,goods_id,goods_number,reference_weight,actual_weight,shipment,transaction_price';
     /**
      * 新增
      *
@@ -49,5 +49,18 @@ class   Sales_Order_Goods_Info {
         $condition  = "`sales_order_id` = '" . addslashes($data['sales_order_id']) . "' AND `goods_id` = '" . addslashes($data['goods_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
+    }
+
+    /**
+     * 根据销售订单ID 查询销售订单所含SKU
+     *
+     * @param $salesOrderId 销售订单ID
+     * @return array        销售订单所含SKU
+     */
+    static public function getBySalesOrderId ($salesOrderId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
     }
 }

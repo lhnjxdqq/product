@@ -161,4 +161,34 @@ class Common_Product {
         $filePath   = $dirPath . $fileName;
         file_put_contents($filePath, json_encode($data) . "\n", FILE_APPEND);
     }
+
+    /**
+     * 查询一组SKU 分别可以由哪些供应商来生产
+     *
+     * @param array $multiGoodsId   一组SKUID
+     * @return array
+     */
+    static public function getSkuSupplier (array $multiGoodsId) {
+
+        $multiGoodsId       = array_map('intval', array_unique(array_filter($multiGoodsId)));
+        $multiGoodsIdStr    = implode('","', $multiGoodsId);
+        $sql                =<<<SQL
+SELECT
+    `supplier_info`.`supplier_id`,
+    `supplier_info`.`supplier_code`,
+    `goods_info`.`goods_id`
+FROM
+`supplier_info`
+LEFT JOIN `source_info` ON `source_info`.`supplier_id`=`supplier_info`.`supplier_id`
+LEFT JOIN `product_info` ON `product_info`.`source_id`=`source_info`.`source_id`
+LEFT JOIN `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
+WHERE
+    `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
+ORDER BY
+    `supplier_info`.`supplier_sort` DESC
+SQL;
+        $data               = Goods_Info::query($sql);
+        $result             = ArrayUtility::groupByField($data, 'supplier_id');
+        return              $result;
+    }
 }
