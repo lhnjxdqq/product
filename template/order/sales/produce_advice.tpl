@@ -46,19 +46,29 @@
                         </tr>
                         <tr>
                             <th>已采购数量</th>
-                            <td>0</td>
+                            <td><{$data.salesOrderInfo.produce_quantity_total}></td>
                         </tr>
                         <tr>
                             <th>已采购款数</th>
-                            <td>0</td>
+                            <td><{$data.salesOrderInfo.produce_goods_count}></td>
                         </tr>
+                        <!--
                         <tr>
                             <th>已采购重量</th>
                             <td>0</td>
                         </tr>
+                        -->
                         <tr>
                             <th>已采购次数</th>
-                            <td>0</td>
+                            <td><{$data.salesOrderInfo.produce_order_count}></td>
+                        </tr>
+                        <tr>
+                            <th>相关生产订单</th>
+                            <td>
+                                <{foreach from=$data.salesOrderInfo.produce_order_list item=item name=produceOrder}>
+                                <a class="btn btn-info btn-xs" href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>"><{$item.produce_order_sn}></a>
+                                <{/foreach}>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -123,7 +133,7 @@
 </div>
 <!-- ./wrapper -->
 <style>
-    .table.general-view tr th {width: 200px; padding-left: 50px;}
+    .table.general-view tr th {width: 200px; padding-right: 50px; text-align:right;}
 </style>
 <{include file="section/foot.tpl"}>
 </body>

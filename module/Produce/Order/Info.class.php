@@ -59,4 +59,28 @@ class   Produce_Order_Info {
         );
         return  self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据销售订单ID 查询生产订单
+     *
+     * @param $salesOrderId 销售订单ID
+     * @return array
+     */
+    static public function getBySalesOrderId ($salesOrderId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 查询SQL
+     *
+     * @param $sql
+     * @return array
+     */
+    static public function query ($sql) {
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }

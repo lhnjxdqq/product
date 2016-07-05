@@ -174,21 +174,56 @@ class Common_Product {
         $multiGoodsIdStr    = implode('","', $multiGoodsId);
         $sql                =<<<SQL
 SELECT
-    `supplier_info`.`supplier_id`,
-    `supplier_info`.`supplier_code`,
-    `goods_info`.`goods_id`
+  `supplier_info`.`supplier_id`,
+  `supplier_info`.`supplier_code`,
+  `goods_info`.`goods_id`
 FROM
-`supplier_info`
-LEFT JOIN `source_info` ON `source_info`.`supplier_id`=`supplier_info`.`supplier_id`
-LEFT JOIN `product_info` ON `product_info`.`source_id`=`source_info`.`source_id`
-LEFT JOIN `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
+  `supplier_info`
+LEFT JOIN
+  `source_info` ON `source_info`.`supplier_id`=`supplier_info`.`supplier_id`
+LEFT JOIN
+  `product_info` ON `product_info`.`source_id`=`source_info`.`source_id`
+LEFT JOIN
+  `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
 WHERE
-    `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
+  `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
 ORDER BY
-    `supplier_info`.`supplier_sort` DESC
+  `supplier_info`.`supplier_sort` DESC
 SQL;
         $data               = Goods_Info::query($sql);
         $result             = ArrayUtility::groupByField($data, 'supplier_id');
         return              $result;
+    }
+
+    /**
+     * 查询销售订单中 已生产完成的SKU
+     *
+     * @param $salesOrderId
+     * @return array
+     */
+    static public function getProducedGoods ($salesOrderId) {
+
+        $listProduceOrder       = Produce_Order_Info::getBySalesOrderId($salesOrderId);
+        $listProduceOrderId     = ArrayUtility::listField($listProduceOrder, 'produce_order_id');
+        $listProduceOrderIdStr  = implode('","', $listProduceOrderId);
+        $sql                    =<<<SQL
+SELECT
+  `pi`.`goods_id`,
+  SUM(`popi`.`quantity`) AS `sum_quantity_produce`,
+  `sogi`.`goods_quantity` AS `sales_goods_quantity`
+FROM
+  `product_info` AS `pi`
+LEFT JOIN
+  `produce_order_product_info` AS `popi` ON `popi`.`product_id`=`pi`.`product_id`
+LEFT JOIN
+  `sales_order_goods_info` AS `sogi` ON `sogi`.`goods_id`=`pi`.`goods_id`
+WHERE
+  `popi`.`produce_order_id` IN ("{$listProduceOrderIdStr}")
+GROUP BY
+  `pi`.`goods_id`
+HAVING
+  `sum_quantity_produce` >= `sales_goods_quantity`
+SQL;
+        return  Goods_Info::query($sql);
     }
 }
