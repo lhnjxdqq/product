@@ -199,6 +199,26 @@ class   Supplier_Info {
         return  self::_getStore()->fetchOne($sql);
     }
 
+    /**
+     * 根据供应商代码 获取供应商信息
+     *
+     * @param $supplierCode 供应商代码
+     * @return array
+     */
+    static public function getByCode ($supplierCode) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_code` = "' . addslashes(trim($supplierCode)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 供应商列表页面排序
+     *
+     * @param $supplierId   供应商ID
+     * @param $action       操作(上移 || 下移)
+     * @return bool|void
+     */
     static public function toSort ($supplierId, $action) {
 
         $supplierInfo       = self::getById($supplierId);
