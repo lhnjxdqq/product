@@ -32,15 +32,18 @@ if ($supplierInfo) {
     } else {
 
         $update = Supplier_Info::update(array(
-            'supplier_id'   => $supplierInfo['supplier_id'],
-            'delete_status' => Supplier_DeleteStatus::NORMAL,
+            'supplier_id'       => $supplierInfo['supplier_id'],
+            'supplier_type'     => $supplierType,
+            'area_id'           => $areaId,
+            'supplier_address'  => $supplierAddress,
+            'delete_status'     => Supplier_DeleteStatus::NORMAL,
         ));
         if ($update) {
 
-            Utility::notice('新增成功');
+            Utility::notice('新增成功', '/system/supplier/index.php');
         } else {
 
-            Utility::notice('新增成功');
+            Utility::notice('新增失败');
         }
     }
 }
