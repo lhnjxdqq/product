@@ -19,7 +19,7 @@ class   Sales_Order_Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_id,goods_id,spu_id,goods_number,reference_weight,actual weight,shipment,transaction_price';
+    const   FIELDS      = 'sales_order_id,goods_id,spu_id,goods_number,reference_weight,actual_weight,shipment,transaction_price';
     /**
      * 新增
      *
@@ -29,7 +29,7 @@ class   Sales_Order_Goods_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'sales_order_id,goods_id',
+            'filter'    => '',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->insert(self::_tableName(), $newData);
