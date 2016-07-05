@@ -1,20 +1,20 @@
 <?php
 /**
- * ÏúÊÛ¶©µ¥×´Ì¬
+ * é”€å”®è®¢å•çŠ¶æ€
  */
 class   Sales_Order_Status extends SplEnum {
 
-    const   NEWS                    = 1;     //ÐÂ½¨
+    const   NEWS                    = 1;     //æ–°å»º
 
-    const   DELETE                  = 2;     //É¾³ý
+    const   DELETE                  = 2;     //åˆ é™¤
 
-    const   CONFIRM                 = 3;     //ÒÑÈ·ÈÏ
+    const   CONFIRM                 = 3;     //å·²ç¡®è®¤
 
-    const   PURCHASE                = 4;     //²É¹ºÖÐ
+    const   PURCHASE                = 4;     //é‡‡è´­ä¸­
     
-    const   PARTIAL_SHIPMENT        = 5;     //²¿·Ö·¢»õ
+    const   PARTIAL_SHIPMENT        = 5;     //éƒ¨åˆ†å‘è´§
     
-    const   COMPLETION              = 6;     //¶©µ¥Íê³É
+    const   COMPLETION              = 6;     //è®¢å•å®Œæˆ
     
-    const   PARTIALLY_OUT_OF_STOCK  = 7;     //²¿·ÖÈ±»õ
+    const   PARTIALLY_OUT_OF_STOCK  = 7;     //éƒ¨åˆ†ç¼ºè´§
 }
