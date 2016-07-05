@@ -1,10 +1,10 @@
 <?php
 /**
- * 模型 销售订单类型
+ * 模型 销售员
  */
-class   Sales_Status_Type_Info {
+class   Salesperson_Info {
 
-    use Base_Model;
+    use Base_MiniModel;
     
     /**
      * 数据库配置
@@ -14,12 +14,12 @@ class   Sales_Status_Type_Info {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'sales_order_type_info';
+    const   TABLE_NAME  = 'salesperson_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_type_id,sales_order_type_name,is_delete,create_time,update_time';
+    const   FIELDS      = 'salesperson_id,salesperson_name,create_time,delete_status,update_time';
     /**
      * 新增
      *
@@ -29,7 +29,7 @@ class   Sales_Status_Type_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'sales_order_type_id',
+            'filter'    => 'salesperson_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->insert(self::_tableName(), $newData);
@@ -44,9 +44,9 @@ class   Sales_Status_Type_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'sales_order_type_id',
+            'filter'    => 'salesperson_id',
         );
-        $condition  = "`sales_order_type_id` = '" . addslashes($data['sales_order_type_id']) . "'";
+        $condition  = "`salesperson_id` = '" . addslashes($data['salesperson_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
