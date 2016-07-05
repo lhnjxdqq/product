@@ -23,6 +23,31 @@ $data   = array(
     'supplier_address'  => $supplierAddress,
 );
 
+$supplierInfo   = Supplier_Info::getByCode($supplierCode);
+if ($supplierInfo) {
+
+    if ($supplierInfo['delete_status'] == Supplier_DeleteStatus::NORMAL) {
+
+        Utility::notice('供应商已存在');
+    } else {
+
+        $update = Supplier_Info::update(array(
+            'supplier_id'       => $supplierInfo['supplier_id'],
+            'supplier_type'     => $supplierType,
+            'area_id'           => $areaId,
+            'supplier_address'  => $supplierAddress,
+            'delete_status'     => Supplier_DeleteStatus::NORMAL,
+        ));
+        if ($update) {
+
+            Utility::notice('新增成功', '/system/supplier/index.php');
+        } else {
+
+            Utility::notice('新增失败');
+        }
+    }
+}
+
 if ($supplierId = Supplier_Info::create($data)) {
 
     Supplier_Info::update(array(

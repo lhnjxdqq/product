@@ -50,7 +50,7 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="supplier-list">
+                        <table class="table table-hover table-bordered table-striped" id="supplier-list">
                             <thead>
                             <tr>
                                 <th>供应商名称</th>
