@@ -55,11 +55,11 @@ $listOrderGoods     = Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
 $mapOrderGoods      = ArrayUtility::indexByField($listOrderGoods, 'goods_id');
 $listGoodsId        = ArrayUtility::listField($listOrderGoods, 'goods_id');
 
-$producedGoodsList  = Common_Product::getProducedGoods($salesOrderId);
+$producedGoodsList  = Common_SalesOrder::getProducedGoods($salesOrderId);
 $producedGoodsList  = ArrayUtility::listField($producedGoodsList, 'goods_id');
 
 $filterGoodsIdList  = array_diff($listGoodsId, $producedGoodsList);
-$listSupplierGoods  = Common_Product::getSkuSupplier($filterGoodsIdList);
+$listSupplierGoods  = Common_Goods::getSkuSupplier($filterGoodsIdList);
 
 $listSupplierInfo   = array();
 foreach ($listSupplierGoods as $supplierId => $supplierGoodsList) {

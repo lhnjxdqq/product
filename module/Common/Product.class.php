@@ -163,67 +163,48 @@ class Common_Product {
     }
 
     /**
-     * 查询一组SKU 分别可以由哪些供应商来生产
+     * 生产建议单 转生产订单页面需要的数据
      *
-     * @param array $multiGoodsId   一组SKUID
-     * @return array
+     * @param $multiGoodsId SKUID
+     * @param $supplierId   供应商ID
+     * @param $orderBy      排序
+     * @param $offset       位置
+     * @param $limit        数量
      */
-    static public function getSkuSupplier (array $multiGoodsId) {
+    static public function getProduceOrderProductList (array $multiGoodsId, $supplierId) {
 
         $multiGoodsId       = array_map('intval', array_unique(array_filter($multiGoodsId)));
         $multiGoodsIdStr    = implode('","', $multiGoodsId);
+        $supplierId         = (int) $supplierId;
         $sql                =<<<SQL
 SELECT
-  `supplier_info`.`supplier_id`,
-  `supplier_info`.`supplier_code`,
-  `goods_info`.`goods_id`
+  `product_info`.`product_id`,
+  `product_info`.`product_sn`,
+  `product_info`.`product_cost`,
+  `product_info`.`goods_id`,
+  `product_info`.`product_remark`,
+  `goods_info`.`goods_sn`,
+  `goods_info`.`goods_name`,
+  `goods_info`.`category_id`,
+  `goods_info`.`style_id`,
+  `source_info`.`source_code`
 FROM
-  `supplier_info`
-LEFT JOIN
-  `source_info` ON `source_info`.`supplier_id`=`supplier_info`.`supplier_id`
-LEFT JOIN
-  `product_info` ON `product_info`.`source_id`=`source_info`.`source_id`
+  `product_info`
 LEFT JOIN
   `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
+LEFT JOIN 
+  `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`
 WHERE
   `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
-ORDER BY
-  `supplier_info`.`supplier_sort` DESC
+AND
+  `source_info`.`supplier_id`="{$supplierId}"
 SQL;
-        $data               = Goods_Info::query($sql);
-        $result             = ArrayUtility::groupByField($data, 'supplier_id');
-        return              $result;
+
+        return              self::_query($sql);
     }
 
-    /**
-     * 查询销售订单中 已生产完成的SKU
-     *
-     * @param $salesOrderId
-     * @return array
-     */
-    static public function getProducedGoods ($salesOrderId) {
+    static private function _query ($sql) {
 
-        $listProduceOrder       = Produce_Order_Info::getBySalesOrderId($salesOrderId);
-        $listProduceOrderId     = ArrayUtility::listField($listProduceOrder, 'produce_order_id');
-        $listProduceOrderIdStr  = implode('","', $listProduceOrderId);
-        $sql                    =<<<SQL
-SELECT
-  `pi`.`goods_id`,
-  SUM(`popi`.`quantity`) AS `sum_quantity_produce`,
-  `sogi`.`goods_quantity` AS `sales_goods_quantity`
-FROM
-  `product_info` AS `pi`
-LEFT JOIN
-  `produce_order_product_info` AS `popi` ON `popi`.`product_id`=`pi`.`product_id`
-LEFT JOIN
-  `sales_order_goods_info` AS `sogi` ON `sogi`.`goods_id`=`pi`.`goods_id`
-WHERE
-  `popi`.`produce_order_id` IN ("{$listProduceOrderIdStr}")
-GROUP BY
-  `pi`.`goods_id`
-HAVING
-  `sum_quantity_produce` >= `sales_goods_quantity`
-SQL;
-        return  Goods_Info::query($sql);
+        return  Product_Info::query($sql);
     }
 }

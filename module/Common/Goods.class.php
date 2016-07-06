@@ -1,6 +1,12 @@
 <?php
 class Common_Goods {
 
+    /**
+     * 查询一组SKU的具体规格和规格值
+     *
+     * @param array $multiGoodsId
+     * @return array
+     */
     static public function getMultiGoodsSpecValue (array $multiGoodsId) {
 
         $multiGoodsId       = array_map('intval', array_unique(array_filter($multiGoodsId)));
@@ -33,6 +39,65 @@ WHERE
 SQL;
 
         return      self::_query($sql);
+    }
+
+    /**
+     * 查询一组SKU 分别可以由哪些供应商来生产
+     *
+     * @param array $multiGoodsId   一组SKUID
+     * @return array
+     */
+    static public function getSkuSupplier (array $multiGoodsId) {
+
+        $multiGoodsId       = array_map('intval', array_unique(array_filter($multiGoodsId)));
+        $multiGoodsIdStr    = implode('","', $multiGoodsId);
+        $sql                =<<<SQL
+SELECT
+  `supplier_info`.`supplier_id`,
+  `supplier_info`.`supplier_code`,
+  `goods_info`.`goods_id`
+FROM
+  `supplier_info`
+LEFT JOIN
+  `source_info` ON `source_info`.`supplier_id`=`supplier_info`.`supplier_id`
+LEFT JOIN
+  `product_info` ON `product_info`.`source_id`=`source_info`.`source_id`
+LEFT JOIN
+  `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
+WHERE
+  `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
+ORDER BY
+  `supplier_info`.`supplier_sort` DESC
+SQL;
+        $data               = Goods_Info::query($sql);
+        $result             = ArrayUtility::groupByField($data, 'supplier_id');
+        return              $result;
+    }
+
+    /**
+     * 取一组SKU的缩略图 (最后一张)
+     *
+     * @param array $multiGoodsId
+     * @return array|void
+     */
+    static public function getGoodsThumbnail (array $multiGoodsId) {
+
+        if (empty($multiGoodsId)) {
+
+            return;
+        }
+        $listGoodsImages    = Goods_Images_RelationShip::getByMultiGoodsId($multiGoodsId);
+        $groupGoodsImages   = ArrayUtility::groupByField($listGoodsImages, 'goods_id');
+        $result             = array();
+        foreach ($groupGoodsImages as $goodsId => $goodsImagesList) {
+
+            $goodsThumb = array_pop($goodsImagesList);
+            $imageKey   = $goodsThumb['image_key'];
+            $imageUrl   = $imageKey ? AliyunOSS::getInstance('images-sku')->url($imageKey) : '';
+            $goodsThumb['image_url']    = $imageUrl;
+            $result[$goodsId]           = $goodsThumb;
+        }
+        return  $result;
     }
 
     static private function _query ($sql) {

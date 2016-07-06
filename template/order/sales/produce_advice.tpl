@@ -100,7 +100,7 @@
                                     <td><{$item.quantity_total}></td>
                                     <td><{$item.weight_total}></td>
                                     <td>
-                                        <a href="javascript:void(0);" class="btn btn-info btn-xs"><i class="fa fa-paper-plane-o"></i> 生成生产订单</a>
+                                        <a href="/order/produce/add_cart.php?sales_order_id=<{$data.salesOrderInfo.sales_order_id}>&supplier_id=<{$item.supplier_id}>" class="btn btn-info btn-xs"><i class="fa fa-paper-plane-o"></i> 生成生产订单</a>
                                     </td>
                                 </tr>
                                 <{/foreach}>
