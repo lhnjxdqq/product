@@ -61,7 +61,7 @@ class   Goods_Spec_Value_RelationShip {
      */
     static public function validateGoods (array $specValueList, $styleId, $categoryId) {
 
-        if (!$specValueList || !$styleId) {
+        if (!$specValueList) {
 
             return;
         }

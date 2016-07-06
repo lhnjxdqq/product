@@ -78,7 +78,6 @@
                         <a href="/order/sales/select_sales_quotation.php" class="pull-right btn btn-primary" type="button">创建新订单</a>
                     </div>
                 </div>
-                <form class="form-inline" action="/order/sales/create_sales_order.php" method="post">
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">
@@ -93,7 +92,7 @@
                                     <th>销售员</th>
                                     <th>订单状态</th>
                                     <th>创建时间</th>
-                                    <th>操作</th>
+                                    <th style="text-align:center" width="250px">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,17 +104,21 @@
                                         <td><{$item.reference_weight}></td>
                                         <td><{$item.order_amount}></td>
                                         <td><{$mapCustomer[$item.customer_id]['customer_name']}></td>
-                                        <td><{$mapUser[$item.salesperson_id]['username']}></td>
+                                        <td><{$mapSalesperson[$item.salesperson_id]['salesperson_name']}></td>
                                         <td><{$item.sales_order_status}></td>
                                         <td><{$item.create_time}></td>
-                                        <td><button>编辑</button></td>
+                                        <td>
+                                            <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
+                                            <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
+                                            <a class="btn btn-primary btn-xs" type='button'>查看详情</a>
+                                            <a class="btn btn-primary btn-xs" type='button'>删除</a>
+                                        </td>
                                     </tr>
 <{/foreach}>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                </form>
                 <!-- /.box-body -->
                 <div class="box-footer clearfix">
                     <{include file="section/pagelist.tpl" viewData=$pageViewData}>
