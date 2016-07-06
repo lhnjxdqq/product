@@ -20,8 +20,21 @@ $listOrderProduct   = Common_SalesOrder::getProduceOrderDetail($salesOrderId);
 $mapProduceOrder    = ArrayUtility::groupByField($listOrderProduct, 'produce_order_id');
 $salesOrderInfo['produce_order_count']  = count($mapProduceOrder);
 // 已生产款数
-$listProduceGoods   = array_unique(ArrayUtility::listField($listOrderProduct, 'goods_id'));
-$salesOrderInfo['produce_goods_count']  = count($listProduceGoods);
+$groupProduceGoods  = ArrayUtility::groupByField($listOrderProduct, 'goods_id');
+$salesOrderInfo['produce_goods_count']  = count($groupProduceGoods);
+// 统计每个SKU已生产数量, 再根据规格重量统计SKU累计重量
+$listProducedGoods  = array();
+foreach ($groupProduceGoods as $goodsId => $produceGoodsList) {
+    $listProducedGoods[$goodsId]    = array_sum(ArrayUtility::listField($produceGoodsList, 'quantity'));
+}
+$producedGoodsId    = array_keys($listProducedGoods);
+$goodsSpecValueList = Common_Goods::getMultiGoodsSpecValue($producedGoodsId);
+$mapGoodsWeightData = ArrayUtility::indexByField($goodsSpecValueList, 'goods_id', 'weight_value_data');
+foreach ($listProducedGoods as $goodsId => $quantity) {
+
+    $weightValueData    = $mapGoodsWeightData[$goodsId];
+    $salesOrderInfo['produce_weight_count'] += $quantity * $weightValueData;
+}
 // 已生产数量
 foreach ($listOrderProduct as $orderProduct) {
 

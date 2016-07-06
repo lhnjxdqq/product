@@ -52,12 +52,10 @@
                             <th>已采购款数</th>
                             <td><{$data.salesOrderInfo.produce_goods_count}></td>
                         </tr>
-                        <!--
                         <tr>
                             <th>已采购重量</th>
-                            <td>0</td>
+                            <td><{$data.salesOrderInfo.produce_weight_count}></td>
                         </tr>
-                        -->
                         <tr>
                             <th>已采购次数</th>
                             <td><{$data.salesOrderInfo.produce_order_count}></td>
