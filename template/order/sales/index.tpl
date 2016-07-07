@@ -105,13 +105,13 @@
                                         <td><{$item.order_amount}></td>
                                         <td><{$mapCustomer[$item.customer_id]['customer_name']}></td>
                                         <td><{$mapSalesperson[$item.salesperson_id]['salesperson_name']}></td>
-                                        <td><{$item.sales_order_status}></td>
+                                        <td><{$statusList[$item.sales_order_status]['status_name']}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
                                             <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
                                             <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
                                             <a class="btn btn-primary btn-xs" type='button'>查看详情</a>
-                                            <a class="btn btn-primary btn-xs" type='button'>删除</a>
+                                            <a href='/order/sales/delete_sales_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs delete-confirm" type='button'>删除</a>
                                         </td>
                                     </tr>
 <{/foreach}>

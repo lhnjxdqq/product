@@ -64,4 +64,18 @@ class   Sales_Order_Goods_Info {
 
         return  self::_getStore()->fetchAll($sql);
     }
+            
+    /**
+     * 根据报价单ID删除报价单 
+     *
+     * @param   string $salesOrderId  报价单ID
+     */
+    static public function delete($salesOrderId) {
+    
+        Validate::testNull($salesOrderId,"销售订单ID不能为空");
+        
+        $condition = " `sales_order_id` = " . (int)$salesOrderId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
 }
