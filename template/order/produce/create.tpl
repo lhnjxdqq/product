@@ -42,8 +42,8 @@
                         <input type="checkbox" class="select-all"> 全选
                         <a class="btn btn-primary btn-sm" style="margin-left: 10px;" href="javascript:void(0);"><i class="fa fa-trash"></i> 批量删除</a>
                     </div>
-                    <div class="pull-right" style="margin-top: 5px;">
-                        共计XX款, XX件, 参考价格XX元
+                    <div class="pull-right count-cart" style="margin-top: 5px;">
+                        共计<span class="count-goods"><{$data.countSupplierCart.count_goods}></span>款, <span class="count-quantity"><{$data.countSupplierCart.count_quantity}></span>件, 重量<span class="count-weight"><{$data.countSupplierCart.count_weight}></span>克
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -67,14 +67,14 @@
                                     <th>主料材质</th>
                                     <th>备注</th>
                                     <th>采购工费</th>
-                                    <th>数量</th>
+                                    <th style="width:100px;">数量</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <{foreach from=$data.listProduceProduct item=item}>
-                                <tr>
-                                    <td><input type="checkbox"></td>
+                                <tr class="single-product">
+                                    <td class="select"><input type="checkbox" productid="<{$item.product_id}>"></td>
                                     <td><{$item.product_sn}></td>
                                     <td><{$item.source_code}></td>
                                     <td>
@@ -95,11 +95,21 @@
                                     <td><{$item.size_value_data}></td>
                                     <td><{$item.color_value_data}></td>
                                     <td><{$item.material_value_data}></td>
-                                    <td><{$item.remark}></td>
+                                    <td><input type="text" class="form-control input-sm" value="<{$item.remark}>" style="width: 120px;"></td>
                                     <td><{$item.product_cost}></td>
-                                    <td>123</td>
                                     <td>
-                                        <a href="" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default reduce-quantity"><i class="fa fa-minus"></i></button>
+                                            </span>
+                                            <input type="text" class="form-control" name="quantity" value="<{$item.quantity}>" readonly style="width: 40px;text-align: center;background: #fff;">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default increase increase-quantity"><i class="fa fa-plus"></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-xs del-prodcut"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <{/foreach}>
@@ -139,10 +149,60 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-
+<style>
+    .count-cart span {color: #b30;padding:0 2px;}
+</style>
 <{include file="section/foot.tpl"}>
 <script>
 
+    $(document).delegate('.reduce-quantity, .increase-quantity', 'click', function () {
+        var self            = $(this);
+        var input           = $(this).parent().siblings('input[name="quantity"]');
+        var cartCount       = $('.count-cart');
+        var quantity        = parseInt(input.val());
+        var salesOrderId    = <{$smarty.get.sales_order_id|default:0}>;
+        var supplierId      = <{$smarty.get.supplier_id|default:0}>;
+        var productId       = self.parents('.single-product').find('.select input').attr('productid');
+
+        if ($(this).hasClass('reduce-quantity')) {
+
+            quantity--;
+        }
+        if ($(this).hasClass('increase-quantity')) {
+
+            quantity++;
+        }
+        if (quantity < 1) {
+
+            alert('数量不能小于1');
+            return;
+        }
+        $.ajax({
+            url: '/order/produce/ajax_change_cart_product.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                sales_order_id: salesOrderId,
+                supplier_id: supplierId,
+                product_id: productId,
+                quantity: quantity
+            },
+            success: function (data) {
+                if (data.statusCode != 0) {
+                    alert('操作失败');
+                    return false;
+                }
+
+                input.val(quantity);
+                cartCount.find('.count-goods').text(data.resultData.count_goods);
+                cartCount.find('.count-quantity').text(data.resultData.count_quantity);
+                cartCount.find('.count-weight').text(data.resultData.count_weight);
+            }
+        });
+    });
+    $(document).delegate('.del-prodcut', 'click', function () {
+
+    });
     tableColumn({
         selector    : '#cart-list',
         container   : '#cart-list-vis'

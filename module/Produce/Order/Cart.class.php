@@ -197,6 +197,52 @@ class   Produce_Order_Cart {
     }
 
     /**
+     * 获取一个生产订单购物车中, 某个供应商生产的SKU数量
+     *
+     * @param $salesOrderId
+     * @param $supplierId
+     * @return array
+     */
+    static public function getSupplierGoodsDetail ($salesOrderId, $supplierId) {
+
+        $salesOrderId   = (int) $salesOrderId;
+        $supplierId     = (int) $supplierId;
+
+        $sql            =<<<SQL
+SELECT
+    `produce_order_cart`.`product_id`,
+    `product_info`.`goods_id`,
+    `produce_order_cart`.`quantity`
+FROM
+    `produce_order_cart`
+LEFT JOIN
+    `product_info` ON `product_info`.`product_id`=`produce_order_cart`.`product_id`
+LEFT JOIN
+    `sales_order_goods_info` ON `sales_order_goods_info`.`goods_id`=`product_info`.`goods_id`
+WHERE
+    `produce_order_cart`.`sales_order_id`="{$salesOrderId}"
+AND
+    `produce_order_cart`.`supplier_id`="{$supplierId}"
+SQL;
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据销售订单ID和供应商ID 获取生产订单购物车信息
+     *
+     * @param $salesOrderId 销售订单ID
+     * @param $supplierId   供应商ID
+     * @return array
+     */
+    static public function getBySalesOrderAndSupplier ($salesOrderId, $supplierId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '" AND `supplier_id` = "' . (int) $supplierId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据销售订单ID和供应商ID清理数据
      *
      * @param $salesOrderId 销售订单ID
@@ -208,5 +254,20 @@ class   Produce_Order_Cart {
         $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '" AND `supplier_id` = "' . (int) $supplierId . '"';
 echo $sql;
         return  self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 根据销售订单ID 供应商ID 产品ID 获取生产订单购物车内的几率
+     *
+     * @param $salesOrderId 销售订单ID
+     * @param $supplierId   供应商ID
+     * @param $productId    产品ID
+     * @return array
+     */
+    static public function getByPrimaryKey ($salesOrderId, $supplierId, $productId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '" AND `supplier_id` = "' . (int) $supplierId . '" AND `product_id` = "' . (int) $productId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
     }
 }

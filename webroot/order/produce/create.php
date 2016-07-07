@@ -35,6 +35,21 @@ $mapGoodsSpecValue      = ArrayUtility::indexByField($listGoodsSpecValue, 'goods
 $mapGoodsSpuList        = Common_Spu::getGoodsSpu($listSupplierGoodsId);
 // SKU缩略图
 $mapGoodsThumb          = Common_Goods::getGoodsThumbnail($listSupplierGoodsId);
+// 统计款数 件数 重量
+$listSupplierCart       = Produce_Order_Cart::getSupplierGoodsDetail($salesOrderId, $supplierId);
+$countSupplierCart      = array(
+    'count_goods'       => count($listSupplierCart),
+    'count_quantity'    => 0,
+    'count_weight'      => 0,
+);
+foreach ($listSupplierCart as $cartGoods) {
+
+    $goodId             = $cartGoods['goods_id'];
+    $quantity           = $cartGoods['quantity'];
+    $weightValueData    = $mapGoodsSpecValue[$goodId]['weight_value_data'];
+    $countSupplierCart['count_quantity']    += $quantity;
+    $countSupplierCart['count_weight']      += $quantity * $weightValueData;
+}
 
 $condition              = array(
     'sales_order_id'    => $salesOrderId,
@@ -70,6 +85,7 @@ foreach ($listProduceProduct as &$productInfo) {
 
 $data['supplierInfo']       = $supplierInfo;
 $data['listProduceProduct'] = $listProduceProduct;
+$data['countSupplierCart']  = $countSupplierCart;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
 
