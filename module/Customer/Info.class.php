@@ -50,4 +50,17 @@ class   Customer_Info {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据客户ID获取客户信息
+     *
+     * @param $customerId   客户ID
+     * @return array
+     */
+    static public function getById ($customerId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `customer_id` = "' . (int) $customerId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

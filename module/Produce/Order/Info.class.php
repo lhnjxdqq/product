@@ -74,6 +74,19 @@ class   Produce_Order_Info {
     }
 
     /**
+     * 根据生产订单ID查询生产订单信息
+     *
+     * @param $produceOrderId   生产订单ID
+     * @return array
+     */
+    static public function getById ($produceOrderId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
      * 创建生产订单编号
      *
      * @return string
