@@ -1,7 +1,7 @@
 <?php
 class Produce_Order_StatusCode extends SplEnum {
 
-    const   NEW         = 1;    // 新建
+    const   NEWLY_BUILT = 1;    // 新建
 
     const   CONFIRMED   = 2;    // 已确认
 
@@ -11,8 +11,6 @@ class Produce_Order_StatusCode extends SplEnum {
 
     const   FINISHED    = 5;    // 订单完成
 
-    const   DELETED     = 6;    // 已删除
-
     /**
      * 获取生产订单状态
      *
@@ -21,12 +19,11 @@ class Produce_Order_StatusCode extends SplEnum {
     static public function getProduceOrderStatusList () {
 
         return  array(
-            self::NEW       => '新建',
-            self::CONFIRMED => '已确认',
-            self::STOCK     => '采购中',
-            self::ARRIVAL   => '部分到货',
-            self::FINISHED  => '订单完成',
-            self::DELETED   => '已删除',
+            self::NEWLY_BUILT   => '新建',
+            self::CONFIRMED     => '已确认',
+            self::STOCK         => '采购中',
+            self::ARRIVAL       => '部分到货',
+            self::FINISHED      => '订单完成',
         );
     }
 }

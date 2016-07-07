@@ -19,7 +19,7 @@ class   Produce_Order_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'produce_order_id,produce_order_sn,produce_order_remark,sales_order_id,status_code,create_time,update_time';
+    const   FIELDS      = 'produce_order_id,produce_order_sn,produce_order_remark,sales_order_id,supplier_id,prepaid_amount,arrival_date,order_type,create_user,verify_user,status_code,delete_status,create_time,update_time';
     /**
      * 新增
      *
@@ -71,6 +71,33 @@ class   Produce_Order_Info {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '"';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据生产订单ID查询生产订单信息
+     *
+     * @param $produceOrderId   生产订单ID
+     * @return array
+     */
+    static public function getById ($produceOrderId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 创建生产订单编号
+     *
+     * @return string
+     */
+    static public function createOrderSn () {
+
+        $sql    = 'SHOW TABLE STATUS like "' . self::_tableName() . '"';
+        $data   = self::_getStore()->fetchOne($sql);
+        $sn     = 'P' . date('YmdHis') . $data['Auto_increment'];
+
+        return  $sn;
     }
 
     /**
