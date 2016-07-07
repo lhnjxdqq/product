@@ -28,6 +28,8 @@ Validate::testNull($salesQuotationName,"报价单名称不能为空");
 unset($data['customer_id']);
 unset($data['sales_quotation_name']);
 unset($data['plue_price']);
+unset($data['check-all']);
+unset($data['spu_id']);
 
 $slaesQuotation = array(
         'markup_rule'          => $markupRule,

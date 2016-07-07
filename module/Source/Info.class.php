@@ -199,4 +199,19 @@ class   Source_Info {
 
         return  self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据一组sourceId 获取来款信息
+     *
+     * @param array $multiSourceId
+     * @return array
+     */
+    static public function getByMultiSourceId (array $multiSourceId) {
+
+        $multiSourceId  = array_map('intval', array_unique(array_filter($multiSourceId)));
+
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_id` IN ("' . implode('","', $multiSourceId) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
 }

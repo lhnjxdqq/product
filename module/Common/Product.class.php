@@ -161,4 +161,50 @@ class Common_Product {
         $filePath   = $dirPath . $fileName;
         file_put_contents($filePath, json_encode($data) . "\n", FILE_APPEND);
     }
+
+    /**
+     * 生产建议单 转生产订单页面需要的数据
+     *
+     * @param $multiGoodsId SKUID
+     * @param $supplierId   供应商ID
+     * @param $orderBy      排序
+     * @param $offset       位置
+     * @param $limit        数量
+     */
+    static public function getProduceOrderProductList (array $multiGoodsId, $supplierId) {
+
+        $multiGoodsId       = array_map('intval', array_unique(array_filter($multiGoodsId)));
+        $multiGoodsIdStr    = implode('","', $multiGoodsId);
+        $supplierId         = (int) $supplierId;
+        $sql                =<<<SQL
+SELECT
+  `product_info`.`product_id`,
+  `product_info`.`product_sn`,
+  `product_info`.`product_cost`,
+  `product_info`.`goods_id`,
+  `product_info`.`product_remark`,
+  `goods_info`.`goods_sn`,
+  `goods_info`.`goods_name`,
+  `goods_info`.`category_id`,
+  `goods_info`.`style_id`,
+  `source_info`.`source_code`
+FROM
+  `product_info`
+LEFT JOIN
+  `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
+LEFT JOIN 
+  `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`
+WHERE
+  `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
+AND
+  `source_info`.`supplier_id`="{$supplierId}"
+SQL;
+
+        return              self::_query($sql);
+    }
+
+    static private function _query ($sql) {
+
+        return  Product_Info::query($sql);
+    }
 }

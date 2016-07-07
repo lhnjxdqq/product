@@ -100,6 +100,60 @@ class   Goods_Spec_Value_RelationShip {
             }
         }
     }
+    
+    /**
+     * 根据规格 规格值 子款式 品类ID 验证商品,sku范围是否存在
+     *
+     * @param array $specValueList  规格 规格值
+     * @param int   $styleId        款式ID
+     * @param int   $categoryId     品类ID
+     * @return array|void           商品信息
+     */
+    static public function getGoodsIdByValueList (array $specValueList, $styleId, $categoryId , array $listSkuId) {
+
+        if (!$specValueList) {
+
+            return;
+        }
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($listSkuId)));
+
+        Validate::testNull($multiGoodsId,'不存在的sku记录');
+        
+        $listGoodsInfo  = Goods_Info::listByCondition(array(
+            'style_id'      => (int) $styleId,
+            'category_id'   => (int) $categoryId,
+        ));
+        $listGoodsId    = $listGoodsInfo ? ArrayUtility::listField($listGoodsInfo, 'goods_id') : array();
+        if (empty($listGoodsId)) {
+
+            return;
+        }
+
+        $sql    = 'SELECT gi.goods_id, count(1) AS `cnt` FROM `' . self::_tableName() . '` AS `gsvr` LEFT JOIN `goods_info` AS `gi` ON `gsvr`.`goods_id`=`gi`.`goods_id` WHERE ';
+        $where  = array();
+        foreach ($specValueList as $specValue) {
+
+            $where[] = '(`gsvr`.`spec_id` = "' . (int) $specValue['spec_id'] . '" AND `gsvr`.`spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
+        }
+
+        $sql    .= implode(' OR ', $where) . ' AND `gi`.`style_id` = "' . (int) $styleId . '" AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` HAVING `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+
+        $result = self::_getStore()->fetchAll($sql);
+        if (!$result) {
+
+            return;
+        }
+        $result = ArrayUtility::indexByField($result, 'goods_id', 'cnt');
+        $count  = count($specValueList);
+        foreach ($result as $goodsId => $cnt) {
+
+            if ($cnt == $count) {
+
+                return  $goodsId;
+            }
+        }
+    }
 
     /**
      * 根据一组商品ID获取商品的规格和规格值
