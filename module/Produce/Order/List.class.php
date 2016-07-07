@@ -108,6 +108,36 @@ class Produce_Order_List {
     }
 
     /**
+     * 根据
+     *
+     * @param array $multiProducedOrderId
+     * @return array
+     */
+    static public function getDetailByMultiProduceOrderId (array $multiProducedOrderId) {
+
+        $multiProducedOrderId       = array_map('intval', array_unique(array_filter($multiProducedOrderId)));
+        $multiProducedOrderIdStr    = implode('","', $multiProducedOrderId);
+
+        $sql                        =<<<SQL
+SELECT
+  `poi`.`produce_order_id`,
+  `popi`.`product_id`,
+  `popi`.`quantity`,
+  `pi`.`goods_id`
+FROM
+  `produce_order_info` AS `poi`
+LEFT JOIN
+  `produce_order_product_info` AS `popi` ON `popi`.`produce_order_id`=`poi`.`produce_order_id`
+LEFT JOIN
+  `product_info` AS `pi` ON `pi`.`product_id`=`popi`.`product_id`
+WHERE
+  `poi`.`produce_order_id` IN ("{$multiProducedOrderIdStr}");
+SQL;
+
+        return                      self::_query($sql);
+    }
+
+    /**
      * 查询字段
      *
      * @return array

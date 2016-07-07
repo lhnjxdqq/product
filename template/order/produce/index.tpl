@@ -56,28 +56,25 @@
                                     <th>下单重量</th>
                                     <th>供应商</th>
                                     <th>订单状态</th>
-                                    <th>入库件数</th>
-                                    <th>入库重量</th>
-                                    <th>成交金额</th>
-                                    <th width="180">下单时间</th>
+                                    <th>下单时间</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <{foreach from=$data.listProduceOrderInfo item=item}>
+                                <{foreach from=$data.mapProduceOrderInfo item=item}>
                                     <tr>
                                         <td><{$item.produce_order_sn}></td>
                                         <td><{$item.sales_order_sn}></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td><{$item.count_goods}></td>
+                                        <td><{$item.count_quantity}></td>
+                                        <td><{$item.count_weight}></td>
                                         <td><{$item.supplier_code}></td>
-                                        <td><{$item.status_code}></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td><{$data.mapStatusCode[$item.status_code]}></td>
                                         <td><{$item.create_time}></td>
-                                        <td></td>
+                                        <td>
+                                            <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>&action=verify" class="btn btn-info btn-xs"><i class="fa fa-retweet"></i> 审核</a>
+                                            <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>&action=confirm" class="btn btn-info btn-xs"><i class="fa fa-check"></i> 工厂确认</a>
+                                        </td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
