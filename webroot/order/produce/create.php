@@ -17,17 +17,8 @@ $mapCategoryInfo        = ArrayUtility::indexByField($listCategoryInfo, 'categor
 $listStyleInfo          = Style_Info::listAll();
 $mapStyleInfo           = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 
-// 销售订单中所有SKU
-$listSalesOrderGoods    = Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
-$salesOrderGoodsIdList  = ArrayUtility::listField($listSalesOrderGoods, 'goods_id');
-// 销售订单中已生产完成的SKU
-$producedGoodsList      = Common_SalesOrder::getProducedGoods($salesOrderId);
-$producedGoodsIdList    = array_unique(ArrayUtility::listField($producedGoodsList, 'goods_id'));
-// 取未完成生产的SKU 查询当前供应商能生产的SKU
-$listSalesOrderGoodsId  = array_diff($salesOrderGoodsIdList, $producedGoodsIdList);
-$mapSupplierGoodsList   = Common_Goods::getSkuSupplier($listSalesOrderGoodsId);
-$listSupplierGoods      = $mapSupplierGoodsList[$supplierId];
-$listSupplierGoodsId    = ArrayUtility::listField($listSupplierGoods, 'goods_id');
+$listSupplierCart       = Produce_Order_Cart::getSupplierGoodsDetail($salesOrderId, $supplierId);
+$listSupplierGoodsId    = ArrayUtility::listField($listSupplierCart, 'goods_id');
 // SKU规格 规格值
 $listGoodsSpecValue     = Common_Goods::getMultiGoodsSpecValue($listSupplierGoodsId);
 $mapGoodsSpecValue      = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
