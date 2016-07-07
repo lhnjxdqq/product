@@ -40,7 +40,7 @@
                 <div class="box-header with-border">
                     <div class="pull-left">
                         <input type="checkbox" class="select-all"> 全选
-                        <a class="btn btn-primary btn-sm" style="margin-left: 10px;" href="javascript:void(0);"><i class="fa fa-trash"></i> 批量删除</a>
+                        <a class="btn btn-primary btn-sm" style="margin-left: 10px;" id="delMultiProduct" href="javascript:void(0);"><i class="fa fa-trash"></i> 批量删除</a>
                     </div>
                     <div class="pull-right count-cart" style="margin-top: 5px;">
                         共计<span class="count-goods"><{$data.countSupplierCart.count_goods}></span>款, <span class="count-quantity"><{$data.countSupplierCart.count_quantity}></span>件, 重量<span class="count-weight"><{$data.countSupplierCart.count_weight}></span>克
@@ -224,8 +224,56 @@
             }
         });
     });
+    // 全选
+    $('input.select-all').click(function () {
+        $('#cart-list .select input').prop('checked', $(this).prop('checked') );
+    });
+    // 批量删除
+    $(document).delegate('#delMultiProduct', 'click', function () {
+
+        var salesOrderId    = <{$smarty.get.sales_order_id|default:0}>;
+        var supplierId      = <{$smarty.get.supplier_id|default:0}>;
+        var checkedInputList    = $('#cart-list').find('.select input:checked');
+        if (!salesOrderId || !supplierId) {
+
+            alert('参数错误');
+            return false;
+        }
+        if (checkedInputList.length == 0) {
+
+            alert('请先选择产品');
+            return false;
+        }
+        if (!confirm('确定要批量删除这些产品吗 ?')) {
+
+            return false;
+        }
+        var productIdString     = '';
+        $.each(checkedInputList, function (index, input) {
+
+            productid   = $(input).attr('productid');
+            productIdString += productid + ',';
+        });
+        productIdString = productIdString.substr(0, productIdString.length - 1);
+        var redirect    = '/order/produce/del_cart_product.php?sales_order_id=' + salesOrderId + '&supplier_id=' + supplierId + '&multi_product_id=' + productIdString;
+        location.href   = redirect;
+    });
+    // 删除
     $(document).delegate('.del-prodcut', 'click', function () {
 
+        var salesOrderId    = <{$smarty.get.sales_order_id|default:0}>;
+        var supplierId      = <{$smarty.get.supplier_id|default:0}>;
+        var productId       = $(this).parents('.single-product').find('.select input').attr('productid');
+        if (!salesOrderId || !supplierId || !productId) {
+
+            alert('参数错误');
+            return false;
+        }
+        if (confirm('确定要删除该产品吗 ?')) {
+
+            var reditect    = '/order/produce/del_cart_product.php?sales_order_id=' + salesOrderId + '&supplier_id=' + supplierId + '&product_id=' + productId;
+            location.href   = reditect;
+        }
     });
     tableColumn({
         selector    : '#cart-list',

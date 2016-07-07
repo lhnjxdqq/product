@@ -252,7 +252,22 @@ SQL;
     static public function deleteBySalesOrderAndSupplier ($salesOrderId, $supplierId) {
 
         $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '" AND `supplier_id` = "' . (int) $supplierId . '"';
-echo $sql;
+
+        return  self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 删除生产订单购物车中某个供应商的多个产品
+     *
+     * @param $salesOrderId         销售订单ID
+     * @param $supplierId           供应商ID
+     * @param array $multiProductId 产品ID
+     * @return int
+     */
+    static public function deleteByMultiProductId ($salesOrderId, $supplierId, array $multiProductId) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '" AND `supplier_id` = "' . (int) $supplierId . '" AND `product_id` IN ("' . implode('","', $multiProductId) . '")';
+
         return  self::_getStore()->execute($sql);
     }
 
