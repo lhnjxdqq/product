@@ -78,4 +78,20 @@ class   Sales_Order_Goods_Info {
         
         self::_getStore()->delete(self::_tableName(), $condition);
     }
+        
+    /**
+     * 根据报价单ID SpuID删除报价单中的SPU 
+     *
+     * @param   string $salesOrderId  报价单ID
+     * @param   string $skuId         skuID
+     */
+    static public function getBySkuIdAndSalesOrderIdDelete($salesQuotationId,$skuId) {
+    
+        Validate::testNull($salesQuotationId,"销售订单ID不能为空");
+        Validate::testNull($skuId,"SkuId不能为空");
+        
+        $condition = " `sales_order_id` = " . (int)$salesQuotationId . " AND `goods_id` =" .(int)$skuId;
+
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
 }

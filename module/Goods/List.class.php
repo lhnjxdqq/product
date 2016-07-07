@@ -51,6 +51,7 @@ class Goods_List {
 
         $sql        = array();
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByListGoodsId($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
@@ -65,6 +66,23 @@ class Goods_List {
     static private function _conditionByDeleteStatus (array $condition) {
 
         return  '`goods_info`.`delete_status` = "' . (int) $condition['delete_status'] . '"';
+    }
+
+    /**
+     * 根据一组skuId拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByListGoodsId (array $condition) {
+        
+        if(empty($condition['list_goods_id'])){
+            
+            return ;
+        }
+        $multiId    = array_map('intval', array_unique(array_filter($condition['list_goods_id'])));
+        
+        return  '`goods_info`.`goods_id` IN ("' . implode('","', $multiId) . '")';
     }
 
     /**
@@ -127,6 +145,7 @@ class Goods_List {
             '`goods_info`.`sale_cost`',
             '`goods_info`.`goods_remark`',
             '`goods_info`.`online_status`',
+            '`goods_info`.`style_id`'
         );
     }
 }

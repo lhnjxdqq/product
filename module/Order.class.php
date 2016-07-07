@@ -14,7 +14,7 @@ class   Order {
      */
     static public function testOrder (array $data, array $mapEnumeration) {
 
-        Validate::testNull($data['spu_sn'],'spu编号不能为空');\
+        Validate::testNull($data['spu_sn'],'spu编号不能为空');
         Validate::testNull($mapEnumeration['indexSpuSn'][$data['spu_sn']],'spu编号不存在销售报价单中');
         $data['spu_id']         = $mapEnumeration['indexSpuSn'][$data['spu_sn']];
         Validate::testNull($data['categoryLv3'],'三级分类不能为空');

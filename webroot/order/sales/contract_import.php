@@ -76,6 +76,7 @@ $salesQuotationId   = $salesOrderInfo['sales_quotation_id'];
 //获取销售报价单中的所有SPU
 $salesQuotationSpuInfo = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesQuotationId));
 Validate::testNull($salesQuotationSpuInfo,'销售报价单中没有产品');
+$indexSpuIdRemark   = ArrayUtility::indexByField($salesQuotationSpuInfo, 'spu_id', 'sales_quotation_remark');
 
 $listSpuId          = array_unique(ArrayUtility::listField($salesQuotationSpuInfo,'spu_id'));
 $indexSpuSn         = ArrayUtility::indexByField(Spu_Info::getByMultiId($listSpuId), 'spu_sn', 'spu_id');
@@ -136,7 +137,7 @@ if(!empty($errorList)){
 }
 
 foreach ($datas as $offsetRow => $row) {
-    
+
     $content    = array(
         'sales_order_id'    => $salesOrderId,
         'goods_id'          => $row['goods_id'],
@@ -145,9 +146,9 @@ foreach ($datas as $offsetRow => $row) {
         'actual_weight'     => 0,
         'shipment'          => 1,
         'transaction_price' => 0,
-        'remark'            => $row['remark'],
+        'remark'            => !empty($row['remark']) ? $row['remark'] : $indexSpuIdRemark[$row['spu_id']],
     );
-
+    
     Sales_Order_Goods_Info::create($content);
 }
 $salesSkuInfo   = Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
