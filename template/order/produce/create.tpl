@@ -95,7 +95,7 @@
                                     <td><{$item.size_value_data}></td>
                                     <td><{$item.color_value_data}></td>
                                     <td><{$item.material_value_data}></td>
-                                    <td><input type="text" class="form-control input-sm" value="<{$item.remark}>" style="width: 120px;"></td>
+                                    <td><input type="text" class="form-control input-sm" name="remark" value="<{$item.remark}>" style="width: 120px;"></td>
                                     <td><{$item.product_cost}></td>
                                     <td>
                                         <div class="input-group input-group-sm">
@@ -155,6 +155,7 @@
 <{include file="section/foot.tpl"}>
 <script>
 
+    // ajax更该数量 统计款数 件数 重量
     $(document).delegate('.reduce-quantity, .increase-quantity', 'click', function () {
         var self            = $(this);
         var input           = $(this).parent().siblings('input[name="quantity"]');
@@ -197,6 +198,29 @@
                 cartCount.find('.count-goods').text(data.resultData.count_goods);
                 cartCount.find('.count-quantity').text(data.resultData.count_quantity);
                 cartCount.find('.count-weight').text(data.resultData.count_weight);
+            }
+        });
+    });
+    // ajax更改备注
+    $(document).delegate('input[name="remark"]', 'blur', function () {
+        var self            = $(this);
+        var remark          = self.val();
+        var salesOrderId    = <{$smarty.get.sales_order_id|default:0}>;
+        var supplierId      = <{$smarty.get.supplier_id|default:0}>;
+        var productId       = self.parents('.single-product').find('.select input').attr('productid');
+
+        $.ajax({
+            url: '/order/produce/ajax_change_cart_product_remark.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                sales_order_id: salesOrderId,
+                supplier_id: supplierId,
+                product_id: productId,
+                remark: remark
+            },
+            success: function (data) {
+
             }
         });
     });
