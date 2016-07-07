@@ -23,6 +23,7 @@ $orderData  = array(
     'prepaid_amount'        => sprintf('%.2f', trim($_POST['prepaid-amount'])),
     'arrival_date'          => date('Y-m-d H:i:s', strtotime(trim($_POST['arrival-date']))),
     'order_type'            => (int) $_POST['order-type'],
+    'create_user'           => $_SESSION['user_id'],
     'status_code'           => Produce_Order_StatusCode::NEWLY_BUILT,
 );
 
