@@ -247,6 +247,20 @@ class   Sales_Order_Info {
     }
     
     /**
+     * 根据销售订单ID删除订单 
+     *
+     * @param   string $salesOrderId  报价单ID
+     */
+    static public function delete($salesOrderId) {
+    
+        Validate::testNull($salesOrderId,"销售订单ID不能为空");
+        
+        $condition = " `sales_order_id` = " . $salesOrderId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
+    
+    /**
      * 根据一组销售订单ID 查询销售订单信息
      *
      * @param array $multiSalesOrderId  一组销售订单ID

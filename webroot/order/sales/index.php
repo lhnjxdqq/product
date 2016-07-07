@@ -17,7 +17,7 @@ $statusList = Sales_Order_Status::getOrderStatus();
 
 foreach($statusList as $statusId=>$statusName){
     
-    $mapOrderStatus[] = array(
+    $mapOrderStatus[$statusId] = array(
         
         'status_id'     => $statusId,
         'status_name'   => $statusName,
