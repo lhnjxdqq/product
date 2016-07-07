@@ -40,5 +40,5 @@ foreach ($listProduceProduct as $productInfo) {
     Produce_Order_Cart::create($cartData);
 }
 
-$redirect   = '/order/produce/create.php?sales_order_id=' . $salesOrderId . '&supplier_id=' . $supplierId;
+$redirect   = '/order/produce/confirm.php?sales_order_id=' . $salesOrderId . '&supplier_id=' . $supplierId;
 Utility::redirect($redirect);
