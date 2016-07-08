@@ -101,6 +101,30 @@ class   Produce_Order_Info {
     }
 
     /**
+     * 更改生产订单状态
+     *
+     * @param $produceOrderId   订单ID
+     * @param $statusCode       状态码
+     * @return bool|int
+     */
+    static public function changeStatus ($produceOrderId, $statusCode) {
+
+        $produceOrderInfo   = self::getById($produceOrderId);
+        $currentStatus      = $produceOrderInfo['status_code'];
+        $statusMinus        = $statusCode - $currentStatus;
+        if ($statusMinus != 1) {
+
+            return false;
+        }
+        $data               = array(
+            'produce_order_id'  => (int) $produceOrderId,
+            'status_code'       => (int) $statusCode,
+        );
+        $statusCode == Produce_Order_StatusCode::CONFIRMED && $data['verify_user'] = $_SESSION['user_id'];
+        return              self::update($data);
+    }
+
+    /**
      * 查询SQL
      *
      * @param $sql

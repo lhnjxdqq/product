@@ -154,12 +154,25 @@
                 <{assign var='action' value=$smarty.get.action}>
                 <{if $action}>
                 <div class="box-footer">
-                    <a href="javascript:void(0);" class="btn btn-primary pull-left"><i class="fa fa-edit"></i> 编辑订单</a>
+                    <{if $data.produceOrderInfo.status_code >= $data.listOrderType.stocking}>
+                    <a href="javascript:void(0);" disabled class="btn btn-default pull-left"><i class="fa fa-edit"></i> 无法编辑</a>
+                    <{else}>
+                    <a href="javascript:alert('开发中');" class="btn btn-primary pull-left"><i class="fa fa-edit"></i> 编辑订单</a>
+                    <{/if}>
                     <{if $action eq 'verify'}>
-                    <a href="javascript:void(0);" class="btn btn-primary pull-right"><i class="fa fa-retweet"></i> 审核通过</a>
+                        <{if $data.produceOrderInfo.status_code >= $data.listOrderType.confirmed}>
+                        <a href="javascript:void(0);" disabled class="btn btn-default pull-right"><i class="fa fa-retweet"></i> 已审核</a>
+                        <{else}>
+                        <a href="javascript:changeStatus('verify');" class="btn btn-primary pull-right"><i class="fa fa-retweet"></i> 审核通过</a>
+                        <{/if}>
                     <{/if}>
                     <{if $action eq 'confirm'}>
-                        <a href="javascript:void(0);" class="btn btn-primary pull-right"><i class="fa fa-check"></i> 确认通过</a>
+
+                        <{if $data.produceOrderInfo.status_code >= $data.listOrderType.stocking}>
+                        <a href="javascript:void(0);" disabled class="btn btn-default pull-right"><i class="fa fa-check"></i> 已确认</a>
+                        <{else}>
+                        <a href="javascript:changeStatus('confirm');" class="btn btn-primary pull-right"><i class="fa fa-check"></i> 确认通过</a>
+                        <{/if}>
                     <{/if}>
                 </div>
                 <{/if}>
@@ -190,6 +203,17 @@
 </style>
 <{include file="section/foot.tpl"}>
 <script>
+    function changeStatus(action) {
+        var noticeList  = {
+            verify: '确定要审核该订单吗?',
+            confirm: '确定要确认该订单吗?'
+        };
+        if (noticeList[action] && confirm(noticeList[action])) {
+
+            var redirect    = '/order/produce/change_status.php?produce_order_id=<{$smarty.get.produce_order_id}>&action=' + action;
+            location.href   = redirect;
+        }
+    }
     tableColumn({
         selector    : '#prod-list',
         container   : '#prod-list-vis'

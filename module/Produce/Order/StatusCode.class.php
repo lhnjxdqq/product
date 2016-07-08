@@ -5,7 +5,7 @@ class Produce_Order_StatusCode extends SplEnum {
 
     const   CONFIRMED   = 2;    // 已确认
 
-    const   STOCK       = 3;    // 采购中
+    const   STOCKING    = 3;    // 采购中
 
     const   ARRIVAL     = 4;    // 部分到货
 
@@ -21,7 +21,7 @@ class Produce_Order_StatusCode extends SplEnum {
         return  array(
             self::NEWLY_BUILT   => '新建',
             self::CONFIRMED     => '已确认',
-            self::STOCK         => '采购中',
+            self::STOCKING      => '采购中',
             self::ARRIVAL       => '部分到货',
             self::FINISHED      => '订单完成',
         );

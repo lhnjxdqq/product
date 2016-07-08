@@ -90,6 +90,11 @@ $data['listOrderDetail']    = $listOrderDetail;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
 $data['mapOrderType']       = Produce_Order_Type::getOrderType();
+$data['listOrderType']      = array(
+    'new_built'     => Produce_Order_StatusCode::NEWLY_BUILT,   // 新建
+    'confirmed'     => Produce_Order_StatusCode::CONFIRMED,     // 已确认
+    'stocking'      => Produce_Order_StatusCode::STOCKING,      // 采购中
+);
 
 $template = Template::getInstance();
 $template->assign('data', $data);
