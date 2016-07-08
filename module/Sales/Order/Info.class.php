@@ -77,7 +77,10 @@ class   Sales_Order_Info {
         $sql    = 'SELECT MAX(`sales_order_id`) as `sales_order_id` FROM `' . self::_tableName() . '`';
         $row    = self::_getStore()->fetchOne($sql);
 
-        return  date('YmdHis',time()).(!empty($row['sales_order_id']) ? $row['sales_order_id']+1 : 1);
+        $sales_order_id = $row['sales_order_id']+1;
+        $code   = substr($sales_order_id,strlen($sales_order_id)-1);
+
+        return  date('YmdHis',time()).$code;
     }
     /**
      * 根据条件获取数据列表
