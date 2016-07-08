@@ -31,7 +31,7 @@ $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int
 $countOrder   = Sales_Order_Info::countByCondition($condition);
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countOrder,
-    PageList::OPT_URL       => '/sales_quotation/index.php',
+    PageList::OPT_URL       => '/order/sales/index.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
