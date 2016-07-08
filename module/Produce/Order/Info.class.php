@@ -93,9 +93,11 @@ class   Produce_Order_Info {
      */
     static public function createOrderSn () {
 
-        $sql    = 'SHOW TABLE STATUS like "' . self::_tableName() . '"';
-        $data   = self::_getStore()->fetchOne($sql);
-        $sn     = 'P' . date('YmdHis') . $data['Auto_increment'];
+        $sql        = 'SHOW TABLE STATUS like "' . self::_tableName() . '"';
+        $data       = self::_getStore()->fetchOne($sql);
+        $insertId   = $data['Auto_increment'];
+        $last       = substr($insertId, -1);
+        $sn         = 'P' . date('YmdHis') . $last;
 
         return  $sn;
     }
