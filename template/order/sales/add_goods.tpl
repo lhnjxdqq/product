@@ -116,14 +116,18 @@
                 </form>
             </div>
             
-            <form action='/order/sales/contract_import.php' method="post" enctype="multipart/form-data">
+            <form action='/order/sales/contract_import.php' method="post" enctype="multipart/form-data" class="form-horizontal">
             <div class="box collapsed-box">
                 <div class="box-header with-border">
                     <div class="form-group">
-                        <label>导入合同: </label>
-                        <input type="file" name="quotation"/>
-                        <input type="hidden" name='sales_order_id' value='<{$salesOrderId}>'>
-                        <button type="submit">导入</button>
+                        <label class='col-sm-2 control-label'>导入合同: </label>
+                        <div class='col-sm-3'>
+                            <input type="file" name="quotation" class="form-control"/>
+                            <input type="hidden" name='sales_order_id' class="form-control" value='<{$salesOrderId}>'>
+                        </div>
+                        <div class='col-sm-2'>
+                            <button type="submit" class='btn btn-primary'>导入</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -169,9 +173,11 @@
                         </table>
                     </div>
                 </div>
+                
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <{include file="section/pagelist.tpl" viewData=$data.pageViewData}>
+                    <a href="/order/sales/index.php" type="button" class="btn btn-primary pull-left">上一步</a></td>
+                    <a href="/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right">下一步</a></td>
                 </div>
             </div>
             <!-- /.box -->
