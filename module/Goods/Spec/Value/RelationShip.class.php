@@ -120,10 +120,14 @@ class   Goods_Spec_Value_RelationShip {
 
         Validate::testNull($multiGoodsId,'不存在的sku记录');
         
-        $listGoodsInfo  = Goods_Info::listByCondition(array(
-            'style_id'      => (int) $styleId,
-            'category_id'   => (int) $categoryId,
-        ));
+        $condition = array();
+        if($styleId){
+        
+            $condition['style_id'] = (int) $styleId;
+        }
+        $condition['category_id']  = (int) $categoryId;
+                
+        $listGoodsInfo  = Goods_Info::listByCondition($condition);
         $listGoodsId    = $listGoodsInfo ? ArrayUtility::listField($listGoodsInfo, 'goods_id') : array();
         if (empty($listGoodsId)) {
 
