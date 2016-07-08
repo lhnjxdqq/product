@@ -80,14 +80,14 @@
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td>工费</td>
-                                        <td><{$item.remark}></td>
+                                        <td><{$item.cost}></td>
+                                        <td><input type='text' value='<{$item.remark}>'></td>
                                         <td>
                                             <div class="input-group width-110 assign-number">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-default reduce">-</button>
                                                 </span>
-                                                    <input type="text" class="form-control" id="assign_number-<{$item.product_id}>" value="5"/>
+                                                    <input type="text" class="form-control" id="assign_number-<{$item.goods_id}>" value="<{$item.quantity}>"/>
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-default plus">+</button>
                                                 </span>
@@ -99,8 +99,8 @@
                                     </tr>
                                 <{/foreach}>
                                     <tr>
-                                        <td colspan='10'><a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-left">添加产品</a></td>
-                                        <td><a href="" class="btn btn-primary pull-right">下一步</a></td>
+                                        <td colspan='5'><a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary pull-left">添加产品</a></td>
+                                        <td colspan='8'>共计<{$salesOrderInfo.count_goods}>款,<{$salesOrderInfo.quantity_total}>件,参考重量<{$salesOrderInfo.reference_weight}>g<a href="/order/sales/perfected_sales_order.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right">下一步</a></td>
                                     </tr>
                             </tbody>
                         </table>
@@ -141,14 +141,14 @@ $(function () {
     $('.assign-number .reduce').bind('click', function () {
         var $input  = $(this).parents('.assign-number').children('input'),
             value   = parseInt($input.val());
-        if(value<=5) {
+        if(value<=1) {
             
             $input.val(1);
         }
         
-        if (value > 5) {
+        if (value > 1) {
 
-            $input.val(value - 5);
+            $input.val(value - 1);
         }
     });
 
@@ -157,7 +157,7 @@ $(function () {
             value       = parseInt($input.val()),
             quantity    = parseInt($input.attr('quantity'));
 
-            $input.val(parseInt($input.val()) + 5);
+            $input.val(parseInt($input.val()) + 1);
     });
     
     $('input[name="select-all"]').click(function () {

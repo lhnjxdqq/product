@@ -9,7 +9,7 @@ Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
 //获取对应销售报价单中的所有SPU
 $salesQuotationSpuInfo = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesOrderInfo['sales_quotation_id']));
-
+$groupSpuInfo       = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
 $groupSalesQuotationSpuId   = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
 
 //获取所有订单详情中的所有sku
@@ -18,7 +18,7 @@ $salesGoodsInfo     =  Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
 $listGoods          = ArrayUtility::listField($salesGoodsInfo,'goods_id');
 
 //销售订单中的备注
-$indexSalesRemark   = ArrayUtility::indexByField($salesGoodsInfo,'goods_id', 'remark');
+$indexSales   = ArrayUtility::indexByField($salesGoodsInfo,'goods_id');
 
 if(empty($listGoods)){
     
@@ -35,7 +35,7 @@ foreach($skuRelationShipSpuInfo as &$info) {
 }
 //把spu按sku分组
 $groupSku               = ArrayUtility::groupByField($skuRelationShipSpuInfo,'goods_id','spu_sn');
-
+$groupSkuSpu            = ArrayUtility::groupByField($skuRelationShipSpuInfo,'goods_id','spu_id');
 
 $condition['list_goods_id'] = $listGoods;
 
@@ -106,13 +106,28 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 foreach ($listGoodsInfo as &$goodsInfo) {
 
     $goodsId    = $goodsInfo['goods_id'];
+    
+    foreach($groupSkuSpu[$goodsId] as $key=>$sku){
+
+        if(empty($groupSpuInfo[$sku])){
+            
+            continue;
+        }
+        
+        foreach($groupSpuInfo[$sku] as $spu=>$quotationSku){
+           
+           $goodsInfo['cost']   = $quotationSku['cost'];
+           continue;
+        }
+    }
     $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
     $goodsInfo['image_url']     = $imageKey
         ? AliyunOSS::getInstance('images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
-    $goodsInfo['remark']        = $indexSalesRemark[$goodsId];
-    $goodsInfo['spu_sn_list']      = implode(",",$groupSku[$goodsId]);
+    $goodsInfo['remark']        = $indexSales[$goodsId]['remark'];
+    $goodsInfo['quantity']      = $indexSales[$goodsId]['goods_quantity'];
+    $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
 
 }
 
@@ -137,5 +152,6 @@ $data['onlineStatus']               = array(
 $template = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('salesOrderId', $salesOrderId);
+$template->assign('salesOrderInfo', $salesOrderInfo);
 $template->display('order/sales/confirm.tpl');
 
