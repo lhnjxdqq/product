@@ -6,6 +6,11 @@ if (strtolower($_SERVER['REQUEST_METHOD']) != 'post') {
     Utility::notice('method error');
 }
 
+if (!$_POST['order-type']) {
+
+    Utility::notice('请选择订单类型');
+}
+
 $salesOrderId       = (int) $_POST['sales-order-id'];
 $supplierId         = (int) $_POST['supplier-id'];
 $produceOrderCart   = Produce_Order_Cart::getBySalesOrderAndSupplier($salesOrderId, $supplierId);
