@@ -1,12 +1,26 @@
 <?php
 /**
- * ÏúÊÛ¶©µ¥ÀàÐÍ
+ * é”€å”®è®¢å•ç±»åž‹
  */
 class   Sales_Order_Type extends SplEnum {
 
-    const   ORDERED                   = 1;     //¶©»õ
+    const   ORDERED                   = 1;     //è®¢è´§
 
-    const   STOCK                     = 2;     //ÏÖ»õ
+    const   STOCK                     = 2;     //çŽ°è´§
 
-    const   EXHIBITION                = 3;     //Õ¹Ïú
+    const   EXHIBITION                = 3;     //å±•é”€
+        
+    /**
+     * èŽ·å–çŠ¶æ€
+     *
+     * @return array
+     */
+    static public function getOrderType () {
+
+        return  array(
+            self::ORDERED                 => 'è®¢è´§',
+            self::STOCK                   => 'çŽ°è´§',
+            self::EXHIBITION              => 'å±•é”€',
+        );
+    }
 }
