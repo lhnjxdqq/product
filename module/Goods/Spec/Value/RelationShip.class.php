@@ -147,11 +147,7 @@ class   Goods_Spec_Value_RelationShip {
             $sqlStyle = ' AND `gi`.`style_id` = "' . (int) $styleId;
         }
 
-<<<<<<< HEAD
-        $sql    .= implode(' OR ', $where) . $sqlStyle . ' AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` HAVING `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
-=======
         $sql    .= "(".implode(' OR ', $where).")" . $sqlStyle . ' AND `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")' .' AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` ';
->>>>>>> dev
 
         $result = self::_getStore()->fetchAll($sql);
         if (!$result) {
