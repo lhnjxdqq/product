@@ -102,7 +102,7 @@
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default reduce-quantity"><i class="fa fa-minus"></i></button>
                                             </span>
-                                            <input type="text" class="form-control" name="quantity" value="<{$item.quantity}>" readonly style="width: 40px;text-align: center;background: #fff;">
+                                            <input type="text" class="form-control" name="quantity" value="<{$item.quantity}>" style="width: 40px;text-align: center;">
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default increase increase-quantity"><i class="fa fa-plus"></i></button>
                                             </span>
@@ -195,6 +195,42 @@
                 }
 
                 input.val(quantity);
+                cartCount.find('.count-goods').text(data.resultData.count_goods);
+                cartCount.find('.count-quantity').text(data.resultData.count_quantity);
+                cartCount.find('.count-weight').text(data.resultData.count_weight);
+            }
+        });
+    });
+    $('input[name="quantity"]').blur(function () {
+        var self            = $(this);
+        var quantity        = parseInt(self.val());
+        var cartCount       = $('.count-cart');
+        var salesOrderId    = <{$smarty.get.sales_order_id|default:0}>;
+        var supplierId      = <{$smarty.get.supplier_id|default:0}>;
+        var productId       = self.parents('.single-product').find('.select input').attr('productid');
+        if (quantity < 1) {
+
+            alert('数量不能小于1');
+            location.reload();
+            return;
+        }
+        $.ajax({
+            url: '/order/produce/ajax_change_cart_product.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                sales_order_id: salesOrderId,
+                supplier_id: supplierId,
+                product_id: productId,
+                quantity: quantity
+            },
+            success: function (data) {
+                if (data.statusCode != 0) {
+                    alert('操作失败');
+                    return false;
+                }
+
+                self.val(quantity);
                 cartCount.find('.count-goods').text(data.resultData.count_goods);
                 cartCount.find('.count-quantity').text(data.resultData.count_quantity);
                 cartCount.find('.count-weight').text(data.resultData.count_weight);
