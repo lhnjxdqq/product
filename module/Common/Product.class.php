@@ -228,6 +228,33 @@ SQL;
         return              $result;
     }
 
+    /**
+     * 按供应商查询产品数量
+     *
+     * @param $supplierId   供应商ID
+     * @return int
+     */
+    static public function countProductBySupplierId ($supplierId) {
+
+        $supplierId = (int) $supplierId;
+        $sql        =<<<SQL
+SELECT
+  COUNT(1) AS `cnt`
+FROM
+  `product_info`
+LEFT JOIN
+  `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`
+LEFT JOIN
+  `supplier_info` ON `supplier_info`.`supplier_id`=`source_info`.`supplier_id`
+WHERE
+  `supplier_info`.`supplier_id`="{$supplierId}"
+SQL;
+        $data       = self::_query($sql);
+        $row        = current($data);
+
+        return      (int) $row['cnt'];
+    }
+
     static private function _query ($sql) {
 
         return  Product_Info::query($sql);

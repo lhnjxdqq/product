@@ -7,6 +7,13 @@ if (!isset($_GET['supplier_id'])) {
 }
 
 $supplierId = (int) $_GET['supplier_id'];
+$countProd  = Common_Product::countProductBySupplierId($supplierId);
+
+if ($countProd) {
+
+    Utility::notice('该供应商已有产品数据, 不允许删除');
+}
+
 $data       = array(
     'supplier_id'   => $supplierId,
     'delete_status' => Supplier_DeleteStatus::DELETED,

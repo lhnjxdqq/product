@@ -217,8 +217,6 @@ FROM
     `produce_order_cart`
 LEFT JOIN
     `product_info` ON `product_info`.`product_id`=`produce_order_cart`.`product_id`
-LEFT JOIN
-    `sales_order_goods_info` ON `sales_order_goods_info`.`goods_id`=`product_info`.`goods_id`
 WHERE
     `produce_order_cart`.`sales_order_id`="{$salesOrderId}"
 AND
