@@ -140,8 +140,14 @@ class   Goods_Spec_Value_RelationShip {
 
             $where[] = '(`gsvr`.`spec_id` = "' . (int) $specValue['spec_id'] . '" AND `gsvr`.`spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
         }
+        
+        $sqlStyle='';
+        if($styleId){
+        
+            $sqlStyle = ' AND `gi`.`style_id` = "' . (int) $styleId;
+        }
 
-        $sql    .= implode(' OR ', $where) . ' AND `gi`.`style_id` = "' . (int) $styleId . '" AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` HAVING `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
+        $sql    .= implode(' OR ', $where) . $sqlStyle . ' AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` HAVING `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")';
 
         $result = self::_getStore()->fetchAll($sql);
         if (!$result) {
