@@ -68,8 +68,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <a href='/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderInfo.sales_order_id}>' class="btn btn-primary pull-left" >上一步</a>
-                                    <button class="btn btn-primary pull-right">提交订单</button>
+                                    <div class='col-sm-3 pull-left'>
+                                        <a href='/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderInfo.sales_order_id}>' class="btn btn-primary" >上一步</a>
+                                    </div>
+                                    <div class="col-sm-2 pull-right">
+                                    <button class="btn btn-primary">提交订单</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
