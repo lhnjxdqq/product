@@ -15,7 +15,11 @@ if (!$produceOrderInfo) {
 }
 // 生产订单详情
 $listOrderProduct   = Produce_Order_List::getDetailByMultiProduceOrderId((array) $produceOrderId);
+$listProductId      = ArrayUtility::listField($listOrderProduct, 'product_id');
+$mapProductImage    = Common_Product::getProductThumbnail($listProductId);
+
 $listGoodsId        = ArrayUtility::listField($listOrderProduct, 'goods_id');
+$mapGoodsSpuList    = Common_Spu::getGoodsSpu($listGoodsId);
 $listGoodsSpecValue = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
 $mapGoodsSpecValue  = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
 $produceOrderInfo['count_goods']    = count($listOrderProduct);
@@ -63,6 +67,7 @@ $listOrderDetail    = Produce_Order_Product_List::listByCondition($condition, ar
 foreach ($listOrderDetail as &$detail) {
 
     $goodsId        = $detail['goods_id'];
+    $productId      = $detail['product_id'];
     $categoryId     = $detail['category_id'];
     $childStyleId   = $detail['style_id'];
     $parentStyleId  = $mapStyleInfo[$childStyleId]['parent_id'];
@@ -73,6 +78,8 @@ foreach ($listOrderDetail as &$detail) {
     $detail['size_value_data']      = $mapGoodsSpecValue[$goodsId]['size_value_data'];
     $detail['color_value_data']     = $mapGoodsSpecValue[$goodsId]['color_value_data'];
     $detail['material_value_data']  = $mapGoodsSpecValue[$goodsId]['material_value_data'];
+    $detail['spu_list']             = $mapGoodsSpuList[$goodsId];
+    $detail['image_url']            = $mapProductImage[$productId]['image_url'];
 }
 
 $data['produceOrderInfo']   = $produceOrderInfo;
@@ -83,7 +90,6 @@ $data['listOrderDetail']    = $listOrderDetail;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
 $data['mapOrderType']       = Produce_Order_Type::getOrderType();
-
 
 $template = Template::getInstance();
 $template->assign('data', $data);

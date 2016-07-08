@@ -203,6 +203,31 @@ SQL;
         return              self::_query($sql);
     }
 
+    /**
+     * 取一组产品的缩略图 (最后一张)
+     *
+     * @param array $multiProductId
+     */
+    static public function getProductThumbnail (array $multiProductId) {
+
+        $multiProductId     = array_map('intval', array_unique(array_filter($multiProductId)));
+        $listProductImages  = Product_Images_RelationShip::getByMultiId($multiProductId);
+        $groupProductImages = ArrayUtility::groupByField($listProductImages, 'product_id');
+        $result             = array();
+        foreach ($groupProductImages as $productId => $productImagesList) {
+
+            $productThumb   = array_pop($productImagesList);
+            $imageKey       = $productThumb['image_key'];
+            $imageUrl       = $imageKey
+                              ? AliyunOSS::getInstance('images-product')->url($imageKey)
+                              : '';
+            $productThumb['image_url']  = $imageUrl;
+            $result[$productId]         = $productThumb;
+        }
+
+        return              $result;
+    }
+
     static private function _query ($sql) {
 
         return  Product_Info::query($sql);

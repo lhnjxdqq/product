@@ -18,7 +18,7 @@
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="javascript:void(0);">生产订单</a></li>
-                <li class="active">审核订单</li>
+                <li class="active">订单详情</li>
             </ol>
         </section>
         <section class="content">
@@ -120,8 +120,17 @@
                                     <tr>
                                         <td><{$item.product_sn}></td>
                                         <td><{$item.source_code}></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <{foreach from=$item.spu_list item=spu name=spulist}>
+                                                <{$spu.spu_sn}>
+                                                <{if !$smarty.foreach.spulist.last}><br><{/if}>
+                                            <{/foreach}>
+                                        </td>
+                                        <td>
+                                            <{if $item.image_url}>
+                                        <img src="<{$item.image_url}>" height="60" alt="">
+                                            <{/if}>
+                                        </td>
                                         <td><{$item.goods_name}></td>
                                         <td><{$item.category_name}></td>
                                         <td><{$item.parent_style_name}></td>
