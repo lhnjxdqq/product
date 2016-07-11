@@ -292,13 +292,13 @@
     });
     // 全选
     $('input.select-all').click(function () {
-        $('#cart-list .select input').prop('checked', $(this).prop('checked') );
+        $('#prod-list .select input').prop('checked', $(this).prop('checked') );
     });
     // 批量删除
     $(document).delegate('#delMultiProduct', 'click', function () {
 
         var produceOrderId      = <{$smarty.get.produce_order_id|default:0}>;
-        var checkedInputList    = $('#cart-list').find('.select input:checked');
+        var checkedInputList    = $('#prod-list').find('.select input:checked');
         if (!produceOrderId) {
 
             alert('参数错误');
@@ -320,7 +320,7 @@
             productIdString += productid + ',';
         });
         productIdString = productIdString.substr(0, productIdString.length - 1);
-        var redirect    = '/order/produce/del_order_product.php?produce_order_id=' + salesOrderId + '&multi_product_id=' + productIdString;
+        var redirect    = '/order/produce/del_order_product.php?produce_order_id=' + produceOrderId + '&multi_product_id=' + productIdString;
         location.href   = redirect;
     });
     // 删除

@@ -32,7 +32,7 @@ $data   = array(
 
 if (Produce_Order_Info::update($data)) {
 
-    Utility::notice('编辑成功');
+    Utility::notice('编辑成功', '/order/produce/index.php');
 } else {
 
     Utility::dump('编辑失败');
