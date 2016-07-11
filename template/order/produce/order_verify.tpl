@@ -116,33 +116,33 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <{foreach from=$data.listOrderDetail item=item}>
-                                    <tr>
-                                        <td><{$item.product_sn}></td>
-                                        <td><{$item.source_code}></td>
-                                        <td>
-                                            <{foreach from=$item.spu_list item=spu name=spulist}>
-                                                <{$spu.spu_sn}>
-                                                <{if !$smarty.foreach.spulist.last}><br><{/if}>
-                                            <{/foreach}>
-                                        </td>
-                                        <td>
-                                            <{if $item.image_url}>
-                                        <img src="<{$item.image_url}>" height="60" alt="">
-                                            <{/if}>
-                                        </td>
-                                        <td><{$item.goods_name}></td>
-                                        <td><{$item.category_name}></td>
-                                        <td><{$item.parent_style_name}></td>
-                                        <td><{$item.child_style_name}></td>
-                                        <td><{$item.weight_value_data}></td>
-                                        <td><{$item.size_value_data}></td>
-                                        <td><{$item.color_value_data}></td>
-                                        <td><{$item.material_value_data}></td>
-                                        <td><{$item.remark}></td>
-                                        <td><{$item.product_cost}></td>
-                                        <td><{$item.quantity}></td>
-                                    </tr>
+                            <{foreach from=$data.listOrderDetail item=item}>
+                                <tr>
+                                    <td><{$item.product_sn}></td>
+                                    <td><{$item.source_code}></td>
+                                    <td>
+                                        <{foreach from=$item.spu_list item=spu name=spulist}>
+                                        <{$spu.spu_sn}>
+                                        <{if !$smarty.foreach.spulist.last}><br><{/if}>
+                                        <{/foreach}>
+                                    </td>
+                                    <td>
+                                        <{if $item.image_url}>
+                                    <img src="<{$item.image_url}>" height="60" alt="">
+                                        <{/if}>
+                                    </td>
+                                    <td><{$item.goods_name}></td>
+                                    <td><{$item.category_name}></td>
+                                    <td><{$item.parent_style_name}></td>
+                                    <td><{$item.child_style_name}></td>
+                                    <td><{$item.weight_value_data}></td>
+                                    <td><{$item.size_value_data}></td>
+                                    <td><{$item.color_value_data}></td>
+                                    <td><{$item.material_value_data}></td>
+                                    <td><{$item.remark}></td>
+                                    <td><{$item.product_cost}></td>
+                                    <td><{$item.quantity}></td>
+                                </tr>
                                 <{/foreach}>
                             </tbody>
                         </table>
@@ -151,6 +151,15 @@
                     <{include file="section/pagelist.tpl" viewData=$data.pageViewData}>
                 </div>
                 <!-- /.box-body -->
+                <div class="box-footer">
+                    <a href="/order/produce/edit.php?produce_order_id=<{$data.produceOrderInfo.produce_order_id}>" class="btn btn-primary pull-left"><i class="fa fa-edit"></i> 编辑订单</a>
+
+                    <{if $data.produceOrderInfo.status_code >= $data.listOrderType.confirmed}>
+                    <a href="javascript:void(0);" disabled class="btn btn-default pull-right"><i class="fa fa-retweet"></i> 已审核</a>
+                    <{else}>
+                    <a href="javascript:verifyOrder(<{$smarty.get.produce_order_id}>);" class="btn btn-primary pull-right"><i class="fa fa-retweet"></i> 审核通过</a>
+                    <{/if}>
+                </div>
             </div>
             <!-- /.box -->
         </section>
@@ -178,14 +187,11 @@
 </style>
 <{include file="section/foot.tpl"}>
 <script>
-    function changeStatus(action) {
-        var noticeList  = {
-            verify: '确定要审核该订单吗?',
-            confirm: '确定要确认该订单吗?'
-        };
-        if (noticeList[action] && confirm(noticeList[action])) {
+    function verifyOrder(produceOrderId) {
 
-            var redirect    = '/order/produce/change_status.php?produce_order_id=<{$smarty.get.produce_order_id}>&action=' + action;
+        if (produceOrderId && confirm('订单无误, 审核通过 ?')) {
+
+            var redirect    = '<{$smarty.server.REQUEST_URI}>&is_ok=ok';
             location.href   = redirect;
         }
     }

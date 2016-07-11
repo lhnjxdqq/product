@@ -72,8 +72,8 @@
                                         <td><{$data.mapStatusCode[$item.status_code]}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
-                                            <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>&action=verify" class="btn btn-info btn-xs"><i class="fa fa-retweet"></i> 审核</a>
-                                            <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>&action=confirm" class="btn btn-info btn-xs"><i class="fa fa-check"></i> 工厂确认</a>
+                                            <a href="/order/produce/order_verify.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-retweet"></i> 审核</a>
+                                            <a href="/order/produce/order_confirm.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-check"></i> 工厂确认</a>
                                         </td>
                                     </tr>
                                 <{/foreach}>
