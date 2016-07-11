@@ -79,7 +79,7 @@
                                             <{if $item.status_code == $data.listStatusCode.confirmed}>
                                             <a href="/order/produce/order_confirm.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-check"></i> 工厂确认</a>
                                             <{/if}>
-                                            <{if $item.status_code < $data.listStatusCode.confirmed}>
+                                            <{if $item.status_code <= $data.listStatusCode.confirmed}>
                                             <a href="/order/produce/edit.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <{/if}>
                                         </td>
