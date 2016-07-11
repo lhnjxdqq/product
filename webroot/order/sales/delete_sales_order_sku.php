@@ -4,8 +4,8 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $data      = $_POST;
 
-Validate::testNull($data['sales_order_id'], "销售订单ID不能为空");
-Validate::testNull($data['goods_id'], "skuId不能为空不能为空");
+Validate::testNull($data['sales_order_id'], "閿�鍞鍗旾D涓嶈兘涓虹┖");
+Validate::testNull($data['goods_id'], "skuId涓嶈兘涓虹┖涓嶈兘涓虹┖");
 
 foreach($data['goods_id'] as $id){
 

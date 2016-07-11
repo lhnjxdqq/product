@@ -36,9 +36,14 @@
         <!-- Main content -->
         <section class="content">
             <div class="box">
+            <form class="form-inline" action="/order/sales/perfected_sales_order.php" method="post" id="sales_order_confire">
+                <input type='hidden' value="<{$salesOrderId}>" name="sales_order_id" id="sales_order_id">
+                <input type='hidden' value="[]" name="sales_order_data" id="sales_order_data">
+            </form>
+            <form class="form-inline" action="/order/sales/perfected_sales_order.php" method="post" id="sales_order">
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
-                    <button class='btn btn-primary' id='delMulti'><i class='fa fa-trash'></i>批量删除</button>
+                    <button class='btn btn-primary' type='button' id='delMulti'><i class='fa fa-trash'></i>批量删除</button>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -81,15 +86,16 @@
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
                                         <td><{$item.cost}></td>
-                                        <td><input type='text' value='<{$item.remark}>'></td>
+                                        <td><input type='text' value='<{$item.remark}>' name='<{$item.goods_id}>[goods_remark]'></td>
                                         <td>
                                             <div class="input-group width-110 assign-number">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-default reduce">-</button>
+                                                    <button type='button' class="btn btn-default reduce">-</button>
                                                 </span>
-                                                    <input type="text" class="form-control" id="assign_number-<{$item.goods_id}>" value="<{$item.quantity}>"/>
+                                                    <input type="text" class="form-control weight-quantity" weight=<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>  name="<{$item.goods_id}>[quantity]" value="<{$item.quantity}>"/>
+                                                    <input type='hidden' name='<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-default plus">+</button>
+                                                    <button type='button' class="btn btn-default plus">+</button>
                                                 </span>
                                             </div>
                                         </td>
@@ -105,9 +111,9 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary pull-left">添加产品</a>
-                    <span class='pull-right'>共计<{$salesOrderInfo.count_goods}>款,<{$salesOrderInfo.quantity_total}>件,参考重量<{$salesOrderInfo.reference_weight}>g&nbsp;&nbsp;&nbsp;&nbsp;<a href="/order/sales/perfected_sales_order.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right"> 下一步</a></span>
+                    <span class='pull-right'>共计<{$salesOrderInfo.count_goods}>款,<span id='quantity'><{$salesOrderInfo.quantity_total}></span>件,参考重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
                 </div>
-
+            </form>
             </div>
             <!-- /.box -->
         </section>
@@ -151,6 +157,7 @@ $(function () {
 
             $input.val(value - 1);
         }
+        calculateWeight();
     });
 
     $('.assign-number .plus').bind('click', function () {
@@ -159,6 +166,7 @@ $(function () {
             quantity    = parseInt($input.attr('quantity'));
 
             $input.val(parseInt($input.val()) + 1);
+            calculateWeight();
     });
     
     $('input[name="select-all"]').click(function () {
@@ -185,6 +193,19 @@ $(function () {
         container   : '#sku-list-vis'
     });
     
+    $("#sales_order").submit(function(){
+
+        var json = {},
+            formSerialize   = $(this).serializeArray();
+        for (var offset = 0; offset < formSerialize.length; offset ++) {
+            json[formSerialize[offset].name] = formSerialize[offset].value;
+        }
+        $("#sales_order_data").val(JSON.stringify(json));
+        $("#sales_order_confire").submit();
+    
+        return false;
+    });   
+    
     $('#delMulti').click(function(){
 
         var chk_value =[];
@@ -202,7 +223,7 @@ $(function () {
 
         $.post('/order/sales/delete_sales_order_sku.php', {
             sales_order_id      : <{$salesOrderId}>,
-            spu_id              : chk_value,
+            goods_id              : chk_value,
             '__output_format'   : 'JSON'
         }, function (response) {
 
@@ -228,6 +249,29 @@ $(function () {
 
         return  confirm('确认删除？');
     });
+    
+    $('.weight-quantity').blur(function(){
+    
+        calculateWeight();
+    })
+    
+    function calculateWeight () {
+
+        var weightTotal = 0;
+            quantity    = 0;
+
+        $('.weight-quantity').each(function () {
+
+            var $this   = $(this);
+            
+            quantity    += parseInt($this.val());
+            weightTotal += parseFloat($this.attr('weight')) * parseInt($this.val());
+        });
+        
+        num = weightTotal.toFixed(2);
+        $('#weight_total').html(num);
+        $('#quantity').html(quantity);
+    }
     
 });
 </script>
