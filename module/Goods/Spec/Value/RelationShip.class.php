@@ -144,7 +144,7 @@ class   Goods_Spec_Value_RelationShip {
         $sqlStyle='';
         if($styleId){
         
-            $sqlStyle = ' AND `gi`.`style_id` = "' . (int) $styleId;
+            $sqlStyle = ' AND `gi`.`style_id` = ' . (int) $styleId;
         }
 
         $sql    .= "(".implode(' OR ', $where).")" . $sqlStyle . ' AND `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")' .' AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` ';
