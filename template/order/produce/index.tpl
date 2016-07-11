@@ -72,8 +72,16 @@
                                         <td><{$data.mapStatusCode[$item.status_code]}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
+                                            <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-info"></i> 查看清单</a>
+                                            <{if $item.status_code == $data.listStatusCode.new_built}>
                                             <a href="/order/produce/order_verify.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-retweet"></i> 审核</a>
+                                            <{/if}>
+                                            <{if $item.status_code == $data.listStatusCode.confirmed}>
                                             <a href="/order/produce/order_confirm.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-check"></i> 工厂确认</a>
+                                            <{/if}>
+                                            <{if $item.status_code < $data.listStatusCode.confirmed}>
+                                            <a href="/order/produce/edit.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+                                            <{/if}>
                                         </td>
                                     </tr>
                                 <{/foreach}>

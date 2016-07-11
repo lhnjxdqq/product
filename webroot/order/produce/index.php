@@ -41,6 +41,13 @@ $data['mapProduceOrderInfo']    = $mapProduceOrderInfo;
 $data['mainMenu']               = Menu_Info::getMainMenu();
 $data['pageViewData']           = $page->getViewData();
 $data['mapStatusCode']          = Produce_Order_StatusCode::getProduceOrderStatusList();
+$data['listStatusCode']         = array(
+    'new_built' => Produce_Order_StatusCode::NEWLY_BUILT,
+    'confirmed' => Produce_Order_StatusCode::CONFIRMED,
+    'stocking'  => Produce_Order_StatusCode::STOCKING,
+    'arrival'   => Produce_Order_StatusCode::ARRIVAL,
+    'finished'  => Produce_Order_StatusCode::FINISHED,
+);
 
 $template = Template::getInstance();
 $template->assign('data', $data);
