@@ -24,6 +24,53 @@
 
         <!-- Main content -->
         <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">条件筛选</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- .box-header -->
+                <div class="box-body">
+                    <form action="/order/produce/index.php" method="get">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="input-daterange input-group" style="border-left: 1px solid #d2d6de;">
+                                    <span class="input-group-addon">下单日期:</span>
+                                    <input type="text" name="date_start" class="form-control" readonly style="background: #fff;" value="<{$data.condition.date_start}>">
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" name="date_end" class="form-control" readonly style="background: #fff;" value="<{$data.condition.date_end}>">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="supplier_id" class="form-control">
+                                    <option value="0">请选择供应商</option>
+                                    <{foreach from=$data.listSupplierInfo item=item}>
+                                    <option value="<{$item.supplier_id}>"<{if $item.supplier_id == $smarty.get.supplier_id}> selected<{/if}>><{$item.supplier_code}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="order_status_code" class="form-control">
+                                    <option value="0">请选择订单状态</option>
+                                    <{foreach from=$data.mapStatusCode item=statusName key=statusCode}>
+                                    <option value="<{$statusCode}>"<{if $statusCode == $smarty.get.order_status_code}> selected<{/if}>><{$statusName}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="produce_order_sn" placeholder="生产订单编号" value="<{$smarty.get.produce_order_sn}>">
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
             <div class="box collapsed-box">
                 <div class="box-header with-border">
                     <h3 class="box-title">表格操作</h3>
@@ -38,7 +85,7 @@
             <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <div class="box-title">生产订单列表</div>
+                    <h3 class="box-title">生产订单列表</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
@@ -120,6 +167,10 @@
 
 <{include file="section/foot.tpl"}>
 <script>
+    $('.input-daterange').datepicker({
+        format  : 'yyyy-mm-dd',
+        language: 'zh-CN'
+    });
 
     tableColumn({
         selector    : '#order-list',

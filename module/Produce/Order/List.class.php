@@ -50,6 +50,10 @@ class Produce_Order_List {
     static private function _condition (array $condition) {
 
         $sql        = array();
+        $sql[]      = self::_conditionByCreateTimeRange($condition);
+        $sql[]      = self::_conditionBySupplierId($condition);
+        $sql[]      = self::_conditionByStatusCode($condition);
+        $sql[]      = self::_conditionByProduceOrderSn($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sqlFilter  = array_filter($sql);
 
@@ -58,6 +62,61 @@ class Produce_Order_List {
                     : ' WHERE ' . implode(' AND ', $sqlFilter);
     }
 
+    /**
+     * 根据生产订单创建时间拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByCreateTimeRange (array $condition) {
+
+        return  (!$condition['date_start'] || !$condition['date_end'])
+                ? ''
+                : "`poi`.`create_time` BETWEEN '{$condition['date_start']}' AND '{$condition['date_end']}'";
+    }
+
+    /**
+     * 根据供应商ID拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionBySupplierId (array $condition) {
+
+        return  !$condition['supplier_id']
+                ? ''
+                : '`si`.`supplier_id` = "' . (int) $condition['supplier_id'] . '"';
+    }
+
+    /**
+     * 根据生产订单状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByStatusCode (array $condition) {
+
+        return  !$condition['order_status_code']
+                ? ''
+                : '`poi`.`status_code` = "' . (int) $condition['order_status_code'] . '"';
+    }
+
+    /**
+     * 根据生产订单编号拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByProduceOrderSn (array $condition) {
+
+        $multiProduceOrderSn    = !$condition['produce_order_sn'] ? array() : explode(' ', trim($condition['produce_order_sn']));
+        $multiProduceOrderSn    = array_map('addslashes', array_unique(array_filter($multiProduceOrderSn)));
+
+        return                  empty($multiProduceOrderSn)
+                                ? ''
+                                : '`poi`.`produce_order_sn` IN ("' . implode('","', $multiProduceOrderSn) . '")';
+    }
+    
     /**
      * 根据生产订单的删除状态拼接WHERE子句
      *

@@ -3,6 +3,8 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $condition  = $_GET;
 
+$condition['date_start']    = isset($_GET['date_start']) ? $_GET['date_start'] : date('Y-m-d', strtotime(date('Y-m')));
+$condition['date_end']      = isset($_GET['date_end']) ? $_GET['date_end'] : date('Y-m-d', strtotime(date('Y-m-d')) + 24 * 3600);
 $condition['delete_status'] = Produce_Order_DeleteStatus::NORMAL;
 
 // 分页
@@ -22,6 +24,7 @@ $listProduceOrderGoodsId    = ArrayUtility::listField($listProduceOrderGoods, 'g
 $listGoodsSpecValue         = Common_Goods::getMultiGoodsSpecValue($listProduceOrderGoodsId);
 $mapGoodsSpecValue          = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
 $groupProduceOrderGoods     = ArrayUtility::groupByField($listProduceOrderGoods, 'produce_order_id');
+$listSupplierInfo           = Supplier_Info::listAll();
 
 foreach ($groupProduceOrderGoods as $produceOrderId => $goodsList) {
 
@@ -37,9 +40,11 @@ foreach ($groupProduceOrderGoods as $produceOrderId => $goodsList) {
     $mapProduceOrderInfo[$produceOrderId]['count_weight']   = $countWeight;
 }
 
+$data['condition']              = $condition;
 $data['mapProduceOrderInfo']    = $mapProduceOrderInfo;
 $data['mainMenu']               = Menu_Info::getMainMenu();
 $data['pageViewData']           = $page->getViewData();
+$data['listSupplierInfo']       = $listSupplierInfo;
 $data['mapStatusCode']          = Produce_Order_StatusCode::getProduceOrderStatusList();
 $data['listStatusCode']         = array(
     'new_built' => Produce_Order_StatusCode::NEWLY_BUILT,
