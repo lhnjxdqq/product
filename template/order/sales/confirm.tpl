@@ -43,7 +43,7 @@
             <form class="form-inline" action="/order/sales/perfected_sales_order.php" method="post" id="sales_order">
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
-                    <button class='btn btn-primary' id='delMulti'><i class='fa fa-trash'></i>批量删除</button>
+                    <button class='btn btn-primary' type='button' id='delMulti'><i class='fa fa-trash'></i>批量删除</button>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -223,7 +223,7 @@ $(function () {
 
         $.post('/order/sales/delete_sales_order_sku.php', {
             sales_order_id      : <{$salesOrderId}>,
-            spu_id              : chk_value,
+            goods_id              : chk_value,
             '__output_format'   : 'JSON'
         }, function (response) {
 
