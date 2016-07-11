@@ -50,9 +50,9 @@ class   Produce_Order_Product_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'produce_order_id,product_id',
         );
-        $condition  = "";
+        $condition  = "`produce_order_id` = '" . addslashes($data['produce_order_id']) . "' AND `product_id` = '" . addslashes($data['product_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData    += array(
             'update_time'   => date('Y-m-d H:i:s'),
@@ -71,6 +71,22 @@ class   Produce_Order_Product_Info {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '"';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 批量删除一个生产订单中的产品
+     *
+     * @param $produceOrderId       生产订单ID
+     * @param array $multiProductId 产品ID
+     * @return int
+     */
+    static public function deleteByMultiProductId ($produceOrderId, array $multiProductId) {
+
+        $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
+
+        $sql            = 'DELETE FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '" AND `product_id` IN ("' . implode('","', $multiProductId) . '")';
+
+        return  self::_getStore()->execute($sql);
     }
 
     static public function query ($sql) {

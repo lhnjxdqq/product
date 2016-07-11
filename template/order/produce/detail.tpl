@@ -157,7 +157,7 @@
                     <{if $data.produceOrderInfo.status_code >= $data.listOrderType.stocking}>
                     <a href="javascript:void(0);" disabled class="btn btn-default pull-left"><i class="fa fa-edit"></i> 无法编辑</a>
                     <{else}>
-                    <a href="javascript:alert('开发中');" class="btn btn-primary pull-left"><i class="fa fa-edit"></i> 编辑订单</a>
+                    <a href="/order/produce/edit.php?produce_order_id=<{$data.produceOrderInfo.produce_order_id}>" class="btn btn-primary pull-left"><i class="fa fa-edit"></i> 编辑订单</a>
                     <{/if}>
                     <{if $action eq 'verify'}>
                         <{if $data.produceOrderInfo.status_code >= $data.listOrderType.confirmed}>
