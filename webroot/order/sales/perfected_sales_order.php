@@ -12,6 +12,8 @@ Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 $json                       = json_decode($salesOderData['sales_order_data'], true);
 $data                       = array();
 foreach ($json as $key => $item) {
+    
+    $key    = substr($key,8);
 
     if (0 < $pos = strpos($key, '[')) {
         $attr           = substr($key, 0, $pos);

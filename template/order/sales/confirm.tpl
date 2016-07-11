@@ -86,16 +86,17 @@
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
                                         <td><{$item.cost}></td>
-                                        <td><input type='text' value='<{$item.remark}>' name='<{$item.goods_id}>[goods_remark]'></td>
+                                        <td>
+                                            <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
+                                            <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>
                                         <td>
                                             <div class="input-group width-110 assign-number">
                                                 <span class="input-group-btn">
-                                                    <button type='button' class="btn btn-default reduce">-</button>
+                                                    <button type='button' goods-id="<{$item.goods_id}>" class="btn btn-default reduce">-</button>
                                                 </span>
-                                                    <input type="text" class="form-control weight-quantity" weight=<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>  name="<{$item.goods_id}>[quantity]" value="<{$item.quantity}>"/>
-                                                    <input type='hidden' name='<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
+                                                    <input type="text" class="form-control weight-quantity" weight=<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}> goods-id="<{$item.goods_id}>"  name="goods_id<{$item.goods_id}>[quantity]" value="<{$item.quantity}>"/>
                                                 <span class="input-group-btn">
-                                                    <button type='button' class="btn btn-default plus">+</button>
+                                                    <button type='button' goods-id="<{$item.goods_id}>" class="btn btn-default plus">+</button>
                                                 </span>
                                             </div>
                                         </td>
@@ -111,7 +112,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary pull-left">添加产品</a>
-                    <span class='pull-right'>共计<{$salesOrderInfo.count_goods}>款,<span id='quantity'><{$salesOrderInfo.quantity_total}></span>件,参考重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
+                    <span class='pull-right'>共计<span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款,<span id='quantity'><{$salesOrderInfo.quantity_total}></span>件,参考重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
                 </div>
             </form>
             </div>
@@ -158,6 +159,9 @@ $(function () {
             $input.val(value - 1);
         }
         calculateWeight();
+        
+        goodsId = $(this).attr('goods-id');
+        update(goodsId);
     });
 
     $('.assign-number .plus').bind('click', function () {
@@ -167,27 +171,15 @@ $(function () {
 
             $input.val(parseInt($input.val()) + 1);
             calculateWeight();
+
+            goodsId = $(this).attr('goods-id');
+            update(goodsId);
     });
     
     $('input[name="select-all"]').click(function () {
         $('#sku-list input').prop('checked', $(this).prop('checked') );
     });
     
-    $('.assign-number input').bind('blur', function () {
-        var $this       = $(this),
-            value       = parseInt($this.val()),
-            quantity    = parseInt($this.attr('quantity'));
-
-        if (value <= 0) {
-
-            $this.val(0);
-        }
-
-        if (value >= quantity) {
-
-            $this.val(quantity);
-        }
-    });
     tableColumn({
         selector    : '#sku-list',
         container   : '#sku-list-vis'
@@ -252,8 +244,50 @@ $(function () {
     
     $('.weight-quantity').blur(function(){
     
+        goodsId = $(this).attr('goods-id');
         calculateWeight();
-    })
+        update(goodsId);
+    });
+    
+    $('.goods-remark').blur(function(){
+    
+        goodsId = $(this).attr('goods-id');
+        calculateWeight();
+        update(goodsId);
+    });
+    
+    function update(goodsId) {
+
+        var inputQuantitly      = "input[name=\"goods_id"+goodsId+"[quantity]\"]",
+            inputRemark         = "input[name=\"goods_id"+goodsId+"[goods_remark]\"]",
+            inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";        
+        
+        var quantity = $(inputQuantitly).val();
+            remark    = $(inputRemark).val();
+            weight    = $(inputWeight).val();
+
+        $.post('/order/sales/confirm_update.php', {
+            sales_order_id      : <{$salesOrderId}>,
+            goods_id            : goodsId,
+            quantity            : quantity,
+            remark              : remark,
+            weight              : weight,
+            '__output_format'   : 'JSON'
+        }, function (response) {
+
+            if (0 != response.code) {
+
+                showMessage('错误', response.message);
+
+                return  ;
+            }else{
+            
+                $("#goodsQuantity").val(response.data.count);
+
+            }
+            
+        }, 'json');  
+    }
     
     function calculateWeight () {
 
@@ -265,9 +299,13 @@ $(function () {
             var $this   = $(this);
             
             quantity    += parseInt($this.val());
-            weightTotal += parseFloat($this.attr('weight')) * parseInt($this.val());
-        });
-        
+            
+                if(parseInt($this.val())>0){
+                    
+                    weightTotal += parseFloat($this.attr('weight')) * parseInt($this.val());
+                }
+            });
+
         num = weightTotal.toFixed(2);
         $('#weight_total').html(num);
         $('#quantity').html(quantity);
