@@ -17,8 +17,8 @@
             <h1>销售订单</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="javascript:void(0);">SKU管理</a></li>
-                <li class="active">SKU列表</li>
+                <li><a href="/order/sales/index.php">销售订单</a></li>
+                <li class="active">添加产品</li>
             </ol>
         </section>
 
@@ -249,7 +249,6 @@ $(function () {
         calculateWeight();
         
         goodsId = $(this).attr('goods-id');
-        update(goodsId);
     });
 
     $('.assign-number .plus').bind('click', function () {
@@ -261,7 +260,6 @@ $(function () {
             calculateWeight();
 
             goodsId = $(this).attr('goods-id');
-            update(goodsId);
     });
     
     $('.order-goods-update').click(function(){
