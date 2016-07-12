@@ -45,6 +45,11 @@ $groupSkuSpu            = ArrayUtility::groupByField($skuRelationShipSpuInfo,'go
 
 $condition['list_goods_id'] = $listGoodsId;
 
+$page                   = new PageList(array(
+    PageList::OPT_TOTAL     => Search_Sku::countByCondition($condition),
+    PageList::OPT_URL       => '/order/sales/add_goods.php',
+    PageList::OPT_PERPAGE   => 100,
+));
 $listCategoryInfo           = Category_Info::listAll();
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
@@ -83,7 +88,7 @@ $listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecVal
 $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
 
 $listGoodsInfo              = array();
-$listGoodsInfo              = Search_Sku::listByCondition($condition);
+$listGoodsInfo              = Search_Sku::listByCondition($condition, array(), $page->getOffset(), 100);
 $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
@@ -151,6 +156,7 @@ $data['mapMaterialSpecValueInfo']   = $mapMaterialSpecValueInfo;
 $data['searchType']                 = Search_Sku::getSearchType();
 $data['mapSpecValueInfo']           = $mapSpecValueInfo;
 $data['listGoodsInfo']              = $listGoodsInfo;
+$data['pageViewData']               = $page->getViewData();
 $data['mainMenu']                   = Menu_Info::getMainMenu();
 $data['onlineStatus']               = array(
     'online'    => Goods_OnlineStatus::ONLINE,
