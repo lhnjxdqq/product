@@ -189,7 +189,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <button class="btn btn-<{if $item.isset_order eq 1}>success<{else}>primary<{/if}> order-goods-update" goods-id='<{$item.goods_id}>'> <{if $item.isset_order eq 1}>更新数量<{else}>点击添加<{/if}> </button>
+                                            <button class="order-goods-update goods-id-<{$item.goods_id}> btn btn-<{if $item.isset_order eq 0}>primary"<{else}>default" disabled="disabled"<{/if}> goods-id='<{$item.goods_id}>'><{if $item.isset_order eq 1}>已加入订单<{else}>点击添加<{/if}></button>
                                         </td>
                                     </tr>
                                 <{/foreach}>
@@ -237,6 +237,7 @@ $(function () {
     $('.assign-number .reduce').bind('click', function () {
         var $input  = $(this).parents('.assign-number').children('input'),
             value   = parseInt($input.val());
+        
         if(value<=1) {
             
             $input.val(1);
@@ -246,20 +247,64 @@ $(function () {
 
             $input.val(value - 1);
         }
-        calculateWeight();
         
         goodsId = $(this).attr('goods-id');
-    });
 
+        if($(".goods-id-"+goodsId).html() == "点击添加"){
+        
+            return false;
+        }
+        $(".goods-id-"+goodsId).addClass('btn-success');
+        $(".goods-id-"+goodsId).attr("disabled",false);
+        $(".goods-id-"+goodsId).html('更新数据');
+    });
+    
+    $('.weight-quantity').blur(function(){
+ 
+        goodsId = $(this).attr('goods-id');
+
+        if($(".goods-id-"+goodsId).html() == "点击添加"){
+        
+            return false;
+        }
+        $(".goods-id-"+goodsId).addClass('btn-success');
+        $(".goods-id-"+goodsId).attr("disabled",false);
+        $(".goods-id-"+goodsId).html('更新数据');    
+
+    });
+    
+    $('.goods-remark').blur(function(){
+    
+        goodsId = $(this).attr('goods-id');
+
+        if($(".goods-id-"+goodsId).html() == "点击添加"){
+        
+            return false;
+        }
+        $(".goods-id-"+goodsId).addClass('btn-success');
+        $(".goods-id-"+goodsId).attr("disabled",false);
+        $(".goods-id-"+goodsId).html('更新数据');
+
+    });
+    
     $('.assign-number .plus').bind('click', function () {
         var $input      = $(this).parents('.assign-number').children('input'),
             value       = parseInt($input.val()),
             quantity    = parseInt($input.attr('quantity'));
 
-            $input.val(parseInt($input.val()) + 1);
-            calculateWeight();
+        $input.val(parseInt($input.val()) + 1);
 
-            goodsId = $(this).attr('goods-id');
+        goodsId = $(this).attr('goods-id');
+        
+        goodsId = $(this).attr('goods-id');
+
+        if($(".goods-id-"+goodsId).html() == "点击添加"){
+        
+            return false;
+        }
+        $(".goods-id-"+goodsId).addClass('btn-success');
+        $(".goods-id-"+goodsId).attr("disabled",false);
+        $(".goods-id-"+goodsId).html('更新数据');
     });
     
     $('.order-goods-update').click(function(){
@@ -305,7 +350,9 @@ $(function () {
         }, 'json');
         $(this).removeClass('btn-primary');
         $(this).removeClass('btn-success');
-        $(this).addClass('btn-success');
+        $(this).addClass('btn-default');
+        $(this).attr("disabled",true);
+        $(this).html('已加入订单');
     });
     
     tableColumn({
