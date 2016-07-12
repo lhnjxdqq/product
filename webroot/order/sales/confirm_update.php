@@ -12,7 +12,16 @@ $content    = array(
     'remark'            => $_POST['remark'],
 );
 
-Sales_Order_Goods_Info::update($content);
+
+$salesGoodsOrderInfo         = Sales_Order_Goods_Info::getBySalesOrderIdAndGooodsID($_POST['sales_order_id'],$_POST['goods_id']);
+
+if(!empty($salesGoodsOrderInfo)){
+    
+    Sales_Order_Goods_Info::update($content);
+}else{
+    
+    Sales_Order_Goods_Info::create($content);
+}
 
 $salesSkuInfo   = Sales_Order_Goods_Info::getBySalesOrderId($_POST['sales_order_id']);
 
@@ -28,6 +37,8 @@ echo    json_encode(array(
     'code'      => 0,
     'message'   => 'OK',
     'data'      => array(
-        'count' => count($salesSkuInfo),
+        'count'             => count($salesSkuInfo),
+        'reference_weight'  => array_sum(ArrayUtility::listField($salesSkuInfo,'reference_weight')),
+        'quantity_total'    => array_sum(ArrayUtility::listField($salesSkuInfo,'goods_quantity')),
     ),
 ));

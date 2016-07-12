@@ -77,6 +77,22 @@ class   Sales_Order_Goods_Info {
         $condition = " `sales_order_id` = " . (int)$salesOrderId;
         
         self::_getStore()->delete(self::_tableName(), $condition);
+    }       
+    
+    /**
+     * 根据报价单ID 产品ID查看是否存在 
+     *
+     * @param   string $salesOrderId  报价单ID
+     * @param   string $goodsId       产品ID
+     */
+    static public function getBySalesOrderIdAndGooodsID($salesOrderId,$goodsId) {
+    
+        Validate::testNull($salesOrderId,"销售订单ID不能为空");
+        Validate::testNull($goodsId,"产品ID不能为空");
+        
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = ' . (int) $salesOrderId . ' AND `goods_id` =' . (int) $goodsId;
+
+        return  self::_getStore()->fetchOne($sql);
     }
         
     /**

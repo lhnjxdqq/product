@@ -61,11 +61,29 @@ class Search_Sku {
         $sql[]      = self::_conditionBySearchType($condition);
         $sql[]      = self::_conditionBySpuId();
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByListGoodsId($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter)
                     ? ''
                     : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    /**
+     * 根据一组skuId拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByListGoodsId (array $condition) {
+        
+        if(empty($condition['list_goods_id'])){
+            
+            return ;
+        }
+        $multiId    = array_map('intval', array_unique(array_filter($condition['list_goods_id'])));
+        
+        return  '`goods_info`.`goods_id` IN ("' . implode('","', $multiId) . '")';
     }
 
     /**
