@@ -138,7 +138,6 @@ class   Sales_Order_Import {
                 'goods_quantity'    => $row['quantity'],
                 'reference_weight'  => sprintf('%.2f',$row['weight_name']*$row['quantity']),
                 'actual_weight'     => 0,
-                'shipment'          => 1,
                 'transaction_price' => 0,
                 'remark'            => !empty($row['remark']) ? $row['remark'] : $indexSpuIdRemark[$row['spu_id']],
             );
