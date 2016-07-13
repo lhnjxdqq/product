@@ -13,6 +13,7 @@ $content = array(
     'sales_quotation_id'    => $salesQuotationId,
     'create_user_id'        => $_SESSION['user_id'],
     'salesperson_id'        => '0',
+    'order_time'            => date('Y-m-d',time()),
     'create_time'           => date('Y-m-d H:i:s',time()),
     'update_time'           => date('Y-m-d H:i:s',time()),
     'order_type_id'         => Sales_Order_Type::ORDERED,

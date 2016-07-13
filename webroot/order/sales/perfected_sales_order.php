@@ -54,6 +54,10 @@ Validate::testNull($salesOrderId,'销售订单ID不能为空');
 $salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
 Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
+if($salesOrderInfo['order_time'] == "0000-00-00"){
+    
+    $salesOrderInfo['order_time'] = date('Y-m-d',time());
+}
 $mapSalesperson = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');
 
 $orderTypeInfo = Sales_Order_Type::getOrderType();

@@ -60,6 +60,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">下单时间: </label>
+                                    <div class="col-sm-3">
+                                        <div class="input-daterange input-group input-group-sm">
+                                            <input type="text" name="order_time" readonly class="daterange" value="<{$salesOrderInfo.order_time}>">
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type='hidden' name='sales_order_id' value="<{$salesOrderInfo.sales_order_id}>">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">订单备注: </label>
@@ -104,5 +112,11 @@
 <!-- ./wrapper -->
 
 <{include file="section/foot.tpl"}>
+<script>
+    $('.input-daterange').datepicker({
+        format  : 'yyyy-mm-dd',
+        language: 'zh-CN'
+    });
+</script>
 </body>
 </html>
