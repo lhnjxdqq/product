@@ -112,7 +112,7 @@
                                                 <{if $item.sales_order_status != 1}>
                                                     <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
                                                 <{/if}>
-                                                <a class="btn btn-primary btn-xs" type='button'>查看清单</a>
+                                                <a href='/order/sales/sales_order_detail.php?sales_order_id=<{$item.sales_order_id}>' target='_blank' class="btn btn-primary btn-xs" type='button'>查看清单</a>
                                                 <{if $item.sales_order_status eq 1}>
                                                     <a href='/order/sales/audit_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>审核订单</a>
                                                     <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>

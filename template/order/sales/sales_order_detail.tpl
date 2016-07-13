@@ -14,11 +14,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>审核订单 </h1>
+            <h1>订单详情 </h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="javascript:void(0);">销售订单</a></li>
-                <li class="active">订单审核</li>
+                <li class="active">订单详情</li>
             </ol>
         </section>
         <section class="content">
@@ -65,12 +65,27 @@
                             <td><{$salesOrderInfo.order_time}></td>
                         </tr>
                         <tr>
+                            <th>发货数量</th>
+                            <td><{$sumShipment}></td>
+                        </tr>
+                        <tr>
+                            <th>发货重量</th>
+                            <td><{$salesOrderInfo.reference_weight}>g</td>
+                        </tr>
+                        <tr>
+                            <th>成交金额</th>
+                            <td><{$salesOrderInfo.transaction_amount}></td>
+                        </tr>
+                        <tr>
                             <th>预付金额</th>
                             <td><{$salesOrderInfo.prepaid_amount}></td>
                         </tr>
                         <tr>
                             <th>订单类型</th>
                             <td><{$mapOrderStyle[$salesOrderInfo.order_type_id]['order_type_name']}></td>
+                        </tr>
+                            <th>审核人</th>
+                            <td><{$mapUser[$salesOrderInfo.audit_person_id]['username']}></td>
                         </tr>
                         <tr>
                             <th>订单备注</th>
@@ -107,6 +122,8 @@
                                     <th>出货工费</th>
                                     <th>备注</th>
                                     <th>下单件数</th>
+                                    <th>出货件数</th>
+                                    <th>出货重量</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,15 +144,13 @@
                                         <td><{$item.cost}></td>
                                         <td><{$item.remark}></td>
                                         <td><{$item.quantity}></td>
+                                        <td><{$indexSales[$item.goods_id]['shipment']}></td>
+                                        <td><{$indexSales[$item.goods_id]['actual_weight']}>g</td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
                         </table>
                     </div>
-                <div class="box-footer">
-                    <a href="/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary pull-left">编辑订单</a>
-                    <a href="/order/sales/audit_pass.php?sales_order_id=<{$salesOrderId}>"class="btn btn-primary pull-right">审核通过</a>
-                </div>
                 </div>
             </div>
             <!-- /.box -->

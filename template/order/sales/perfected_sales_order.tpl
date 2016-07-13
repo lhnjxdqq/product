@@ -64,7 +64,7 @@
                                     <label class="col-sm-2 control-label">下单时间: </label>
                                     <div class="col-sm-3">
                                         <div class="input-daterange input-group input-group-sm">
-                                            <input type="text" name="order_time" readonly class="daterange" value="<{$salesOrderInfo.order_time}>">
+                                            <input type="text" name="order_time" readonly class="form-control daterange" value="<{$salesOrderInfo.order_time}>">
                                         </div>
                                     </div>
                                 </div>

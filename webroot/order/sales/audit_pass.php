@@ -7,6 +7,7 @@ Validate::testNull($_GET['sales_order_id'],'销售订单ID不能为空');
 Sales_Order_Info::update(array(
         'sales_order_id'    => $_GET['sales_order_id'],
         'sales_order_status'=> Sales_Order_Status::CONFIRM,
+        'audit_person_id'   => $_SESSION['user_id'],
     )
 );
 
