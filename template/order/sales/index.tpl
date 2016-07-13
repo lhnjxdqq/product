@@ -114,6 +114,7 @@
                                                 <{/if}>
                                                 <a class="btn btn-primary btn-xs" type='button'>查看清单</a>
                                                 <{if $item.sales_order_status eq 1}>
+                                                    <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
                                                     <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
                                                     <a href='/order/sales/delete_sales_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs delete-confirm" type='button'>删除</a>
                                                 <{/if}>
