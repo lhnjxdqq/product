@@ -18,7 +18,7 @@ if (isset($_GET['is_ok']) && trim($_GET['is_ok']) == 'ok') {
 
     if (Produce_Order_Info::changeStatus($produceOrderId, Produce_Order_StatusCode::CONFIRMED)) {
 
-        Utility::notice('审核成功');
+        Utility::notice('审核成功', '/order/produce/index.php');
     } else {
 
         Utility::notice('审核失败');
