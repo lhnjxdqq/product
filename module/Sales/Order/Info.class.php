@@ -50,7 +50,10 @@ class   Sales_Order_Info {
         );
         $condition  = "`sales_order_id` = '" . addslashes($data['sales_order_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-        self::_getStore()->update(self::_tableName(), $newData, $condition);
+        $newData    += array(
+            'update_time'   => date('Y-m-d H:i:s'),
+        );
+        return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
     /**
