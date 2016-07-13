@@ -60,6 +60,8 @@ LEFT JOIN
   `sales_order_goods_info` AS `sogi` ON `sogi`.`goods_id`=`pi`.`goods_id`
 WHERE
   `popi`.`produce_order_id` IN ("{$listProduceOrderIdStr}")
+AND 
+  `sogi`.`sales_order_id` = "{$salesOrderId}"
 GROUP BY
   `pi`.`goods_id`
 HAVING
