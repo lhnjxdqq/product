@@ -45,6 +45,16 @@ if ($produceOrderId) {
         );
         Produce_Order_Product_Info::create($data);
     }
+    // 该销售订单生成第一个生产订单时, 更改销售订单状态为采购中
+    $listProduceOrder   = Produce_Order_Info::getBySalesOrderId($salesOrderId);
+    if (count($listProduceOrder) == 1) {
+        Sales_Order_Info::update(array(
+            'sales_order_id'        => $salesOrderId,
+            'sales_order_status'    => Sales_Order_Status::PURCHASE,
+        ));
+    }
+    // 清空购物车
+    Produce_Order_Cart::deleteBySalesOrderAndSupplier($salesOrderId, $supplierId);
     Utility::notice('成功创建生产订单', '/order/produce/index.php');
 } else {
 
