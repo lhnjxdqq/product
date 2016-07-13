@@ -21,6 +21,11 @@ class   Order {
         Validate::testNull($data['material_main_name'],'主料材质不能为空');
         Validate::testNull($data['weight_name'],'规格重量不能为空');
         
+        if($data['quantity'] == 0 || empty($data['quantity'])){
+            
+            throw   new ApplicationException('产品数量不能为零,且不能为空');
+        }
+        
         $data['weight_name'] = sprintf('%.2f', $data['weight_name']);
         
         $categoryInfo       = ArrayUtility::searchBy($mapEnumeration['mapCategory'], array("category_name"=>$data['categoryLv3'],'category_level'=>2));
