@@ -2,4 +2,5 @@
 return  array(
     'quotation_import'          => '/home/shuishou/project/product.kuandd.com/data/quotation/',
     'sales_quotation_export'    => '/home/shuishou/project/product.kuandd.com/data/sales_quotation/',
+    'sales_order_import'        => '/home/shuishou/project/product.kuandd.com/data/sales_order/',
 );

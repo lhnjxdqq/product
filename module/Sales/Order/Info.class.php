@@ -19,7 +19,7 @@ class   Sales_Order_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_id,sales_order_sn,sales_order_status,sales_quotation_id,quantity_total,count_goods,order_amount,create_user_id,salesperson_id,order_time,create_time,update_time,transaction_amount,reference_amount,prepaid_amount,order_type_id,audit_person_id,order_remark,reference_weight,actual_weight,customer_id';
+    const   FIELDS      = 'sales_order_id,sales_order_sn,sales_order_status,sales_quotation_id,quantity_total,count_goods,order_amount,create_user_id,salesperson_id,order_time,create_time,update_time,transaction_amount,reference_amount,prepaid_amount,order_type_id,audit_person_id,order_remark,reference_weight,actual_weight,customer_id,order_file_status';
     /**
      * 新增
      *
@@ -132,6 +132,7 @@ class   Sales_Order_Info {
         $sql[]      = self::_conditionOrderTypeId($condition);  //订单类型
         $sql[]      = self::_conditionSalespersonId($condition);
         $sql[]      = self::_conditionOrderStatusId($condition);
+        $sql[]      = self::_conditionOrderFileStatus($condition);
         $sql[]      = self::_conditionrange(
             array(
                 'fieldCondition'    => 'create_time',
@@ -171,6 +172,16 @@ class   Sales_Order_Info {
         }
 
         return  "`order_type_id` = " . (int) $condition['order_type_id'];
+    }
+    
+    static  private function _conditionOrderFileStatus (array $condition) {
+
+        if (empty($condition['order_file_status'])) {
+
+            return  '';
+        }
+
+        return  "`order_file_status` = " . (int) $condition['order_file_status'];
     }
     static  private function _conditionOrderStatusId (array $condition) {
 

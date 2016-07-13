@@ -136,32 +136,27 @@ if(!empty($errorList)){
     exit;
 }
 
-foreach ($datas as $offsetRow => $row) {
+$orderSn    = $salesOrderInfo['sales_order_sn'];
 
-    $content    = array(
-        'sales_order_id'    => $salesOrderId,
-        'goods_id'          => $row['goods_id'],
-        'goods_quantity'    => $row['quantity'],
-        'reference_weight'  => sprintf('%.2f',$row['weight_name']*$row['quantity']),
-        'actual_weight'     => 0,
-        'shipment'          => 1,
-        'transaction_price' => 0,
-        'remark'            => !empty($row['remark']) ? $row['remark'] : $indexSpuIdRemark[$row['spu_id']],
-    );
-    
-    Sales_Order_Goods_Info::create($content);
+$path       = Order::getFilePathByOrderSn($orderSn);
+
+$uploadPath = substr($path,0,strrpos($path,'/')+1);
+
+if(!is_dir($uploadPath)) {
+
+    mkdir($uploadPath,0777,true);
 }
-$salesSkuInfo   = Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
+rename($filePath,$path);
+chmod($path, 0777);
 
 Sales_Order_Info::update(array(
         'sales_order_id'    => $salesOrderId,
-        'count_goods'       => count($salesSkuInfo),    
-        'quantity_total'    => array_sum(ArrayUtility::listField($salesSkuInfo,'goods_quantity')),
+        'order_file_status' => Sales_Order_File_Status::STANDBY,
         'update_time'       => date('Y-m-d H:i:s', time()),
-        'reference_weight'  => array_sum(ArrayUtility::listField($salesSkuInfo,'reference_weight')),
+        'order_file_status' => Sales_Order_File_Status::STANDBY,
     )
 );
 
 setlocale(LC_ALL,NULL);
-
-Utility::notice('销售合同导入成功','/order/sales/confirm_goods.php?sales_order_id='.$salesOrderId);
+Utility::notice('销售合同上传成功,系统稍后将自动导入合同','/order/sales/index.php');
+exit;

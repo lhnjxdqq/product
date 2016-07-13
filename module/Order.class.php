@@ -139,5 +139,17 @@ class   Order {
         return $indexSpecValue[$data];
         
     }
+    /**
+      * 获取文件路径
+      *
+      */
+    static  public  function getFilePathByOrderSn ($salesOrderSn) {
+
+        $year       = substr($salesOrderSn,0,4);
+        $month      = substr($salesOrderSn,4,2);
+        
+        return   Config::get('path|PHP', 'sales_order_import') . $year .'/' . $month .'/'. $salesOrderSn. '.xlsx';
+    }
+    
     
 }   

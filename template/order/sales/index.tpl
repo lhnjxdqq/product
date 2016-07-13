@@ -108,10 +108,18 @@
                                         <td><{$statusList[$item.sales_order_status]['status_name']}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
-                                            <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
-                                            <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
-                                            <a class="btn btn-primary btn-xs" type='button'>查看详情</a>
-                                            <a href='/order/sales/delete_sales_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs delete-confirm" type='button'>删除</a>
+                                            <{if $item.order_file_status eq 0 || $item.order_file_status eq 3}>
+                                                <{if $item.sales_order_status != 1}>
+                                                    <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
+                                                <{/if}>
+                                                <a class="btn btn-primary btn-xs" type='button'>查看清单</a>
+                                                <{if $item.sales_order_status eq 1}>
+                                                    <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
+                                                    <a href='/order/sales/delete_sales_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs delete-confirm" type='button'>删除</a>
+                                                <{/if}>
+                                                <{else}>
+                                                订单合同中的产品正在生成中,请稍等...
+                                            <{/if}>
                                         </td>
                                     </tr>
 <{/foreach}>
