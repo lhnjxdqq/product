@@ -61,6 +61,19 @@ class   Produce_Order_Export_Task {
     }
 
     /**
+     * 根据导出状态获取数据
+     *
+     * @param $exportStatus 导出状态
+     * @return array
+     */
+    static public function getByExportStatus ($exportStatus) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `export_status` = "' . (int) $exportStatus . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据生产订单ID获取任务状态信息
      *
      * @param $produceOrderId   生产订单ID
@@ -68,8 +81,56 @@ class   Produce_Order_Export_Task {
      */
     static public function getByProduceOrderId ($produceOrderId) {
 
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '"';
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '" ORDER BY `task_id` ASC';
 
         return  self::_getStore()->fetchOne($sql);
+    }
+
+    static public function export ($produceOrderId) {
+
+        $supplierCode   = self::_getSupplierCode($produceOrderId);
+        $template       = self::_getTemplate($supplierCode);
+        $className      = 'Produce_Order_Export_Adapter_' . $template;
+
+        if (!class_exists($className)) {
+
+            throw new Exception('导出模板适配器不存在');
+        }
+        $callback       = array($className, 'getInstance');
+        if (!is_callable($callback)) {
+
+            throw new Exception('导出模板适配器不可用');
+        }
+        $instance       = call_user_func($callback);
+
+        echo $instance->export($produceOrderId);
+    }
+
+    /**
+     * 根据生产订单ID获取供应商编号
+     *
+     * @param $produceOrderId
+     * @return mixed
+     */
+    static private function _getSupplierCode ($produceOrderId) {
+
+        $produceOrderInfo   = Produce_Order_Info::getById($produceOrderId);
+        $supplierId         = $produceOrderInfo['supplier_id'];
+        $supplierInfo       = Supplier_Info::getById($supplierId);
+
+        return              $supplierInfo['supplier_code'];
+    }
+
+    /**
+     * 获取供应商导出生产订单模板配置
+     *
+     * @return mixed|null
+     * @throws Exception
+     */
+    static private function _getTemplate ($suppierCode) {
+
+        $templateConfig = Config::get('produce|PHP', 'export_template');
+
+        return          $templateConfig[$suppierCode];
     }
 }
