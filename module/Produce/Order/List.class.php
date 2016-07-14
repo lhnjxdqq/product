@@ -161,6 +161,7 @@ class Produce_Order_List {
     static private function _getJoinTables () {
 
         return  array(
+            '`produce_order_export_task` AS `poet` ON `poet`.`produce_order_id`=`poi`.`produce_order_id`',
             '`sales_order_info` AS `soi` ON `soi`.`sales_order_id`=`poi`.`sales_order_id`',
             '`supplier_info` AS `si` ON `si`.`supplier_id`=`poi`.`supplier_id`',
         );
@@ -209,6 +210,8 @@ SQL;
             '`poi`.`supplier_id`',
             '`poi`.`status_code`',
             '`poi`.`create_time`',
+            '`poet`.`export_status`',
+            '`poet`.`export_filepath`',
             '`soi`.`sales_order_id`',
             '`soi`.`sales_order_sn`',
             '`si`.`supplier_code`',
