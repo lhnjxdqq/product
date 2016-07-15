@@ -86,6 +86,12 @@ class   Produce_Order_Export_Task {
         return  self::_getStore()->fetchOne($sql);
     }
 
+    /**
+     * 按模板导出生产订单数据
+     *
+     * @param $produceOrderId
+     * @throws Exception
+     */
     static public function export ($produceOrderId) {
 
         $supplierCode   = self::_getSupplierCode($produceOrderId);
@@ -102,8 +108,12 @@ class   Produce_Order_Export_Task {
             throw new Exception('导出模板适配器不可用');
         }
         $instance       = call_user_func($callback);
+        if (!($instance instanceof Produce_Order_Export_Adapter_Interface)) {
 
-        echo $instance->export($produceOrderId);
+            throw new Exception('适配器不合法');
+        }
+
+        $instance->export($produceOrderId);
     }
 
     /**
@@ -131,6 +141,10 @@ class   Produce_Order_Export_Task {
 
         $templateConfig = Config::get('produce|PHP', 'export_template');
 
-        return          $templateConfig[$suppierCode];
+        $template       = $templateConfig[$suppierCode]
+                          ? $templateConfig[$suppierCode]
+                          : $templateConfig['default'];
+
+        return          $template;
     }
 }
