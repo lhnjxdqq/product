@@ -42,6 +42,40 @@ SQL;
     }
 
     /**
+     * 获取一组SKU的分类和款式信息
+     *
+     * @param array $multiGoodsId
+     * @return array
+     */
+    static public function getMultiGoodsDetail (array $multiGoodsId) {
+
+        $multiGoodsId       = array_map('intval', array_unique(array_filter($multiGoodsId)));
+        $multiGoodsIdStr    = implode('","', $multiGoodsId);
+        $sql                =<<<SQL
+SELECT
+  `goods_info`.`goods_id`,
+  `goods_info`.`goods_sn`,
+  `goods_info`.`goods_name`,
+  `goods_info`.`category_id`,
+  `goods_info`.`style_id`,
+  `goods_info`.`self_cost`,
+  `goods_info`.`sale_cost`,
+  `category_info`.`category_name`,
+  `style_info`.`style_name`
+FROM
+  `goods_info`
+LEFT JOIN
+  `category_info` ON `category_info`.`category_id`=`goods_info`.`category_id`
+LEFT JOIN 
+  `style_info` ON `style_info`.`style_id`=`goods_info`.`style_id`
+WHERE
+  `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
+SQL;
+
+        return              self::_query($sql);
+    }
+
+    /**
      * 查询一组SKU 分别可以由哪些供应商来生产
      *
      * @param array $multiGoodsId   一组SKUID
