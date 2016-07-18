@@ -4,33 +4,37 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
     // PHPExcel实例
     static private $_excel;
 
-    // activeSheet实例
+    // ActiveSheet实例
     static private $_sheet;
 
     // 写入器
     static private $_writer;
 
-    // 文件保存路径
+    // 保存路径
     static private $_savePath;
-
-    // 生产订单ID
-    static private $_produceOrderId;
 
     // 本类实例
     static private $_instance;
 
-    /**
-     * 禁止外部实例化
-     */
+    // ExcelFile类实例
+    static private $_excelFile;
+
+    // 导出缩略图高度
+    static private $_thumbHeight = 150;
+
+    // 生产订单ID
+    static private $_produceOrderId;
+
+    // 私有化构造函数 防止外部实例化
     private function __construct () {}
 
-    /**
-     * 禁止外部克隆
-     */
+    // 私有化克隆函数 防止被克隆
     private function __clone () {}
 
     /**
-     * 创建实例
+     * 获取本类实例
+     *
+     * @return Produce_Order_Export_Adapter_Test
      */
     static public function getInstance () {
 
@@ -43,11 +47,12 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
     }
 
     /**
-     * 导出生产订单数据
+     * 导出生产订单
      *
      * @param $produceOrderId   生产订单ID
      */
-    public function export ($produceOrderId) {
+    public function export($produceOrderId) {
+
 
         self::_initialize($produceOrderId);
         self::_setTableHead();
@@ -56,48 +61,35 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
     }
 
     /**
-     * 写入数据
+     * 向sheet写入数据
      */
     static private function _setSheetData () {
 
-        $data       = self::_getSheetData();
-        $rowNumber  = 3;
-        foreach ($data as $rowData) {
+        $sheetData      = self::_getSheetData();
+        $listTableHead  = self::_getTableHead();
+        $mapTableHead   = $listTableHead['head2'];
+        $rowNumber      = 3;
+        foreach ($sheetData as $rowData) {
 
-            $imageUrl               = $rowData['image_url'];
-            $rowData['image_url']   = '';
-            self::_wirteRow($rowNumber, $rowData);
+            $listKey    = array_keys($rowData);
+            $imageUrl   = $rowData['product_image'];
+            $rowData['product_image']   = '';
+            $data       = array_values($rowData);
+            $cellList   = array();
+            foreach ($listKey as $key) {
+
+                $cellList[] = $mapTableHead[$key]['offset'];
+            }
+            self::_writeRow($data, $cellList, $rowNumber);
             self::_appendExcelImage($rowNumber, $imageUrl);
             $rowNumber++;
         }
-        $total      = array(
-            '合计',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            array_sum(ArrayUtility::listField($data, 'quantity_sub_total')),
-            '',
-            array_sum(ArrayUtility::listField($data, 'weight_sub_total')),
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-        );
-        self::_wirteRow($rowNumber, $total);
     }
 
     /**
-     * 准备写入sheet的数据
+     * 获取写入sheet的数据
+     *
+     * @return array
      */
     static private function _getSheetData () {
 
@@ -109,9 +101,9 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
 
             $current            = current($detailList);
             $result[$groupBy]   = array(
-                'line_number'       => $index,
+                'sequence_number'   => $index,
                 'source_code'       => $current['source_code'],
-                'image_url'         => $current['image_url'],
+                'product_image'     => $current['image_url'],
             );
             $mapDetailList      = ArrayUtility::groupByField($detailList, 'color_value_data');
             foreach ($mapDetailList as $colorName => $colorDetailList) {
@@ -121,37 +113,37 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                         $quantityThreeColor     = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costThreeColorList     = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costThreeColor         = count($costThreeColorList) == 1 ? current($costThreeColorList) : '';
-                    break;
+                        break;
                     case    '红白' :
                         $quantityRedWhite       = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costRedWhiteList       = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costRedWhite           = count($costRedWhiteList) == 1 ? current($costRedWhiteList) : '';
-                    break;
+                        break;
                     case    '黄白' :
                         $quantityYellowWhite    = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costYellowWhiteList    = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costYellowWhite        = count($costYellowWhiteList) == 1 ? current($costYellowWhiteList) : '';
-                    break;
+                        break;
                     case    '红黄' :
                         $quantityRedYellow      = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costRedYellowList      = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costRedYellow          = count($costRedYellowList) == 1 ? current($costRedYellowList) : '';
-                    break;
+                        break;
                     case    'K白' :
                         $quantityKWhite         = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costKWhiteList         = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costKWhite             = count($costKWhiteList) == 1 ? current($costKWhiteList) : '';
-                    break;
+                        break;
                     case    'K黄' :
                         $quantityKYellow        = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costKYellowList        = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costKYellow            = count($costKYellowList) == 1 ? current($costKYellowList) : '';
-                    break;
+                        break;
                     case    'K红' :
                         $quantityKRed           = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
                         $costKRedList           = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
                         $costKRed               = count($costKRedList) == 1 ? current($costKRedList) : '';
-                    break;
+                        break;
                 }
                 // 数量
                 $result[$groupBy]['quantity_three_color']   = $quantityThreeColor ? $quantityThreeColor : '';
@@ -162,12 +154,12 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 $result[$groupBy]['quantity_k_yellow']      = $quantityKYellow ? $quantityKYellow : '';
                 $result[$groupBy]['quantity_k_red']         = $quantityKRed ? $quantityKRed : '';
                 $quantitySubTotal                           = $quantityThreeColor +
-                                                              $quantityRedWhite +
-                                                              $quantityYellowWhite +
-                                                              $quantityRedYellow +
-                                                              $quantityKWhite +
-                                                              $quantityKYellow +
-                                                              $quantityKRed;
+                    $quantityRedWhite +
+                    $quantityYellowWhite +
+                    $quantityRedYellow +
+                    $quantityKWhite +
+                    $quantityKYellow +
+                    $quantityKRed;
                 $result[$groupBy]['quantity_sub_total']     = $quantitySubTotal;
                 // 金重
                 $result[$groupBy]['weight_value_data']      = $current['weight_value_data'];
@@ -244,146 +236,214 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
      */
     static private function _setTableHead () {
 
-        $tableHead  = self::_getTableHead();
-        $rowNumber  = 1;
-        foreach ($tableHead as $rowData) {
+        $listTableHead  = self::_getTableHead();
+        $rowNumber      = 1;
+        foreach ($listTableHead as $tableHead) {
 
-            self::_wirteRow($rowNumber, $rowData);
+            $cellList   = ArrayUtility::listField($tableHead, 'offset');
+            $rowData    = ArrayUtility::listField($tableHead, 'value');
+            self::_writeRow($rowData, $cellList, $rowNumber);
             $rowNumber++;
         }
-        self::$_sheet->mergeCells('A1:A2');
-        self::$_sheet->mergeCells('B1:B2');
-        self::$_sheet->mergeCells('C1:C2');
-        self::$_sheet->mergeCells('D1:K1');
-        self::$_sheet->mergeCells('L1:M1');
-        self::$_sheet->mergeCells('N1:T1');
-        self::$_sheet->mergeCells('U1:U2');
+
+        self::$_sheet->mergeCellsByColumnAndRow(3, 1, 10, 1);
+        self::$_sheet->mergeCellsByColumnAndRow(11, 1, 12, 1);
+        self::$_sheet->mergeCellsByColumnAndRow(13, 1, 19, 1);
+        self::$_sheet->mergeCellsByColumnAndRow(0, 1, 0, 2);
+        self::$_sheet->mergeCellsByColumnAndRow(1, 1, 1, 2);
+        self::$_sheet->mergeCellsByColumnAndRow(2, 1, 2, 2);
+        self::$_sheet->mergeCellsByColumnAndRow(20, 1, 20, 2);
     }
 
     /**
      * 获取表头
      *
-     * @return array
+     * @return array    表头
      */
     static private function _getTableHead () {
 
-        return  array(
-            array(
-                '序号',
-                '款号',
-                '图片',
-                '数量',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '金重',
-                '',
-                '工费(元/克)',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '备注',
+        $tableHead1 = array(
+            'sequence_number'   => array(
+                'offset'    => '0',
+                'value'     => '序号',
             ),
-            array(
-                '',
-                '',
-                '',
-                '三色',
-                '红白',
-                '黄白',
-                '红黄',
-                'K白',
-                'K黄',
-                'K红',
-                '小计',
-                '克/件',
-                '小计',
-                '三色',
-                '红白',
-                '黄白',
-                '红黄',
-                'K白',
-                'K黄',
-                'K红',
-                '',
+            'source_code'       => array(
+                'offset'    => '1',
+                'value'     => '款号',
+            ),
+            'product_image'     => array(
+                'offset'    => '2',
+                'value'     => '图片',
+            ),
+            'quantity_total'    => array(
+                'offset'    => '3',
+                'value'     => '数量',
+            ),
+            'gold_weight'       => array(
+                'offset'    => '11',
+                'value'     => '金重',
+            ),
+            'product_cost'      => array(
+                'offset'    => '13',
+                'value'     => '工费(元/克)',
+            ),
+            'remark'            => array(
+                'offset'    => '20',
+                'value'     => '备注'
             ),
         );
-    }
-
-    /**
-     * 写入行数据
-     *
-     * @param $rowNumber
-     * @param $data
-     */
-    static private function _wirteRow ($rowNumber, $data) {
-
-        $columnNumber       = 0;
-        foreach ($data as $item) {
-
-            self::$_sheet->setCellValueByColumnAndRow($columnNumber, $rowNumber, $item);
-            self::$_sheet->getCellByColumnAndRow($columnNumber, $rowNumber)
-                ->getStyle()
-                ->getAlignment()
-                ->setWrapText(true)
-                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
-                ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-            $columnNumber++;
-        }
-    }
-
-    /**
-     * 颜色列表
-     *
-     * @return array
-     */
-    static private function _getColorList () {
-
+        $tableHead2 = array(
+            'sequence_number'   => array(
+                'offset'    => '0',
+                'value'     => '序号',
+            ),
+            'source_code'       => array(
+                'offset'    => '1',
+                'value'     => '款号',
+            ),
+            'product_image'     => array(
+                'offset'    => '2',
+                'value'     => '图片',
+            ),
+            'quantity_three_color'  => array(
+                'offset'    => '3',
+                'value'     => '三色',
+            ),
+            'quantity_red_white'    => array(
+                'offset'    => '4',
+                'value'     => '红白',
+            ),
+            'quantity_yellow_white' => array(
+                'offset'    => '5',
+                'value'     => '黄白',
+            ),
+            'quantity_red_yellow'   => array(
+                'offset'    => '6',
+                'value'     => '红黄',
+            ),
+            'quantity_k_white'      => array(
+                'offset'    => '7',
+                'value'     => 'K白',
+            ),
+            'quantity_k_yellow'    => array(
+                'offset'    => '8',
+                'value'     => 'K黄',
+            ),
+            'quantity_k_red'        => array(
+                'offset'    => '9',
+                'value'     => 'K红',
+            ),
+            'quantity_sub_total'    => array(
+                'offset'    => '10',
+                'value'     => '小计',
+            ),
+            'weight_value_data'     => array(
+                'offset'    => '11',
+                'value'     => '克/件',
+            ),
+            'weight_sub_total'      => array(
+                'offset'    => '12',
+                'value'     => '小计',
+            ),
+            'cost_three_color'      => array(
+                'offset'    => '13',
+                'value'     => '三色',
+            ),
+            'cost_red_white'        => array(
+                'offset'    => '14',
+                'value'     => '红白',
+            ),
+            'cost_yellow_white'     => array(
+                'offset'    => '15',
+                'value'     => '黄白',
+            ),
+            'cost_red_yellow'       => array(
+                'offset'    => '16',
+                'value'     => '红黄',
+            ),
+            'cost_k_white'          => array(
+                'offset'    => '17',
+                'value'     => 'K白',
+            ),
+            'cost_k_yellow'         => array(
+                'offset'    => '18',
+                'value'     => 'K黄',
+            ),
+            'cost_k_red'            => array(
+                'offset'    => '19',
+                'value'     => 'K红',
+            ),
+            'remark'            => array(
+                'offset'    => '20',
+                'value'     => '备注'
+            ),
+        );
         return  array(
-            '三色',
-            '红白',
-            '黄白',
-            '红黄',
-            'K白',
-            'K黄',
-            'K红',
+            'head1' => $tableHead1,
+            'head2' => $tableHead2,
         );
     }
 
     /**
      * 初始化
+     *
+     * @param $produceOrderId   订单ID
      */
     static private function _initialize ($produceOrderId) {
 
         self::$_excel           = ExcelFile::create();
         self::$_sheet           = self::$_excel->getActiveSheet();
-        self::$_sheet->getDefaultRowDimension()->setRowHeight(15);
         self::$_writer          = PHPExcel_IOFactory::createWriter(self::$_excel, 'Excel2007');
         self::$_savePath        = self::_getSavePath();
         self::$_produceOrderId  = $produceOrderId;
+        self::$_excelFile       = ExcelFile::getInstance();
+        self::_setColumnWidth();
     }
 
     /**
-     * 获取保存路径
+     * 获取文件保存路径
      *
-     * @return string
      * @throws Exception
      */
     static private function _getSavePath () {
 
         $pathConfig = Config::get('path|PHP', 'produce_order_export');
         $dirPath    = $pathConfig . date('Ym') . '/';
-        is_dir($dirPath) || mkdir($dirPath);
+        is_dir($dirPath) || mkdir($dirPath, 0777, true);
         $savePath   = $dirPath . date('YmdHis') . '_' . mt_rand(1000, 9999) . '.xlsx';
 
         return      $savePath;
+    }
+
+    /**
+     * 设置指定列的宽度
+     */
+    static private function _setColumnWidth () {
+
+        $listTableHead      = self::_getTableHead();
+        $mapTableHead       = array();
+        foreach ($listTableHead as $tableHead) {
+            $mapTableHead   += $tableHead;
+        }
+
+        $listColumnWidth    = self::_getColumnWidth();
+        foreach ($listColumnWidth as $headKey => $columnWidth) {
+
+            $offset = $mapTableHead[$headKey]['offset'];
+            self::$_sheet->getColumnDimensionByColumn($offset)->setWidth($columnWidth);
+        }
+    }
+
+    /**
+     * 获取指定列的宽度
+     *
+     * @return array
+     */
+    static private function _getColumnWidth () {
+
+        return  array(
+            'remark'            => '50',
+        );
     }
 
     /**
@@ -409,13 +469,16 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
 
         if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
 
+            $listTableHead  = self::_getTableHead();
+            $mapTableHead   = $listTableHead['head2'];
             $draw->setWorksheet(self::$_sheet);
             $draw->setCoordinates($coordinate);
 
-            $draw->setOffsetX(20)->setOffsetY(20);
+            $width  = $draw->getWidth();
             $height = $draw->getHeight();
-            self::$_sheet->getColumnDimension('C')->setWidth(30);
-            self::$_sheet->getRowDimension($rowNumber)->setRowHeight($height);
+            $draw->setOffsetX(10)->setOffsetY(10);
+            self::$_sheet->getColumnDimensionByColumn($mapTableHead['product_image']['offset'])->setWidth($width / 7.2);
+            self::$_sheet->getRowDimension($rowNumber)->setRowHeight($height - 20);
 
             return      $draw;
         }
@@ -444,8 +507,7 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 return;
         }
         // 更改图像资源大小
-        $height = 150;
-        $image  = self::_resizeImage($image, $height);
+        $image  = self::_resizeImage($image, self::$_thumbHeight);
 
         $draw   = new PHPExcel_Worksheet_MemoryDrawing();
         $draw->setImageResource($image);
@@ -475,5 +537,25 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
         $dstImage   = imagecreatetruecolor($dstWidth, $dstHeight);
         imagecopyresized($dstImage, $srcImage, 0, 0, 0, 0, $dstWidth, $dstHeight, $srcWidth, $srcHeight);
         return      $dstImage;
+    }
+
+    /**
+     * 写入行数据 并 水平和垂直居中
+     *
+     * @param array $rowData    行数据
+     * @param array $cellList   列号配置
+     * @param $rowNumber        行号
+     */
+    static private function _writeRow (array $rowData, array $cellList, $rowNumber) {
+
+        foreach ($cellList as $columnNumber) {
+            self::$_sheet->getCellByColumnAndRow($columnNumber, $rowNumber)
+                ->getStyle()
+                ->getAlignment()
+                ->setWrapText(true)
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        }
+        self::$_excelFile->writeRow(self::$_sheet, $rowData, $cellList, $rowNumber);
     }
 }
