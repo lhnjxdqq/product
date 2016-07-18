@@ -126,6 +126,9 @@
                                             <{if $item.status_code == $data.listStatusCode.confirmed}>
                                             <a href="/order/produce/order_confirm.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-check"></i> 工厂确认</a>
                                             <{/if}>
+                                            <{if $item.status_code == $data.listStatusCode.stocking || $item.status_code == $data.listStatusCode.arrival || $item.status_code == $data.listStatusCode.finished}>
+                                            <a href="/order/produce/order_storage.php?produce_order_id=<{$item.produce_order_id}>" target='_blank' class="btn btn-info btn-xs"><i class="fa fa-th"></i> 入库管理</a>
+                                            <{/if}>
                                             <{if $item.status_code <= $data.listStatusCode.confirmed}>
                                             <a href="/order/produce/edit.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <{/if}>

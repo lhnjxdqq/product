@@ -220,6 +220,21 @@ class   Product_Info {
     }
 
     /**
+     * 根据一组商品来款ID 查询产品
+     *
+     * @param $multiGoodsId 一组买款ID
+     * @return array        产品
+     */
+    static public function getByMultiSourceId ($multiSourceId) {
+
+        $multiGoodsId   = array_unique(array_filter($multiSourceId));
+
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_id` IN ("' . implode('","', $multiSourceId) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据商品ID 查询产品
      *
      * @param $goodsId  商品ID

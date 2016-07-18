@@ -113,6 +113,6 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
 }
 
 $listSkuCode    = ArrayUtility::listField($list,'sku_code');
-$urlPath        = '/product/spu/index.php?search_type=source_code&search_value_list='.implode(" ",$listSkuCode)."&category_id=";
+$urlPath        = '/product/spu/index.php?search_type=source_code&search_value_list='.urlencode(implode(" ",$listSkuCode))."&category_id=";
 
 Utility::redirect($urlPath);
