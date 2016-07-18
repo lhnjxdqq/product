@@ -7,4 +7,22 @@ $listExportTask = Produce_Order_Export_Task::getByExportStatus($exportStatus);
 $exportTask     = current($listExportTask);
 $produceOrderId = $exportTask['produce_order_id'];
 
-Produce_Order_Export_Task::export($produceOrderId);
+$data           = array(
+    'task_id'       => $exportTask['task_id'],
+    'export_status' => Produce_Order_ExportStatus::GENERATING,
+);
+
+Produce_Order_Export_Task::update($data);
+
+$filePath       = Produce_Order_Export_Task::export($produceOrderId);
+
+if ($filePath) {
+
+    $data['export_status']      = Produce_Order_ExportStatus::SUCCESS;
+    $data['export_filepath']    = $filePath;
+} else {
+
+    $data['export_status']      = Produce_Order_ExportStatus::FAILED;
+}
+
+Produce_Order_Export_Task::update($data);

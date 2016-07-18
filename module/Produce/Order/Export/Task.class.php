@@ -113,7 +113,7 @@ class   Produce_Order_Export_Task {
             throw new Exception('适配器不合法');
         }
 
-        $instance->export($produceOrderId);
+        return          $instance->export($produceOrderId);
     }
 
     /**
