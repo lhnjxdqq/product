@@ -42,13 +42,17 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
         return  self::$_instance;
     }
 
+    /**
+     * 导出生产订单数据
+     *
+     * @param $produceOrderId   生产订单ID
+     */
     public function export ($produceOrderId) {
 
         self::_initialize($produceOrderId);
         self::_setTableHead();
         self::_setSheetData();
         self::$_writer->save(self::$_savePath);
-        echo "-----------\n";
     }
 
     /**
@@ -56,14 +60,40 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
      */
     static private function _setSheetData () {
 
-        $data   = self::_getSheetData();
-print_r($data);
+        $data       = self::_getSheetData();
         $rowNumber  = 3;
         foreach ($data as $rowData) {
 
+            $imageUrl               = $rowData['image_url'];
+            $rowData['image_url']   = '';
             self::_wirteRow($rowNumber, $rowData);
+            self::_appendExcelImage($rowNumber, $imageUrl);
             $rowNumber++;
         }
+        $total      = array(
+            '合计',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            array_sum(ArrayUtility::listField($data, 'quantity_sub_total')),
+            '',
+            array_sum(ArrayUtility::listField($data, 'weight_sub_total')),
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+        );
+        self::_wirteRow($rowNumber, $total);
     }
 
     /**
@@ -73,9 +103,6 @@ print_r($data);
 
         $orderData      = self::_getOrderData();
         $groupOrderData = ArrayUtility::groupByField($orderData, 'group_by');
-        print_r($groupOrderData);
-        $listStyleInfo  = Style_Info::listAll();
-        $mapStyleInfo   = ArrayUtility::indexByField($listStyleInfo, 'style_id');
         $result         = array();
         $index          = 1;
         foreach ($groupOrderData as $groupBy => &$detailList) {
@@ -86,8 +113,8 @@ print_r($data);
                 'source_code'       => $current['source_code'],
                 'image_url'         => $current['image_url'],
             );
-            $detailList = ArrayUtility::groupByField($detailList, 'color_value_data');
-            foreach ($detailList as $colorName => $colorDetailList) {
+            $mapDetailList      = ArrayUtility::groupByField($detailList, 'color_value_data');
+            foreach ($mapDetailList as $colorName => $colorDetailList) {
 
                 switch ($colorName) {
                     case    '三色' :
@@ -143,8 +170,8 @@ print_r($data);
                                                               $quantityKRed;
                 $result[$groupBy]['quantity_sub_total']     = $quantitySubTotal;
                 // 金重
-                $result[$groupBy]['material_value_data']    = $current['material_value_data'];
-                $result[$groupBy]['weight_sub_total']       = $quantitySubTotal * $current['material_value_data'];
+                $result[$groupBy]['weight_value_data']      = $current['weight_value_data'];
+                $result[$groupBy]['weight_sub_total']       = $quantitySubTotal * $current['weight_value_data'];
                 // 工费(元/克)
                 $result[$groupBy]['cost_three_color']       = $costThreeColor ? $costThreeColor : '';
                 $result[$groupBy]['cost_red_white']         = $costRedWhite ? $costRedWhite : '';
@@ -153,8 +180,17 @@ print_r($data);
                 $result[$groupBy]['cost_k_white']           = $costKWhite ? $costKWhite : '';
                 $result[$groupBy]['cost_k_yellow']          = $costKYellow ? $costKYellow : '';
                 $result[$groupBy]['cost_k_red']             = $costKRed ? $costKRed : '';
-                // 备注
             }
+
+            // 备注
+            $remarkList         = array_unique(ArrayUtility::listField($detailList, 'remark'));
+            $remarkString       = count($remarkList) == 1 ? current($remarkList) . "\n" : '';
+            foreach ($detailList as $detail) {
+
+                $remark         = count($remarkList) == 1 ? '' : $detail['remark'];
+                $remarkString  .= $remark . ' ' . $detail['color_value_data'] . ' ' . $detail['quantity'] . "\n";
+            }
+            $result[$groupBy]['remark'] = $remarkString;
             $index++;
         }
         return  $result ? $result : array();
@@ -348,5 +384,96 @@ print_r($data);
         $savePath   = $dirPath . date('YmdHis') . '_' . mt_rand(1000, 9999) . '.xlsx';
 
         return      $savePath;
+    }
+
+    /**
+     * 写入图片
+     *
+     * @param $rowNumber    行
+     * @param $imagePath    图片URL
+     */
+    static private function _appendExcelImage ($rowNumber, $imagePath) {
+
+        if (empty($imagePath)) {
+
+            return;
+        }
+
+        if (!@fopen($imagePath, 'r')) {
+
+            return;
+        }
+
+        $coordinate = self::$_sheet->getCellByColumnAndRow(2, $rowNumber)->getCoordinate();
+        $draw       = self::_loadImage($imagePath);
+
+        if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
+
+            $draw->setWorksheet(self::$_sheet);
+            $draw->setCoordinates($coordinate);
+
+            $draw->setOffsetX(20)->setOffsetY(20);
+            $height = $draw->getHeight();
+            self::$_sheet->getColumnDimension('C')->setWidth(30);
+            self::$_sheet->getRowDimension($rowNumber)->setRowHeight($height);
+
+            return      $draw;
+        }
+    }
+
+    /**
+     * 获取图像资源
+     *
+     * @param $imagePath
+     * @return PHPExcel_Worksheet_MemoryDrawing|void
+     */
+    static private function _loadImage ($path) {
+
+        $info   = getimagesize($path);
+        switch ($info['mime']) {
+            case    'image/jpeg' :
+                $image  = imagecreatefromjpeg($path);
+                break;
+            case    'image/png' :
+                $image  = imagecreatefrompng($path);
+                break;
+            case    'image/gif' :
+                $image  = imagecreatefromgif($path);
+                break;
+            default :
+                return;
+        }
+        // 更改图像资源大小
+        $height = 150;
+        $image  = self::_resizeImage($image, $height);
+
+        $draw   = new PHPExcel_Worksheet_MemoryDrawing();
+        $draw->setImageResource($image);
+        $draw->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+        $draw->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+
+        return  $draw;
+    }
+
+    /**
+     * 重置图像资源大小
+     *
+     * @param  resource  $srcImage  源图像资源
+     * @param  int       $dstHeight 更改后的图像资源高度
+     * @return resource  $dstImage  更改后的图像资源
+     */
+    static private function _resizeImage ($srcImage, $dstHeight) {
+
+        $srcWidth   = imagesx($srcImage);
+        $srcHeight  = imagesy($srcImage);
+        if ($srcHeight <= $dstHeight) {
+
+            return $srcImage;
+        }
+        # 重新生成图像资源
+        $dstWidth   = ($dstHeight/$srcHeight)*$srcWidth;
+        $dstImage   = imagecreatetruecolor($dstWidth, $dstHeight);
+        imagecopyresized($dstImage, $srcImage, 0, 0, 0, 0, $dstWidth, $dstHeight, $srcWidth, $srcHeight);
+        return      $dstImage;
     }
 }
