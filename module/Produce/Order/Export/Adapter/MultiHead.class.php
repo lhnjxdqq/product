@@ -53,7 +53,6 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
      */
     public function export($produceOrderId) {
 
-
         self::_initialize($produceOrderId);
         self::_setTableHead();
         self::_setSheetData();
@@ -66,6 +65,12 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
     static private function _setSheetData () {
 
         $sheetData      = self::_getSheetData();
+        $total          = array(
+            'source_code'           => '合计',
+            'quantity_sub_total'    => array_sum(ArrayUtility::listField($sheetData, 'quantity_sub_total')),
+            'weight_sub_total'      => array_sum(ArrayUtility::listField($sheetData, 'weight_sub_total')),
+        );
+        array_push($sheetData, $total);
         $listTableHead  = self::_getTableHead();
         $mapTableHead   = $listTableHead['head2'];
         $rowNumber      = 3;
