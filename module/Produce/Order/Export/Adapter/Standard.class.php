@@ -269,7 +269,7 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
             ),
             'remark'                => array(
                 'offset'    => '14',
-                'value'     => '备忘',
+                'value'     => '备注',
             ),
         );
     }
@@ -284,9 +284,9 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
         self::$_excel           = ExcelFile::create();
         self::$_sheet           = self::$_excel->getActiveSheet();
         self::$_writer          = PHPExcel_IOFactory::createWriter(self::$_excel, 'Excel2007');
-        self::$_savePath        = self::_getSavePath();
-        self::$_produceOrderId  = $produceOrderId;
+        self::$_savePath        = self::_getSavePath($produceOrderId);
         self::$_excelFile       = ExcelFile::getInstance();
+        self::$_produceOrderId  = $produceOrderId;
         self::_setColumnWidth();
     }
 
@@ -295,12 +295,14 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
      *
      * @throws Exception
      */
-    static private function _getSavePath () {
+    static private function _getSavePath ($produceOrderId) {
 
-        $pathConfig = Config::get('path|PHP', 'produce_order_export');
-        $dirPath    = $pathConfig . date('Ym') . '/';
+        $produceOrderInfo   = Produce_Order_Info::getById($produceOrderId);
+        $produceOrderSn     = $produceOrderInfo['produce_order_sn'];
+        $pathConfig         = Config::get('path|PHP', 'produce_order_export');
+        $dirPath            = $pathConfig . date('Ym') . '/';
         is_dir($dirPath) || mkdir($dirPath, 0777, true);
-        $savePath   = $dirPath . date('YmdHis') . '_' . mt_rand(1000, 9999) . '.xlsx';
+        $savePath           = $dirPath . $produceOrderSn . '.xlsx';
 
         return      $savePath;
     }
