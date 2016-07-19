@@ -59,7 +59,7 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
         self::$_writer->save(self::$_savePath);
 
         $pathConfig = Config::get('path|PHP', 'produce_order_export');
-        if (is_file($pathConfig)) {
+        if (is_file(self::$_savePath)) {
             return  str_replace($pathConfig, '', self::$_savePath);
         }
     }
