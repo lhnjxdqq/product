@@ -164,7 +164,7 @@
                                     <td><{$item.product_name}></td>
                                     <td>
                                         <{if $data.mapProductImage[$item.product_id]}>
-                                            <img src="<{$data.mapProductImage[$item.product_id]}>" height="60">
+                                        <a href="<{$data.mapProductImage[$item.product_id]}>" target="_blank"><img src="<{$data.mapProductImage[$item.product_id]}>" height="60"></a>
                                         <{else}>
                                             <img src="/images/product_default.png" height="60">
                                         <{/if}>

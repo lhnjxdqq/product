@@ -161,7 +161,7 @@
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>
                                         <td>
-                                            <img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60">
+                                            <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60"></a>
                                         </td>
                                         <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
