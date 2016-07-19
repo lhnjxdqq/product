@@ -59,7 +59,9 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
         self::$_writer->save(self::$_savePath);
 
         $pathConfig = Config::get('path|PHP', 'produce_order_export');
-        return      str_replace($pathConfig, '', self::$_savePath);
+        if (is_file($pathConfig)) {
+            return  str_replace($pathConfig, '', self::$_savePath);
+        }
     }
 
     /**
