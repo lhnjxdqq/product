@@ -120,11 +120,14 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
             $productCostList    = array_unique(ArrayUtility::listField($detailList, 'product_cost'));
             $productCost        = count($productCostList) == 1 ? $current['product_cost'] : 'ERROR';
             $productCostTotal   = $productCost == 'ERROR' ? 'ERROR' : sprintf('%.2f', $weightTotal * $productCost);
-            $remarkList         = array_unique(array_filter(ArrayUtility::listField($detailList, 'remark')));
-            $remarkString       = count($remarkList) == 1 ? $current['remark'] . "\n" : '';
+            $remarkList         = array_filter(ArrayUtility::listField($detailList, 'remark'));
+            $uniqueRemarkList   = array_unique($remarkList);
+            $remarkString       = (count($uniqueRemarkList) == 1) && (count($remarkList) == count($detailList))
+                                  ? $current['remark'] . "\n"
+                                  : '';
             foreach ($detailList as $detail) {
 
-                $remark         = count($remarkList) == 1 ? '' : $detail['remark'] . ' ';
+                $remark         = empty(trim($remarkString)) ? '' : $detail['remark'] . ' ';
                 $remarkString  .= $remark . $detail['size_value_data'] . ' ' . $detail['quantity'] . "个\n";
             }
             $result[]           = array(

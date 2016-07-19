@@ -185,11 +185,17 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             }
 
             // 备注
-            $remarkList         = array_unique(ArrayUtility::listField($detailList, 'remark'));
-            $remarkString       = count($remarkList) == 1 ? current($remarkList) . "\n" : '';
+            $remarkList         = array_filter(ArrayUtility::listField($detailList, 'remark'));
+            $uniqueRemarkList   = array_unique($remarkList);
+            $remarkString       = (count($uniqueRemarkList) == 1) && (count($remarkList) == count($detailList))
+                                  ? current($uniqueRemarkList) . "\n"
+                                  : '';
             foreach ($detailList as $detail) {
 
-                $remark         = count($remarkList) == 1 ? '' : $detail['remark'];
+                $remark         = empty(trim($remarkString)) ? '' : $detail['remark'];
+                if ($result[$groupBy]['source_code'] == '1010') {
+                    var_dump($remark);
+                }
                 $remarkString  .= $remark . ' ' . $detail['color_value_data'] . ' ' . $detail['size_value_data'] . ' ' . $detail['quantity'] . "个\n";
             }
             $result[$groupBy]['remark'] = $remarkString;
