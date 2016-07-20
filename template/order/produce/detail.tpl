@@ -127,9 +127,7 @@
                                             <{/foreach}>
                                         </td>
                                         <td>
-                                            <{if $item.image_url}>
-                                        <img src="<{$item.image_url}>" height="60" alt="">
-                                            <{/if}>
+                                            <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60" alt=""></a>
                                         </td>
                                         <td><{$item.goods_name}></td>
                                         <td><{$item.category_name}></td>

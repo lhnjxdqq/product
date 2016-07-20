@@ -88,6 +88,7 @@
                                                 <td>
                                                     <a href="javascript:void(0);" class="btn btn-warning btn-xs edit-spu-goods"><i class="fa fa-edit"></i> 更新</a>
                                                     <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a>
+                                                    <a href="/product/sku/edit.php?goods_id=<{$item.goods_id}>" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-eye"></i> 编辑</a>
                                                 </td>
                                             </tr>
                                             <{/foreach}>

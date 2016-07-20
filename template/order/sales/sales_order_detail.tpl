@@ -131,7 +131,7 @@
                                     <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
                                         <td><{$item.goods_sn}></td>
                                         <td>
-                                            <img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60">
+                                            <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60"></a>
                                         </td>
                                         <td><{$item.goods_name}></td>
                                         <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>                                            

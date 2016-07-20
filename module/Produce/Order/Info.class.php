@@ -19,7 +19,7 @@ class   Produce_Order_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'produce_order_id,produce_order_sn,produce_order_remark,sales_order_id,supplier_id,prepaid_amount,arrival_date,order_type,create_user,verify_user,status_code,delete_status,create_time,update_time';
+    const   FIELDS      = 'produce_order_id,produce_order_sn,produce_order_remark,sales_order_id,supplier_id,prepaid_amount,arrival_date,order_type,create_user,verify_user,batch_code,status_code,delete_status,create_time,update_time';
     /**
      * 新增
      *

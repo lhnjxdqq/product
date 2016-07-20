@@ -3,4 +3,7 @@ return  array(
     'quotation_import'          => '/home/shuishou/project/product.kuandd.com/data/quotation/',
     'sales_quotation_export'    => '/home/shuishou/project/product.kuandd.com/data/sales_quotation/',
     'sales_order_import'        => '/home/shuishou/project/product.kuandd.com/data/sales_order/',
+    'goods_import'              => '/home/shuishou/project/product.kuandd.com/data/goods_import/',
+    'spu_import'                => '/home/shuishou/project/product.kuandd.com/data/spu_import/',
+    'produce_order_export'      => '/home/shuishou/project/product.kuandd.com/data/produce_order/',
 );

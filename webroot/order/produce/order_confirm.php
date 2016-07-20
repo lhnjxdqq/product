@@ -16,7 +16,17 @@ if (!$produceOrderInfo) {
 
 if (isset($_GET['is_ok']) && trim($_GET['is_ok']) == 'ok') {
 
-    if (Produce_Order_Info::changeStatus($produceOrderId, Produce_Order_StatusCode::STOCKING)) {
+    $batchCode  = trim($_GET['batch_code']);
+    if (!$batchCode) {
+
+        Utility::notice('请输入工厂批次号');
+    }
+    $updateBatchCode    = Produce_Order_Info::update(array(
+        'produce_order_id'  => $produceOrderId,
+        'batch_code'        => $batchCode,
+    ));
+    $changeStatus       = Produce_Order_Info::changeStatus($produceOrderId, Produce_Order_StatusCode::STOCKING);
+    if ($updateBatchCode && $changeStatus) {
 
         Utility::notice('确认成功');
     } else {

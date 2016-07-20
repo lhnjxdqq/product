@@ -115,7 +115,7 @@
                                                 <td><{$item.supplier_code}></td>
                                                 <td><{$item.product_cost}></td>
                                                 <td>
-                                                    <a href="javascript:alert('开发中...');" class="btn btn-info btn-xs"><i class="fa fa-eye"></i> 查看详情</a>
+                                                    <a href="/product/product/edit.php?product_id=<{$item.product_id}>" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-eye"></i> 编辑</a>
                                                 </td>
                                             </tr>
                                             <{/foreach}>

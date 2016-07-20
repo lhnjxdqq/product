@@ -153,9 +153,23 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <{if $data.produceOrderInfo.status_code >= $data.listOrderType.stocking}>
-                    <a href="javascript:void(0);" disabled class="btn btn-default pull-right"><i class="fa fa-check"></i> 已确认</a>
+                    <div class="pull-right">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="batch-code" disabled value="<{$data.produceOrderInfo.batch_code}>">
+                            </div>
+                            <a href="javascript:void(0);" disabled class="btn btn-default"><i class="fa fa-check"></i> 已确认</a>
+                        </form>
+                    </div>
                     <{else}>
-                    <a href="javascript:confirmOrder(<{$smarty.get.produce_order_id}>);" class="btn btn-primary pull-right"><i class="fa fa-check"></i> 确认通过</a>
+                    <div class="pull-right">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="batch-code" placeholder="请输入工厂批次号">
+                            </div>
+                            <a href="javascript:confirmOrder(<{$smarty.get.produce_order_id}>);" class="btn btn-primary"><i class="fa fa-check"></i> 确认通过</a>
+                        </form>
+                    </div>
                     <{/if}>
                 </div>
             </div>
@@ -187,9 +201,15 @@
 <script>
     function confirmOrder(produceOrderId) {
 
+        var batchCode   = $('input[name="batch-code"]').val();
+        if (batchCode == '') {
+
+            alert('请输入工厂批次号');
+            return false;
+        }
         if (produceOrderId && confirm('订单无误, 确认通过 ?')) {
 
-            var redirect    = '<{$smarty.server.REQUEST_URI}>&is_ok=ok';
+            var redirect    = '<{$smarty.server.REQUEST_URI}>&is_ok=ok&batch_code=' + batchCode;
             location.href   = redirect;
         }
     }
