@@ -107,7 +107,8 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
         $groupOrderData = ArrayUtility::groupByField($orderData, 'group_by');
         $result         = array();
         $index          = 1;
-        foreach ($groupOrderData as $groupBy => &$detailList) {
+
+        foreach ($groupOrderData as $groupBy => $detailList) {
 
             $current            = current($detailList);
             $result[$groupBy]   = array(
@@ -115,74 +116,89 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 'source_code'       => $current['source_code'],
                 'product_image'     => $current['image_url'],
             );
-            $mapDetailList      = ArrayUtility::groupByField($detailList, 'color_value_data');
-            foreach ($mapDetailList as $colorName => $colorDetailList) {
 
+            $quantity           = array(
+                'threeColor'    => 0,
+                'redWhite'      => 0,
+                'yellowWhite'   => 0,
+                'redYellow'     => 0,
+                'kWhite'        => 0,
+                'kYellow'       => 0,
+                'kRed'          => 0,
+                'subTotal'      => 0,
+            );
+            $cost               = array(
+                'threeColor'    => array(),
+                'redWhite'      => array(),
+                'yellowWhite'   => array(),
+                'redYellow'     => array(),
+                'kWhite'        => array(),
+                'kYellow'       => array(),
+                'kRed'          => array(),
+            );
+            foreach ($detailList as $detail) {
+
+                $colorName  = $detail['color_value_data'];
                 switch ($colorName) {
                     case    '三色' :
-                        $quantityThreeColor     = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costThreeColorList     = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costThreeColor         = count($costThreeColorList) == 1 ? current($costThreeColorList) : '';
+                        $quantity['threeColor']     += $detail['quantity'];
+                        $cost['threeColor'][]       = $detail['product_cost'];
                         break;
                     case    '红白' :
-                        $quantityRedWhite       = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costRedWhiteList       = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costRedWhite           = count($costRedWhiteList) == 1 ? current($costRedWhiteList) : '';
+                        $quantity['redWhite']       += $detail['quantity'];
+                        $cost['redWhite'][]         = $detail['product_cost'];
                         break;
                     case    '黄白' :
-                        $quantityYellowWhite    = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costYellowWhiteList    = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costYellowWhite        = count($costYellowWhiteList) == 1 ? current($costYellowWhiteList) : '';
+                        $quantity['yellowWhite']    += $detail['quantity'];
+                        $cost['yellowWhite'][]      = $detail['product_cost'];
                         break;
                     case    '红黄' :
-                        $quantityRedYellow      = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costRedYellowList      = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costRedYellow          = count($costRedYellowList) == 1 ? current($costRedYellowList) : '';
+                        $quantity['redYellow']      += $detail['quantity'];
+                        $cost['redYellow'][]        = $detail['product_cost'];
                         break;
                     case    'K白' :
-                        $quantityKWhite         = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costKWhiteList         = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costKWhite             = count($costKWhiteList) == 1 ? current($costKWhiteList) : '';
+                        $quantity['kWhite']         += $detail['quantity'];
+                        $cost['kWhite'][]           = $detail['product_cost'];
                         break;
                     case    'K黄' :
-                        $quantityKYellow        = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costKYellowList        = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costKYellow            = count($costKYellowList) == 1 ? current($costKYellowList) : '';
+                        $quantity['kYellow']        += $detail['quantity'];
+                        $cost['kYellow'][]          = $detail['product_cost'];
                         break;
                     case    'K红' :
-                        $quantityKRed           = array_sum(ArrayUtility::listField($colorDetailList, 'quantity'));
-                        $costKRedList           = array_unique(ArrayUtility::listField($colorDetailList, 'product_cost'));
-                        $costKRed               = count($costKRedList) == 1 ? current($costKRedList) : '';
+                        $quantity['kRed']           += $detail['quantity'];
+                        $cost['kRed'][]             = $detail['product_cost'];
                         break;
                 }
-                // 数量
-                $result[$groupBy]['quantity_three_color']   = $quantityThreeColor ? $quantityThreeColor : '';
-                $result[$groupBy]['quantity_red_white']     = $quantityRedWhite ? $quantityRedWhite : '';
-                $result[$groupBy]['quantity_yellow_white']  = $quantityYellowWhite ? $quantityYellowWhite : '';
-                $result[$groupBy]['quantity_red_yellow']    = $quantityRedYellow ? $quantityRedYellow : '';
-                $result[$groupBy]['quantity_k_white']       = $quantityKWhite ? $quantityKWhite : '';
-                $result[$groupBy]['quantity_k_yellow']      = $quantityKYellow ? $quantityKYellow : '';
-                $result[$groupBy]['quantity_k_red']         = $quantityKRed ? $quantityKRed : '';
-                $quantitySubTotal                           = $quantityThreeColor +
-                    $quantityRedWhite +
-                    $quantityYellowWhite +
-                    $quantityRedYellow +
-                    $quantityKWhite +
-                    $quantityKYellow +
-                    $quantityKRed;
-                $result[$groupBy]['quantity_sub_total']     = $quantitySubTotal;
-                // 金重
-                $result[$groupBy]['weight_value_data']      = $current['weight_value_data'];
-                $result[$groupBy]['weight_sub_total']       = $quantitySubTotal * $current['weight_value_data'];
-                // 工费(元/克)
-                $result[$groupBy]['cost_three_color']       = $costThreeColor ? $costThreeColor : '';
-                $result[$groupBy]['cost_red_white']         = $costRedWhite ? $costRedWhite : '';
-                $result[$groupBy]['cost_yellow_white']      = $costYellowWhite ? $costYellowWhite : '';
-                $result[$groupBy]['cost_red_yellow']        = $costRedYellow ? $costRedYellow : '';
-                $result[$groupBy]['cost_k_white']           = $costKWhite ? $costKWhite : '';
-                $result[$groupBy]['cost_k_yellow']          = $costKYellow ? $costKYellow : '';
-                $result[$groupBy]['cost_k_red']             = $costKRed ? $costKRed : '';
             }
+            $quantity['subTotal']                           = $quantity['threeColor'] +
+                                                              $quantity['redWhite'] +
+                                                              $quantity['yellowWhite'] +
+                                                              $quantity['redYellow'] +
+                                                              $quantity['kWhite'] +
+                                                              $quantity['kYellow'] +
+                                                              $quantity['kRed'];
+            // 数量
+            $result[$groupBy]['quantity_three_color']       = $quantity['threeColor'] ? $quantity['threeColor'] : '';
+            $result[$groupBy]['quantity_red_white']         = $quantity['redWhite'] ?  $quantity['redWhite'] : '';
+            $result[$groupBy]['quantity_yellow_white']      = $quantity['yellowWhite'] ? $quantity['yellowWhite'] : '';
+            $result[$groupBy]['quantity_red_yellow']        = $quantity['redYellow'] ? $quantity['redYellow'] : '';
+            $result[$groupBy]['quantity_k_white']           = $quantity['kWhite'] ? $quantity['kWhite'] : '';
+            $result[$groupBy]['quantity_k_yellow']          = $quantity['kYellow'] ? $quantity['kYellow'] : '';
+            $result[$groupBy]['quantity_k_red']             = $quantity['kRed'] ? $quantity['kRed'] : '';
+            $result[$groupBy]['quantity_sub_total']         = $quantity['subTotal'];
+            // 金重
+            $result[$groupBy]['weight_value_data']          = $detail['weight_value_data'];
+            $result[$groupBy]['weight_sub_total']           = $quantity['subTotal'] * $detail['weight_value_data'];
+            // 工费
+            $result[$groupBy]['cost_three_color']           = count($cost['threeColor']) == 1 ? current($cost['threeColor']) : 'ERROR';
+            $result[$groupBy]['cost_red_white']             = count($cost['redWhite']) == 1 ? current($cost['redWhite']) : 'ERROR';
+            $result[$groupBy]['cost_yellow_white']          = count($cost['yellowWhite']) == 1 ? current($cost['yellowWhite']) : 'ERROR';
+            $result[$groupBy]['cost_red_yellow']            = count($cost['redYellow']) == 1 ? current($cost['redYellow']) : 'ERROR';
+            $result[$groupBy]['cost_k_white']               = count($cost['kWhite']) == 1 ? current($cost['kWhite']) : 'ERROR';
+            $result[$groupBy]['cost_k_yellow']              = count($cost['kYellow']) == 1 ? current($cost['kYellow']) : 'ERROR';
+            $result[$groupBy]['cost_k_red']                 = count($cost['kRed']) == 1 ? current($cost['kRed']) : 'ERROR';
+            unset($quantity);
+            unset($cost);
 
             // 备注
             $remarkList         = array_filter(ArrayUtility::listField($detailList, 'remark'));
@@ -193,7 +209,7 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             foreach ($detailList as $detail) {
 
                 $remark         = empty(trim($remarkString)) ? $detail['remark'] : '';
-                $remarkString  .= $remark . ' ' . $detail['color_value_data'] . ' ' . $detail['size_value_data'] . ' ' . $detail['quantity'] . "个\n";
+                $remarkString  .= $remark . ' ' . $detail['color_value_data'] . ' ' . $detail['size_value_data'] . ' 数量' . $detail['quantity'] . "\n";
             }
             $result[$groupBy]['remark'] = $remarkString;
             $index++;
