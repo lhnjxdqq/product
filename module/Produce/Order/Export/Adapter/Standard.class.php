@@ -128,7 +128,7 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
             foreach ($detailList as $detail) {
 
                 $remark         = empty(trim($remarkString)) ? $detail['remark'] . ' ' : '';
-                $remarkString  .= $remark . $detail['size_value_data'] . ' ' . $detail['quantity'] . "个\n";
+                $remarkString  .= $remark . $detail['size_value_data'] . ' 数量' . $detail['quantity'] . "\n";
             }
             $result[]           = array(
                 'sequence_number'       => $rowNumber,
