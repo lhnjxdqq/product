@@ -192,7 +192,7 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                                   : '';
             foreach ($detailList as $detail) {
 
-                $remark         = empty(trim($remarkString)) ? '' : $detail['remark'];
+                $remark         = empty(trim($remarkString)) ? $detail['remark'] : '';
                 if ($result[$groupBy]['source_code'] == '1010') {
                     var_dump($remark);
                 }
