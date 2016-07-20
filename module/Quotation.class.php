@@ -8,6 +8,8 @@ class   Quotation {
      * Excel导出缓冲区尺寸 (记录条数)
      */
     const   BUFFER_SIZE_EXCEL   = 1000;
+
+    static private $_unusualCharacter = array(" ", "\n", "（", "）");
     
     /**
      * 验证报价单
@@ -24,6 +26,14 @@ class   Quotation {
         Validate::testNull($data['categoryLv3'],'三级分类不能为空');
         Validate::testNull($data['material_main_name'],'主料材质不能为空');
         Validate::testNull($data['weight_name'],'规格重量不能为空');
+
+        foreach (self::$_unusualCharacter as $unusalCharacter) {
+
+            if (false !== strpos($data['sku_code'], $unusalCharacter)) {
+
+                throw new ApplicationException('买款ID中有特殊字符');
+            }
+        }
         
         $data['weight_name'] = sprintf('%.2f', $data['weight_name']);
         
