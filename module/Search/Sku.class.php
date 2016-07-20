@@ -238,7 +238,7 @@ class Search_Sku {
      */
     static private function _conditionBySpuId () {
 
-        return  '`spu_info`.`spu_id` > 0';
+        return  '';
     }
 
     /**
