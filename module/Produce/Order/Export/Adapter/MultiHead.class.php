@@ -190,13 +190,43 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             $result[$groupBy]['weight_value_data']          = $detail['weight_value_data'];
             $result[$groupBy]['weight_sub_total']           = $quantity['subTotal'] * $detail['weight_value_data'];
             // 工费
-            $result[$groupBy]['cost_three_color']           = count($cost['threeColor']) == 1 ? current($cost['threeColor']) : 'ERROR';
-            $result[$groupBy]['cost_red_white']             = count($cost['redWhite']) == 1 ? current($cost['redWhite']) : 'ERROR';
-            $result[$groupBy]['cost_yellow_white']          = count($cost['yellowWhite']) == 1 ? current($cost['yellowWhite']) : 'ERROR';
-            $result[$groupBy]['cost_red_yellow']            = count($cost['redYellow']) == 1 ? current($cost['redYellow']) : 'ERROR';
-            $result[$groupBy]['cost_k_white']               = count($cost['kWhite']) == 1 ? current($cost['kWhite']) : 'ERROR';
-            $result[$groupBy]['cost_k_yellow']              = count($cost['kYellow']) == 1 ? current($cost['kYellow']) : 'ERROR';
-            $result[$groupBy]['cost_k_red']                 = count($cost['kRed']) == 1 ? current($cost['kRed']) : 'ERROR';
+            $cost                                           = array_map('array_unique', array_map('array_filter', $cost));
+            // 三色
+            $costThreeColor                                         = 'ERROR';
+            empty($cost['threeColor'])          && $costThreeColor  = '';
+            (count($cost['threeColor']) == 1)   && $costThreeColor  = current($cost['threeColor']);
+            $result[$groupBy]['cost_three_color']                   = $costThreeColor;
+            // 红白
+            $costRedWhite                                           = 'ERROR';
+            empty($cost['redWhite'])            && $costRedWhite    = '';
+            (count($cost['redWhite']) == 1)     && $costRedWhite    = current($cost['redWhite']);
+            $result[$groupBy]['cost_red_white']                     = $costRedWhite;
+            // 黄白
+            $costYellowWhite                                        = 'ERROR';
+            empty($cost['yellowWhite'])         && $costYellowWhite = '';
+            (count($cost['yellowWhite']) == 1)  && $costYellowWhite = current($cost['yellowWhite']);
+            $result[$groupBy]['cost_yellow_white']                  = $costYellowWhite;
+            // 红黄
+            $costRedYellow                                          = 'ERROR';
+            empty($cost['redYellow'])           && $costRedYellow   = '';
+            (count($cost['redYellow']) == 1)    && $costRedYellow   = current($cost['redYellow']);
+            $result[$groupBy]['cost_red_yellow']                    = $costRedYellow;
+            // K白
+            $costKWhite                                             = 'ERROR';
+            empty($cost['kWhite'])              && $costKWhite      = '';
+            (count($cost['kWhite']) == 1)       && $costKWhite      = current($cost['kWhite']);
+            $result[$groupBy]['cost_k_white']                       = $costKWhite;
+            // K黄
+            $costKYellow                                            = 'ERROR';
+            empty($cost['kYellow'])             && $costKYellow     = '';
+            (count($cost['kYellow']) == 1)      && $costKYellow     = current($cost['kYellow']);
+            $result[$groupBy]['cost_k_yellow']                      = $costKYellow;
+            // K红
+            $costKRed                                               = 'ERROR';
+            empty($cost['kRed'])                && $costKRed        = '';
+            (count($cost['kRed']) == 1)         && $costKRed        = current($cost['kRed']);
+            $result[$groupBy]['cost_k_red']                         = $costKRed;
+
             unset($quantity);
             unset($cost);
 
