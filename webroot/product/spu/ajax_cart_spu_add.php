@@ -10,6 +10,19 @@ $spuId      =  $_POST['spu_id'];
 Validate::testNull($userId,'无效的用户ID');
 Validate::testNull($spuId,'无效spuID');
 
+$listSpuInfo        = Spu_Info::getByMultiId($spuId);
+$listOnlineStatus   = array_unique(ArrayUtility::listField($listSpuInfo, 'online_status'));
+$listDeleteStatus   = array_unique(ArrayUtility::listField($listSpuInfo, 'delete_status'));
+$hasOffLineSpu      = in_array(Spu_OnlineStatus::OFFLINE, $listOnlineStatus);
+$hasDeletedSpu      = in_array(Spu_DeleteStatus::DELETED, $listDeleteStatus);
+if ($hasOffLineSpu || $hasDeletedSpu) {
+
+    echo json_encode(array(
+        'code'      => 1,
+        'message'   => '列表中含有状态异常的SPU, 不能批量加入报价单',
+    ));
+    exit;
+}
 foreach($spuId as $id){
     $data       = array(
         'user_id'       => $userId,
