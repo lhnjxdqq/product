@@ -239,7 +239,7 @@ class Search_Spu {
      */
     static private function _order ($order) {
 
-        return  ' ORDER BY `spu_info`.`spu_id` DESC';
+        return  ' ORDER BY `source_info`.`source_code` ASC,`spu_info`.`spu_id` DESC';
     }
 
 
@@ -294,6 +294,7 @@ class Search_Spu {
             '`spu_info`.`online_status`',
             '`goods_info`.`goods_id`',
             '`goods_info`.`category_id`',
+            '`source_info`.`source_code`',
             '`weight_info`.`spec_value_id` AS `weight_value_id`'
         );
     }
