@@ -131,9 +131,11 @@
                                     <div class="caption">
                                         <p>三级分类: <{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></p>
                                         <p>规格重量: <{$data.mapWeightSpecValueInfo[$item.weight_value_id]['spec_value_data']}></p>
+                                        <p>SPU编号: <{$item.spu_sn}></p>
                                         <{foreach from=$item.list_cost item=cost key=supplierId}>
                                         <p><{$data.mapSupplierInfo[$supplierId]['supplier_code']}> 出货工费: <{$cost}></p>
                                         <{/foreach}>
+                                        <p>买款ID: <{$item.source_code_list}></p>
                                         <{if $item.spu_remark}>
                                         <p>备注: <{$item.spu_remark}></p>
                                         <{/if}>
@@ -283,7 +285,8 @@
 
                 if (0 != response.code) {
 
-                    showMessage('错误', response.message);
+                    //showMessage('错误', response.message);
+                    alert(response.message);
 
                     return  ;
                 }
@@ -319,7 +322,8 @@
 
                 if (0 != response.code) {
 
-                    showMessage('错误', response.message);
+                    //showMessage('错误', response.message);
+                    alert(response.message);
 
                     return  ;
                 }else{

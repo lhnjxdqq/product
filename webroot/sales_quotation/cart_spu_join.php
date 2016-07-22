@@ -10,6 +10,16 @@ $spuId      = (int) $_POST['spu_id'];
 Validate::testNull($userId,'无效的用户ID');
 Validate::testNull($spuId,'无效spuID');
 
+$spuInfo    = Spu_Info::getById($spuId);
+if (!$spuInfo || $spuInfo['online_status'] == Spu_OnlineStatus::OFFLINE || $spuInfo['delete_status'] == Spu_DeleteStatus::DELETED) {
+
+    echo json_encode(array(
+        'code'  => 1,
+        'message'   => 'SPU状态异常, 不能加入报价单',
+    ));
+    exit;
+}
+
 $data       = array(
     'user_id'       => $userId,
     'spu_id'        => $spuId,

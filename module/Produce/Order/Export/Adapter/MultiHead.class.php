@@ -136,6 +136,13 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 'kYellow'       => array(),
                 'kRed'          => array(),
             );
+            // 备注
+            $remarkList         = array_filter(ArrayUtility::listField($detailList, 'remark'));
+            $uniqueRemarkList   = array_unique($remarkList);
+            $remarkString       = (count($uniqueRemarkList) == 1) && (count($remarkList) == count($detailList))
+                                  ? current($uniqueRemarkList) . "\n"
+                                  : '';
+            $tempRemarkString   = $remarkString;
             foreach ($detailList as $detail) {
 
                 $colorName  = $detail['color_value_data'];
@@ -169,6 +176,9 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                         $cost['kRed'][]             = $detail['product_cost'];
                         break;
                 }
+                // 备注
+                $remark         = empty(trim($tempRemarkString)) ? $detail['remark'] : '';
+                $remarkString  .= $remark . ' ' . $detail['color_value_data'] . ' ' . $detail['size_value_data'] . ' 数量' . $detail['quantity'] . "\n";
             }
             $quantity['subTotal']                           = $quantity['threeColor'] +
                                                               $quantity['redWhite'] +
@@ -227,23 +237,14 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             (count($cost['kRed']) == 1)         && $costKRed        = current($cost['kRed']);
             $result[$groupBy]['cost_k_red']                         = $costKRed;
 
+            // 备注
+            $result[$groupBy]['remark']                             = $remarkString;
+
             unset($quantity);
             unset($cost);
-
-            // 备注
-            $remarkList         = array_filter(ArrayUtility::listField($detailList, 'remark'));
-            $uniqueRemarkList   = array_unique($remarkList);
-            $remarkString       = (count($uniqueRemarkList) == 1) && (count($remarkList) == count($detailList))
-                                  ? current($uniqueRemarkList) . "\n"
-                                  : '';
-            foreach ($detailList as $detail) {
-
-                $remark         = empty(trim($remarkString)) ? $detail['remark'] : '';
-                $remarkString  .= $remark . ' ' . $detail['color_value_data'] . ' ' . $detail['size_value_data'] . ' 数量' . $detail['quantity'] . "\n";
-            }
-            $result[$groupBy]['remark'] = $remarkString;
             $index++;
         }
+
         return  $result ? $result : array();
     }
 

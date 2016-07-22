@@ -31,7 +31,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form class="form-horizontal" action="/product/product/do_add.php" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" id="add-product" action="/product/product/do_add.php" method="post" enctype="multipart/form-data">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">产品名称</label>
@@ -145,6 +145,16 @@
 
 <{include file="section/foot.tpl"}>
 <script>
+    var formSubmiting   = false;
+    $('form#add-product').submit(function () {
+        if (formSubmiting) {
+
+            alert('正在提交表单数据, 请勿重复提交!');
+            return  false;
+        }
+        formSubmiting   = true;
+        return  true;
+    });
     <{if $data.groupStyle}>
         // 款式下拉框联动
         var subStyle    = {};

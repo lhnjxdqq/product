@@ -8,6 +8,8 @@ class   Quotation {
      * Excel导出缓冲区尺寸 (记录条数)
      */
     const   BUFFER_SIZE_EXCEL   = 1000;
+
+    static private $_unusualCharacter = array(" ", "\n", "（", "）");
     
     /**
      * 验证报价单
@@ -24,6 +26,14 @@ class   Quotation {
         Validate::testNull($data['categoryLv3'],'三级分类不能为空');
         Validate::testNull($data['material_main_name'],'主料材质不能为空');
         Validate::testNull($data['weight_name'],'规格重量不能为空');
+
+        foreach (self::$_unusualCharacter as $unusalCharacter) {
+
+            if (false !== strpos($data['sku_code'], $unusalCharacter)) {
+
+                throw new ApplicationException('买款ID中有特殊字符');
+            }
+        }
         
         $data['weight_name'] = sprintf('%.2f', $data['weight_name']);
         
@@ -386,7 +396,7 @@ class   Quotation {
      
     static  public  function outputExcel ($salesQuotationInfo, $stream) {
               
-        $tableHead = "SPU编号,SPU名称,商品图片,三级分类,主料材质,规格尺寸,规格重量,工费,备注";
+        $tableHead = "SPU编号,SPU名称,商品图片,买款ID,三级分类,主料材质,规格尺寸,规格重量,工费,备注";
         $colorPriceHead = "K红,K白,K黄,红白,红黄,黄白,三色";
         
         $tableHead          = explode(",",$tableHead);
@@ -413,6 +423,7 @@ class   Quotation {
             $sheet->mergeCells('E1:E2');
             $sheet->mergeCells('F1:F2');
             $sheet->mergeCells('G1:G2');
+            $sheet->mergeCells('H1:H2');
             self::_saveExcelRow($sheet, 1, $tableHead);
             self::_saveExcelRow($sheet, 2, $colorPriceHead);
  
@@ -468,6 +479,21 @@ class   Quotation {
             $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
             $listCategory   = Category_Info::getByMultiId($listCategoryId);
             $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+            $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+            $groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
+            $listSourceId   = ArrayUtility::listField($mapProductInfo,'source_id');
+            $mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
+            $indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
+            $groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
+            $groupProductIdSourceId = array();
+            foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+
+                $groupProductIdSourceId[$productId]    = array();
+                foreach($sourceIdInfo as $key=>$sourceId){
+
+                    $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+                }
+            }
 
             // 根据商品查询规格重量
             $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
@@ -486,6 +512,7 @@ class   Quotation {
             }
             
             $mapColorInfo           = array();
+            $sourceId          = array();
             foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
                 $spuCost    = array();
@@ -493,6 +520,11 @@ class   Quotation {
 
                     $goodsId        = $goods['goods_id'];
                     $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+                    $listSourceId   = $groupProductIdSourceId[$goods['goods_id']];
+                    if(!empty($listSourceId)){
+
+                        $sourceId[$spuId][]= implode(',',$listSourceId);
+                    }
                     foreach ($goodsSpecValue as $key => $val) {
 
                         $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
@@ -510,6 +542,11 @@ class   Quotation {
                             $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
                         }
                     }
+                }
+                
+                if(!empty($sourceId[$spuId])){
+
+                    $sourceId[$spuId]      = implode(",",$sourceId[$spuId]);   
                 }
                 $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
                 $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
@@ -544,14 +581,14 @@ class   Quotation {
             $col = 0;
             foreach($mapSpecColorId as $colorId=>$colorName){
             
-                $row = chr(ord(H)+$col).'2';
+                $row = chr(ord(I)+$col).'2';
                 $sheet->setCellValue($row, $colorName);
                 $col++;
             }
 
-            $colorCosrCol       = chr(ord(H)+($col-1))."1";
-            $sheet->mergeCells("H1:".$colorCosrCol);
-            $remarkCol  = chr(ord(H)+$col);
+            $colorCosrCol       = chr(ord(I)+($col-1))."1";
+            $sheet->mergeCells("I1:".$colorCosrCol);
+            $remarkCol  = chr(ord(I)+$col);
             $remarkCol1 = $remarkCol."1"; 
             $remarkCol2 = $remarkCol."2"; 
             $sheet->mergeCells($remarkCol1 .':'. $remarkCol2);
@@ -567,6 +604,7 @@ class   Quotation {
                 'mapCategory'       => $mapCategory,
                 'indexColorName'    => $indexColorName,
                 'mapSpecColorId'    => $mapSpecColorId,
+                'sourceId'          => $sourceId,    
             );
             
             foreach ($listSpuInfo as $offsetInfo => $info) {
@@ -635,6 +673,7 @@ class   Quotation {
             'spu_sn'                => $info['spu_sn'],
             'spu_name'              => $info['spu_name'],
             'image'                 => '',
+            'score_id'              => $mapEnumeration['sourceId'][$info['spu_id']],
             'category_name'         => $categoryName,
             'material_name'         => $materialName,
             'size_name'             => $sizeName,
