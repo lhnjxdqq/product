@@ -20,7 +20,7 @@ class Search_Spu {
         $sqlOrder       = self::_order($orderBy);
         $sqlLimit       = self::_limit($offset, $limit);
         $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
-echo $sql;exit;
+
         return          Spu_Info::query($sql);
     }
 
