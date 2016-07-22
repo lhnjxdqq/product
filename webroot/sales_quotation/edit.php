@@ -91,8 +91,19 @@ $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
 $listCategory   = Category_Info::getByMultiId($listCategoryId);
 $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+$listSourceId   = ArrayUtility::listField($mapProductInfo,'source_id');
+$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
+$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
 $groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
+$groupProductIdSourceId = array();
+foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+    
+    $groupProductIdSourceId[$productId]    = array();
+    foreach($sourceIdInfo as $key=>$sourceId){
 
+        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+    }
+}
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 
@@ -116,9 +127,10 @@ foreach ($listSpecValue as $specValue) {
         $mapSpecValue[$specValue['goods_id']] = $specValueData;
     }
 }
+
 $spuCost    = array();
 $mapSpuSalerCostByColor = array();
-
+$sourceId   = array();
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
     $mapColor   = array();
@@ -126,11 +138,13 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
         $goodsId        = $goods['goods_id'];
         $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
-        $listSourceId   = $groupSkuSourceId[$goods['goods_id']];
+        $listSourceId   = $groupProductIdSourceId[$goods['goods_id']];
+
         if(!empty($listSourceId)){
          
             $sourceId[$spuId][]= implode(',',$listSourceId);
         }
+
         foreach ($goodsSpecValue as $key => $val) {
 
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
@@ -149,7 +163,7 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
             }
         }
     }
-
+   
     if(!empty($sourceId[$spuId])){
      
         $sourceId[$spuId]      = implode(",",$sourceId[$spuId]);   
@@ -166,6 +180,7 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
         }
     }
 }
+
 //获取颜色属性Id列表
 $listSpecValueColotId   = array();
 
