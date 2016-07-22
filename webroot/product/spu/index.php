@@ -60,6 +60,9 @@ $listSpuInfo                = isset($condition['category_id'])
                               ? Search_Spu::listByCondition($condition, array(), $page->getOffset(), $perpage)
                               : Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 $listSpuId                  = ArrayUtility::listField($listSpuInfo, 'spu_id');
+$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+$mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
+
 $listSpuImages              = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages               = ArrayUtility::indexByField($listSpuImages, 'spu_id');
 
@@ -100,6 +103,8 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         $listCost[$supplierId]  = current($supplierCostList);
     }
 
+    $sourceCodeList                         = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
+    $listSpuInfo[$key]['source_code_list']  = implode(',', $sourceCodeList);
     $listSpuInfo[$key]['list_cost'] = $kRedCost ? $kRedCost : $listCost;
     $imageInfo                      = $mapSpuImages[$spuId];
     $listSpuInfo[$key]['image_url'] = $imageInfo
