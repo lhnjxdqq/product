@@ -70,6 +70,7 @@
                                     <th rowspan="2">SPU编号</th>
                                     <th rowspan="2">SPU名称</th>
                                     <th rowspan="2">产品图片</th>
+                                    <th rowspan="2">买款ID</th>
                                     <th rowspan="2">三级分类</th>
                                     <th rowspan="2">规格重量(g)</th>
                                     <th rowspan="2" style="text-align:center">规格尺寸</th>
@@ -91,6 +92,7 @@
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
                                     <td><a href="<{$item.image_url}>" target="_blank"><img src="<{$item.image_url}>" class="width-100" alt="..."></a></td>
+                                    <td><{$item.source_id}></td>
                                     <td><{$item.category_name}></td>
                                     <td><{$item.weight_value}></td>
                                     <td><{$item.size_name}></td>

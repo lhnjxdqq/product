@@ -90,6 +90,8 @@ $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
 $listCategory   = Category_Info::getByMultiId($listCategoryId);
 $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+$mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+$groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
 
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
@@ -124,7 +126,11 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
         $goodsId        = $goods['goods_id'];
         $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
-
+        $listSourceId   = $groupSkuSourceId[$goods['goods_id']];
+        if(!empty($listSourceId)){
+         
+            $sourceId[$spuId][]= implode(',',$listSourceId);
+        }
         foreach ($goodsSpecValue as $key => $val) {
 
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
@@ -144,6 +150,10 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
         }
     }
 
+    if(!empty($sourceId[$spuId])){
+     
+        $sourceId[$spuId]      = implode(",",$sourceId[$spuId]);   
+    }
     $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
     $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
 
@@ -156,7 +166,6 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
         }
     }
 }
-
 //获取颜色属性Id列表
 $listSpecValueColotId   = array();
 
@@ -208,6 +217,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 
     // 品类名 && 规格重量
     $goodsId    = $mapSpuGoods[$spuInfo['spu_id']];
+    
     if (!$goodsId) {
 
         $listSpuInfo[$key]['category_name'] = '';
@@ -252,9 +262,10 @@ foreach ($listSpuInfo as $key => $spuInfo) {
                     
         }
     }
-
+    $listSpuInfo[$key]['source_id'] = $sourceId[$spuInfo['spu_id']];
     $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
 }
+
 $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
