@@ -163,11 +163,7 @@
                                     <td><{$data.mapGoodsInfo[$item.goods_id]['goods_sn']}></td>
                                     <td><{$item.product_name}></td>
                                     <td>
-                                        <{if $data.mapProductImage[$item.product_id]}>
-                                        <a href="<{$data.mapProductImage[$item.product_id]}>" target="_blank"><img src="<{$data.mapProductImage[$item.product_id]}>" height="60"></a>
-                                        <{else}>
-                                            <img src="/images/product_default.png" height="60">
-                                        <{/if}>
+                                        <a href="<{$data.mapProductImage[$item.product_id]|default:'/images/product_default.png'}>" target="_blank"><img src="<{$data.mapProductImage[$item.product_id]|default:'/images/product_default.png'}>" height="60"></a>
                                     </td>
                                     <td><{$data.mapCategory[$data.mapGoodsInfo[$item.goods_id]['category_id']]}></td>
                                     <td><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['规格重量']['spec_unit']}></td>
