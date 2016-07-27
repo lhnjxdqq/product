@@ -34,7 +34,7 @@ unset($data['plue_price']);
 $slaesQuotation = array(
         'sales_quotation_id'   => $salesQuotationId,
         'sales_quotation_name' => $salesQuotationName,
-        'spu_num'              => count($data),
+        'spu_num'              => Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId),
         'customer_id'          => (int) $customerId,
         'hash_code'            => md5(time()),
         'operatior_id'         => $_SESSION['user_id'],
