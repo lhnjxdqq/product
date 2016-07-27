@@ -60,7 +60,6 @@ foreach($listCartInfo as $key=>$info){
 
 $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
 //获取SPU数量
-$countSpu        = count($listSpuId);
 $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
 foreach ($mapSpuImages as $spuId => $spuImage) {
