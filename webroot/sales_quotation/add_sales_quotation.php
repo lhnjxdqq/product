@@ -9,7 +9,7 @@ $quotationData              = $_GET;
 $userId             = $_SESSION['user_id'];
 $customerId         = !empty($quotationData['customer_id']) ? $quotationData['customer_id'] : "0";
 $salesQuotationName = $quotationData['quotation_name'];
-$markupRule         = !empty($quotationData['plue_price']) ? $quotationData['plue_price'] : "0.00";
+$markupRule         = !empty($quotationData['plus_price']) ? $quotationData['plus_price'] : "0.00";
 Validate::testNull($salesQuotationName,"报价单名称不能为空");
 
 $listCartInfo    = Cart_Spu_Info::getByUserId($userId);
