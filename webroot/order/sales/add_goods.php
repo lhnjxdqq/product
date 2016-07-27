@@ -46,9 +46,11 @@ $groupSkuSpu            = ArrayUtility::groupByField($skuRelationShipSpuInfo,'go
 $condition['list_goods_id'] = $listGoodsId;
 
 $page                   = new PageList(array(
-    PageList::OPT_TOTAL     => Search_Sku::countByCondition($condition),
+    PageList::OPT_TOTAL     => isset($condition['category_id'])
+                               ? Search_Sku::countByCondition($condition)
+                               : Goods_List::countByCondition($condition),
     PageList::OPT_URL       => '/order/sales/add_goods.php',
-    PageList::OPT_PERPAGE   => 100,
+    PageList::OPT_PERPAGE   => 50,
 ));
 $listCategoryInfo           = Category_Info::listAll();
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
@@ -88,7 +90,9 @@ $listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecVal
 $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
 
 $listGoodsInfo              = array();
-$listGoodsInfo              = Search_Sku::listByCondition($condition, array(), $page->getOffset(), 100);
+$listGoodsInfo              = isset($condition['category_id'])
+                              ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 50)
+                              : Goods_List::listByCondition($condition, array(), $page->getOffset(), 50);
 $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
@@ -157,7 +161,6 @@ $data['searchType']                 = Search_Sku::getSearchType();
 $data['mapSpecValueInfo']           = $mapSpecValueInfo;
 $data['listGoodsInfo']              = $listGoodsInfo;
 $data['pageViewData']               = $page->getViewData();
-$data['mainMenu']                   = Menu_Info::getMainMenu();
 $data['onlineStatus']               = array(
     'online'    => Goods_OnlineStatus::ONLINE,
     'offline'   => Goods_OnlineStatus::OFFLINE,
@@ -165,7 +168,6 @@ $data['onlineStatus']               = array(
 
 $template           = Template::getInstance();
 
-$template->assign('salesOrderId', $salesOrderId);
 $template->assign('data', $data);
 $template->assign('salesOrderId', $salesOrderId);
 $template->assign('salesOrderInfo', $salesOrderInfo);
