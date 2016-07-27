@@ -45,7 +45,6 @@ $page           = new PageList(array(
 ));
 $listCartInfo    = Cart_Spu_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
 
-
 //获取sqlID的组合
 $listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");
 

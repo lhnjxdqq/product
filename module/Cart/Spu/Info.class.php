@@ -106,20 +106,20 @@ class   Cart_Spu_Info {
     static private function _condition (array $condition) {
 
         $sql            = array();
-        $sql[]          = self::_conditionByUserIdAndSpuId($condition);
+        $sql[]          = self::_conditionByUserId($condition);
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
     }
     
-    static private function _conditionByUserIdAndSpuId($condition){
+    static private function _conditionByUserId($condition){
         
-        if(empty($condiition['user_id'])){
+        if(empty($condition['user_id'])){
             
             return ;
         }
         
-        return 'user_id='.(int) $userId;
+        return 'user_id='.(int) $condition['user_id'];
         
     }
     /**
