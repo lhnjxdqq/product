@@ -42,4 +42,4 @@ foreach($data as $spuId => $colorCost){
         'remark'            => $remark,
     ));
 }
-Utility::notice('保存成功', '/sales_quotation/index.php');
+Utility::notice('保存成功', '/sales_quotation/create.php?plus_price=' . $markupRule. '&customer_id=' . $customerId . '&quotation_name='.$salesQuotationName);

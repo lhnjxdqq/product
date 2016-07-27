@@ -36,18 +36,18 @@
                         <select name="customer_id" class="form-control">
                             <option value="0">请选择</option>
                             <{foreach from=$listCustomer item=item}>
-                                <option <{if $customerId eq $item.customer_id}>selected<{/if}> value="<{$item.customer_id}>"><{$item.customer_name}></option>
+                                <option <{if $getData.customer_id eq $item.customer_id}>selected<{/if}> value="<{$item.customer_id}>"><{$item.customer_name}></option>
                             <{/foreach}>
                        </select>
                     </div>
                     <div class="form-group" style="margin-right: 25px;">
                         <label>加价规则</label>
-                        <input type="text" name="plue_price" value="<{$plusPrice}>" class="form-control" id="plue_price">
+                        <input type="text" name="plue_price" value="<{$getData.plus_price}>" class="form-control" id="plue_price">
                         <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="refresh" style="margin-left: 10px;"><i class="fa fa-refresh"></i> 刷新工费</a>
                     </div>
                     <div class="form-group" style="margin-right: 25px;">
                         <label>报价单名称</label>
-                        <input type="text" name="sales_quotation_name" value="" class="form-control">
+                        <input type="text" name="sales_quotation_name" value="<{$getData.quotation_name}>" class="form-control">
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -189,8 +189,9 @@ $(function(){
     
         pluePrice  = $("#plue_price").val();
         customerId = $("[name = customer_id]").val();
+        quotationName  = $("[name=sales_quotation_name]").val();
 
-        location.href = "/sales_quotation/spu_cost_plus_price.php?plue_price="+pluePrice+"&customer_id="+customerId;
+        location.href = "/sales_quotation/spu_cost_plus_price.php?plue_price="+pluePrice+"&customer_id="+customerId+"&quotation_name="+quotationName;
     });
     
     $("#form-quotation").submit(function(){

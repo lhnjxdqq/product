@@ -2,10 +2,7 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-if(is_numeric($_GET['plue_price']) && $_GET['plue_price']>0){
-    
-    $plusPrice  = $_GET['plue_price'];
-}
+$getData    = $_GET;
 $customerId = '';
 $indexCartColorId   = array();
 if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
@@ -200,7 +197,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             $listSpuInfo[$key]['is_exist']  = 1;
         } else {
         
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $mapSpuColorCost[$spuInfo['spu_id']][$colorId] + $_GET['plue_price'] : "-"; 
+            $listSpuInfo[$key]['color'][$colorId] = !empty($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $mapSpuColorCost[$spuInfo['spu_id']][$colorId] : "-"; 
             $listSpuInfo[$key]['spu_remark']      = $mapSpuRemark[$spuInfo['spu_id']];
         }
         $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
@@ -211,7 +208,7 @@ $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
-$template->assign('plusPrice',$plusPrice);
+$template->assign('getData',$getData);
 $template->assign('pageViewData',$page->getViewData());
 $template->assign('customerId',$customerId);
 $template->assign('listSpecValueId',$listSpecValueId);

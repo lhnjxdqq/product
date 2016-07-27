@@ -105,4 +105,4 @@ if($plusPrice>0){
     }
 }
 
-Utility::redirect($_SERVER['HTTP_REFERER']);
+Utility::redirect('/sales_quotation/create.php?plus_price=' . $_GET['plue_price'] . '&customer_id=' . $_GET['customer_id'] . '&quotation_name='.$_GET['quotation_name']);
