@@ -25,10 +25,10 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
-            <form class="form-inline" action="/sales_quotation/add_sales_quotation.php" method="post" id="quotation">
+            <form class="form-inline" action="/sales_quotation/keep_cart.php" method="post" id="quotation">
                 <input type='hidden' value="[]" name="quotation_data" id="quotation_data">
             </form>
-            <form class="form-inline" action="/sales_quotation/add_sales_quotation.php" method="post" id="form-quotation">
+            <form class="form-inline" action="#" method="post" id="form-quotation">
             <div class="box">
                 <div class="box-body">
                     <div class="form-group" style="margin-right: 25px;">
@@ -102,12 +102,15 @@
                                 </tr>
 <{/foreach}>                     
                                 <tr>
-                                    <td colspan="17"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 提交报价单</button></td>
+                                    <td colspan="2"><button type="submit" class="btn btn-primary pull-left"><i class="fa fa-save"></i> 保存修改</button></td>
+                                    <td colspan="<{$countColor+8}>"><button type="button" class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 提交报价单</button></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    
+                    <div class="box-footer clearfix">
+                        <{include file="section/pagelist.tpl" viewData=$pageViewData}>
+                    </div>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -187,28 +190,37 @@ $(function(){
         pluePrice  = $("#plue_price").val();
         customerId = $("[name = customer_id]").val();
 
-        location.href = "/sales_quotation/create.php?plue_price="+pluePrice+"&customer_id="+customerId;
+        location.href = "/sales_quotation/spu_cost_plus_price.php?plue_price="+pluePrice+"&customer_id="+customerId;
     });
     
     $("#form-quotation").submit(function(){
 
         quotationName = $("[name=sales_quotation_name]").val();
-
-        if(quotationName.length>0){
-            var json = {},
-                formSerialize   = $(this).serializeArray();
-            for (var offset = 0; offset < formSerialize.length; offset ++) {
-                json[formSerialize[offset].name] = formSerialize[offset].value;
-            }
-            $("#quotation_data").val(JSON.stringify(json));
-            $("#quotation").submit();
-        }else{
-        
-            alert("报价单名称不能为空");
+         
+        var json = {},
+        formSerialize   = $(this).serializeArray();
+        for (var offset = 0; offset < formSerialize.length; offset ++) {
+            json[formSerialize[offset].name] = formSerialize[offset].value;
         }
+        $("#quotation_data").val(JSON.stringify(json));
+        $("#quotation").submit();
         
+        return false;
+    });
+    
+    $(".quotation-submit").click(function(){
+        
+        quotationName       = $("[name=sales_quotation_name]").val();
+        customerId          = $("[name=customer_id]").val();
+        plusPrice           = $("#plue_price").val();
+
+        if(quotationName.length<1 || plusPrice == '' ){
+            
+            alert('加价规则和报价单名称不能为空');
             return false;
-    });  
+        }
+        location.href='/sales_quotation/add_sales_quotation.php?quotation_name='+quotationName+'&customer_id='+customerId+'&plus_price='+plusPrice;
+    });
     
 })
 </script>

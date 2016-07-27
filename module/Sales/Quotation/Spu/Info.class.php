@@ -65,10 +65,23 @@ class   Sales_Quotation_Spu_Info {
 
         $sqlBase        = 'SELECT COUNT(1) AS `total` FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
-        $sql            = $sqlBase . $sqlCondition;
+        $sql            = $sqlBase . $sqlCondition . $sqlgroup;
         $row            = self::_getStore()->fetchOne($sql);
 
         return          $row['total'];
+    }
+    
+    /**
+     * 根据报价单id获取spu总数
+     */
+    static  public  function countBySalesQuotationId($salesQuotationId){
+    
+        Validate::testNull($salesQuotationId,'报价单ID不能为空');
+        $sql = "SELECT " . self::FIELDS . " FROM `sales_quotation_spu_info` WHERE `sales_quotation_id` = ". $salesQuotationId ." group by `spu_id`";
+        $data           = self::_getStore()->fetchAll($sql);
+        
+        return count($data);
+        
     }
 
     /**
@@ -147,6 +160,21 @@ class   Sales_Quotation_Spu_Info {
 
         $multiId    = array_map('intval', array_unique(array_filter($multiId)));
         $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id` IN ("' . implode('","', $multiId) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
+        
+    /**
+     * 根据一个报价单ID和一组spuId获取报价单信息
+     *
+     * @param   int     $salesQuotationId    报价单ID
+     * @param   array   $listSpuId           spuId
+     * @return array    商品信息
+     */
+    static public function getBySalesQuotationIdAndMuitlSpuId ($salesQuotationId,$multiSpuId) {
+
+        $multiId    = array_map('intval', array_unique(array_filter($multiSpuId)));
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id`='.$salesQuotationId.' AND `spu_id` IN ("' . implode('","', $multiId) . '")';
 
         return      self::_getStore()->fetchAll($sql);
     }

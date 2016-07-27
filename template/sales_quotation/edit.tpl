@@ -105,12 +105,14 @@
                                 </tr>
 <{/foreach}>                     
                                 <tr>
-                                    <td colspan="17"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 修改报价单</button></td>
+                                    <td colspan="<{$countColor+11}>"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 修改报价单</button></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    
+                    <div class="box-footer clearfix">
+                        <{include file="section/pagelist.tpl" viewData=$pageViewData}>
+                    </div>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -242,7 +244,7 @@ $(function(){
             customerId       = $("[name = customer_id]").val(),
             salesQuotationId = <{$salesQuotationInfo['sales_quotation_id']}>;
 
-        location.href = "/sales_quotation/edit.php?plue_price="+pluePrice+"&customer_id="+customerId+"&sales_quotation_id="+salesQuotationId;
+        location.href = "/sales_quotation/refresh_cost_price.php?plue_price="+pluePrice+"&customer_id="+customerId+"&sales_quotation_id="+salesQuotationId;
     });
 
     $("#form-quotation").submit(function(){
