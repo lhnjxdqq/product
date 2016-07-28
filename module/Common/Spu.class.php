@@ -51,7 +51,7 @@ LEFT JOIN
 WHERE
   `spi`.`spu_id` IN ("{$multiSpuIdStr}")
 GROUP BY
-  `soi`.`source_id`
+  `soi`.`source_id`,`spi`.`spu_id`
 SQL;
 
         return      self::_query($sql);

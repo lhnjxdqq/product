@@ -581,14 +581,15 @@ class   Quotation {
             $col = 0;
             foreach($mapSpecColorId as $colorId=>$colorName){
             
-                $row = chr(ord(I)+$col).'2';
+                $row = PHPExcel_Cell::stringFromColumnIndex(ord(I)+$col-ord(A)).'2';
+               
                 $sheet->setCellValue($row, $colorName);
                 $col++;
             }
 
-            $colorCosrCol       = chr(ord(I)+($col-1))."1";
+            $colorCosrCol       = PHPExcel_Cell::stringFromColumnIndex(ord(I)+($col-1)-ord(A))."1";
             $sheet->mergeCells("I1:".$colorCosrCol);
-            $remarkCol  = chr(ord(I)+$col);
+            $remarkCol  = PHPExcel_Cell::stringFromColumnIndex(ord(I)+$col-ord(A));
             $remarkCol1 = $remarkCol."1"; 
             $remarkCol2 = $remarkCol."2"; 
             $sheet->mergeCells($remarkCol1 .':'. $remarkCol2);

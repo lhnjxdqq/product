@@ -2,10 +2,7 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-if(is_numeric($_GET['plue_price']) && !empty($_GET['plue_price'])){
-    
-    $plusPrice  = $_GET['plue_price'];
-}
+$getData    = $_GET;
 $customerId = '';
 $indexCartColorId   = array();
 if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
@@ -33,13 +30,32 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
 
 $userId          = $_SESSION['user_id'];
 $listCustomer    = Customer_Info::listAll();
-$listCartInfo    = Cart_Spu_Info::getByUserId($userId);
+
+$orderBy                = array();
+$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$condition['user_id']   = $userId;
+$countSpu   = Cart_Spu_Info::countByCondition($condition);
+$page           = new PageList(array(
+    PageList::OPT_TOTAL     => $countSpu,
+    PageList::OPT_URL       => '/sales_quotation/create.php',
+    PageList::OPT_PERPAGE   => $perpage,
+));
+$listCartInfo    = Cart_Spu_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+
 //获取sqlID的组合
 $listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");
 
+$mapSpuRemark    = ArrayUtility::indexByField($listCartInfo,'spu_id','remark');    
+
+foreach($listCartInfo as $key=>$info){
+    
+    $costInfo   = json_decode($info['spu_color_cost_data'],true);
+    $mapSpuColorCost[$info['spu_id']] = $costInfo;
+
+}
+
 $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
 //获取SPU数量
-$countSpu        = count($listSpuId);
 $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
 foreach ($mapSpuImages as $spuId => $spuImage) {
@@ -125,31 +141,23 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
                 
                 $mapSizeValue[$spuId][]  = $specValueData;
             }
-            if($val['spec_id'] == $specColorId) {
-                
-                $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
-            }
         }
     }
 
     $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
     $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
 
-    foreach($mapColor as $spuIdKey => $colorInfo){
-
-        foreach($colorInfo as $colorId => $cost){
-            
-            rsort($cost);
-            $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
-        }
-    }
 }
 
 //获取颜色属性Id列表
 $listSpecValueColotId   = array();
 
-foreach($mapColorInfo as $spuId=>$colorCost){
+foreach($mapSpuColorCost as $spuId=>$colorCost){
     
+    if(empty($colorCost)){
+        
+        continue;
+    }
     foreach($colorCost as $specColorId=>$cost){
         
         $listSpecValueColotId[$specColorId] = $specColorId;
@@ -158,42 +166,6 @@ foreach($mapColorInfo as $spuId=>$colorCost){
 $countColor         = count($listSpecValueColotId);
 $mapColorValueInfo  = Spec_Value_Info::getByMulitId($listSpecValueColotId);
 $mapSpecColorId     = ArrayUtility::indexByField($mapColorValueInfo,'spec_value_id', 'spec_value_data');
-
-//查询颜色
-$listColorName  = array_keys($spuCost);
-$listColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($listColorName);
-$listIndexColorName     = ArrayUtility::indexByField($listColorSpecValueInfo,'spec_value_data','spec_value_id');
-
-//获取颜色spec的value id 值
-$colorSpecValueInfo = Spec_Value_Info::getByMultiValueData ($listColorName);
-$indexColorName     = ArrayUtility::indexByField($colorSpecValueInfo,'spec_value_data','spec_value_id');
-
-
-// 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
-$listAllProductInfo     = Product_Info::getByMultiGoodsId($listAllGoodsId);
-$listAllSourceId        = ArrayUtility::listField($listAllProductInfo, 'source_id');
-$listSourceInfo         = Source_Info::getByMultiId($listAllSourceId);
-$mapSourceInfo          = ArrayUtility::indexByField($listSourceInfo, 'source_id');
-$listSupplierInfo       = Supplier_Info::listAll();
-$mapSupplierInfo        = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
-foreach ($listAllProductInfo as &$productInfo) {
-
-    $supplierId = $mapSourceInfo[$productInfo['source_id']]['supplier_id'];
-    $productInfo['supplier_code']   = $mapSupplierInfo[$supplierId]['supplier_code'];
-}
-$groupGoodsProduct      = ArrayUtility::groupByField($listAllProductInfo, 'goods_id');
-// 商品和供应商ID关系
-$mapGoodsSupplierCode   = array();
-foreach ($groupGoodsProduct as $goodsId => $goodsProductList) {
-
-    $mapGoodsSupplierCode[$goodsId] = implode(',', array_unique(ArrayUtility::listField($goodsProductList, 'supplier_code')));
-}
-// 每个SPU下有哪些goodsId
-$groupSpuGoodsId    = array();
-foreach ($groupSpuGoods as $spuId => $spuGoodsList) {
-
-    $groupSpuGoodsId[$spuId] = ArrayUtility::listField($spuGoodsList, 'goods_id');
-}
 
 // 整合数据, 方便前台输出
 foreach ($listSpuInfo as $key => $spuInfo) {
@@ -220,12 +192,13 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         
         if($indexCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
             
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+            $listSpuInfo[$key]['color'][$colorId] = !empty($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
             $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
             $listSpuInfo[$key]['is_exist']  = 1;
         } else {
         
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $_GET['plue_price'] : "-"; 
+            $listSpuInfo[$key]['color'][$colorId] = !empty($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $mapSpuColorCost[$spuInfo['spu_id']][$colorId] : "-"; 
+            $listSpuInfo[$key]['spu_remark']      = $mapSpuRemark[$spuInfo['spu_id']];
         }
         $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
                 
@@ -235,7 +208,8 @@ $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
-$template->assign('plusPrice',$plusPrice);
+$template->assign('getData',$getData);
+$template->assign('pageViewData',$page->getViewData());
 $template->assign('customerId',$customerId);
 $template->assign('listSpecValueId',$listSpecValueId);
 $template->assign('listSpuInfo',$listSpuInfo);

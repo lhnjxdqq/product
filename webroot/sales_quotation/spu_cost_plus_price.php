@@ -1,27 +1,26 @@
 <?php
-/**
- * 批量加入SPU购物车
- */
-require_once    dirname(__FILE__) . '/../../../init.inc.php';
 
-$userId     = (int) $_SESSION['user_id'];
-$spuIds      =  $_POST['spu_id'];
+require_once dirname(__FILE__) . '/../../init.inc.php';
 
-Validate::testNull($userId,'无效的用户ID');
-Validate::testNull($spuIds,'无效spuID');
+if(is_numeric($_GET['plue_price']) && $_GET['plue_price']>0){
+    
+    $plusPrice  = $_GET['plue_price'];
+}
 
-$listSpuInfo        = Spu_Info::getByMultiId($spuIds);
-$listOnlineStatus   = array_unique(ArrayUtility::listField($listSpuInfo, 'online_status'));
-$listDeleteStatus   = array_unique(ArrayUtility::listField($listSpuInfo, 'delete_status'));
-$hasOffLineSpu      = in_array(Spu_OnlineStatus::OFFLINE, $listOnlineStatus);
-$hasDeletedSpu      = in_array(Spu_DeleteStatus::DELETED, $listDeleteStatus);
-if ($hasOffLineSpu || $hasDeletedSpu) {
+$userId          = $_SESSION['user_id'];
+$listCustomer    = Customer_Info::listAll();
+$listCartInfo    = Cart_Spu_Info::getByUserId($userId);
+//获取sqlID的组合
+$listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");
 
-    echo json_encode(array(
-        'code'      => 1,
-        'message'   => '列表中含有状态异常的SPU, 不能批量加入报价单',
-    ));
-    exit;
+$listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
+//获取SPU数量
+$countSpu        = count($listSpuId);
+$listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+$mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
+foreach ($mapSpuImages as $spuId => $spuImage) {
+
+    $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
 }
 
 //属性列表
@@ -34,9 +33,10 @@ $listSpecValueInfo  = ArrayUtility::searchBy(Spec_Value_Info::listAll(), array('
 $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
 
 // 查询SPU下的商品
-$listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($spuIds);
+$listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
 $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
 $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
+
 
 // 查所当前所有SPU的商品 商品信息 规格和规格值
 $allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
@@ -50,15 +50,9 @@ $listGoodsId    = array_values($mapSpuGoods);
 $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
 $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 
-// 根据商品查询品类
-$listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
-$listCategory   = Category_Info::getByMultiId($listCategoryId);
-$mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
-
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 
-//获取颜色的属性ID
 $specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
 $specColorId          = $specColorInfo['color'];
 
@@ -92,29 +86,23 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
         }
     }
 }
-$indexSpuIdRemark   = ArrayUtility::indexByField($listSpuInfo,'spu_id','spu_remark');
 
-foreach($spuIds as $id){
-    $cartSpuInfo        = array();
-    $cartSpuInfo        = $mapColorInfo[$id];
-    $cartSpuInfo        = json_encode($cartSpuInfo);
+if($plusPrice>0){
+   
+    foreach($mapColorInfo as $spuId=>$colorCost){
+    
+        $colorCostInfo    = array();
+        foreach($colorCost as $colorId=>$cost){
+            $colorCostInfo[$colorId] = sprintf('%.2f',$cost+$plusPrice);
+        }
+        
+        Cart_Spu_Info::update(array(
+            'user_id'               => $userId,
+            'spu_id'                => $spuId,
+            'spu_color_cost_data'   => json_encode($colorCostInfo),
+        ));
 
-    $data       = array(
-        'user_id'               => $userId,
-        'spu_id'                => $id,
-        'spu_color_cost_data'   => $cartSpuInfo,
-        'remark'                => $indexSpuIdRemark[$id],
-    );
-
-    Cart_Spu_Info::create($data);
+    }
 }
 
-$countCartSpu = Cart_Spu_Info::countByUser($userId);
-
-echo    json_encode(array(
-    'code'      => 0,
-    'message'   => 'OK',
-    'data'      => array(
-        'count' => $countCartSpu,
-    ),
-));
+Utility::redirect('/sales_quotation/create.php?plus_price=' . $_GET['plue_price'] . '&customer_id=' . $_GET['customer_id'] . '&quotation_name='.$_GET['quotation_name']);

@@ -37,21 +37,33 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($sa
 $listCustomer       = Customer_Info::listAll();
 $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
 
+$orderBy                = array();
+$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$condition['sales_quotation_id']   = $salesQuotationId;
+$group              = 'spu_id'; 
+$countSpu   = Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId);
+
+$page           = new PageList(array(
+    PageList::OPT_TOTAL     => $countSpu,
+    PageList::OPT_URL       => '/sales_quotation/edit.php',
+    PageList::OPT_PERPAGE   => $perpage,
+));
+$listQuotationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
+$listSpuId              = ArrayUtility::listField($listQuotationSpuInfo,'spu_id');
+
 //获取颜色工费和备注
 $indexCartColorId   = array();
-$mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesQuotationId));
+$mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationIdAndMuitlSpuId($salesQuotationId , $listSpuId);
 $spuInfo                    = ArrayUtility::groupByField($mapSalesQuotationSpuInfo,'spu_id');
-$listSpuId          = array();
+
 foreach($spuInfo as $spuId=>$info){
     
-    $listSpuId[]  = $spuId;
     $indexCartColorId[$spuId]['color'] = ArrayUtility::indexByField($info, 'color_id', 'cost');
     $indexCartColorId[$spuId]['sales_quotation_remark'] = ArrayUtility::indexByField($info, 'spu_id', 'sales_quotation_remark');
 }
 
 $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
 //获取SPU数量
-$countSpu        = count($listSpuId);
 $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
 foreach ($mapSpuImages as $spuId => $spuImage) {
@@ -195,31 +207,6 @@ $countColor         = count($listSpecValueColotId);
 $mapColorValueInfo  = Spec_Value_Info::getByMulitId($listSpecValueColotId);
 $mapSpecColorId     = ArrayUtility::indexByField($mapColorValueInfo,'spec_value_id', 'spec_value_data');
 
-//查询颜色
-$listColorName  = array_keys($spuCost);
-$listColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($listColorName);
-$listIndexColorName     = ArrayUtility::indexByField($listColorSpecValueInfo,'spec_value_data','spec_value_id');
-
-//获取颜色spec的value id 值
-$colorSpecValueInfo = Spec_Value_Info::getByMultiValueData ($listColorName);
-$indexColorName     = ArrayUtility::indexByField($colorSpecValueInfo,'spec_value_data','spec_value_id');
-
-
-// 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
-$listAllSourceId        = array();
-$listAllProductInfo     = Product_Info::getByMultiGoodsId($listAllGoodsId);
-$listAllSourceId        = ArrayUtility::listField($listAllProductInfo, 'source_id');
-$listSourceInfo         = Source_Info::getByMultiId($listAllSourceId);
-$mapSourceInfo          = ArrayUtility::indexByField($listSourceInfo, 'source_id');
-$listSupplierInfo       = Supplier_Info::listAll();
-$mapSupplierInfo        = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
-foreach ($listAllProductInfo as &$productInfo) {
-
-    $supplierId = $mapSourceInfo[$productInfo['source_id']]['supplier_id'];
-    $productInfo['supplier_code']   = $mapSupplierInfo[$supplierId]['supplier_code'];
-}
-$groupGoodsProduct      = ArrayUtility::groupByField($listAllProductInfo, 'goods_id');
-
 // 每个SPU下有哪些goodsId
 $groupSpuGoodsId    = array();
 foreach ($groupSpuGoods as $spuId => $spuGoodsList) {
@@ -287,6 +274,7 @@ $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
 $template->assign('plusPrice',$salesQuotationMarkupRule);
 $template->assign('listSpecValueId',$listSpecValueId);
+$template->assign('pageViewData',$page->getViewData());
 $template->assign('listSpuInfo',$listSpuInfo);
 $template->assign('countColor',$countColor);
 $template->assign('salesQuotationInfo',$salesQuotationInfo);
