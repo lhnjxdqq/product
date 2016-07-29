@@ -163,35 +163,6 @@ $countColor         = count($listSpecValueColotId);
 $mapColorValueInfo  = Spec_Value_Info::getByMulitId($listSpecValueColotId);
 $mapSpecColorId     = ArrayUtility::indexByField($mapColorValueInfo,'spec_value_id', 'spec_value_data');
 
-//查询颜色
-$listColorName  = array_keys($spuCost);
-$listColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($listColorName);
-$listIndexColorName     = ArrayUtility::indexByField($listColorSpecValueInfo,'spec_value_data','spec_value_id');
-
-//获取颜色spec的value id 值
-$colorSpecValueInfo = Spec_Value_Info::getByMultiValueData ($listColorName);
-$indexColorName     = ArrayUtility::indexByField($colorSpecValueInfo,'spec_value_data','spec_value_id');
-
-
-// 供应商ID: 查询当前所有SPU下所有商品的所有产品, 把每个SPU下的商品下的产品对应的供应商ID去重显示
-$listAllProductInfo     = Product_Info::getByMultiGoodsId($listAllGoodsId);
-$listAllSourceId        = ArrayUtility::listField($listAllProductInfo, 'source_id');
-$listSourceInfo         = Source_Info::getByMultiId($listAllSourceId);
-$mapSourceInfo          = ArrayUtility::indexByField($listSourceInfo, 'source_id');
-$listSupplierInfo       = Supplier_Info::listAll();
-$mapSupplierInfo        = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
-foreach ($listAllProductInfo as &$productInfo) {
-
-    $supplierId = $mapSourceInfo[$productInfo['source_id']]['supplier_id'];
-    $productInfo['supplier_code']   = $mapSupplierInfo[$supplierId]['supplier_code'];
-}
-$groupGoodsProduct      = ArrayUtility::groupByField($listAllProductInfo, 'goods_id');
-// 商品和供应商ID关系
-$mapGoodsSupplierCode   = array();
-foreach ($groupGoodsProduct as $goodsId => $goodsProductList) {
-
-    $mapGoodsSupplierCode[$goodsId] = implode(',', array_unique(ArrayUtility::listField($goodsProductList, 'supplier_code')));
-}
 // 每个SPU下有哪些goodsId
 $groupSpuGoodsId    = array();
 foreach ($groupSpuGoods as $spuId => $spuGoodsList) {

@@ -5,11 +5,24 @@
 require_once    dirname(__FILE__) . '/../../../init.inc.php';
 
 $userId     = (int) $_SESSION['user_id'];
-$spuIds      =  $_POST['spu_id'];
+$spuIds     =  $_POST['spu_id'];
 
 Validate::testNull($userId,'无效的用户ID');
 Validate::testNull($spuIds,'无效spuID');
 
+$taskInfo = Cart_Join_Spu_Task::getByUserIdAndRunStatus($_SESSION['user_id']);
+
+if(!empty($taskInfo) && $taskInfo['run_status'] != Cart_Join_Spu_RunStatus::FINISH){
+
+    $response   = array(
+            'code'      => 1,
+            'message'   => '已经有搜索产品正在添加到报价单,请稍等',
+            'data'      => array(),
+        );
+    echo    json_encode($response);
+    exit;
+
+}
 $listSpuInfo        = Spu_Info::getByMultiId($spuIds);
 $listOnlineStatus   = array_unique(ArrayUtility::listField($listSpuInfo, 'online_status'));
 $listDeleteStatus   = array_unique(ArrayUtility::listField($listSpuInfo, 'delete_status'));

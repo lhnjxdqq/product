@@ -31,7 +31,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form action="/product/spu/index.php" method="get" class="search-spu">
+                <form action="/product/spu/index.php" name='search' method="get" class="search-spu">
                     <div class="box-body">
                         <div class="row spu-filter">
                             <div class="col-md-2">
@@ -118,8 +118,9 @@
             <div class="box">
                 <div class="box-header with-border">
                     <input type="checkbox" name="check-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;"><i class="fa fa-shopping-cart"></i> 加入销售报价单</a>
-                    <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> <{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;">选择产品 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                    <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> 销售报价单 <{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>
                 </div>
                 <div class="box-body">
                     <div class="row" id="spu-list">
@@ -299,7 +300,24 @@
                 $this.find('.fa-plus').removeClass("fa-plus");
             }, 'json');    
             });
+        
+        $("#searchAddMulti").click(function(){
+            
+            var params = $(".search-spu").serialize();
 
+            $.get('/product/spu/search_spu_join_cart.php?'+params,{
+                '__output_format'   : 'JSON'
+            },function(response) {
+                console.log(response)
+                if(0 != response.code){
+                    
+                    alert(response.message);
+                }else{
+                
+                    alert('批量加入成功');
+                }
+            },'json');
+        });
         $('#addMulti').click(function(){
 
             var chk_value =[]; 
