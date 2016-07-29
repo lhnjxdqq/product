@@ -6,7 +6,7 @@ require_once    dirname(__FILE__) . '/../../../init.inc.php';
 
 $taskInfo = Cart_Join_Spu_Task::getByUserIdAndRunStatus($_SESSION['user_id']);
 
-if(!empty($taskInfo['run_status'] != Cart_Join_Spu_RunStatus::FINISH)){
+if(!empty($taskInfo) && $taskInfo['run_status'] != Cart_Join_Spu_RunStatus::FINISH){
 
     $response   = array(
             'code'      => 1,
