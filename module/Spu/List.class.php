@@ -51,6 +51,7 @@ class Spu_List {
 
         $sql        = array();
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByOnlineStatus($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
@@ -88,6 +89,21 @@ class Spu_List {
     static private function _conditionByDeleteStatus (array $condition) {
 
         return  '`si`.`delete_status` = ' . (int) $condition['delete_status'];
+    }
+    
+    /**
+     * 根据删除状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByOnlineStatus (array $condition) {
+
+        if(empty($condition['online_status'])){
+            
+            return ;
+        }
+        return  '`si`.`online_status` = ' . (int) $condition['online_status'];
     }
 
     /**

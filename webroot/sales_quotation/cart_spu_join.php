@@ -10,6 +10,18 @@ $spuId      = (int) $_POST['spu_id'];
 Validate::testNull($userId,'无效的用户ID');
 Validate::testNull($spuId,'无效spuID');
 
+$taskInfo = Cart_Join_Spu_Task::getByUserIdAndRunStatus($_SESSION['user_id']);
+
+if(!empty($taskInfo['run_status'] != Cart_Join_Spu_RunStatus::FINISH)){
+
+    $response   = array(
+            'code'      => 1,
+            'message'   => '已经有搜索产品正在添加到报价单,请稍等',
+        );
+    echo    json_encode($response);
+    exit;
+
+}
 $spuInfo    = Spu_Info::getById($spuId);
 if (!$spuInfo || $spuInfo['online_status'] == Spu_OnlineStatus::OFFLINE || $spuInfo['delete_status'] == Spu_DeleteStatus::DELETED) {
 
