@@ -95,6 +95,8 @@
                             <thead>
                                 <tr>
                                     <th>SKU编号</th>
+                                    <th>关联SPU</th>
+                                    <th>买款ID</th>
                                     <th>产品图片</th>
                                     <th>SKU名称</th>
                                     <th>三级分类</th>
@@ -113,6 +115,8 @@
                                 <{foreach from=$data.listGoodsInfo item=item}>
                                     <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
                                         <td><{$item.goods_sn}></td>
+                                        <td><{$item.spu_sn_list}></td>
+                                        <td><{$item.source}></td>
                                         <td>
                                             <img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60">
                                         </td>

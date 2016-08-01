@@ -94,6 +94,21 @@ $listGoodsInfo              = isset($condition['category_id'])
                               ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 50)
                               : Goods_List::listByCondition($condition, array(), $page->getOffset(), 50);
 $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
+$mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+$listSourceId   = ArrayUtility::listField($mapProductInfo,'source_id');
+$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
+$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
+$groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
+$groupProductIdSourceId = array();
+foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+    
+    $groupProductIdSourceId[$productId]    = array();
+    foreach($sourceIdInfo as $key=>$sourceId){
+
+        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+    }
+}
+
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
@@ -145,6 +160,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['quantity']      = $indexSales[$goodsId]['goods_quantity'];
     $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
     $goodsInfo['isset_order']   = isset($indexSales[$goodsId]) ? 1 : 0;
+    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
 
 }
 

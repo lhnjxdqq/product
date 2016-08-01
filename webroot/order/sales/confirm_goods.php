@@ -81,6 +81,19 @@ $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id'
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
+$listSourceId               = ArrayUtility::listField($listGoodsProductInfo,'source_id');
+$mapSourceInfo              = Source_Info::getByMultiId($listSourceId);
+$indexSourceInfo            = ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
+$groupSkuSourceId           = ArrayUtility::groupByField($listGoodsProductInfo,'goods_id','source_id');
+$groupProductIdSourceId     = array();
+foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+    
+    $groupProductIdSourceId[$productId]    = array();
+    foreach($sourceIdInfo as $key=>$sourceId){
+
+        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+    }
+}
 $groupGoodsProductInfo      = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
 $mapGoodsProductMinCost     = array();
 foreach ($groupGoodsProductInfo as $goodsId => $goodsProductList) {
@@ -128,6 +141,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['remark']        = $indexSales[$goodsId]['remark'];
     $goodsInfo['quantity']      = $indexSales[$goodsId]['goods_quantity'];
     $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
+    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
 
 }
 
