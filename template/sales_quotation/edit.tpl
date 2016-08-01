@@ -63,7 +63,7 @@
                 </div>
                 <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
                     <div class="table-responsive col-xls-12">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover" id="example">
                             <thead>
                                 <tr class="info">
                                     <th rowspan="2">选择</th>
@@ -104,10 +104,12 @@
                                     <td><a href="/sales_quotation/sales_quotation_spu_delete.php?spu_id=<{$item.spu_id}>&sales_quotation_id=<{$salesQuotationInfo['sales_quotation_id']}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
 <{/foreach}>                     
+                            </tbody>
+                            <tfoot>
                                 <tr>
                                     <td colspan="<{$countColor+11}>"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 修改报价单</button></td>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="box-footer clearfix">
@@ -265,8 +267,26 @@ $(function(){
         }
         
             return false;
-    });    
-})    
+    });
+});
+$(document).ready(function() { 
+    
+    str =new Array(0,3);
+    for(row=1; row<=<{$countColor+2}>; row++){
+        
+        num = row+8;
+        str.push(num); 
+    }
+
+    $('#example').dataTable({
+        
+        "bFilter": false, //过滤功能
+        "bInfo"  : false,//页脚信息
+        "bPaginate": false, //翻页功能
+        "aaSorting": [ [1,'asc'] ],
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": str }]
+    });
+});
 </script>
 </body>
 </html>

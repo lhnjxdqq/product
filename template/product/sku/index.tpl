@@ -319,6 +319,17 @@
         selector    : '#sku-list',
         container   : '#sku-list-vis'
     });
+    $(document).ready(function() { 
+    
+        $('#sku-list').dataTable({
+            
+            "bFilter": false, //过滤功能
+            "bInfo"  : false,//页脚信息
+            "bPaginate": false, //翻页功能
+            "aaSorting": [ [1,'asc'] ],
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,3,11 ] }]
+        });
+    });
 </script>
 </body>
 </html>

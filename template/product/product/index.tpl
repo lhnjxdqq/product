@@ -366,6 +366,17 @@
         selector    : '#product-list',
         container   : '#product-list-vis'
     });
+    $(document).ready(function() { 
+    
+        $('#product-list').dataTable({
+            
+            "bFilter": false, //过滤功能
+            "bInfo"  : false,//页脚信息
+            "bPaginate": false, //翻页功能
+            "aaSorting": [ [1,'asc'] ],
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,12,4 ] }]
+        });
+    });
 </script>
 </body>
 </html>

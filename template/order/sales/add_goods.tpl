@@ -401,6 +401,17 @@ $(function () {
     initStyleLv2();
     <{/if}>
 });
+$(document).ready(function() { 
+
+    $('#sku-list').dataTable({
+        
+        "bFilter": false, //过滤功能
+        "bInfo"  : false,//页脚信息
+        "bPaginate": false, //翻页功能
+        "aaSorting": [ [1,'asc'] ],
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 13,14,15 ] }]
+    });
+});
 </script>
 </body>
 </html>

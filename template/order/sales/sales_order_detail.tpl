@@ -190,6 +190,16 @@ $(function(){
         container   : '#sku-list-vis'
     });
 })
+$(document).ready(function() { 
+    
+    $('#sku-list').dataTable({
+        
+        "bFilter": false, //过滤功能
+        "bInfo"  : false,//页脚信息
+        "bPaginate": false, //翻页功能
+        "aaSorting": [ [0,'asc'] ],
+    });
+});
 </script>
 </body>
 </html>
