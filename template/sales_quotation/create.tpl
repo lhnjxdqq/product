@@ -175,7 +175,7 @@ $(function(){
                 return  ;
             }else{
             
-                history.go(0);
+                location.href='/sales_quotation/create.php';
             }
             
         }, 'json');  
