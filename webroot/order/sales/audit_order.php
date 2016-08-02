@@ -22,7 +22,7 @@ $indexSales   = ArrayUtility::indexByField($salesGoodsInfo,'goods_id');
 
 if(empty($listGoods)){
     
-    Utility::notice('销售订单中没有产品','/order/sales/add_goods.php?sales_order_id='.$salesOrderId);
+    Utility::notice('销售订单中没有产品','/order/sales/index.php');
 }
 $skuRelationShipSpuInfo = Spu_Goods_RelationShip::getByMultiGoodsId($listGoods);
 
