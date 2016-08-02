@@ -225,6 +225,7 @@
             "bInfo"  : false,//页脚信息
             "bPaginate": false, //翻页功能
             "aaSorting": [ [0,'asc'] ],
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3 ] }]            
         });
     });
 </script>

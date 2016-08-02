@@ -322,7 +322,7 @@ $(document).ready(function() {
         "bInfo"  : false,//页脚信息
         "bPaginate": false, //翻页功能
         "aaSorting": [ [1,'asc'] ],
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,14,15,16 ] }]
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4,14,15,16 ] }]
     });
 });
 </script>
