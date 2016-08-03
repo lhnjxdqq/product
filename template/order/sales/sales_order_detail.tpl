@@ -110,6 +110,8 @@
                             <thead>
                                 <tr>
                                     <th>SKU编号</th>
+                                    <th>关键SPU</th>
+                                    <th>买款ID</th>
                                     <th>产品图片</th>
                                     <th>SKU名称</th>
                                     <th>三级分类</th>
@@ -130,6 +132,8 @@
                                 <{foreach from=$data.listGoodsInfo item=item}>
                                     <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
                                         <td><{$item.goods_sn}></td>
+                                        <td><{$item.spu_sn_list}></td>
+                                        <td><{$item.source}></td>
                                         <td>
                                             <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60"></a>
                                         </td>
@@ -186,6 +190,17 @@ $(function(){
         container   : '#sku-list-vis'
     });
 })
+$(document).ready(function() { 
+    
+    $('#sku-list').dataTable({
+        
+        "bFilter": false, //过滤功能
+        "bInfo"  : false,//页脚信息
+        "bPaginate": false, //翻页功能
+        "aaSorting": [ [0,'asc'] ],
+        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3 ] }]
+    });
+});
 </script>
 </body>
 </html>

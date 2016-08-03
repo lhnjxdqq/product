@@ -357,6 +357,17 @@
         format  : 'yyyy-mm-dd',
         language: 'zh-CN'
     });
+    $(document).ready(function() { 
+        
+        $('#prod-list').dataTable({
+            
+            "bFilter": false, //过滤功能
+            "bInfo"  : false,//页脚信息
+            "bPaginate": false, //翻页功能
+            "aaSorting": [ [1,'asc'] ],
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4,13,15,16 ] }]
+        });
+    });
 </script>
 </body>
 </html>

@@ -134,9 +134,13 @@
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="offlineMulti"><i class="fa fa-arrow-down"></i> 批量下架</a>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="onlineMulti"><i class="fa fa-arrow-up"></i> 批量上架</a>
                     <a href="/product/product/add.php" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> 添加产品</a>
+                    <button class="btn btn-primary btn-sm pull-right keep-cost hide" style="margin-right: 5px;"> 保存工费</button>
+                    <button class="btn btn-primary btn-sm pull-right edit-cost" style="margin-right: 5px;"> 修改本页工费</button>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
+                    <form action="/product/product/edit_cost.php" id="post_edit_cost" method="post">
+                    
                         <table class="table table-bordered table-hover" id="product-list">
                             <thead>
                             <tr>
@@ -171,7 +175,7 @@
                                     <td><{$data.mapGoodsSpecValue[$item.goods_id]['颜色']['spec_value_data']}><{$data.mapGoodsSpecValue[$item.goods_id]['颜色']['spec_unit']}></td>
                                     <td><{$data.mapSupplierInfo[$data.mapSourceInfo[$item.source_id]['supplier_id']]['supplier_code']}></td>
                                     <td><{$data.mapSourceInfo[$item.source_id]['source_code']}></td>
-                                    <td><{$item.product_cost}></td>
+                                    <td><input type='text' value='<{$item.product_cost}>' size='6' class='input-product-cost hide' name='<{$item.product_id}>'><span class='product-cost'><{$item.product_cost}></span></td>
                                     <td>
                                         <{if $item.online_status eq 1}>
                                         <a href="javascript:changeOnlineStatus(<{$item.product_id}>, 'offline');" class="btn btn-info btn-xs"><i class="fa fa-arrow-down"></i> 下架</a>
@@ -185,6 +189,7 @@
                                 <{/foreach}>
                             </tbody>
                         </table>
+                        </form>
                     </div>
                 </div>
                 <!-- /.box-body -->
@@ -365,6 +370,30 @@
     tableColumn({
         selector    : '#product-list',
         container   : '#product-list-vis'
+    });
+    
+    $('.edit-cost').click(function(){
+
+        $('.keep-cost').removeClass('hide');
+        $(this).addClass('hide');
+        $('.input-product-cost').removeClass('hide');
+        $('.product-cost').addClass('hide');
+    });
+    
+    $('.keep-cost').click(function(){
+        
+        $('#post_edit_cost').submit();
+    });
+    $(document).ready(function() { 
+    
+        $('#product-list').dataTable({
+            
+            "bFilter": false, //过滤功能
+            "bInfo"  : false,//页脚信息
+            "bPaginate": false, //翻页功能
+            "aaSorting": [ [1,'asc'] ],
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,12,4 ] }]
+        });
     });
 </script>
 </body>
