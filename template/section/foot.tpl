@@ -16,7 +16,10 @@
 <script src="/js/daterangepicker.js"></script>
 <!-- bootstrap datepicker -->
 <script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/bootstrap-datetimepicker.js"></script>
 <script src="/js/bootstrap-datepicker.zh-CN.min.js"></script>
+<script src="/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="/js/locales/bootstrap-datetimepicker.fr.js"></script>
 <!-- bootstrap time picker -->
 <script src="/js/bootstrap-timepicker.min.js"></script>
 <!-- iCheck 1.0.1 -->

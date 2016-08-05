@@ -117,7 +117,9 @@
             </div>
             <div class="box">
                 <div class="box-header with-border">
-                    <input type="checkbox" name="check-all"> 全选
+                    <label>
+                      <input type="checkbox" name='check-all'> 全选
+                    </label>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;">选择产品 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
                     <a href="/sales_quotation/create.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> 销售报价单 <{if $countCartSpu!=""}><{$countCartSpu}><{else}>0<{/if}></i></a>

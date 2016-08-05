@@ -4,18 +4,18 @@ class Search_Sku {
     /**
      * 根据条件筛选数据
      *
-     * @param array $conditon   条件
+     * @param array $condition   条件
      * @param array $orderBy    排序
      * @param null $offset      位置
      * @param null $limit       数量
      * @return array
      */
-    static public function listByCondition (array $conditon, array $orderBy = array(), $offset = null, $limit = null) {
+    static public function listByCondition (array $condition, array $orderBy = array(), $offset = null, $limit = null) {
 
         $fields         = implode(',', self::_getQueryFields());
         $sqlBase        = 'SELECT ' . $fields . ' FROM `goods_info` LEFT JOIN ';
-        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
-        $sqlCondtion    = self::_condition($conditon);
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables($condition));
+        $sqlCondtion    = self::_condition($condition);
         $sqlGroup       = self::_group();
         $sqlOrder       = self::_order($orderBy);
         $sqlLimit       = self::_limit($offset, $limit);
@@ -33,7 +33,7 @@ class Search_Sku {
     static public function countByCondition (array $condition) {
 
         $sqlBase        = 'SELECT COUNT(DISTINCT(`goods_info`.`goods_id`)) AS `cnt` FROM `goods_info` LEFT JOIN ';
-        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables($condition));
         $sqlCondition   = self::_condition($condition);
         $sql            = $sqlBase . $sqlJoin . $sqlCondition;
         $data           = Goods_Info::query($sql);
@@ -59,9 +59,9 @@ class Search_Sku {
         $sql[]      = self::_conditionBySizeId($condition);
         $sql[]      = self::_conditionByColorId($condition);
         $sql[]      = self::_conditionBySearchType($condition);
-        $sql[]      = self::_conditionBySpuId();
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sql[]      = self::_conditionByListGoodsId($condition);
+        $sql[]      = self::_conditionByCreateTimeRange($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter)
@@ -84,6 +84,22 @@ class Search_Sku {
         $multiId    = array_map('intval', array_unique(array_filter($condition['list_goods_id'])));
         
         return  '`goods_info`.`goods_id` IN ("' . implode('","', $multiId) . '")';
+    }
+    
+    /**
+     * 根据创建时间拼接sql语句
+     *
+     *  @param  array   $condition 条件
+     *  @return string  拼接数据
+     */
+    static private function _conditionByCreateTimeRange (array $condition) {
+
+        if(empty($condition['date_start']) || empty($condition['date_end'])){
+
+            return '';
+        }
+
+        return '`goods_info`.`create_time` BETWEEN "' . $condition["date_start"] . '" AND ' . '"' . $condition['date_end'] . '"';
     }
 
     /**
@@ -232,16 +248,6 @@ class Search_Sku {
     }
 
     /**
-     * 拼接此WHERE子句主要是为了让语句使用索引
-     *
-     * @return string
-     */
-    static private function _conditionBySpuId () {
-
-        return  '';
-    }
-
-    /**
      * 根据删除状态拼接WHERE子句
      *
      * @param array $condition  条件
@@ -292,18 +298,30 @@ class Search_Sku {
      *
      * @return array
      */
-    static private function _getJoinTables () {
+    static private function _getJoinTables (array $condition) {
 
-        return  array(
-            "`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id`='1'",
-            "`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id`='2'",
-            "`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id`='3'",
-            "`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id`='4'",
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
+        $joinSql        = array(
+            "`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id`= " . $mapSpecInfo['material']['spec_id'],
+            "`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id`=" . $mapSpecInfo['size']['spec_id'],
+            "`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id`=" . $mapSpecInfo['color']['spec_id'],
+            "`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id`= " . $mapSpecInfo['weight']['spec_id'],
             "`product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`",
-            "`source_info` ON `source_info`.`source_id`=`product_info`.`source_id`",
-            "`spu_goods_relationship` AS `sgr` ON `sgr`.`goods_id`=`goods_info`.`goods_id`",
-            "`spu_info` ON `spu_info`.`spu_id`=`sgr`.`spu_id`",
         );
+
+        if($condition['search_type'] == 'spu_sn'){
+             
+                $joinSql[] = "`spu_goods_relationship` AS `sgr` ON `sgr`.`goods_id`=`goods_info`.`goods_id`";  
+                $joinSql[] = "`spu_info` ON `spu_info`.`spu_id`=`sgr`.`spu_id`";    
+        }
+        
+        if($condition['search_type'] == 'source_code'){
+             
+                $joinSql[] = "`source_info` ON `source_info`.`source_id`=`product_info`.`source_id`";   
+        }
+  
+        return $joinSql;
     }
 
     /**

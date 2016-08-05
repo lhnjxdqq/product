@@ -61,8 +61,8 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-addon">规格重量:</span>
+                                <div class="input-group input-group-md">
+                                    <span class="input-group-addon"style="border-width:1px 0 1px 1px;">规格重量:</span>
                                     <input type="text" name="weight_value_start" class="form-control" value="<{$smarty.get.weight_value_start}>">
                                     <span class="input-group-addon">到</span>
                                     <input type="text" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
@@ -95,6 +95,16 @@
                                     <{/foreach}>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                <div class="input-daterange input-group input-group-md">
+                                    <span class="input-group-addon" style="border-width:1px 0 1px 1px;">创建时间:</span>
+                                    <input type="text" name="date_start" id="date_start" readonly class="form-control" value="<{if $smarty.get.date_end}><{date('Y-m-d H:i', strtotime($smarty.get.date_start))}><{/if}>">
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" name="date_end" id="date_end" readonly class="form-control" value="<{if $smarty.get.date_end}><{date('Y-m-d H:i', strtotime($smarty.get.date_end))}><{/if}>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row sku-filter">
                             <div class="col-md-3">
                                 <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/SPU编号" value="<{$smarty.get.search_value_list}>">
                             </div>
@@ -106,8 +116,8 @@
                                     <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-1">
-                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
+                            <div class="col-md-2">
+                                <button type="submit" style="width:100px" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
                             </div>
                         </div>
                         <!-- /.row -->
@@ -129,8 +139,10 @@
             <!-- /.box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <input type="checkbox" name="select-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="createSpu" style="margin-left: 10px;"><i class="fa fa-paper-plane-o"></i> 创建SPU</a>
+                    <label>
+                      <input type="checkbox" name='select-all'> 全选
+                    </label>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="createSpu" style="margin-left: 10px;"><i class="fa fa-paper-plane-o"></i> 创建SPU</a> 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
@@ -329,6 +341,21 @@
             "aaSorting": [ [1,'asc'] ],
             "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,3,11 ] }]
         });
+    });
+    // 日期选择
+    $('#date_start').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        minuteStep: 1,
+        todayBtn:Boolean,
+        startDate:Date,
+        language: 'zh-CN'
+    });
+    $('#date_end').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        minuteStep: 1,
+        todayBtn:Boolean,
+        startDate:Date,
+        language: 'zh-CN'
     });
 </script>
 </body>
