@@ -61,8 +61,8 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-addon">规格重量:</span>
+                                <div class="input-group input-group-md">
+                                    <span class="input-group-addon"style="border-width:1px 0 1px 1px;">规格重量:</span>
                                     <input type="text" name="weight_value_start" class="form-control" value="<{$smarty.get.weight_value_start}>">
                                     <span class="input-group-addon">到</span>
                                     <input type="text" name="weight_value_end" class="form-control" value="<{$smarty.get.weight_value_end}>">
@@ -96,7 +96,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <div class="input-daterange input-group input-group-sm">
+                                <div class="input-daterange input-group input-group-md">
                                     <span class="input-group-addon" style="border-width:1px 0 1px 1px;">创建时间:</span>
                                     <input type="text" name="date_start" id="date_start" readonly class="form-control" value="<{if $smarty.get.date_end}><{date('Y-m-d H:i', strtotime($smarty.get.date_start))}><{/if}>">
                                     <span class="input-group-addon">到</span>
