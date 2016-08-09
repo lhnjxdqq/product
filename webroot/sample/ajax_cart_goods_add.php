@@ -24,13 +24,13 @@ Validate::testNull($userId,'无效的用户ID');
 Validate::testNull($goodsIds,'无效SKUID');
 $cartGoodsInfo              = Cart_Goods_Sample::getByUserId($userId);
 $listCartGoodsId            = ArrayUtility::listField($cartGoodsInfo,'goods_id');
+$listSampleGoodsId          = ArrayUtility::listField(Sample_Info::getByMultiId($goodsIds),'goods_id');
 
 foreach($goodsIds as $id){
 
-    if(in_array($id,$listCartGoodsId)){
+    if(in_array($id,$listCartGoodsId) || in_array($id,$listSampleGoodsId)){
         
-        continue;
-         
+        continue; 
     }
     
     $data       = array(

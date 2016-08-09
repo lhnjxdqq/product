@@ -29,6 +29,20 @@ if(empty($listGoodsId)){
 $condition['list_goods_id'] = $listGoodsId;         
 $listgoodsInfo              = Goods_List::listByCondition($condition);
 
+$listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
+$listSourceId   = ArrayUtility::listField($listGoodsProductInfo,'source_id');
+$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
+$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
+$groupSkuSourceId   = ArrayUtility::groupByField($listGoodsProductInfo,'goods_id','source_id');
+$groupProductIdSourceId = array();
+foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+    
+    $groupProductIdSourceId[$productId]    = array();
+    foreach($sourceIdInfo as $key=>$sourceId){
+
+        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+    }
+}
 $listCategoryInfo           = Category_Info::listAll();
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
@@ -101,6 +115,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
         ? AliyunOSS::getInstance('images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
+    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
 }
 
 

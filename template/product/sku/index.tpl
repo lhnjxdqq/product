@@ -183,7 +183,7 @@
                                         <td><{$item.sale_cost}></td>
                                         <td><{$item.goods_remark}></td>
                                         <td>
-                                            <button tyle='button' id='goods_<{$item.goods_id}>' goods-id="<{$item.goods_id}>" class="btn btn-<{if $item.is_cart == 1 }>default disabled<{else}>primary<{/if}> btn-xs add-cart"><i class="fa fa-shopping-cart"></i></button>
+                                            <{if $item['is_sample'] != 1}><button tyle='button' id='goods_<{$item.goods_id}>' goods-id="<{$item.goods_id}>" class="btn btn-<{if $item.is_cart == 1 }>default disabled<{else}>primary<{/if}> btn-xs add-cart"><i class="fa fa-shopping-cart"></i></button><{/if}>
                                             <a href="javascript:editSku(<{$item.goods_id}>, <{$item.online_status}>);" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <a href="javascript:delSku(<{$item.goods_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                         </td>
@@ -363,7 +363,7 @@
                     return  ;
                 }
 
-                $("#number").html(" "+response.data.count);
+                $("#number").html(" 样板库 "+response.data.count);
                 $this.removeClass("btn-primary");
                 $this.addClass("btn-default");
                 $this.addClass("disabled");
@@ -415,7 +415,7 @@
                     return  ;
                 }else{
                 
-                    $("#number").html(" "+response.data.count);
+                    $("#number").html(" 样板库 "+response.data.count);
                     for(var i=0;i<chk_value.length;i++){
                                 
                         $("#goods_"+chk_value[i]).attr('disabled', true);

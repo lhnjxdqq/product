@@ -41,6 +41,7 @@
                                 <th>选择</th>
                                 <th>SKU编号</th>
                                 <th>SKU名称</th>
+                                <th>买款ID</th>
                                 <th>产品图片</th>
                                 <th>三级分类</th>
                                 <th>主料材质</th>
@@ -58,6 +59,7 @@
                                     <td><input type="checkbox" name='goods_id[]' value='<{$item.goods_id}>' class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
                                     <td><{$item.goods_sn}></td>
                                     <td><{$item.goods_name}></td>
+                                    <td><{$item.source}></td>
                                     <td>
                                         <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60"></a>
                                     </td>
@@ -79,11 +81,11 @@
                                 <td colspan='12'>
                                     <form action='/sample/do_add.php' id='confirm-form' method='post'>
                                             <div class='row'>
-                                                <div class='col-md-6'></div>
-                                                <div class='col-md-2'>
-                                                    <label class='control-label pull-right'>样板类型</label>
+                                                <div class='col-sm-6'></div>
+                                                <div class='col-sm-2'>
+                                                    <label class='control-label pull-right' style='margin-top:6px'>样板类型</label>
                                                 </div>
-                                                <div class='col-md-2'>
+                                                <div class='col-sm-2'>
                                                     <select class='form-control' id='sample_type' name='sample_type'>
                                                         <option value='0'>请选择</option>
 <{foreach from=$sampleType item=item}>
@@ -91,7 +93,7 @@
 <{/foreach}>
                                                     </select>
                                                 </div>
-                                                <div class='col-md-2'>
+                                                <div class='col-sm-2'>
                                                     <button class='control-button pull-left btn btn-primary'>确认样板</button>
                                                 </div>
                                             </div>
@@ -153,6 +155,11 @@ $(function(){
             alert("请选择SKU");
             
             return false; 
+        }
+
+        if(!confirm('确认删除？')){
+            
+            return false;
         }
 
         $.post('/sample/ajax_cart_delete.php', {

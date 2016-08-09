@@ -29,10 +29,11 @@ foreach($standby as $key=>$info){
     $goodsIds               = ArrayUtility::listField($listSpuInfo,'goods_id');
     $cartGoodsInfo          = Cart_Goods_Sample::getByUserId($info['user_id']);
     $listCartGoodsId        = ArrayUtility::listField($cartGoodsInfo,'goods_id');
+    $listSampleGoodsId      = ArrayUtility::listField(Sample_Info::getByMultiId($goodsIds),'goods_id');
 
     foreach($goodsIds as $id){
 
-        if(in_array($id,$listCartGoodsId)){
+        if(in_array($id,$listCartGoodsId) || in_array($id,$listSampleGoodsId)){
             
             continue;
              
