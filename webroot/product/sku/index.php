@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
+$userId                 = (int) $_SESSION['user_id'];
 $condition              = $_GET;
 $condition['delete_status'] = Goods_DeleteStatus::NORMAL;
 
@@ -76,6 +77,9 @@ $listSpecValueId            = array_unique(array_merge(
 ));
 $listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
 $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+$countCartGoods             = Cart_Goods_Sample::countByUser($userId);
+$cartGoodsInfo              = Cart_Goods_Sample::getByUserId($userId);
+$listCartGoodsId            = ArrayUtility::listField($cartGoodsInfo,'goods_id');
 
 foreach ($listGoodsInfo as &$goodsInfo) {
 
@@ -85,6 +89,10 @@ foreach ($listGoodsInfo as &$goodsInfo) {
         ? AliyunOSS::getInstance('images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
+    if(in_array($goodsId,$listCartGoodsId)){
+        
+        $goodsInfo['is_cart']   = 1;   
+    }
 }
 
 $data['mapCategoryInfo']            = $mapCategoryInfo;
@@ -107,4 +115,5 @@ $data['onlineStatus']               = array(
 
 $template = Template::getInstance();
 $template->assign('data', $data);
+$template->assign('countCartGoods', $countCartGoods);
 $template->display('product/sku/index.tpl');
