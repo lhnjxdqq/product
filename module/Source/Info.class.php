@@ -201,6 +201,20 @@ class   Source_Info {
     }
 
     /**
+     * 根据多个买款ID查询买款信息
+     *
+     * @param $multiSourceCode
+     * @return array
+     */
+    static public function getByMultiSourceCode ($multiSourceCode) {
+
+        $multiCode  = array_map('trim', array_map('addslashes', array_unique(array_filter($multiSourceCode))));
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_code` IN ("' . implode('","', $multiCode) . '")';
+
+        return      self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据一组sourceId 获取来款信息
      *
      * @param array $multiSourceId
