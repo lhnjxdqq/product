@@ -80,7 +80,7 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 $countCartGoods             = Cart_Goods_Sample::countByUser($userId);
 $cartGoodsInfo              = Cart_Goods_Sample::getByUserId($userId);
 $listCartGoodsId            = ArrayUtility::listField($cartGoodsInfo,'goods_id');
-$listSampleGoodsId          = ArrayUtility::listField(Sample_Info::getByMultiId($listGoodsId),'goods_id');
+$listSampleGoodsId          = ArrayUtility::listField(ArrayUtility::searchBy(Sample_Info::getByMultiId($listGoodsId),array('is_delete'=>Goods_DeleteStatus::NORMAL)),'goods_id');
 
 foreach ($listGoodsInfo as &$goodsInfo) {
 
