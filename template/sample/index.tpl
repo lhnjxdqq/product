@@ -160,7 +160,6 @@
                                     <th>进货工费</th>
                                     <th>备注</th>
                                     <th>类型</th>
-                                    <th>状态</th>
                                     <th width="150">操作</th>
                                 </tr>
                             </thead>
@@ -181,7 +180,6 @@
                                         <td><{$item.product_cost}></td>
                                         <td><{$item.goods_remark}></td>
                                         <td><{$listSampleType[$item.sample_type]}></td>
-                                        <td>...</td>
                                         <td>
                                             <a href="/sample/delete.php?goods_id=<{$item.goods_id}>" class="btn btn-danger btn-xs goods-sample-del"> <i class="fa fa-trash"></i> </a>
                                         </td>
@@ -330,7 +328,7 @@
             "bInfo"  : false,//页脚信息
             "bPaginate": false, //翻页功能
             "aaSorting": [ [1,'asc'] ],
-            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4,10,11,12,13 ] }]
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4,10,11,12 ] }]
         });
     });
 
