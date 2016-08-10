@@ -129,7 +129,7 @@
                         <{foreach from=$data.listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail"<{if $item.online_status eq $data.onlineStatus.offline}> style="border:1px solid #e08e0b;"<{/if}>>
-                                    <td><input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" /></td>
+                                    <input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" />
                                     <a href="<{$item.image_url|default:'/images/spu_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/spu_default.png'}>" alt="..."></a>
                                     <div class="caption">
                                         <p>三级分类: <{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></p>
@@ -310,7 +310,7 @@
             $.get('/product/spu/search_spu_join_cart.php?'+params,{
                 '__output_format'   : 'JSON'
             },function(response) {
-                console.log(response)
+            
                 if(0 != response.code){
                     
                     alert(response.message);
