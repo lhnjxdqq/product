@@ -10,12 +10,18 @@ $excelUploadHandler = Quotation_ExcelUploadHandler::getInstance($_FILES['excel_f
 $errorList          = array();
 try {
 
-    if ($excelUploadHandler->checkUploadFile()) {
-
-        // 验证完毕 保存文件异步操作 或 解析文件内容查询数据库
-
-    }
+    $excelUploadHandler->checkUploadFile();
 } catch (ApplicationException $e) {
 
     $errorList[]    = $e->getMessage();
 }
+
+if (!empty($errorList)) {
+
+    $template = Template::getInstance();
+    $template->assign('errorList', $errorList);
+    $template->assign('mainMenu', Menu_Info::getMainMenu());
+    $template->display('sales_quotation/upload_excel_error.tpl');
+    exit;
+}
+

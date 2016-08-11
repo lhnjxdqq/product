@@ -14,7 +14,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>上传销售报价单</h1>
+            <h1>上传失败</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="javascript:void(0);">上传销售报价单</a></li>
@@ -25,18 +25,14 @@
         <section class="content">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">上传销售报价单</h3>
+                    <h3 class="box-title">错误信息</h3>
                 </div>
                 <div class="box-body">
-                    <form action="/sales_quotation/do_upload_excel.php" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label>选择excel文件</label>
-                            <input type="file" name="excel_file">
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-primary" type="submit">上传</button>
-                        </div>
-                    </form>
+                    <ul>
+                    <{foreach from=$errorList item=item}>
+                        <li><{$item}></li>
+                    <{/foreach}>
+                    </ul>
                 </div>
             </div>
         </section>
