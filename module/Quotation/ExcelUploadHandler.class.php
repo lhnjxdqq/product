@@ -19,7 +19,7 @@ class Quotation_ExcelUploadHandler {
     // 表头
     static private $_tableHeader            = array('买款ID', '出货工费');
     // 特殊字符
-    static private $_unusualCharacter = array(" ", "\n", "（", "）");
+    static private $_unusualCharacter       = array(" ", "\n", "（", "）");
     // 上传文件错误信息
     static private $_uploadErrorList        = array(
         '1' => '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值',
