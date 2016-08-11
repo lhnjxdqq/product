@@ -24,7 +24,7 @@ Validate::testNull($userId,'无效的用户ID');
 Validate::testNull($goodsIds,'无效SKUID');
 $cartGoodsInfo              = Cart_Goods_Sample::getByUserId($userId);
 $listCartGoodsId            = ArrayUtility::listField($cartGoodsInfo,'goods_id');
-$listSampleGoodsId          = ArrayUtility::listField(Sample_Info::getByMultiId($goodsIds),'goods_id');
+$listSampleGoodsId          = ArrayUtility::listField(ArrayUtility::searchBy(Sample_Info::getByMultiId($goodsIds),array('is_delete'=>Goods_DeleteStatus::NORMAL)),'goods_id');
 
 foreach($goodsIds as $id){
 
