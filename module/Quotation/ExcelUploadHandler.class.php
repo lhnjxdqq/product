@@ -9,6 +9,8 @@ class Quotation_ExcelUploadHandler {
     static private $_instance;
     // 最大行号, 最大列号
     static private $_sheetHighest;
+    // 颜色specId
+    static private $_colorSpecId            = 3;
     // 列号索引
     static private $_seedString             = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z';
     static private $_seedList               = array();
@@ -209,6 +211,12 @@ class Quotation_ExcelUploadHandler {
         return                  true;
     }
 
+    /**
+     * 查询excel文件中 每一行的买款ID 颜色有值的产品是否存在
+     *
+     * @return bool
+     * @throws ApplicationException
+     */
     private function _checkSkuExists () {
 
         $mapColorValueData  = array();
@@ -260,11 +268,19 @@ class Quotation_ExcelUploadHandler {
         return              true;
     }
 
+    /**
+     * 查询每个买款ID 颜色有值时 product是否存在
+     *
+     * @param $sourceCode               买款ID
+     * @param array $colorValueIdList   颜色值ID
+     * @return array|bool               true 该买款ID 颜色值list中的产品都存在 | array 该款颜色产品不存在
+     */
     private function _queryProduct ($sourceCode, array $colorValueIdList) {
 
         $sourceCode             = addslashes(trim($sourceCode));
         $colorValueIdList       = array_map('intval', array_unique(array_filter($colorValueIdList)));
         $colorValueIdCondition  = implode('","', $colorValueIdList);
+        $colorSpecId            = self::$_colorSpecId;
         $sql                    =<<<SQL
 SELECT
     *
@@ -284,7 +300,7 @@ LEFT JOIN
 LEFT JOIN
     `source_info` AS `si` ON `si`.`source_id`=`pi`.`source_id`
 WHERE
-    `gsvr`.`spec_id`=3
+    `gsvr`.`spec_id`="{$colorSpecId}"
 AND
     `gsvr`.`spec_value_id` IN ("{$colorValueIdCondition}")
 AND
