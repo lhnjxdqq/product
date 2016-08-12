@@ -86,6 +86,7 @@
                                     <th>状态</th>
                                     <th>预计归还时间</th>
                                     <th>归还时间</th>
+                                    <th>备注</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,6 +99,7 @@
                                         <td><{$borrowStatusInfo[$item.status_id]['status_name']}></td>
                                         <td><{$item.estimate_return_time}></td>
                                         <td><{$item.return_time}></td>
+                                        <td><{$item.remark}></td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
