@@ -1,28 +1,49 @@
 <?php
 /**
- * 样板列表
+ * 批量加入sku购物车
  */
-require_once    dirname(__FILE__) . '/../../init.inc.php';
-$condition              = $_GET;
-$userId                 = $_SESSION['user_id'];
-$condition['delete_status'] = Goods_DeleteStatus::NORMAL;
-$condition['is_delete']     = Goods_DeleteStatus::NORMAL;
+require_once    dirname(__FILE__) . '/../../../init.inc.php';
+
+$userId                     = $_SESSION['user_id'];
 $listSampleType = Sample_Type::getSampleType();
-$sampleTypeInfo  = array();
-foreach($listSampleType as $typeId=>$typeName){
+
+foreach($listSampleType as $key=>$val){
     
-    $sampleTypeInfo[$typeId]['type_id']    = $typeId;
-    $sampleTypeInfo[$typeId]['type_name']  = $typeName;
+    $sampleType[$key]    =  $val;
 }
 
-$page                   = new PageList(array(
-    PageList::OPT_TOTAL     => isset($condition['category_id'])
-                               ? Search_Sample::countByCondition($condition)
-                               : Sample_List::countByCondition($condition),
-    PageList::OPT_URL       => '/sample/index.php',
+$condition['user_id']       = $userId;
+$orderBy                    = array();
+$countGoods                 = Cart_Sample_Info::countByCondition($condition);
+$page                       = new PageList(array(
+    PageList::OPT_TOTAL     => $countGoods,
+    PageList::OPT_URL       => '/sample/borrow/do_confirm.php',
     PageList::OPT_PERPAGE   => 20,
 ));
+$listCartInfo               = Cart_Sample_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+$listGoodsId                = ArrayUtility::listField($listCartInfo,'goods_id');
+if(empty($listGoodsId)){
+ 
+    Utility::notice('借板购物车中没有产品,请添加后再进入页面','/sample/index.php');   
+}
 
+$condition['list_goods_id'] = $listGoodsId;         
+$listgoodsInfo              = Goods_List::listByCondition($condition);
+
+$listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
+$listSourceId   = ArrayUtility::listField($listGoodsProductInfo,'source_id');
+$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
+$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
+$groupSkuSourceId   = ArrayUtility::groupByField($listGoodsProductInfo,'goods_id','source_id');
+$groupProductIdSourceId = array();
+foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+    
+    $groupProductIdSourceId[$productId]    = array();
+    foreach($sourceIdInfo as $key=>$sourceId){
+
+        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+    }
+}
 $listCategoryInfo           = Category_Info::listAll();
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
@@ -60,9 +81,8 @@ $listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecVal
 $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
 
 $listGoodsInfo              = isset($condition['category_id'])
-                              ? Search_Sample::listByCondition($condition, array(), $page->getOffset(), 20)
-                              : Sample_List::listByCondition($condition, array(), $page->getOffset(), 20);
-$listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
+                              ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 20)
+                              : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
@@ -74,20 +94,7 @@ foreach ($groupGoodsProductInfo as $goodsId => $goodsProductList) {
     $goodsProductInfo   = current($goodsProductList);
     $mapGoodsProductMinCost[$goodsId]   = $goodsProductInfo['product_cost'];
 }
-$listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
-$listSourceId   = ArrayUtility::listField($listGoodsProductInfo,'source_id');
-$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
-$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
-$groupSkuSourceId   = ArrayUtility::groupByField($listGoodsProductInfo,'goods_id','source_id');
-$groupProductIdSourceId = array();
-foreach($groupSkuSourceId as $productId => $sourceIdInfo){
-    
-    $groupProductIdSourceId[$productId]    = array();
-    foreach($sourceIdInfo as $key=>$sourceId){
 
-        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
-    }
-}
 $listMaterialValueId        = ArrayUtility::listField($listGoodsInfo, 'material_value_id');
 $listSizeValueId            = ArrayUtility::listField($listGoodsInfo, 'size_value_id');
 $listColorValueId           = ArrayUtility::listField($listGoodsInfo, 'color_value_id');
@@ -100,9 +107,8 @@ $listSpecValueId            = array_unique(array_merge(
 ));
 $listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
 $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
-$countSampleGoods           = Cart_Sample_Info::countByUser($userId);
-$cartSampleInfo             = Cart_Sample_Info::getByUserId($userId);
-$listCartSampleId           = ArrayUtility::listField($cartSampleInfo,'goods_id');
+$mapSampleInfo              = Sample_Info::getByMultiId($listGoodsId);
+$indexGoodsIdType           = ArrayUtility::indexByField($mapSampleInfo,'goods_id','sample_type');
 
 foreach ($listGoodsInfo as &$goodsInfo) {
 
@@ -112,13 +118,11 @@ foreach ($listGoodsInfo as &$goodsInfo) {
         ? AliyunOSS::getInstance('images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
-    if(in_array($goodsId,$listCartSampleId)){
-        
-        $goodsInfo['is_cart']   = 1;   
-    }
-    
     $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
+    $goodsInfo['sample_type']  = $indexGoodsIdType[$goodsId];
 }
+
+$template = Template::getInstance();
 
 $data['mapCategoryInfo']            = $mapCategoryInfo;
 $data['mapCategoryInfoLv3']         = $mapCategoryInfoLv3;
@@ -140,7 +144,6 @@ $data['onlineStatus']               = array(
 
 $template = Template::getInstance();
 $template->assign('data', $data);
-$template->assign('listSampleType', $listSampleType);
-$template->assign('countCartGoods', $countSampleGoods);
-$template->assign('sampleTypeInfo', $sampleTypeInfo);
-$template->display('sample/index.tpl');
+$template->assign('sampleType', $sampleType);
+$template->assign('countGoods', $countGoods);
+$template->display('sample/borrow/confirm.tpl');

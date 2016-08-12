@@ -32,8 +32,11 @@ class   Sales_Order_Info {
             'filter'    => 'sales_order_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => date('Y-m-d H:i:s'),
+        );   
         self::_getStore()->insert(self::_tableName(), $newData);
-                
+             
         return      self::_getStore()->lastInsertId();
     }
 
