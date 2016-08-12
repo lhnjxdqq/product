@@ -49,7 +49,7 @@ class   Sample_Info {
 
         if(empty($multiId)){
             
-            return false;
+            return array();
         }
         $multiId    = array_map('intval', array_unique(array_filter($multiId)));
         $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiId) . '")';
