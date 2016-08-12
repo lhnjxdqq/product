@@ -13,4 +13,6 @@ Sample_Info::update(array(
         'goods_id'  => $goodsId,
         'is_delete' => Role_DeleteStatus::DELETED,
     ));
+
+Cart_Sample_Info::deleteByGoodsId($goodsId);
 Utility::notice('删除成功','/sample/index.php');

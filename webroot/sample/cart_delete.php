@@ -1,6 +1,6 @@
 <?php
 /**
- * 从sku购物车中批量删除
+ * 从样板购物车中批量删除
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 

@@ -151,7 +151,7 @@
                   </label>
                         <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 删除选中样板</a>
                         <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;">选择样板 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
-                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                        <a href="/sample/borrow/search_sku_join_cart.php?<{$smarty.get|http_build_query}>" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
                         <a href="/sample/borrow/do_confirm.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> 选板清单 <{if $countCartGoods!=""}><{$countCartGoods}><{else}>0<{/if}></i></a>              
                 </div>
                 <div class="box-body">
@@ -389,24 +389,7 @@
                 $this.addClass("disabled");
             }, 'json');
         });
-        
-        $("#searchAddMulti").click(function(){
-            
-            var params = $(".search-sku").serialize();
 
-            $.get('/sample/borrow/search_sku_join_cart.php?'+params,{
-                '__output_format'   : 'JSON'
-            },function(response) {
-                console.log(response)
-                if(0 != response.code){
-                    
-                    alert(response.message);
-                }else{
-                
-                    alert('批量加入成功');
-                }
-            },'json');
-        });
         $('#addMulti').click(function(){
 
             var chk_value =[]; 
