@@ -3,6 +3,7 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $condition  = $_GET;
 
+$condition['delete_status'] = Product_DeleteStatus::NORMAL;
 // 排序
 $sortBy     = isset($_GET['sortby']) ? $_GET['sortby'] : 'product_id';
 $direction  = isset($_GET['direction']) ? $_GET['direction'] : 'DESC';
@@ -19,9 +20,6 @@ $page           = new PageList(array(
     PageList::OPT_URL       => '/product/product/index.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
-
-$condition['delete_status'] = Product_DeleteStatus::NORMAL;
-
 
 $listProduct            = isset($condition['category_id'])
                         ? Search_Product::listByCondition($condition, $page->getOffset(), $perpage)

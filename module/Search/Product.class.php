@@ -53,9 +53,21 @@ class Search_Product {
         $sql[]      = self::_conditionBySizeId($condition);
         $sql[]      = self::_conditionByColorId($condition);
         $sql[]      = self::_conditionBySearchType($condition);
+        $sql[]      = self::_conditionByDeleteStatus($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    /**
+     * 根据删除状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
+    static private function _conditionByDeleteStatus (array $condition) {
+
+        return  !isset($condition['delete_status']) ? '' : '`pi`.`delete_status` = "' . (int) $condition['delete_status'] . '"';
     }
 
     /**
