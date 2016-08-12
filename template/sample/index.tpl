@@ -105,14 +105,22 @@
                             </div>
                         </div>
                         <div class="row sku-filter">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
+                                <select name="sample_type" class="form-control">
+                                    <option value="0">请选择样板类型</option>
+                                    <{foreach from=$sampleTypeInfo item=item}>
+                                        <option value="<{$item.type_id}>"<{if $smarty.get.sample_type eq $item.type_id}> selected<{/if}>><{$item.type_name}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/SPU编号" value="<{$smarty.get.search_value_list}>">
                             </div>
                             <div class="col-md-2">
                                 <select name="search_type" class="form-control">
                                     <option value="0">请选择搜索类型</option>
                                     <{foreach from=$data.searchType item=typeName key=typeId}>
-                                <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
+                                        <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -140,8 +148,11 @@
                 <div class="box-header with-border">
                     <label>
                       <input type="checkbox" name='select-all'> 全选
-                      <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 删除选中样板</a>
-                    </label> 
+                  </label>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 删除选中样板</a>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;">选择样板 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                        <a href="/sample/borrow/search_sku_join_cart.php?<{$smarty.get|http_build_query}>" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                        <a href="/sample/borrow/do_confirm.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> 选板清单 <{if $countCartGoods!=""}><{$countCartGoods}><{else}>0<{/if}></i></a>              
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -160,13 +171,13 @@
                                     <th>进货工费</th>
                                     <th>备注</th>
                                     <th>类型</th>
-                                    <th width="150">操作</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <{foreach from=$data.listGoodsInfo item=item}>
                                     <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
-                                         <td><input type="checkbox" name='goods_id[]' value='<{$item.goods_id}>' class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
+                                        <td><input type="checkbox" name='goods_id[]' value='<{$item.goods_id}>' class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
                                         <td><{$item.source}></td>
                                         <td>
                                             <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60"></a>
@@ -181,6 +192,7 @@
                                         <td><{$item.goods_remark}></td>
                                         <td><{$listSampleType[$item.sample_type]}></td>
                                         <td>
+                                            <button tyle='button' id='goods_<{$item.goods_id}>' goods-id="<{$item.goods_id}>" class="btn btn-<{if $item.is_cart == 1 }>default disabled<{else}>primary<{/if}> btn-xs add-cart"><i class="fa fa-shopping-cart"></i></button>
                                             <a href="/sample/delete.php?goods_id=<{$item.goods_id}>" class="btn btn-danger btn-xs goods-sample-del"> <i class="fa fa-trash"></i> </a>
                                         </td>
                                     </tr>
@@ -293,29 +305,7 @@
     $('input[name="select-all"]').click(function () {
         $('#sku-list input').prop('checked', $(this).prop('checked') );
     });
-    $('#createSpu').click(function () {
-        var checked     = $('#sku-list input.select:checked');
-        var spuParams   = [];
-        if (checked.length == 0) {
 
-            alert('请先选择SKU');
-            return;
-        }
-        var goodsIdStr  = '';
-        $.each(checked, function (index, val) {
-            goodsIdStr += $(val).attr('goodsid') + ',';
-            spuParams.push($(val).attr('spuparams'));
-        });
-        var uniqueSpuParams = unique(spuParams);
-        if (uniqueSpuParams.length != 1) {
-
-            alert('所选择的SKU 三级分类和规格重量不同, 无法创建SPU');
-            return;
-        }
-        goodsIdStr = goodsIdStr.substr(0, goodsIdStr.length - 1);
-        var redirect    = '/product/spu/add.php?multi_goods_id=' + goodsIdStr;
-        location.href   = redirect;
-    });
     tableColumn({
         selector    : '#sku-list',
         container   : '#sku-list-vis'
@@ -381,7 +371,7 @@
             var $this       = $(this),
                 goodsId       = $this.attr("goods-id");
                 
-            $.post('/sample/cart_goods_join.php', {
+            $.post('/sample/borrow/cart_goods_join.php', {
                 goods_id             : goodsId,
                 '__output_format'   : 'JSON'
             }, function (response) {
@@ -393,30 +383,13 @@
                     return  ;
                 }
 
-                $("#number").html(" 样板库 "+response.data.count);
+                $("#number").html(" 选板清单 "+response.data.count);
                 $this.removeClass("btn-primary");
                 $this.addClass("btn-default");
                 $this.addClass("disabled");
             }, 'json');
         });
-        
-        $("#searchAddMulti").click(function(){
-            
-            var params = $(".search-sku").serialize();
 
-            $.get('/sample/search_sku_join_cart.php?'+params,{
-                '__output_format'   : 'JSON'
-            },function(response) {
-                console.log(response)
-                if(0 != response.code){
-                    
-                    alert(response.message);
-                }else{
-                
-                    alert('批量加入成功');
-                }
-            },'json');
-        });
         $('#addMulti').click(function(){
 
             var chk_value =[]; 
@@ -427,12 +400,12 @@
             
             if(chk_value.length==0){
                 
-                alert("请选择SKU");
+                alert("请选择样板");
                 
                 return false; 
             }
 
-            $.post('/sample/ajax_cart_goods_add.php', {
+            $.post('/sample/borrow/ajax_cart_goods_add.php', {
                 goods_id              : chk_value,
                 '__output_format'   : 'JSON'
             }, function (response) {

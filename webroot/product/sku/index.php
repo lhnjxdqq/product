@@ -48,7 +48,7 @@ $listMaterialSpecValue      = Goods_Type_Spec_Value_Relationship::getBySpecId($m
 $listMaterialSpecValueId    = array_unique(ArrayUtility::listField($listMaterialSpecValue, 'spec_value_id'));
 $listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecValueId);
 $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
-
+$listGoodsInfo              = array();
 $listGoodsInfo              = isset($condition['category_id'])
                               ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 20)
                               : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
@@ -56,6 +56,7 @@ $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id'
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
+$groupGoodsProductInfo      = array();
 $groupGoodsProductInfo      = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
 $mapGoodsProductMinCost     = array();
 foreach ($groupGoodsProductInfo as $goodsId => $goodsProductList) {
@@ -80,6 +81,7 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 $countCartGoods             = Cart_Goods_Sample::countByUser($userId);
 $cartGoodsInfo              = Cart_Goods_Sample::getByUserId($userId);
 $listCartGoodsId            = ArrayUtility::listField($cartGoodsInfo,'goods_id');
+
 $listSampleGoodsId          = ArrayUtility::listField(ArrayUtility::searchBy(Sample_Info::getByMultiId($listGoodsId),array('is_delete'=>Goods_DeleteStatus::NORMAL)),'goods_id');
 
 foreach ($listGoodsInfo as &$goodsInfo) {

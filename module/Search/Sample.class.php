@@ -59,6 +59,7 @@ class Search_Sample {
         $sql[]      = self::_conditionByMaterialId($condition);
         $sql[]      = self::_conditionBySizeId($condition);
         $sql[]      = self::_conditionByColorId($condition);
+        $sql[]      = self::_conditionBySampleType($condition);
         $sql[]      = self::_conditionBySearchType($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sql[]      = self::_conditionByListGoodsId($condition);
@@ -211,6 +212,19 @@ class Search_Sample {
 
         return  $condition['color_value_id']
                 ? '`color_info`.`spec_value_id` = "' . (int) $condition['color_value_id'] . '"'
+                : '';
+    }
+
+    /**
+     * 根据样板类型拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionBySampleType (array $condition) {
+
+        return  $condition['sample_type']
+                ? '`sample_info`.`sample_type` = "' . (int) $condition['sample_type'] . '"'
                 : '';
     }
 

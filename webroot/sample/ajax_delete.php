@@ -14,6 +14,8 @@ foreach($goodsId as $id){
             'goods_id'  => $id,
             'is_delete' => Role_DeleteStatus::DELETED,
         ));
+    
+    Cart_Sample_Info::deleteByGoodsId($id);
 }
 
 echo    json_encode(array(
