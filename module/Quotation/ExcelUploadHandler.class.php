@@ -351,14 +351,25 @@ SQL;
                 }
             }
             $listSpuColorCost   = Common_Spu::getSpuBySourceCode($rowData['source_code'], array_keys($rowData['color_cost']));
-            $listSpuId          = array_unique(ArrayUtility::listField($listSpuColorCost, 'spu_id'));
-            $spuListField       = array();
-            foreach ($listSpuId as $spuId) {
+            $groupSpuColorCost  = ArrayUtility::groupByField($listSpuColorCost, 'spu_id');
 
+            $isRedBackground    = 0;
+            $spuListField       = array();
+            foreach ($groupSpuColorCost as $spuId => $spuColorCostList) {
+
+                $spuColorCostList   = ArrayUtility::indexByField($spuColorCostList, 'color_value_id', 'product_cost');
+                foreach ($spuColorCostList as $colorValueId => $productCost) {
+
+                    if ($productCost >= $rowData['color_cost'][$colorValueId]) {
+
+                        $isRedBackground    = 1;
+                        break;
+                    }
+                }
                 $spuInfo        = Common_Spu::getSpuDetailById($spuId);
                 $spuListField[] = array(
-                    'spuId'         => $spuId,
-                    'mapColorCost'  => $rowData['color_cost'],
+                    'spuId'         => $spuInfo['spu_id'],
+                    'mapColorCost'  => $spuColorCostList,
                     'remark'        => $spuInfo['spu_remark'],
                 );
             }
@@ -368,6 +379,7 @@ SQL;
                 'source_code'   => $rowData['source_code'],
                 'color_cost'    => json_encode($rowData['color_cost']),
                 'spu_list'      => json_encode($spuListField),
+                'is_red_bg'     => $isRedBackground,
             );
             Sales_Quotation_Spu_Cart::create($cartData);
         }

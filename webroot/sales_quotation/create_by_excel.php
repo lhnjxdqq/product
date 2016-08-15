@@ -24,43 +24,24 @@ foreach ($listCartData as &$cartData) {
 
     $sourceCode         = $cartData['source_code'];
     $mapColorCost       = json_decode($cartData['color_cost'], true);
-    $listSpuColorCost   = Common_Spu::getSpuBySourceCode($sourceCode, array_keys($mapColorCost));
-    $groupSpuColorCost  = ArrayUtility::groupByField($listSpuColorCost, 'spu_id');
+    $spuListField       = json_decode($cartData['spu_list'], true);
+    $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
 
-    $isRedBackground    = false;
     $listSpuInfo        = array();
-    $spuListField       = array();
-    foreach ($groupSpuColorCost as $spuId => $spuColorCostList) {
+    foreach ($spuIdList as $spuId) {
 
-        $spuColorCostList   = ArrayUtility::indexByField($spuColorCostList, 'color_value_id', 'product_cost');
-
-        foreach ($spuColorCostList as $colorValueId => $productCost) {
-
-            if ($productCost >= $mapColorCost[$colorValueId]) {
-
-                $isRedBackground    = true;
-                break;
-            }
-        }
         $spuInfo        = Common_Spu::getSpuDetailById($spuId);
-        $spuField       = array(
-            'spuId'         => $spuInfo['spu_id'],
-            'mapColorCost'  => $spuColorCostList,
-            'remark'        => $spuInfo['spu_remark'],
-        );
         $listSpuInfo[]  = $spuInfo;
-        $spuListField[] = $spuField;
     }
 
-    $countColorCost             = count($mapColorCost);
-    if ($countColorCost > $maxCountColorList) {
+    $countColorCost     = count($mapColorCost);
+    $listColorValueId   = array_keys($mapColorCost);
+    if ($countColorCost >= $maxCountColorList) {
 
         $maxCountColorList  = $countColorCost;
         $listColorValueId   = array_keys($mapColorCost);
     }
-    $cartData['is_red_bg']      = $isRedBackground;
     $cartData['map_color_cost'] = $mapColorCost;
-    $cartData['count_color']    = $countColorCost;
     $cartData['list_spu_info']  = $listSpuInfo;
     unset($cartData);
 }

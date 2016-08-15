@@ -19,7 +19,7 @@ class   Sales_Quotation_Spu_Cart {
     /**
      * 字段
      */
-    const   FIELDS      = 'user_id,source_code,color_cost,spu_list';
+    const   FIELDS      = 'user_id,source_code,color_cost,spu_list,is_red_bg';
     /**
      * 新增
      *
