@@ -1,10 +1,10 @@
 <?php
 /**
- * 模型 样板
+ * 模型 借版
  */
-class   Sample_Info {
+class   Borrow_Info {
 
-    use Base_MiniModel;
+    use Base_Model;
     
     /**
      * 数据库配置
@@ -14,12 +14,12 @@ class   Sample_Info {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'sample_info';
+    const   TABLE_NAME  = 'borrow_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_id,sample_type,create_time,is_delete';
+    const   FIELDS      = 'borrow_id,salesperson_id,create_time,estimate_return_time,borrow_time,return_time,sample_quantity,customer_id,status_id,remark';
     /**
      * 新增
      *
@@ -29,32 +29,15 @@ class   Sample_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => '',
+            'filter'    => 'borrow_id',
         );
-        
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData    += array(
             'create_time'   => date('Y-m-d H:i:s'),
         );
         self::_getStore()->insert(self::_tableName(), $newData);
-    }
-
-    /**
-     * 根据一组商品ID获取商品信息
-     *
-     * @param $multiId  商品ID
-     * @return array    商品信息
-     */
-    static public function getByMultiId ($multiId) {
-
-        if(empty($multiId)){
-            
-            return array();
-        }
-        $multiId    = array_map('intval', array_unique(array_filter($multiId)));
-        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_id` IN ("' . implode('","', $multiId) . '")';
-
-        return      self::_getStore()->fetchAll($sql);
+                        
+        return      self::_getStore()->lastInsertId();
     }
 
     /**
@@ -102,11 +85,80 @@ class   Sample_Info {
     static private function _condition (array $condition) {
 
         $sql            = array();
+        $sql[]          = self::_conditionByCustomerId($condition);
+        $sql[]          = self::_conditionBySalespersonId($condition);
+        $sql[]          = self::_conditionByStatusId($condition);
+        $sql[]      = self::_conditionrange(
+            array(
+                'fieldCondition'    => 'borrow_time',
+                'paramA'            => 'date_start',
+                'paramB'            => 'date_end',
+                'condition'         => $condition,
+            )
+        );
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
     }
+    /**
+     *  根据顾客获取sql
+     */
+    static private function _conditionByCustomerId($condition){
+        
+        if(empty($condition['customer_id'])){
+            
+            return ;
+        }
+        
+        return 'customer_id='.(int) $condition['customer_id'];
+        
+    }
     
+    /**
+     * 条件 抽象方法 当前实体模型 范围
+     *
+     * @param   array   $params 参数
+     * @return  string          条件SQL子句
+     */
+    static  private function _conditionRange ($params) {
+
+        extract($params);
+
+        if (empty($condition[$paramB]) && !is_numeric($condition[$paramB])) {
+
+            return  '';
+        }
+
+        return  "`" . $fieldCondition . "` BETWEEN '" . addslashes($condition[$paramA]) . "' AND '" . addslashes($condition[$paramB]) . "'";
+    }
+    
+    /**
+     *  根据销售员条件获取sql
+     */    
+    static private function _conditionBySalespersonId($condition){
+        
+        if(empty($condition['salesperson_id'])){
+            
+            return ;
+        }
+        
+        return 'salesperson_id='.(int) $condition['salesperson_id'];
+        
+    }   
+    
+    /**
+     * 根据状态获取sql
+     */
+    static private function _conditionByStatusId($condition){
+        
+        if(empty($condition['status_id'])){
+            
+            return ;
+        }
+        
+        return 'status_id='.(int) $condition['status_id'];
+        
+    }
     /**
      * 拼接排序ORDER子句
      *
@@ -146,11 +198,7 @@ class   Sample_Info {
 
         return ' LIMIT ' . (int) $offset . ',' . (int) $limit;
     }
-             
-    static public function query ($sql) {
-
-        return  self::_getStore()->fetchAll($sql);
-    }
+        
     /**
      * 更新
      *
@@ -160,9 +208,9 @@ class   Sample_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'goods_id',
+            'filter'    => 'borrow_id',
         );
-        $condition  = "`goods_id` = '" . addslashes($data['goods_id']) . "'";
+        $condition  = "`borrow_id` = '" . addslashes($data['borrow_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
