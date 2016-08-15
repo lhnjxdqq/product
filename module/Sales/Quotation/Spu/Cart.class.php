@@ -193,4 +193,38 @@ class   Sales_Quotation_Spu_Cart {
 
         return  self::_getStore()->execute($sql);
     }
+
+    /**
+     * 删除SPU工费
+     *
+     * @param $userId           用户ID
+     * @param $sourceCode       买款ID
+     * @param array $multiSpuId SPUID
+     */
+    static public function delSpuCost ($userId, $sourceCode, array $multiSpuId) {
+
+        $multiSpuId     = array_map('intval', $multiSpuId);
+        $cartData       = self::getByPrimaryKey($userId, $sourceCode);
+        $spuListField   = json_decode($cartData['spu_list'], true);
+        $listSpuField   = array();
+        foreach ($spuListField as $spuCost) {
+
+            if (in_array($spuCost['spuId'], $multiSpuId)) {
+
+                continue;
+            }
+            $listSpuField[] = $spuCost;
+        }
+        if (empty($listSpuField)) {
+
+            self::delByPrimaryKey($userId, $sourceCode);
+        } else {
+
+            self::update(array(
+                'user_id'       => $userId,
+                'source_code'   => $sourceCode,
+                'spu_list'      => json_encode($listSpuField),
+            ));
+        }
+    }
 }

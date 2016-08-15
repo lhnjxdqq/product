@@ -53,7 +53,7 @@
             <div class="box">
                 <div class="box-header">
                     <input type="checkbox" name="select-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm"><i class="fa fa-trash-o"></i> 批量删除</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="del-spu-multi"><i class="fa fa-trash-o"></i> 批量删除</a>
                     <a href="javascript:void(0);" class="btn btn-default btn-sm">共计<span class="text text-success"><{$countCartData}></span>款产品</a>
                 </div>
                 <div class="box-body">
@@ -61,7 +61,7 @@
                         <table class="table table-hover table-bordered" id="list-chart-data">
                             <thead>
                                 <tr class="info">
-                                    <th rowspan="2" width="80"><input type="checkbox" name="select-all"> 全选</th>
+                                    <th rowspan="2" style="width: 60px;">选择</th>
                                     <th rowspan="2">SPU编号</th>
                                     <th rowspan="2">SPU名称</th>
                                     <th rowspan="2">产品图片</th>
@@ -84,7 +84,7 @@
                             <{foreach from=$listCartData item=sourceDetail name=sourceDetail}>
                                 <{foreach from=$sourceDetail.list_spu_info item=spuDetail}>
                                 <tr class="spu-single <{if ($smarty.foreach.sourceDetail.index % 2) == 0}>success<{else}>warning<{/if}><{if $sourceDetail.is_red_bg}> danger<{/if}>">
-                                    <td><input type="checkbox" name="select"></td>
+                                    <td><input type="checkbox" name="select" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"></td>
                                     <td><{$spuDetail.spu_sn}></td>
                                     <td><{$spuDetail.spu_name}></td>
                                     <td>
@@ -234,6 +234,59 @@
             },
             success: function (response) {
                 console.log(response);
+            }
+        });
+    });
+
+    // 全选
+    $('input[name="select-all"]').click(function () {
+
+        $('#list-chart-data input').prop('checked', $(this).prop('checked') );
+    });
+
+    // 批量删除
+    $('#del-spu-multi').click(function () {
+
+        var delCondition    = {
+            source_code: [],
+            spu_id: []
+        };
+        var selectedList    = $('#list-chart-data input[name="select"]:checked');
+
+        $.each(selectedList, function (offset, item) {
+
+            var sourceCode  = $(item).attr('sourcecode');
+            var spuId       = $(item).attr('spuid');
+            delCondition.source_code.push(sourceCode);
+            delCondition.spu_id.push(spuId);
+        });
+
+        if (delCondition.source_code.length == 0) {
+
+            alert('请先选择SPU');
+            return;
+        }
+
+        if (delCondition.source_code.length != delCondition.spu_id.length) {
+
+            alert('data error');
+            return;
+        }
+
+        $.ajax({
+            url: '/sales_quotation/create_by_excel/del_spu_multi.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: delCondition,
+            success: function (response) {
+
+                if (response.statusCode != 0) {
+
+                    alert('批量删除失败');
+                    return;
+                }
+                alert('批量删除成功');
+                location.reload();
             }
         });
     });
