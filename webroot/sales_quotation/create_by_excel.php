@@ -43,6 +43,7 @@ foreach ($listCartData as &$cartData) {
     }
     $cartData['map_color_cost'] = $mapColorCost;
     $cartData['list_spu_info']  = $listSpuInfo;
+    $cartData['map_spu_list']   = ArrayUtility::indexByField($spuListField, 'spuId');
     unset($cartData);
 }
 

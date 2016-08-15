@@ -99,11 +99,12 @@
                                     <td><{implode(',', $spuDetail.material_value_data_list)}></td>
                                     <{foreach from=$mapColorSpecValueInfo item=colorValueData key=colorValueId}>
                                     <td>
-                                        <input type="text" class="form-control" style="width: 60px;" value="<{$sourceDetail.map_color_cost[$colorValueId]}>"<{if !$sourceDetail.map_color_cost[$colorValueId]}> disabled<{/if}>>
+                                        <{assign var='colorCost' value=$sourceDetail.map_spu_list[$spuDetail.spu_id]['mapColorCost'][$colorValueId]}>
+                                        <input type="text" name="color-cost" colorvalueid="<{$colorValueId}>" class="form-control" style="width: 66px;" value="<{if $colorCost}><{sprintf('%.2f', $colorCost)}><{/if}>"<{if !$sourceDetail.map_color_cost[$colorValueId]}> disabled<{/if}>>
                                     </td>
                                     <{/foreach}>
                                     <td>
-                                        <input type="text" class="form-control" style="width: 100px;" value="<{$spuDetail.spu_remark}>">
+                                        <input type="text" name="spu-remark" class="form-control" style="width: 100px;" value="<{$spuDetail.spu_remark}>">
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-single" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"><i class="fa fa-trash-o"></i></a>
@@ -153,6 +154,7 @@
 <{include file="section/foot.tpl"}>
 <script>
 
+    // 删除单行SPU
     $('.del-spu-single').click(function () {
 
         var sourceCode  = $(this).attr('sourcecode');
@@ -178,6 +180,37 @@
                 }
                 alert('删除成功');
                 location.reload();
+            }
+        });
+    });
+
+    // 更改颜色价格
+    $('input[name="color-cost"]').blur(function () {
+
+        var parentTR        = $(this).parents('tr.spu-single');
+        var sourceCode      = parentTR.find('.del-spu-single').attr('sourcecode');
+        var spuId           = parentTR.find('.del-spu-single').attr('spuid');
+        var colorValueId    = $(this).attr('colorvalueid');
+        var colorCost       = $(this).val();
+
+        $.ajax({
+            url: '/sales_quotation/create_by_excel/change_color_cost.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                'source_code': sourceCode,
+                'spu_id': spuId,
+                'color_value_id': colorValueId,
+                'color_cost': colorCost
+            },
+            success: function (response) {
+
+                if (response.statusCode != 0) {
+
+                    alert('更改价格失败');
+                    location.reload();
+                    return;
+                }
             }
         });
     });

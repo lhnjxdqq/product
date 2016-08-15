@@ -369,7 +369,7 @@ SQL;
                 $spuInfo        = Common_Spu::getSpuDetailById($spuId);
                 $spuListField[] = array(
                     'spuId'         => $spuInfo['spu_id'],
-                    'mapColorCost'  => $spuColorCostList,
+                    'mapColorCost'  => $rowData['color_cost'],
                     'remark'        => $spuInfo['spu_remark'],
                 );
             }
