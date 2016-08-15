@@ -83,8 +83,8 @@
                             <tbody>
                             <{foreach from=$listCartData item=sourceDetail name=sourceDetail}>
                                 <{foreach from=$sourceDetail.list_spu_info item=spuDetail}>
-                                <tr class="<{if ($smarty.foreach.sourceDetail.index % 2) == 0}>success<{else}>warning<{/if}><{if $sourceDetail.is_red_bg}> danger<{/if}>">
-                                    <td><input type="checkbox"></td>
+                                <tr class="spu-single <{if ($smarty.foreach.sourceDetail.index % 2) == 0}>success<{else}>warning<{/if}><{if $sourceDetail.is_red_bg}> danger<{/if}>">
+                                    <td><input type="checkbox" name="select"></td>
                                     <td><{$spuDetail.spu_sn}></td>
                                     <td><{$spuDetail.spu_name}></td>
                                     <td>
@@ -106,7 +106,7 @@
                                         <input type="text" class="form-control" style="width: 100px;" value="<{$spuDetail.spu_remark}>">
                                     </td>
                                     <td>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-single" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"><i class="fa fa-trash-o"></i></a>
                                     </td>
                                 </tr>
                                 <{/foreach}>
@@ -151,5 +151,36 @@
     #list-chart-data tbody td:first-child {text-align: center; vertical-align: middle;}
 </style>
 <{include file="section/foot.tpl"}>
+<script>
+
+    $('.del-spu-single').click(function () {
+
+        var sourceCode  = $(this).attr('sourcecode');
+        var spuId       = $(this).attr('spuid');
+
+        if (!sourceCode || !spuId) {
+
+            alert('参数错误');
+            return;
+        }
+        var delCondition    = sourceCode + '~' + spuId;
+        var redirect        = '/sales_quotation/create_by_excel/del_spu.php';
+        $.ajax({
+            url: redirect,
+            type: 'GET',
+            data: {'del_condition': delCondition},
+            success: function (response) {
+
+                if (response['statusCode'] != 0) {
+
+                    alert('删除失败');
+                    return false;
+                }
+                alert('删除成功');
+                location.reload();
+            }
+        });
+    });
+</script>
 </body>
 </html>

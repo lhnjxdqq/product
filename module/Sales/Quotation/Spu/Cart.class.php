@@ -165,4 +165,32 @@ class   Sales_Quotation_Spu_Cart {
 
         return  ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
     }
+
+    /**
+     * 根据主键获取数据
+     *
+     * @param $userId       用户ID
+     * @param $sourceCode   买款ID
+     * @return array
+     */
+    static public function getByPrimaryKey ($userId, $sourceCode) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `user_id` = "' . (int) $userId . '" AND `source_code` = "' . addslashes(trim($sourceCode)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param $userId       用户ID
+     * @param $sourceCode   买款ID
+     * @return int
+     */
+    static public function delByPrimaryKey ($userId, $sourceCode) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `user_id` = "' . (int) $userId . '" AND `source_code` = "' . addslashes(trim($sourceCode)) . '"';
+
+        return  self::_getStore()->execute($sql);
+    }
 }
