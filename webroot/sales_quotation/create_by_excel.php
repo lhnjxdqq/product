@@ -1,7 +1,8 @@
 <?php
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-$listSupplierInfo   = ArrayUtility::searchBy(Supplier_Info::listAll(), array('delete_status'=>Supplier_DeleteStatus::NORMAL));
+$listCustomerInfo   = Customer_Info::listAll();
+$listCustomerInfo   = ArrayUtility::searchBy($listCustomerInfo, array('delete_status'=>Customer_DeleteStatus::NORMAL));
 
 $conditionCart  = array(
     'user_id'   => (int) $_SESSION['user_id'],
@@ -19,6 +20,10 @@ $page           = new PageList(array(
 ));
 
 $listCartData       = Sales_Quotation_Spu_Cart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage);
+if (empty($listCartData)) {
+
+    Utility::notice('请上传excel文件', '/sales_quotation/upload_excel.php');
+}
 $maxCountColorList  = 0;
 foreach ($listCartData as &$cartData) {
 
@@ -53,7 +58,7 @@ $mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo
 $template = Template::getInstance();
 $template->assign('mainMenu', Menu_Info::getMainMenu());
 $template->assign('countCartData', $countCartData);
-$template->assign('listSupplierInfo', $listSupplierInfo);
+$template->assign('listCustomerInfo', $listCustomerInfo);
 $template->assign('listCartData', $listCartData);
 $template->assign('mapColorSpecValueInfo', $mapColorSpecValueInfo);
 $template->assign('pageViewData', $page->getViewData());

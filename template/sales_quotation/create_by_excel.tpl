@@ -28,7 +28,7 @@
                     <h3 class="box-title">创建销售报价单</h3>
                 </div>
                 <div class="box-body">
-                    <form action="" class="form-horizontal">
+                    <form action="/sales_quotation/create_by_excel/do_create.php" method="post" class="form-horizontal do-create-form">
                         <div class="form-group">
                             <label class="control-label col-md-2">报价单名称: </label>
                             <div class="col-md-4">
@@ -36,12 +36,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-2">选择供应商: </label>
+                            <label class="control-label col-md-2">选择客户: </label>
                             <div class="col-md-2">
-                                <select name="supplier-id" class="form-control">
-                                    <option value="0">请选择供应商</option>
-                                    <{foreach from=$listSupplierInfo item=item}>
-                                    <option value="<{$item.supplier_id}>"><{$item.supplier_code}></option>
+                                <select name="customer-id" class="form-control">
+                                    <option value="0">请选择客户</option>
+                                    <{foreach from=$listCustomerInfo item=item}>
+                                    <option value="<{$item.customer_id}>"><{$item.customer_name}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -122,6 +122,9 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
+                <div class="box-footer">
+                    <a href="javascript:void(0);" class="btn btn-primary pull-right do-create-btn"><i class="fa fa-save"></i> 提交报价单</a>
+                </div>
             </div>
             <!-- /.box -->
         </section>
@@ -289,6 +292,22 @@
                 location.reload();
             }
         });
+    });
+
+    // 创建报价单
+    $('.do-create-btn').click(function () {
+
+        if ($('input[name="sales-quotation-name"]').val() == '') {
+
+            alert('请填写报价单名称');
+            return;
+        }
+        if ($('select[name="customer-id"]').val() == 0) {
+
+            alert('请选择客户');
+            return;
+        }
+        $('.do-create-form').submit();
     });
 </script>
 </body>
