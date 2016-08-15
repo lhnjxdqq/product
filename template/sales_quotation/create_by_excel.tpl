@@ -104,7 +104,7 @@
                                     </td>
                                     <{/foreach}>
                                     <td>
-                                        <input type="text" name="spu-remark" class="form-control" style="width: 100px;" value="<{$spuDetail.spu_remark}>">
+                                        <input type="text" name="spu-remark" class="form-control" style="width: 100px;" value="<{$sourceDetail.map_spu_list[$spuDetail.spu_id]['remark']}>">
                                     </td>
                                     <td>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-single" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"><i class="fa fa-trash-o"></i></a>
@@ -211,6 +211,29 @@
                     location.reload();
                     return;
                 }
+            }
+        });
+    });
+
+    // 更改SPU备注
+    $('input[name="spu-remark"]').blur(function () {
+
+        var parentTR        = $(this).parents('tr.spu-single');
+        var sourceCode      = parentTR.find('.del-spu-single').attr('sourcecode');
+        var spuId           = parentTR.find('.del-spu-single').attr('spuid');
+        var spuRemark       = $(this).val();
+
+        $.ajax({
+            url: '/sales_quotation/create_by_excel/change_spu_remark.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                'source_code': sourceCode,
+                'spu_id': spuId,
+                'spu_remark': spuRemark
+            },
+            success: function (response) {
+                console.log(response);
             }
         });
     });
