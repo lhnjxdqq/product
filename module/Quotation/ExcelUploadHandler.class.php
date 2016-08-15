@@ -319,4 +319,58 @@ SQL;
         return                  empty($diff) ? true : $diff;
     }
 
+    /**
+     * 把Excel表里的数据写入 sales_quotation_spu_cart表
+     */
+    public function toCart () {
+
+        $mapColorHeader = array();
+        for ($column = 1; $column <= array_search(self::$_sheetHighest['column'], self::$_seedList); $column++) {
+
+            $mapColorHeader[$column]    = self::$_sheet->getCellByColumnAndRow($column, 2)->getValue();
+        }
+
+        for ($row = 3; $row <= self::$_sheetHighest['row']; $row++) {
+
+            $rowData    = array();
+            for ($column = 0; $column <= array_search(self::$_sheetHighest['column'], self::$_seedList); $column++) {
+
+                $cellValue = self::$_sheet->getCellByColumnAndRow($column, $row)->getValue();
+                if ($column == 0) {
+
+                    $rowData['source_code'] = $cellValue;
+                } else {
+
+                    if ($cellValue) {
+
+                        $colorValueData = $mapColorHeader[$column];
+                        $colorValueId = self::$_mapColorHeader[$colorValueData];
+                        $rowData['color_cost'][$colorValueId] = $cellValue;
+                    }
+
+                }
+            }
+            $listSpuColorCost   = Common_Spu::getSpuBySourceCode($rowData['source_code'], array_keys($rowData['color_cost']));
+            $listSpuId          = array_unique(ArrayUtility::listField($listSpuColorCost, 'spu_id'));
+            $spuListField       = array();
+            foreach ($listSpuId as $spuId) {
+
+                $spuInfo        = Common_Spu::getSpuDetailById($spuId);
+                $spuListField[] = array(
+                    'spuId'         => $spuId,
+                    'mapColorCost'  => $rowData['color_cost'],
+                    'remark'        => $spuInfo['spu_remark'],
+                );
+            }
+
+            $cartData   = array(
+                'user_id'       => $_SESSION['user_id'],
+                'source_code'   => $rowData['source_code'],
+                'color_cost'    => json_encode($rowData['color_cost']),
+                'spu_list'      => json_encode($spuListField),
+            );
+            Sales_Quotation_Spu_Cart::create($cartData);
+        }
+    }
+
 }
