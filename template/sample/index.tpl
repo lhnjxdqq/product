@@ -358,8 +358,7 @@
             }else{
                 
                 alert("删除成功");
-                history.go(0);
-
+                location.href='/sample/index.php';
             }
             
         }, 'json');  

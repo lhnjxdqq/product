@@ -14,4 +14,4 @@ Borrow_Info::update(array(
     'borrow_id'         => $_GET['borrow_id'],
     'sample_quantity'   => $countGoods,
 ));
-Utility::notice('删除成功');
+Utility::notice('删除成功','/sample/borrow/edit.php?borrow_id='.$_GET['borrow_id']);
