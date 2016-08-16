@@ -15,7 +15,7 @@ $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int
 $countCartData  = Sales_Quotation_Spu_Cart::countByCondition($conditionCart);
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countCartData,
-    PageList::OPT_URL       => '/sales_quotation/create_by_excel.php',
+    PageList::OPT_URL       => '/sales_quotation/create_by_excel/create.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
