@@ -295,6 +295,7 @@
     });
 
     // 创建报价单
+    var createFormSubmitting    = false;
     $('.do-create-btn').click(function () {
 
         if ($('input[name="sales-quotation-name"]').val() == '') {
@@ -307,6 +308,12 @@
             alert('请选择客户');
             return;
         }
+        if (createFormSubmitting) {
+
+            alert('表单正在提交...');
+            return;
+        }
+        createFormSubmitting    = true;
         $('.do-create-form').submit();
     });
 </script>

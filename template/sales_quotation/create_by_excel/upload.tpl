@@ -28,13 +28,13 @@
                     <h3 class="box-title">上传销售报价单</h3>
                 </div>
                 <div class="box-body">
-                    <form action="/sales_quotation/create_by_excel/do_upload.php" method="post" enctype="multipart/form-data">
+                    <form action="/sales_quotation/create_by_excel/do_upload.php" id="upload-form" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label>选择excel文件</label>
                             <input type="file" name="excel_file">
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-primary" type="submit">上传</button>
+                            <button class="btn btn-primary" type="submit" id="upload-form-btn">上传</button>
                         </div>
                     </form>
                 </div>
@@ -62,5 +62,16 @@
 <!-- ./wrapper -->
 
 <{include file="section/foot.tpl"}>
+<script>
+    var uploadFormSubmitting    = false;
+    $('#upload-form-btn').click(function () {
+        if (uploadFormSubmitting) {
+
+            alert('正在上传...');
+            return;
+        }
+        uploadFormSubmitting    = true;
+    });
+</script>
 </body>
 </html>
