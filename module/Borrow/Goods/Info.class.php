@@ -102,7 +102,7 @@ class   Borrow_Goods_Info {
      * @param   int $borrowId  借版id
      * @return  array          数据
      */
-     static  public function getByUserId ($userId) {
+     static  public function getByBorrowId ($borrowId) {
 
         $sql    = 'SELECT '. self::FIELDS .' FROM `' . self::_tableName() . "` WHERE `borrow_id` = '" . (int) $borrowId . "'";
         
