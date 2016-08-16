@@ -28,7 +28,7 @@
                     <h3 class="box-title">上传销售报价单</h3>
                 </div>
                 <div class="box-body">
-                    <form action="/sales_quotation/do_upload_excel.php" method="post" enctype="multipart/form-data">
+                    <form action="/sales_quotation/create_by_excel/do_upload.php" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label>选择excel文件</label>
                             <input type="file" name="excel_file">

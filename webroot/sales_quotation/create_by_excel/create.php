@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/../../init.inc.php';
+require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $listCustomerInfo   = Customer_Info::listAll();
 $listCustomerInfo   = ArrayUtility::searchBy($listCustomerInfo, array('delete_status'=>Customer_DeleteStatus::NORMAL));
@@ -22,7 +22,7 @@ $page           = new PageList(array(
 $listCartData       = Sales_Quotation_Spu_Cart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage);
 if (empty($listCartData)) {
 
-    Utility::notice('请上传excel文件', '/sales_quotation/upload_excel.php');
+    Utility::notice('请上传excel文件', '/sales_quotation/create_by_excel/upload.php');
 }
 $maxCountColorList  = 0;
 foreach ($listCartData as &$cartData) {
@@ -62,4 +62,4 @@ $template->assign('listCustomerInfo', $listCustomerInfo);
 $template->assign('listCartData', $listCartData);
 $template->assign('mapColorSpecValueInfo', $mapColorSpecValueInfo);
 $template->assign('pageViewData', $page->getViewData());
-$template->display('sales_quotation/create_by_excel.tpl');
+$template->display('sales_quotation/create_by_excel/create.tpl');
