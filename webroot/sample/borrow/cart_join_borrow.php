@@ -44,7 +44,6 @@ Borrow_Info::update(array(
     'borrow_id'         => $_GET['borrow_id'],
     'sample_quantity'   => $countGoods,
 ));
-
 $strArray[] = '合并成功';
 if($addNum>0){
     $strArray[] ='成功添加样板数:'.$addNum;
