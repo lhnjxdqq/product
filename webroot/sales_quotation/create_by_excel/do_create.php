@@ -52,7 +52,12 @@ foreach ($listCartData as $cartData) {
         }
     }
 }
+// 统计款数
+Sales_Quotation_Info::update(array(
+    'sales_quotation_id'    => $salesQuotationId,
+    'spu_num'               => Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId),
+));
 
 // 清空购物车数据
 Sales_Quotation_Spu_Cart::deleteByUser($userId);
-Utility::notice('创建生产订单成功', '/sales_quotation/create_by_excel/upload.php');
+Utility::notice('创建生产订单成功', '/sales_quotation/index.php');
