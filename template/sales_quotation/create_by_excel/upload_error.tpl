@@ -33,7 +33,7 @@
                         <li><{$item}></li>
                     <{/foreach}>
                     </ul>
-                    <a href="/sales_quotation/upload_excel.php" class="btn btn-primary"><i class="fa fa-undo"></i> 返回</a>
+                    <a href="/sales_quotation/create_by_excel/upload.php" class="btn btn-primary"><i class="fa fa-undo"></i> 返回</a>
                 </div>
             </div>
         </section>
