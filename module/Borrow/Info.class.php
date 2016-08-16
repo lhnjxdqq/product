@@ -198,7 +198,38 @@ class   Borrow_Info {
 
         return ' LIMIT ' . (int) $offset . ',' . (int) $limit;
     }
+    
+    /**
+     *  根据ID获取数据
+     *
+     *  @param  int $borrowId  借版ID
+     *  @return array          数据         
+     */
+    static  public function getByBorrowId($borrowId){
         
+        Validate::testNull($borrowId,'借版Id不能为空');
+        
+        $sql = "SELECT " . self::FIELDS . " FROM " . self::TABLE_NAME . " WHERE `borrow_id`=" . $borrowId;
+        
+        return self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 删除
+     *
+     * @param   array   $borrowId   借版ID
+     */
+    static  public  function delete ($borrowId) {
+
+        if(empty($borrowId)){
+            
+            return ;
+        }
+        $condition  = "`borrow_id` = " . $borrowId;
+
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
+    
     /**
      * 更新
      *
