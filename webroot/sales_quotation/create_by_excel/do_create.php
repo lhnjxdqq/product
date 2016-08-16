@@ -55,4 +55,4 @@ foreach ($listCartData as $cartData) {
 
 // 清空购物车数据
 Sales_Quotation_Spu_Cart::deleteByUser($userId);
-Utility::notice('创建生产订单成功', '/sales_quotation/upload_excel.php');
+Utility::notice('创建生产订单成功', '/sales_quotation/create_by_excel/upload.php');
