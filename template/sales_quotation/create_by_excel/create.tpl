@@ -168,6 +168,11 @@
             alert('参数错误');
             return;
         }
+
+        if (!confirm('确定删除?')) {
+
+            return;
+        }
         var delCondition    = sourceCode + '~' + spuId;
         var redirect        = '/sales_quotation/create_by_excel/del_spu.php';
         $.ajax({
@@ -273,6 +278,11 @@
         if (delCondition.source_code.length != delCondition.spu_id.length) {
 
             alert('data error');
+            return;
+        }
+
+        if (!confirm('确定要批量删除这些SPU吗?')) {
+
             return;
         }
 
