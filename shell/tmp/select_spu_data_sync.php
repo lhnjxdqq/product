@@ -3,9 +3,11 @@ require_once dirname(__FILE__) . '/../../init.inc.php';
 
 $params             = Cmd::getParams($argv);
 $syncSpuListFile    = $params['file'];
-$resultFile         = LOG . 'sync_result.log';
-$spuSyncDataFile    = LOG . 'sync_spu.log';
-$skuSyncDataFile    = LOG . 'sync_sku.log';
+$baseDir            = LOG . 'sync/';
+is_dir($baseDir) || mkdir($baseDir, 0777, true);
+$resultFile         = $baseDir . 'result_' . date('Ymd') . '.log';
+$spuSyncDataFile    = $baseDir . 'spu_' . date('Ymd') . '.log';
+$skuSyncDataFile    = $baseDir . 'sku_' . date('Ymd') . '.log';
 
 if (!$syncSpuListFile) {
 
@@ -142,4 +144,4 @@ if ($resultInfo['empty_list']) {
 }
 
 file_put_contents($resultFile, $result);
-exit("done! \n查看结果 cat logs/sync_result.log\n");
+exit("\ndone! \n\n执行结果:{$resultFile}\nSKU同步日志文件:{$skuSyncDataFile}\nSPU同步日志文件:{$spuSyncDataFile}\n\n");
