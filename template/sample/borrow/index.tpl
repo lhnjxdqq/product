@@ -74,39 +74,56 @@
                         </div>
                     </form>
                 </div>
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="user-list">
-                            <thead>
-                                <tr>
-                                    <th>销售员</th>
-                                    <th>借板时间</th>
-                                    <th>样板数量</th>
-                                    <th>客户名称</th>
-                                    <th>状态</th>
-                                    <th>预计归还时间</th>
-                                    <th>归还时间</th>
-                                    <th>备注</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <{foreach from=$listBorrowInfo item=item}>
+                <!-- /.box -->
+                <div class="box">
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="user-list">
+                                <thead>
                                     <tr>
-                                        <td><{$salespersonInfo[$item.salesperson_id]['salesperson_name']}></td>
-                                        <td><{$item.borrow_time}></td>
-                                        <td><{$item.sample_quantity}></td>
-                                        <td><{$customerInfo[$item.customer_id]['customer_name']}></td>
-                                        <td><{$borrowStatusInfo[$item.status_id]['status_name']}></td>
-                                        <td><{$item.estimate_return_time}></td>
-                                        <td><{$item.return_time}></td>
-                                        <td><{$item.remark}></td>
+                                        <th>销售员</th>
+                                        <th>借板时间</th>
+                                        <th>样板数量</th>
+                                        <th>客户名称</th>
+                                        <th>状态</th>
+                                        <th>预计归还时间</th>
+                                        <th>归还时间</th>
+                                        <th>备注</th>
+                                        <th style='text-align:center;width:150px'>操作</th>
                                     </tr>
-                                <{/foreach}>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <{foreach from=$listBorrowInfo item=item}>
+                                        <tr>
+                                            <td><{$salespersonInfo[$item.salesperson_id]['salesperson_name']}></td>
+                                            <td><{$item.borrow_time}></td>
+                                            <td><{$item.sample_quantity}></td>
+                                            <td><{$customerInfo[$item.customer_id]['customer_name']}></td>
+                                            <td><{$borrowStatusInfo[$item.status_id]['status_name']}></td>
+                                            <td><{$item.estimate_return_time}></td>
+                                            <td><{$item.return_time}></td>
+                                            <td><{$item.remark}></td>
+                                            <td>
+                                                <{if $item.status_id == 1 }>
+                                                <a href="/sample/borrow/edit.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>编辑</a>
+                                                <a href="/sample/borrow/issue.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>出库</a>
+                                                <a href="/sample/borrow/delete.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>删除</a>
+                                                <{/if}>
+                                                <{if $item.status_id == 2 || $item.status_id == 3}>
+                                                <a href="/sample/borrow/detail.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>查看</a>
+                                                <{/if}>
+                                                <{if $item.status_id ==2 }>
+                                                <a href="/sample/borrow/return.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>归还</a>
+                                                <{/if}>
+                                            </td>
+                                        </tr>
+                                    <{/foreach}>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                    <!-- /.box-body -->
                 </div>
-                <!-- /.box-body -->
                 <div class="box-footer clearfix">
                     <{include file="section/pagelist.tpl" viewData=$pageViewData}>
                 </div>
