@@ -156,7 +156,7 @@ class Quotation_ExcelUploadHandler {
         $mapSourceCodeCountTimes    = array();
         for ($row = 3; $row <= self::$_sheetHighest['row']; $row++) {
 
-            $sourceCodeList[$row]   = self::$_sheet->getCellByColumnAndRow(0, $row)->getValue();
+            $sourceCodeList[$row]   = (string) self::$_sheet->getCellByColumnAndRow(0, $row)->getValue();
         }
 
         foreach ($sourceCodeList as $row => $sourceCode) {
