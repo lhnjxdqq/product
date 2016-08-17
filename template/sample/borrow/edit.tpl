@@ -149,8 +149,8 @@ $(function(){
 
                 return  ;
             }else{
-            
-                history.go(0);
+                
+                location.href='/sample/borrow/edit.php?borrow_id=<{$smarty.get.borrow_id}>';
             }
             
         }, 'json');  
