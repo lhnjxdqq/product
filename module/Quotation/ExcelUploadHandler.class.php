@@ -253,8 +253,12 @@ class Quotation_ExcelUploadHandler {
                     $colorValueIdList[] = self::$_mapColorHeader[$colorValueData];
                 }
             }
+            $spuList    = Common_Spu::getSpuBySourceCode($sourceCode, $colorValueIdList);
+            if (empty($spuList)) {
 
-            $diff   = $this->_queryProduct($sourceCode, $colorValueIdList);
+                throw new ApplicationException('第' . $row . '行买款ID【' . $sourceCode . '】查询不到有效的SPU');
+            }
+            $diff       = $this->_queryProduct($sourceCode, $colorValueIdList);
             if (is_array($diff) && !empty($diff)) {
 
                 $mapColorHeader = array_flip(self::$_mapColorHeader);
@@ -280,6 +284,7 @@ class Quotation_ExcelUploadHandler {
         $sourceCode             = addslashes(trim($sourceCode));
         $colorValueIdList       = array_map('intval', array_unique(array_filter($colorValueIdList)));
         $colorValueIdCondition  = implode('","', $colorValueIdList);
+        $deleteStatus           = Product_DeleteStatus::NORMAL;
         $colorSpecId            = self::$_colorSpecId;
         $sql                    =<<<SQL
 SELECT
@@ -305,6 +310,8 @@ AND
     `gsvr`.`spec_value_id` IN ("{$colorValueIdCondition}")
 AND
     `si`.`source_code`='{$sourceCode}'
+AND
+    `pi`.`delete_status`= "{$deleteStatus}"
 ORDER BY
     `pi`.`product_cost` ASC)
 AS `alias`
@@ -367,11 +374,14 @@ SQL;
                     }
                 }
                 $spuInfo        = Common_Spu::getSpuDetailById($spuId);
-                $spuListField[] = array(
-                    'spuId'         => $spuInfo['spu_id'],
-                    'mapColorCost'  => $rowData['color_cost'],
-                    'remark'        => $spuInfo['spu_remark'],
-                );
+                if ($spuInfo) {
+
+                    $spuListField[] = array(
+                        'spuId' => $spuInfo['spu_id'],
+                        'mapColorCost' => $rowData['color_cost'],
+                        'remark' => $spuInfo['spu_remark'],
+                    );
+                }
             }
 
             $cartData   = array(
@@ -381,7 +391,10 @@ SQL;
                 'spu_list'      => json_encode($spuListField),
                 'is_red_bg'     => $isRedBackground,
             );
-            Sales_Quotation_Spu_Cart::create($cartData);
+            if ($spuListField) {
+
+                Sales_Quotation_Spu_Cart::create($cartData);
+            }
         }
     }
 
