@@ -9,12 +9,12 @@ $skuSyncDataFile    = LOG . 'sync_sku.log';
 
 if (!$syncSpuListFile) {
 
-    exit("参数错误\n");
+    exit("缺少--file参数\n");
 }
 
 if (!is_file($syncSpuListFile)) {
 
-    exit("待同步的SPU列表文件不存在\n");
+    exit("待同步的SPU编号列表文件不存在\n");
 }
 
 $csv                = CSVIterator::load($syncSpuListFile, array());
