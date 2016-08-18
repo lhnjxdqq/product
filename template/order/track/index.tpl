@@ -139,7 +139,7 @@
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].arrival_to_warehousing standard=$standard.arrival_to_warehousing}>><{$mapOrderAmount[$orderCode].arrival_to_warehousing}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].warehousing_to_shipment standard=$standard.warehousing_to_shipment}>><{$mapOrderAmount[$orderCode].warehousing_to_shipment}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].shipment_to_return_money standard=$standard.shipment_to_return_money}>><{$mapOrderAmount[$orderCode].shipment_to_return_money}></td>
-                                    <td><{if $mapOrderAmount[$orderCode].total_order_quantity}><{($mapOrderAmount[$orderCode].listShipmentQuantity / $mapOrderAmount[$orderCode].total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
+                                    <td><{if $mapOrderAmount[$orderCode].total_order_quantity}><{($mapOrderAmount[$orderCode].total_shipment_quantity / $mapOrderAmount[$orderCode].total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].carry_to_shipment standard=$standard|array_sum}>><{$mapOrderAmount[$orderCode].carry_to_shipment}></td>
                                     <td>
                                         <button type="button" class="btn btn-default btn-xs act-show-batch" data-order-code="<{$orderCode}>">详情 <i class="fa fa-plus-square-o"></i></button>
@@ -158,7 +158,7 @@
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.arrival_to_warehousing standard=$standard.arrival_to_warehousing}>><{$batchInfo.arrival_to_warehousing}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.warehousing_to_shipment standard=$standard.warehousing_to_shipment}>><{$batchInfo.warehousing_to_shipment}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.shipment_to_return_money standard=$standard.shipment_to_return_money}>><{$batchInfo.shipment_to_return_money}></td>
-                                    <td><{if $batchInfo.total_order_quantity}><{($batchInfo.listShipmentQuantity / $batchInfo.total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
+                                    <td><{if $batchInfo.total_order_quantity}><{($batchInfo.total_shipment_quantity / $batchInfo.total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.carry_to_shipment standard=$standard|array_sum}>><{$batchInfo.carry_to_shipment}></td>
                                     <td>
                                         <a href="/order/track/detail.php?order_code=<{$orderCode|urlencode}>&amp;batch_code=<{$batchCode|urlencode}>" class="btn btn-default btn-xs">查看清单</a>
