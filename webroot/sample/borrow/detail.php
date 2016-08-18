@@ -87,9 +87,7 @@ $listMaterialSpecValueId    = array_unique(ArrayUtility::listField($listMaterial
 $listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecValueId);
 $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
 
-$listGoodsInfo              = isset($condition['category_id'])
-                              ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 20)
-                              : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
+$listGoodsInfo              = $countGoods <= 0 ? array() : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);

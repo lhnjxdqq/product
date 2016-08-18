@@ -42,6 +42,7 @@ foreach ($listGoodsInfo as $goodsInfo) {
         'goodsSn'       => $goodsInfo['goods_sn'],
         'skuName'       => $goodsInfo['goods_name'],
         'categoryId'    => $goodsInfo['category_id'],
+        'styleId'       => $goodsInfo['style_id'],
         'selfCost'      => $goodsInfo['self_cost'],
         'saleCost'      => $goodsInfo['sale_cost'],
         'remark'        => $goodsInfo['goods_remark'],

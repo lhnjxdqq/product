@@ -39,6 +39,21 @@ Borrow_Info::update(array(
     'borrow_id'         => $_POST['borrow_id'],
     'sample_quantity'   => $countGoods,
 ));
+
+$taskInfo   = Borrow_Export_Task::getByBorrowId($_GET['borrow_id']);
+if(empty($taskInfo)){
+            
+    Borrow_Export_Task::create(array(
+        'borrow_id'       => $_GET['borrow_id'],
+        'export_status'   => Product_Export_RunStatus::STANDBY,
+    ));
+}else{
+     
+    Borrow_Export_Task::update(array(
+        'task_id'         => $taskInfo['task_id'],
+        'export_status'   => Product_Export_RunStatus::STANDBY,
+    ));   
+}
 $response   = array(
             'code'      => 0,
             'message'   => '批量删除成功',
