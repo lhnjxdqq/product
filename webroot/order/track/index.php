@@ -84,6 +84,7 @@ foreach ($groupInfoByOrder as $orderCode => $listInfo) {
 
     $listOrderQuantity          = array_filter(ArrayUtility::listField($listInfo, 'order_quantity'));
     $listShipmentQuantity       = array_filter(ArrayUtility::listField($listInfo, 'shipment_quantity'));
+    $listOrderStatus            = array_filter(ArrayUtility::listField($listInfo, 'order_status'));
     $groupInfoByBatchCode       = ArrayUtility::groupByField($listInfo, 'batch_code_supplier');
     $amountByBatch              = array();
 
