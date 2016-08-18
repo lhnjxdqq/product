@@ -31,16 +31,12 @@
                         <tr>
                             <th>报价单名称</th>
                             <td><{$salesQuotationInfo['sales_quotation_name']}></td>
-                        </tr>
-                        <tr>
                             <th>客户名称</th>
                             <td><{$indexCustomerId[$salesQuotationInfo['customer_id']]['customer_name']}></td>
                         </tr>
                         <tr>
                             <th>商品数量</th>
                             <td><{$salesQuotationInfo['spu_num']}></td>
-                        </tr>
-                        <tr>
                             <th>创建日期</th>
                             <td><{$salesQuotationInfo['sales_quotation_date']}></td>
                         </tr>
