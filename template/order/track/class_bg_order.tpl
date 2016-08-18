@@ -1,0 +1,1 @@
+<{foreach $amount as $field => $number}><{if NULL === $number}><{continue}><{/if}><{if ($standard[$field] * 0.5) <= $number}> class="track-day-danger"<{break}><{/if}><{if ($standard[$field] * 0.3) <= $number && ($standard * 0.5) > $number}> class="track-day-warnning"<{break}><{/if}><{/foreach}>
