@@ -146,8 +146,12 @@ $standard           = array(
     'warehousing_to_shipment'   => 1,
     'shipment_to_return_money'  => 5,
 );
+$data   = array(
+    'mainMenu'      => Menu_Info::getMainMenu()
+);
 
 $template           = Template::getInstance();
+$template->assign('data', $data);
 $template->assign('listCustomerName', $listCustomerName);
 $template->assign('listSalesName', $listSalesName);
 $template->assign('listOrderCode', $listOrderCode);
