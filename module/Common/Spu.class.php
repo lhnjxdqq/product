@@ -65,7 +65,8 @@ SQL;
         $multiColorValueId      = array_map('intval', array_unique($multiColorValueId));
         $multiColorValueIdStr   = implode('","', $multiColorValueId);
         $deleteStatus           = Spu_DeleteStatus::NORMAL;
-        $sql                =<<<SQL
+        $onlineStatus           = Spu_OnlineStatus::ONLINE;
+        $sql                    =<<<SQL
 SELECT
     *
 FROM
@@ -92,6 +93,8 @@ AND
     `color_info`.`spec_value_id` IN ("{$multiColorValueIdStr}")
 AND
     `spu_info`.`delete_status`="{$deleteStatus}"
+AND
+    `spu_info`.`online_status`="{$onlineStatus}"
 ORDER BY
     `product_info`.`product_cost` ASC
 ) AS `alias`

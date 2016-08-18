@@ -41,6 +41,28 @@ class   CSVIterator implements
     }
 
     /**
+     * 根据表头和配置货物格式
+     *
+     * @param   array       $head   表头
+     * @param   array       $config 配置
+     * @return  array               格式
+     */
+    static  public  function getFormatByHead ($head, $config) {
+
+        $format = array();
+
+        foreach ($head as $offset => $item) {
+
+            if (isset($config[$item])) {
+
+                $format[$offset]    = $config[$item];
+            }
+        }
+
+        return  $format;
+    }
+
+    /**
      * 构造函数
      *
      * @param   string      $path       文件路径
