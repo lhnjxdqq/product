@@ -29,5 +29,10 @@ foreach($listGoodsId as $goodsId){
         'goods_id'  => $goodsId,
     ));
 }
+Borrow_Export_Task::create(array(
+    'borrow_id'         => $borrowId,
+    'export_status'     => Borrow_Export_Status::STANDBY,
+));
+
 Cart_Sample_Info::cleanByUserId($userId);
 Utility::redirect('/sample/borrow/index.php');

@@ -89,7 +89,7 @@
                                         <th>预计归还时间</th>
                                         <th>归还时间</th>
                                         <th>备注</th>
-                                        <th style='text-align:center;width:150px'>操作</th>
+                                        <th style='text-align:center;width:250px'>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,6 +115,7 @@
                                                 <{if $item.status_id ==2 }>
                                                 <a href="/sample/borrow/return.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>归还</a>
                                                 <{/if}>
+                                                <{if $taskInfo[$item.borrow_id]['export_filepath'] != '' && $taskInfo[$item.borrow_id]['export_status'] == 3}><a href='/sample/borrow/download.php?borrow_id=<{$item.borrow_id}>' class='btn btn-primary btn-xs'>下载</a><{else}>文件正在生成中<{/if}>
                                             </td>
                                         </tr>
                                     <{/foreach}>

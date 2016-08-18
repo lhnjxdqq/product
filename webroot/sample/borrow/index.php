@@ -25,6 +25,8 @@ $page           = new PageList(array(
 ));
 
 $listBorrowInfo    = Borrow_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+$listBorrowId      = ArrayUtility::listField($listBorrowInfo,'borrow_id');
+$taskInfo          = ArrayUtility::indexByField(Borrow_Export_Task::getByMultiBorrowId($listBorrowId),'borrow_id');
 
 $template       = Template::getInstance();
 
@@ -33,6 +35,7 @@ $template->assign('condition',$condition);
 $template->assign('customerInfo',$customerInfo);
 $template->assign('salespersonInfo',$salespersonInfo);
 $template->assign('borrowStatusInfo',$borrowStatusInfo);
+$template->assign('taskInfo',$taskInfo);
 $template->assign('listBorrowInfo',$listBorrowInfo);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('sample/borrow/index.tpl');
