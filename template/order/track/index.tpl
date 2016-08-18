@@ -149,7 +149,7 @@
                                 </tr>
 <{foreach $mapOrderAmount[$orderCode].amount_by_batch as $batchCode => $batchInfo}>
                                 <tr style="display:none;" class="batch-data track-day-batch" data-order-code="<{$orderCode}>">
-                                    <td<{include file="order/track/class_bg_order.tpl" amount=$batchInfo standard=$standard}>><{$batchCode}></td>
+                                    <td<{include file="order/track/class_bg_order.tpl" amount=$batchInfo standard=$standard}>><{$batchInfo.supplier_code}> : <{$batchCode}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.carry_sample_to_order standard=$standard.carry_sample_to_order}>><{$batchInfo.carry_sample_to_order}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.order_to_supplier standard=$standard.order_to_supplier}>><{$batchInfo.order_to_supplier}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.confirm_to_supplier standard=$standard.confirm_to_supplier}>><{$batchInfo.confirm_to_supplier}></td>
@@ -163,7 +163,7 @@
                                     <td>
                                         <a href="/order/track/detail.php?order_code=<{$orderCode|urlencode}>&amp;batch_code=<{$batchCode|urlencode}>" class="btn btn-default btn-xs">查看清单</a>
                                     </td>
-                                    <td><{$mapOrderStatusLang[$batchInfo.order_status]}></td>
+                                    <td></td>
                                 </tr>
 <{/foreach}>
 <{/foreach}>
