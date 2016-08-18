@@ -66,10 +66,10 @@ foreach ($listInfo as & $info) {
     $info['arrival_to_warehousing'] = $dateFilter($info['warehousing_time']) && $dateFilter($info['arrival_date_supplier'])
                                     ? $dayDiff($info['warehousing_time'], $info['arrival_date_supplier'])
                                     : NULL;
-    $info['arrival_to_warehousing'] = $dateFilter($info['warehousing_time']) && $dateFilter($info['shipment_time'])
+    $info['warehousing_to_shipment']= $dateFilter($info['warehousing_time']) && $dateFilter($info['shipment_time'])
                                     ? $dayDiff($info['warehousing_time'], $info['shipment_time'])
                                     : NULL;
-    $info['warehousing_to_shipment']= $dateFilter($info['return_money_time']) && $dateFilter($info['shipment_time'])
+    $info['shipment_to_return_money']= $dateFilter($info['return_money_time']) && $dateFilter($info['shipment_time'])
                                     ? $dayDiff($info['return_money_time'], $info['shipment_time'])
                                     : NULL;
     $info['carry_to_shipment']      = $dateFilter($info['carry_sample_date']) && $dateFilter($info['shipment_time'])
