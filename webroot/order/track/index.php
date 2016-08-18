@@ -15,12 +15,11 @@ $page               = new PageList(array(
 ));
 $listOrderCode      = array_filter(ArrayUtility::listField(Order_Track_Info::groupOrderCodeByCondition($_GET, array('order_date' => 'DESC'), $page->getOffset(), $perpage), 'order_code'));
 $listInfo           = Order_Track_Info::listByCondition(array('order_code'=>$listOrderCode));
-$groupInfoByOrder   = ArrayUtility::groupByField($listInfo, 'order_code');
 $dateFilter         = function ($text) {
 
     return  !empty($text) && strtotime($text) > 0;
 };
-$dateBorder         = function ($listDate, $direct) {
+$dateBorder         = function ($listDate, $direct = 'max') {
 
     if (empty($listDate)) {
 
@@ -47,88 +46,83 @@ $dayDiff            = function ($dateA, $dateB) {
     return  ceil(abs(strtotime($dateA) - strtotime($dateB)) / 86400);
 };
 
+foreach ($listInfo as & $info) {
+
+    $info['carry_sample_to_order']  = $dateFilter($info['carry_sample_date']) && $dateFilter($info['order_date'])
+                                    ? $dayDiff($info['carry_sample_date'], $info['order_date'])
+                                    : NULL;
+    $info['order_to_supplier']      = $dateFilter($info['order_date_supplier']) && $dateFilter($info['order_date'])
+                                    ? $dayDiff($info['order_date_supplier'], $info['order_date'])
+                                    : NULL;
+    $info['confirm_to_supplier']    = $dateFilter($info['order_date_supplier']) && $dateFilter($info['confirm_date_supplier'])
+                                    ? $dayDiff($info['order_date_supplier'], $info['confirm_date_supplier'])
+                                    : NULL;
+    $info['delivery_to_supplier']   = $dateFilter($info['delivery_date_supplier']) && $dateFilter($info['confirm_date_supplier'])
+                                    ? $dayDiff($info['delivery_date_supplier'], $info['confirm_date_supplier'])
+                                    : NULL;
+    $info['arrival_to_supplier']    = $dateFilter($info['delivery_date_supplier']) && $dateFilter($info['arrival_date_supplier'])
+                                    ? $dayDiff($info['delivery_date_supplier'], $info['arrival_date_supplier'])
+                                    : NULL;
+    $info['arrival_to_warehousing'] = $dateFilter($info['warehousing_time']) && $dateFilter($info['arrival_date_supplier'])
+                                    ? $dayDiff($info['warehousing_time'], $info['arrival_date_supplier'])
+                                    : NULL;
+    $info['arrival_to_warehousing'] = $dateFilter($info['warehousing_time']) && $dateFilter($info['shipment_time'])
+                                    ? $dayDiff($info['warehousing_time'], $info['shipment_time'])
+                                    : NULL;
+    $info['warehousing_to_shipment']= $dateFilter($info['return_money_time']) && $dateFilter($info['shipment_time'])
+                                    ? $dayDiff($info['return_money_time'], $info['shipment_time'])
+                                    : NULL;
+    $info['carry_to_shipment']      = $dateFilter($info['carry_sample_date']) && $dateFilter($info['shipment_time'])
+                                    ? $dayDiff($info['carry_sample_date'], $info['shipment_time'])
+                                    : NULL;
+}
+
+$groupInfoByOrder   = ArrayUtility::groupByField($listInfo, 'order_code');
 $mapOrderAmount     = array();
 
 foreach ($groupInfoByOrder as $orderCode => $listInfo) {
 
-    $listCarrySampleDate        = array_filter(ArrayUtility::listField($listInfo, 'carry_sample_date'), $dateFilter);
-    $listOrderDate              = array_filter(ArrayUtility::listField($listInfo, 'order_date'), $dateFilter);
-    $listOrderSupplierDate      = array_filter(ArrayUtility::listField($listInfo, 'order_date_supplier'), $dateFilter);
-    $listConfirmSupplierDate    = array_filter(ArrayUtility::listField($listInfo, 'confirm_date_supplier'), $dateFilter);
-    $listDeliverySupplierDate   = array_filter(ArrayUtility::listField($listInfo, 'delivery_date_supplier'), $dateFilter);
-    $listArrivalSupplierDate    = array_filter(ArrayUtility::listField($listInfo, 'arrival_date_supplier'), $dateFilter);
-    $listWarehousingDate        = array_filter(ArrayUtility::listField($listInfo, 'warehousing_time'), $dateFilter);
-    $listShipmentDate           = array_filter(ArrayUtility::listField($listInfo, 'shipment_time'), $dateFilter);
-    $listReturnMoneyDate        = array_filter(ArrayUtility::listField($listInfo, 'return_money_time'), $dateFilter);
     $listOrderQuantity          = array_filter(ArrayUtility::listField($listInfo, 'order_quantity'));
     $listShipmentQuantity       = array_filter(ArrayUtility::listField($listInfo, 'shipment_quantity'));
-    $listOrderStatus            = array_filter(ArrayUtility::listField($listInfo, 'order_status'));
-    $minCarrySampleDate         = $dateBorder($listCarrySampleDate, 'min');
-    $maxOrderDate               = $dateBorder($listOrderDate, 'max');
-    $maxOrderSupplierDate       = $dateBorder($listOrderSupplierDate, 'max');
-    $maxConfirmSupplierDate     = $dateBorder($listConfirmSupplierDate, 'max');
-    $maxDeliverySupplierDate    = $dateBorder($listDeliverySupplierDate, 'max');
-    $maxArrivalSupplierDate     = $dateBorder($listArrivalSupplierDate, 'max');
-    $maxWarehousingDate         = $dateBorder($listWarehousingDate, 'max');
-    $maxShipmentDate            = $dateBorder($listShipmentDate, 'max');
-    $maxReturnMoneyDate         = $dateBorder($listReturnMoneyDate, 'max');
     $groupInfoByBatchCode       = ArrayUtility::groupByField($listInfo, 'batch_code_supplier');
     $amountByBatch              = array();
 
     foreach ($groupInfoByBatchCode as $batchCode => $listBatchInfo) {
 
-        $listCarrySampleDateBatch       = array_filter(ArrayUtility::listField($listBatchInfo, 'carry_sample_date'), $dateFilter);
-        $listOrderDateBatch             = array_filter(ArrayUtility::listField($listBatchInfo, 'order_date'), $dateFilter);
-        $listOrderSupplierDateBatch     = array_filter(ArrayUtility::listField($listBatchInfo, 'order_date_supplier'), $dateFilter);
-        $listConfirmSupplierDateBatch   = array_filter(ArrayUtility::listField($listBatchInfo, 'confirm_date_supplier'), $dateFilter);
-        $listDeliverySupplierDateBatch  = array_filter(ArrayUtility::listField($listBatchInfo, 'delivery_date_supplier'), $dateFilter);
-        $listArrivalSupplierDateBatch   = array_filter(ArrayUtility::listField($listBatchInfo, 'arrival_date_supplier'), $dateFilter);
-        $listWarehousingDateBatch       = array_filter(ArrayUtility::listField($listBatchInfo, 'warehousing_time'), $dateFilter);
-        $listShipmentDateBatch          = array_filter(ArrayUtility::listField($listBatchInfo, 'shipment_time'), $dateFilter);
-        $listReturnMoneyDateBatch       = array_filter(ArrayUtility::listField($listBatchInfo, 'return_money_time'), $dateFilter);
         $listOrderQuantityBatch         = array_filter(ArrayUtility::listField($listBatchInfo, 'order_quantity'));
         $listShipmentQuantityBatch      = array_filter(ArrayUtility::listField($listBatchInfo, 'shipment_quantity'));
         $listOrderStatusBatch           = array_filter(ArrayUtility::listField($listBatchInfo, 'order_status'));
-        $minCarrySampleDateBatch        = $dateBorder($listCarrySampleDateBatch, 'min');
-        $maxOrderDateBatch              = $dateBorder($listOrderDateBatch, 'max');
-        $maxOrderSupplierDateBatch      = $dateBorder($listOrderSupplierDateBatch, 'max');
-        $maxConfirmSupplierDateBatch    = $dateBorder($listConfirmSupplierDateBatch, 'max');
-        $maxDeliverySupplierDateBatch   = $dateBorder($listDeliverySupplierDateBatch, 'max');
-        $maxArrivalSupplierDateBatch    = $dateBorder($listArrivalSupplierDateBatch, 'max');
-        $maxWarehousingDateBatch        = $dateBorder($listWarehousingDateBatch, 'max');
-        $maxShipmentDateBatch           = $dateBorder($listShipmentDateBatch, 'max');
-        $maxReturnMoneyDateBatch        = $dateBorder($listReturnMoneyDateBatch, 'max');
         $currentByBatch                 = array(
-            'carry_sample_to_order'     => $dayDiff($minCarraySampleDateBatch, $maxOrderDateBatch),
-            'order_to_supplier'         => $dayDiff($maxOrderSupplierDateBatch, $maxOrderDateBatch),
-            'confirm_to_supplier'       => $dayDiff($maxConfirmSupplierDateBatch, $maxOrderSupplierDateBatch),
-            'delivery_to_supplier'      => $dayDiff($maxConfirmSupplierDateBatch, $maxDeliverySupplierDateBatch),
-            'arrival_to_supplier'       => $dayDiff($maxArrivalSupplierDateBatch, $maxDeliverySupplierDateBatch),
-            'arrival_to_warehousing'    => $dayDiff($maxArrivalSupplierDateBatch, $maxWarehousingDate),
-            'warehousing_to_shipment'   => $dayDiff($maxShipmentDateBatch, $maxWarehousingDateBatch),
-            'shipment_to_return_money'  => $dayDiff($maxShipmentDateBatch, $maxReturnMoneyDateBatch),
+            'carry_sample_to_order'     => $dateBorder(ArrayUtility::listField($listBatchInfo, 'carry_sample_to_order')),
+            'order_to_supplier'         => $dateBorder(ArrayUtility::listField($listBatchInfo, 'order_to_supplier')),
+            'confirm_to_supplier'       => $dateBorder(ArrayUtility::listField($listBatchInfo, 'confirm_to_supplier')),
+            'delivery_to_supplier'      => $dateBorder(ArrayUtility::listField($listBatchInfo, 'delivery_to_supplier')),
+            'arrival_to_supplier'       => $dateBorder(ArrayUtility::listField($listBatchInfo, 'arrival_to_supplier')),
+            'arrival_to_warehousing'    => $dateBorder(ArrayUtility::listField($listBatchInfo, 'arrival_to_warehousing')),
+            'warehousing_to_shipment'   => $dateBorder(ArrayUtility::listField($listBatchInfo, 'warehousing_to_shipment')),
+            'shipment_to_return_money'  => $dateBorder(ArrayUtility::listField($listBatchInfo, 'shipment_to_return_money')),
             'total_order_quantity'      => array_sum($listOrderQuantityBatch),
             'total_shipment_quantity'   => array_sum($listShipmentQuantityBatch),
-            'carry_to_shipment'         => $dayDiff($minCarraySampleDateBatch, $maxShipmentDateBatch),
+            'carry_to_shipment'         => $dateBorder(ArrayUtility::listField($listBatchInfo, 'carry_to_shipment')),
             'order_status'              => $listOrderStatusBatch[0],
         );
         $amountByBatch[$batchCode]      = $currentByBatch;
     }
 
     $currentAmount          = array(
-        'carry_sample_to_order'     => $dayDiff($minCarrySampleDate, $maxOrderDate),
-        'order_to_supplier'         => $dayDiff($maxOrderSupplierDate, $maxOrderDate),
-        'confirm_to_supplier'       => $dayDiff($maxConfirmSupplierDate, $maxOrderSupplierDate),
-        'delivery_to_supplier'      => $dayDiff($maxConfirmSupplierDate, $maxDeliverySupplierDate),
-        'arrival_to_supplier'       => $dayDiff($maxArrivalSupplierDate, $maxDeliverySupplierDate),
-        'arrival_to_warehousing'    => $dayDiff($maxArrivalSupplierDate, $maxWarehousingDate),
-        'warehousing_to_shipment'   => $dayDiff($maxShipmentDate, $maxWarehousingDate),
-        'shipment_to_return_money'  => $dayDiff($maxShipmentDate, $maxReturnMoneyDate),
+        'carry_sample_to_order'     => $dateBorder(ArrayUtility::listField($listInfo, 'carry_sample_to_order')),
+        'order_to_supplier'         => $dateBorder(ArrayUtility::listField($listInfo, 'order_to_supplier')),
+        'confirm_to_supplier'       => $dateBorder(ArrayUtility::listField($listInfo, 'confirm_to_supplier')),
+        'delivery_to_supplier'      => $dateBorder(ArrayUtility::listField($listInfo, 'delivery_to_supplier')),
+        'arrival_to_supplier'       => $dateBorder(ArrayUtility::listField($listInfo, 'arrival_to_supplier')),
+        'arrival_to_warehousing'    => $dateBorder(ArrayUtility::listField($listInfo, 'arrival_to_warehousing')),
+        'warehousing_to_shipment'   => $dateBorder(ArrayUtility::listField($listInfo, 'warehousing_to_shipment')),
+        'shipment_to_return_money'  => $dateBorder(ArrayUtility::listField($listInfo, 'shipment_to_return_money')),
         'total_order_quantity'      => array_sum($listOrderQuantity),
         'total_shipment_quantity'   => array_sum($listShipmentQuantity),
-        'carry_to_shipment'         => $dayDiff($minCarraySampleDate, $maxShipmentDate),
+        'carry_to_shipment'         => $dateBorder(ArrayUtility::listField($listInfo, 'carry_to_shipment')),
         'order_status'              => $listOrderStatus[0],
-        'amount_by_batch'             => $amountByBatch,
+        'amount_by_batch'           => $amountByBatch,
     );
     $mapOrderAmount[$orderCode] = $currentAmount;
 }
