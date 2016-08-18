@@ -54,6 +54,9 @@
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 搜索</button>
                             </div>
+                            <div class="col-md-2">
+                                <a href="/order/track/import.php" class="btn btn-primary btn-block"><i class="fa fa-edit"></i> 导入数据</a>
+                            </div>
                         </div>
                     </form>
                 </div>

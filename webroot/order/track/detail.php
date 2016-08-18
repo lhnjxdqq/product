@@ -42,8 +42,12 @@ $mapOrderStatusLang = array(
     0   => '未完成',
     1   => '已完成',
 );
+$data   = array(
+    'mainMenu'      => Menu_Info::getMainMenu()
+);
 
 $template           = Template::getInstance();
+$template->assign('data', $data);
 $template->assign('listInfo', $listInfo);
 $template->assign('mapOrderStatusLang', $mapOrderStatusLang);
 $template->assign('pageViewData', $page->getViewData());
