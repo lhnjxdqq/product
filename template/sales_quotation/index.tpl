@@ -61,7 +61,7 @@
                                     <th>状态</th>
                                     <th>创建人</th>
                                     <th>操作人</th>
-                                    <th style="text-align:center;width:340px">操作</th>
+                                    <th style="text-align:center;width:390px">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,6 +75,7 @@
                                         <td><{$mapUser[$item.author_id]['username']}></td>
                                         <td><{$mapUser[$item.operatior_id]['username']}></td>
                                         <td>
+                                            <a href='/sales_quotation/detail.php?sales_quotation_id=<{$item.sales_quotation_id}>' class='btn btn-xs btn-primary'>查看详情</a>
                                             <{if $item.is_confirm != $yesConfireCode}>
                                             <a href="/sales_quotation/edit_sales_quotation_confirm.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-success btn-xs confirm-yes" spu-quotation-id=<{$item.sales_quotation_id}>><i class="fa fa-check"></i>确认</a>
                                             <a href="/sales_quotation/edit.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> 编辑</a>
