@@ -35,31 +35,27 @@
                 <div class="box-body">
                     <form action="/order/track/index.php" method="GET">
                         <div class="row">
-                            <div class="col-md-4">
-                                <label for="customer-name">客户</label>
+                            <div class="col-md-1">客户</div>
+                            <div class="col-md-3">
                                 <select id="customer-name" name="customer_name[]" class="form-control select2" multiple>
                                     <{foreach $listCustomerName as $customerName}>
                                     <option value="<{$customerName}>"<{if $smarty.get.customer_name && in_array($customerName, $smarty.get.customer_name)}> selected<{/if}>><{$customerName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="sales-name">销售员</label>
+                            <div class="col-md-1">销售</div>
+                            <div class="col-md-3">
                                 <select id="sales-name" name="sales_name[]" class="form-control select2" multiple>
                                     <{foreach $listSalesName as $salesName}>
                                     <option value="<{$salesName}>"<{if $smarty.get.sales_name && in_array($salesName, $smarty.get.sales_name)}> selected<{/if}>><{$salesName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row" style="padding-top:2rem;">
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
-                            </div>
-                            <div class="col-md-2">
-                                <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
+                            <div class="col-md-4">
+                                <div class="btn-group" role="group">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                    <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -87,7 +83,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="order-list">
+                        <table class="table table-hover table-bordered" id="order-list" style="width:2000px;">
                             <thead>
                                 <tr>
                                     <th rowspan="2" width="180">合同编号</th>
