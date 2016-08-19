@@ -246,6 +246,7 @@ class   Quotation {
                 'self_cost'     => $productData['product_cost']+2,
                 'sale_cost'     => $productData['product_cost']+2,
                 'style_id'      => $data['style_id'] ? $data['style_id'] : 0,
+                'goods_remark'  => $data['remark'],
             );
             
             // 记录商品的规格 和 规格值

@@ -215,9 +215,9 @@ $(function(){
         customerId          = $("[name=customer_id]").val();
         plusPrice           = $("#plue_price").val();
 
-        if(quotationName.length<1 || plusPrice == '' ){
+        if(quotationName.length<1){
             
-            alert('加价规则和报价单名称不能为空');
+            alert('报价单名称不能为空');
             return false;
         }
         location.href='/sales_quotation/add_sales_quotation.php?quotation_name='+quotationName+'&customer_id='+customerId+'&plus_price='+plusPrice;
