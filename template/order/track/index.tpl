@@ -35,31 +35,27 @@
                 <div class="box-body">
                     <form action="/order/track/index.php" method="GET">
                         <div class="row">
-                            <div class="col-md-4">
-                                <label for="customer-name">客户</label>
+                            <div class="col-md-1">客户</div>
+                            <div class="col-md-3">
                                 <select id="customer-name" name="customer_name[]" class="form-control select2" multiple>
                                     <{foreach $listCustomerName as $customerName}>
                                     <option value="<{$customerName}>"<{if $smarty.get.customer_name && in_array($customerName, $smarty.get.customer_name)}> selected<{/if}>><{$customerName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="sales-name">销售员</label>
+                            <div class="col-md-1">销售</div>
+                            <div class="col-md-3">
                                 <select id="sales-name" name="sales_name[]" class="form-control select2" multiple>
                                     <{foreach $listSalesName as $salesName}>
                                     <option value="<{$salesName}>"<{if $smarty.get.sales_name && in_array($salesName, $smarty.get.sales_name)}> selected<{/if}>><{$salesName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row" style="padding-top:2rem;">
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
-                            </div>
-                            <div class="col-md-2">
-                                <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
+                            <div class="col-md-4">
+                                <div class="btn-group" role="group">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                                    <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -87,29 +83,29 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="order-list">
+                        <table class="table table-hover table-bordered text-align-center" id="order-list" style="width:2000px;">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" width="180">合同编号</th>
-                                    <th>销售时间</th>
-                                    <th>下单时间</th>
-                                    <th colspan="3">生产时间</th>
-                                    <th colspan="2">出货时间</th>
-                                    <th>回款时间</th>
-                                    <th rowspan="2" width="120">出货进度</th>
-                                    <th rowspan="2" width="120">总时间</th>
-                                    <th rowspan="2" width="120">操作</th>
-                                    <th rowspan="2" width="120">订单状态</th>
+                                    <th rowspan="2" width="180" class="text-align-center">合同编号</th>
+                                    <th class="text-align-center">销售时间</th>
+                                    <th class="text-align-center">下单时间</th>
+                                    <th colspan="3" class="text-align-center">生产时间</th>
+                                    <th colspan="2" class="text-align-center">出货时间</th>
+                                    <th class="text-align-center">回款时间</th>
+                                    <th rowspan="2" width="120" class="text-align-center">出货进度</th>
+                                    <th rowspan="2" width="120" class="text-align-center">总时间</th>
+                                    <th rowspan="2" width="120" class="text-align-center">操作</th>
+                                    <th rowspan="2" width="120" class="text-align-center">订单状态</th>
                                 </tr>
                                 <tr>
-                                    <th width="120">借板到销售时间</th>
-                                    <th width="120">销售转生产订单时间</th>
-                                    <th width="120">工厂确认订单时间</th>
-                                    <th width="120">确认到发货时间</th>
-                                    <th width="120">发货到收货时间</th>
-                                    <th width="120">到货入库时间</th>
-                                    <th width="120">入库到出货时间</th>
-                                    <th width="120">出货到回款时间</th>
+                                    <th width="120" class="text-align-center">借板到销售时间</th>
+                                    <th width="120" class="text-align-center">销售转生产订单时间</th>
+                                    <th width="120" class="text-align-center">工厂确认订单时间</th>
+                                    <th width="120" class="text-align-center">确认到发货时间</th>
+                                    <th width="120" class="text-align-center">发货到收货时间</th>
+                                    <th width="120" class="text-align-center">到货入库时间</th>
+                                    <th width="120" class="text-align-center">入库到出货时间</th>
+                                    <th width="120" class="text-align-center">出货到回款时间</th>
                                 </tr>
                                 <tr class="track-day-standard">
                                     <td>参考值</td>
@@ -139,7 +135,7 @@
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].arrival_to_warehousing standard=$standard.arrival_to_warehousing}>><{$mapOrderAmount[$orderCode].arrival_to_warehousing}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].warehousing_to_shipment standard=$standard.warehousing_to_shipment}>><{$mapOrderAmount[$orderCode].warehousing_to_shipment}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].shipment_to_return_money standard=$standard.shipment_to_return_money}>><{$mapOrderAmount[$orderCode].shipment_to_return_money}></td>
-                                    <td><{if $mapOrderAmount[$orderCode].total_order_quantity}><{($mapOrderAmount[$orderCode].listShipmentQuantity / $mapOrderAmount[$orderCode].total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
+                                    <td><{if $mapOrderAmount[$orderCode].total_order_quantity}><{($mapOrderAmount[$orderCode].total_shipment_quantity / $mapOrderAmount[$orderCode].total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$mapOrderAmount[$orderCode].carry_to_shipment standard=$standard|array_sum}>><{$mapOrderAmount[$orderCode].carry_to_shipment}></td>
                                     <td>
                                         <button type="button" class="btn btn-default btn-xs act-show-batch" data-order-code="<{$orderCode}>">详情 <i class="fa fa-plus-square-o"></i></button>
@@ -149,7 +145,7 @@
                                 </tr>
 <{foreach $mapOrderAmount[$orderCode].amount_by_batch as $batchCode => $batchInfo}>
                                 <tr style="display:none;" class="batch-data track-day-batch" data-order-code="<{$orderCode}>">
-                                    <td<{include file="order/track/class_bg_order.tpl" amount=$batchInfo standard=$standard}>><{$batchCode}></td>
+                                    <td<{include file="order/track/class_bg_order.tpl" amount=$batchInfo standard=$standard}>><{$batchInfo.supplier_code}> : <{$batchCode}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.carry_sample_to_order standard=$standard.carry_sample_to_order}>><{$batchInfo.carry_sample_to_order}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.order_to_supplier standard=$standard.order_to_supplier}>><{$batchInfo.order_to_supplier}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.confirm_to_supplier standard=$standard.confirm_to_supplier}>><{$batchInfo.confirm_to_supplier}></td>
@@ -158,12 +154,12 @@
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.arrival_to_warehousing standard=$standard.arrival_to_warehousing}>><{$batchInfo.arrival_to_warehousing}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.warehousing_to_shipment standard=$standard.warehousing_to_shipment}>><{$batchInfo.warehousing_to_shipment}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.shipment_to_return_money standard=$standard.shipment_to_return_money}>><{$batchInfo.shipment_to_return_money}></td>
-                                    <td><{if $batchInfo.total_order_quantity}><{($batchInfo.listShipmentQuantity / $batchInfo.total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
+                                    <td><{if $batchInfo.total_order_quantity}><{($batchInfo.total_shipment_quantity / $batchInfo.total_order_quantity * 100)|string_format:'%.02f'}>%<{/if}></td>
                                     <td<{include file="order/track/class_bg.tpl" number=$batchInfo.carry_to_shipment standard=$standard|array_sum}>><{$batchInfo.carry_to_shipment}></td>
                                     <td>
                                         <a href="/order/track/detail.php?order_code=<{$orderCode|urlencode}>&amp;batch_code=<{$batchCode|urlencode}>" class="btn btn-default btn-xs">查看清单</a>
                                     </td>
-                                    <td><{$mapOrderStatusLang[$batchInfo.order_status]}></td>
+                                    <td></td>
                                 </tr>
 <{/foreach}>
 <{/foreach}>
