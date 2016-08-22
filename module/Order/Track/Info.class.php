@@ -156,6 +156,8 @@ class   Order_Track_Info {
         $sql[]      = self::_conditionIn($condition, 'order_code');
         $sql[]      = self::_conditionEqu($condition, 'order_code');
         $sql[]      = self::_conditionEqu($condition, 'batch_code_supplier');
+        $sql[]      = self::_conditionEqu($condition, 'order_status');
+        $sql[]      = self::_conditionBetween($condition, 'order_date');
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
@@ -195,6 +197,25 @@ class   Order_Track_Info {
         $listSql    = array_map('addslashes', array_unique($condition[$field]));
 
         return      "`" . addslashes($field) . "` IN ('" . implode("','", $listSql) . "')";
+    }
+
+    /**
+     * 根据BETWEEN条件获取SQL子句
+     *
+     * @param   array   $condition  条件
+     * @param   string  $field      字段
+     * @return  string              条件SQL子句
+     */
+    static  private function _conditionBetween (array $condition, $field) {
+
+        if (!is_array($condition[$field]) || 2 != count($condition[$field])) {
+
+            return  '';
+        }
+
+        $listSql    = array_values(array_map('addslashes', array_unique($condition[$field])));
+
+        return      "`" . addslashes($field) . "` BETWEEN '" . $listSql[0] . "' AND '" . $listSql[1] . "'";
     }
 
     /**

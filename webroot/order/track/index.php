@@ -6,14 +6,29 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $listCustomerName   = array_filter(ArrayUtility::listField(Order_Track_Info::listCustomerName(), 'customer_name'));
 $listSalesName      = array_filter(ArrayUtility::listField(Order_Track_Info::listSalesName(), 'sales_name'));
-$totalOrderCode     = Order_Track_Info::countOrderCodeByCondition($_GET);
+$condition          = $_GET;
+
+if ('' == $_GET['order_status'] || !in_array($_GET['order_status'], array(0, 1))) {
+
+    unset($condition['order_status']);
+}
+
+unset($condition['date_start']);
+unset($condition['date_end']);
+
+if ('' !== $_GET['date_start'] && '' !== $_GET['date_end']) {
+
+    $condition['order_date']    = array($_GET['date_start'], $_GET['date_end']);
+}
+
+$totalOrderCode     = Order_Track_Info::countOrderCodeByCondition($condition);
 $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $page               = new PageList(array(
     PageList::OPT_TOTAL     => $totalOrderCode,
     PageList::OPT_URL       => '/order/track/index.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
-$listOrderCode      = array_filter(ArrayUtility::listField(Order_Track_Info::groupOrderCodeByCondition($_GET, array('order_date' => 'DESC'), $page->getOffset(), $perpage), 'order_code'));
+$listOrderCode      = array_filter(ArrayUtility::listField(Order_Track_Info::groupOrderCodeByCondition($condition, array('order_date' => 'DESC'), $page->getOffset(), $perpage), 'order_code'));
 $listInfo           = Order_Track_Info::listByCondition(array('order_code'=>$listOrderCode));
 $dateFilter         = function ($text) {
 
