@@ -180,6 +180,19 @@ class   AliyunOSS {
     }
 
     /**
+     * 是否存在
+     *
+     * @param   string  $id object id
+     * @return  bool        判断结果
+     */
+    public  function isExist ($id) {
+
+        $key    = $this->_getKey($id);
+
+        return  $this->_ossClient->doesObjectExist($this->_bucket, $key);
+    }
+
+    /**
      * 获取bucket
      *
      * @return mixed
