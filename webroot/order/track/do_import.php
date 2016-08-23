@@ -118,7 +118,7 @@ foreach ($csv as $row) {
         'return_money_time'         => $timeFormat($row['return_money_time']),
         'warehousing_time'          => $timeFormat($row['warehousing_time']),
 
-        'order_status'              => '未完成' == $data['order_status'] ? 0 : 1,
+        'order_status'              => '未完成' == $row['order_status'] ? 0 : 1,
     );
     Order_Track_Info::create($data);
 }

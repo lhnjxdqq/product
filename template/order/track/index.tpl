@@ -35,43 +35,40 @@
                 <div class="box-body">
                     <form action="/order/track/index.php" method="GET">
                         <div class="row">
-                            <div class="col-md-1">客户</div>
-                            <div class="col-md-3">
-                                <select id="customer-name" name="customer_name[]" class="form-control select2" multiple>
+                            <div class="col-md-2">
+                                <select id="customer-name" name="customer_name[]" class="form-control select2-customer" multiple>
 <{foreach $listCustomerName as $customerName}>
                                     <option value="<{$customerName}>"<{if $smarty.get.customer_name && in_array($customerName, $smarty.get.customer_name)}> selected<{/if}>><{$customerName}></option>
 <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-1">销售</div>
-                            <div class="col-md-3">
-                                <select id="sales-name" name="sales_name[]" class="form-control select2" multiple>
+                            <div class="col-md-2">
+                                <select id="sales-name" name="sales_name[]" class="form-control select2-sales" multiple>
 <{foreach $listSalesName as $salesName}>
                                     <option value="<{$salesName}>"<{if $smarty.get.sales_name && in_array($salesName, $smarty.get.sales_name)}> selected<{/if}>><{$salesName}></option>
 <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-1">状态</div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select id="order-status" name="order_status" class="form-control">
-                                    <option value="">全部</option>
+                                    <option value="">全部订单状态</option>
 <{foreach $mapOrderStatusLang as $statusValue => $statusName}>
                                     <option value="<{$statusValue}>"<{if is_numeric($smarty.get.order_status) && $smarty.get.order_status == $statusValue}> selected<{/if}>><{$statusName}></option>
 <{/foreach}>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                <div class="input-daterange input-group" style="border-left: 1px solid #d2d6de;">
+                                    <span class="input-group-addon">下单日期</span>
+                                    <input type="text" name="date_start" class="form-control" readonly value="<{$condition.order_date[0]}>">
+                                    <span class="input-group-addon">到</span>
+                                    <input type="text" name="date_end" class="form-control" readonly value="<{$condition.order_date[1]}>">
+                                </div>
+                            </div>
                         </div>
                         <!-- /.row -->
                         <div class="row" style="padding-top:2rem;">
-                            <div class="col-md-5">
-                                <div class="input-daterange input-group" style="border-left: 1px solid #d2d6de;">
-                                    <span class="input-group-addon">下单日期</span>
-                                    <input type="text" name="date_start" class="form-control" readonly value="<{$smarty.get.date_start}>">
-                                    <span class="input-group-addon">到</span>
-                                    <input type="text" name="date_end" class="form-control" readonly value="<{$smarty.get.date_end}>">
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-md-offset-3">
+                            <div class="col-md-4 col-md-offset-8">
                                 <div class="btn-group pull-right" role="group">
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                     <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
@@ -223,7 +220,12 @@
         format  : 'yyyy-mm-dd',
         language: 'zh-CN'
     });
-    $('.select2').select2();
+    $('.select2-customer').select2({
+        placeholder : '客户'
+    });
+    $('.select2-sales').select2({
+        placeholder : '销售员'
+    });
     $('.act-show-batch').click(function () {
         var $this   = $(this),
             $batch  = $('.batch-data[data-order-code="' + $this.attr('data-order-code') + '"]'),

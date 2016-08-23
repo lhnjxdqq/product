@@ -6,19 +6,29 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $listCustomerName   = array_filter(ArrayUtility::listField(Order_Track_Info::listCustomerName(), 'customer_name'));
 $listSalesName      = array_filter(ArrayUtility::listField(Order_Track_Info::listSalesName(), 'sales_name'));
-$condition          = $_GET;
+$condition          = array();
 
-if ('' == $_GET['order_status'] || !in_array($_GET['order_status'], array(0, 1))) {
+if (is_array($_GET['customer_name'])) {
 
-    unset($condition['order_status']);
+    $condition['customer_name'] = $_GET['customer_name'];
 }
 
-unset($condition['date_start']);
-unset($condition['date_end']);
+if (is_array($_GET['sales_name'])) {
 
-if ('' !== $_GET['date_start'] && '' !== $_GET['date_end']) {
+    $condition['sales_name']    = $_GET['sales_name'];
+}
+
+if ('' !== $_GET['order_status'] && in_array($_GET['order_status'], array(0, 1))) {
+
+    $condition['order_status']  = $_GET['order_status'];
+}
+
+if ('' != $_GET['date_start'] && '' != $_GET['date_end']) {
 
     $condition['order_date']    = array($_GET['date_start'], $_GET['date_end']);
+} else {
+
+    $condition['order_date']    = array(date('Y-01-01'), date('Y-m-d'));
 }
 
 $totalOrderCode     = Order_Track_Info::countOrderCodeByCondition($condition);
@@ -164,6 +174,7 @@ $data   = array(
 
 $template           = Template::getInstance();
 $template->assign('data', $data);
+$template->assign('condition', $condition);
 $template->assign('listCustomerName', $listCustomerName);
 $template->assign('listSalesName', $listSalesName);
 $template->assign('listOrderCode', $listOrderCode);
