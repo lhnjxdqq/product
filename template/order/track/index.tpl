@@ -183,7 +183,7 @@
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered text-align-center" id="order-list" style="width:2000px;">
                             <thead>
-                                <tr>
+                                <tr class="track-table-head">
                                     <th rowspan="2" width="180" class="text-align-center">合同编号</th>
                                     <th class="text-align-center">销售时间</th>
                                     <th class="text-align-center">下单时间</th>
@@ -195,7 +195,7 @@
                                     <th rowspan="2" width="120" class="text-align-center">操作</th>
                                     <th rowspan="2" width="120" class="text-align-center">订单状态</th>
                                 </tr>
-                                <tr>
+                                <tr class="track-table-head">
                                     <th width="120" class="text-align-center">借板到销售时间</th>
                                     <th width="120" class="text-align-center">销售转生产订单时间</th>
                                     <th width="120" class="text-align-center">工厂确认订单时间</th>
