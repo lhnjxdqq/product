@@ -130,16 +130,18 @@ class   Order_Track_Info {
     }
 
     /**
-     * 获取订单号分组数量
+     * 按条件汇总
      */
-    static  public  function countOrderCodeByCondition (array $condition) {
+    static  public  function amountByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT COUNT(DISTINCT `order_code`) AS `total` FROM `' . self::_tableName() . '`';
+        $sqlBase        = 'SELECT COUNT(DISTINCT `order_code`) AS `total_order`, COUNT(DISTINCT `batch_code_supplier`) AS `total_batch`, '
+                        . 'SUM(`order_quantity`) AS `sum_order_quantity`, SUM(`arrival_quantity`) AS `sum_arrival_quantity`, '
+                        . 'COUNT(DISTINCT `customer_name`) AS `total_customer` '
+                        . 'FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
         $sql            = $sqlBase . $sqlCondition;
-        $row            = self::_getStore()->fetchOne($sql);
 
-        return          $row['total'];
+        return          self::_getStore()->fetchOne($sql);
     }
 
     /**

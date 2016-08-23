@@ -18,7 +18,7 @@ if (is_array($_GET['sales_name'])) {
     $condition['sales_name']    = $_GET['sales_name'];
 }
 
-if ('' !== $_GET['order_status'] && in_array($_GET['order_status'], array(0, 1))) {
+if (isset($_GET['order_status']) && '' !== $_GET['order_status'] && in_array($_GET['order_status'], array(0, 1))) {
 
     $condition['order_status']  = $_GET['order_status'];
 }
@@ -31,7 +31,8 @@ if ('' != $_GET['date_start'] && '' != $_GET['date_end']) {
     $condition['order_date']    = array(date('Y-01-01'), date('Y-m-d'));
 }
 
-$totalOrderCode     = Order_Track_Info::countOrderCodeByCondition($condition);
+$amountInfo         = Order_Track_Info::amountByCondition($condition);
+$totalOrderCode     = $amountInfo['total_order'];
 $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $page               = new PageList(array(
     PageList::OPT_TOTAL     => $totalOrderCode,
@@ -102,13 +103,22 @@ foreach ($listInfo as & $info) {
                                     : NULL;
 }
 
-$groupInfoByOrder   = ArrayUtility::groupByField($listInfo, 'order_code');
-$mapOrderAmount     = array();
+$groupInfoByOrder       = ArrayUtility::groupByField($listInfo, 'order_code');
+$mapOrderAmount         = array();
+$amountInfoCompleted    = Order_Track_Info::amountByCondition(($condition + array('order_status'=>1)));
+$amountInfoUncompleted  = Order_Track_Info::amountByCondition(($condition + array('order_status'=>0)));
+$totalOrderCompleted    = $amountInfoCompleted['total_order'];
+$totalOrderUncompleted  = $amountInfoUncompleted['total_order'];
+$totalBatch             = $amountInfo['total_batch'];
+$totalOrderQuantity     = $amountInfo['sum_order_quantity'];
+$totalArrivalQuantity   = $amountInfo['sum_arrival_quantity'];
+$totalCustomerCount     = $amountInfo['total_customer'];
 
 foreach ($groupInfoByOrder as $orderCode => $listInfo) {
 
     $listOrderQuantity          = array_filter(ArrayUtility::listField($listInfo, 'order_quantity'));
     $listShipmentQuantity       = array_filter(ArrayUtility::listField($listInfo, 'shipment_quantity'));
+    $listArrivalQuantity        = array_filter(ArrayUtility::listField($listInfo, 'arrival_quantity'));
     $listOrderStatus            = ArrayUtility::listField($listInfo, 'order_status');
     $groupInfoByBatchCode       = ArrayUtility::groupByField($listInfo, 'batch_code_supplier');
     $amountByBatch              = array();
@@ -175,6 +185,13 @@ $data   = array(
 $template           = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('condition', $condition);
+$template->assign('totalOrderCode', $totalOrderCode);
+$template->assign('totalOrderCompleted', $totalOrderCompleted);
+$template->assign('totalOrderUncompleted', $totalOrderUncompleted);
+$template->assign('totalBatch', $totalBatch);
+$template->assign('totalOrderQuantity', $totalOrderQuantity);
+$template->assign('totalArrivalQuantity', $totalArrivalQuantity);
+$template->assign('totalCustomerCount', $totalCustomerCount);
 $template->assign('listCustomerName', $listCustomerName);
 $template->assign('listSalesName', $listSalesName);
 $template->assign('listOrderCode', $listOrderCode);

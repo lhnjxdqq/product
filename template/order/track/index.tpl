@@ -26,6 +26,86 @@
         <section class="content">
             <div class="box">
                 <div class="box-header with-border">
+                    <h3 class="box-title">总结数据</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- .box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">订单总数</span>
+                                    <span class="info-box-number"><{$totalOrderCode}></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green"><i class="fa fa-check"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">已完成数</span>
+                                    <span class="info-box-number"><{$totalOrderCompleted}></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-yellow"><i class="fa fa-hourglass-half"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">未完成数</span>
+                                    <span class="info-box-number"><{$totalOrderUncompleted}></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-aqua"><i class="fa fa-industry"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">生产订单</span>
+                                    <span class="info-box-number"><{$totalBatch}></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-aqua"><i class="fa fa-cubes"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">下单件数</span>
+                                    <span class="info-box-number"><{$totalOrderQuantity}></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green"><i class="fa fa-truck"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">到货件数</span>
+                                    <span class="info-box-number"><{$totalArrivalQuantity}></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-yellow"><i class="fa fa-users"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">客户数量</span>
+                                    <span class="info-box-number"><{$totalCustomerCount}></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .row -->
+                </div>
+                <!-- .box-body -->
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
                     <h3 class="box-title">条件筛选</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
