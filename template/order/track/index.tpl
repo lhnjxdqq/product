@@ -77,7 +77,7 @@
                                 <span class="info-box-icon bg-aqua"><i class="fa fa-cubes"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">下单件数</span>
-                                    <span class="info-box-number"><{$totalOrderQuantity}></span>
+                                    <span class="info-box-number"><{$totalOrderQuantity|default:0}></span>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                                 <span class="info-box-icon bg-green"><i class="fa fa-truck"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">到货件数</span>
-                                    <span class="info-box-number"><{$totalArrivalQuantity}></span>
+                                    <span class="info-box-number"><{$totalArrivalQuantity|default:0}></span>
                                 </div>
                             </div>
                         </div>
