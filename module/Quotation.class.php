@@ -809,9 +809,10 @@ class   Quotation {
             }
         }
         Update_Cost_Source_Info::create(array(
-            'update_cost_id'    => $updateCostId,
-            'source_code'       => $data['sku_code'],
-            'json_data'         => json_encode($data),
+            'update_cost_id'            => $updateCostId,
+            'source_code'               => $data['sku_code'],
+            'json_data'                 => json_encode($data),
+            'relationship_product_id'   => $listProductId,
         ));
     }
 }

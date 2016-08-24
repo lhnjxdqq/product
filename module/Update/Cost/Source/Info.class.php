@@ -19,7 +19,7 @@ class   Update_Cost_Source_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'update_cost_id,source_code,json_data';
+    const   FIELDS      = 'update_cost_id,source_code,json_data,relationship_product_id';
     /**
      * 新增
      *
