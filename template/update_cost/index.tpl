@@ -101,8 +101,6 @@
                                         <td><{$item.create_time}></td>
                                         <td>
                                             <a href='/update_cost/delete.php?update_cost_id=<{$item.update_cost_id}>' class='btn btn-xs btn-primary delete-confirm'>删除</a>
-                                            <a href='#' class='btn btn-xs btn-primary'>审核</a>
-                                            <a href='#' class='btn btn-xs btn-primary'>查看SPU</a>
                                             <a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import&file_name=<{$item.update_cost_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载</a>
                                             
                                         </td>
