@@ -196,7 +196,6 @@ setlocale(LC_ALL,NULL);
 
 if(!empty($errorList)){
 
-    // exit("提供的excel数据有误, 请通过表单上传\n");
     Quotation_Info::update(array(
         'quotation_id'  => $toGenerateFile['quotation_id'],
         'status_code'   => Quotation_StatusCode::GENERATEFAILED,

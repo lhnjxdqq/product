@@ -61,7 +61,7 @@
                                 <th>名称</th>
                                 <th>供应商ID</th>
                                 <th>样板数量</th>
-                                <th width="150px">操作</th>
+                                <th width="150px" style='text-align:center'>操作</th>
                                 <th>状态</th>
                                 <th>上传时间</th>
                                 <th>更新时间</th>
