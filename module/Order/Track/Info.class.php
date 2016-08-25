@@ -84,6 +84,18 @@ class   Order_Track_Info {
     }
 
     /**
+     * 获取全部供应商代码
+     *
+     * @return  array   供应商代码列表
+     */
+    static  public  function listSupplierCode () {
+
+        $sql    = 'SELECT `supplier_code` FROM `' . self::_tableName() . '` GROUP BY `supplier_code`';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 获取订单号分组列表
      */
     static  public  function groupOrderCodeByCondition (array $condition, array $order = array(), $offset = 0, $size = NULL) {
@@ -178,6 +190,7 @@ class   Order_Track_Info {
         $sql[]      = self::_conditionIn($condition, 'customer_name');
         $sql[]      = self::_conditionIn($condition, 'sales_name');
         $sql[]      = self::_conditionIn($condition, 'order_code');
+        $sql[]      = self::_conditionIn($condition, 'supplier_code');
         $sql[]      = self::_conditionEqu($condition, 'order_code');
         $sql[]      = self::_conditionEqu($condition, 'batch_code_supplier');
         $sql[]      = self::_conditionEqu($condition, 'order_status');
