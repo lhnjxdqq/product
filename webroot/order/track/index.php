@@ -113,6 +113,7 @@ $totalBatch             = $amountInfo['total_batch'];
 $totalOrderQuantity     = $amountInfo['sum_order_quantity'];
 $totalArrivalQuantity   = $amountInfo['sum_arrival_quantity'];
 $totalCustomerCount     = $amountInfo['total_customer'];
+$averageInfo            = Order_Track_Info::averageByCondition($condition);
 
 foreach ($groupInfoByOrder as $orderCode => $listInfo) {
 
@@ -185,6 +186,7 @@ $data   = array(
 $template           = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('condition', $condition);
+$template->assign('averageInfo', $averageInfo);
 $template->assign('totalOrderCode', $totalOrderCode);
 $template->assign('totalOrderCompleted', $totalOrderCompleted);
 $template->assign('totalOrderUncompleted', $totalOrderUncompleted);

@@ -145,6 +145,28 @@ class   Order_Track_Info {
     }
 
     /**
+     * 按条件求平均值
+     */
+    static  public  function averageByCondition (array $condition) {
+
+        $sqlBase        = "SELECT abs(avg(unix_timestamp(if(carry_sample_date='1970-01-01',null,carry_sample_date)) - unix_timestamp(if(order_date='1970-01-01',null,order_date)))) / 86400 as carry_sample_to_order,"
+                        . "abs(avg(unix_timestamp(if(order_date_supplier='1970-01-01',null,order_date_supplier)) - unix_timestamp(if(order_date='1970-01-01',null,order_date)))) / 86400 as order_to_supplier,"
+                        . "abs(avg(unix_timestamp(if(order_date_supplier='1970-01-01',null,order_date_supplier)) - unix_timestamp(if(confirm_date_supplier='1970-01-01',null,confirm_date_supplier)))) / 86400 as confirm_to_supplier,"
+                        . "abs(avg(unix_timestamp(if(delivery_date_supplier='1970-01-01',null,delivery_date_supplier)) - unix_timestamp(if(confirm_date_supplier='1970-01-01',null,confirm_date_supplier)))) / 86400 as delivery_to_supplier,"
+                        . "abs(avg(unix_timestamp(if(delivery_date_supplier='1970-01-01',null,delivery_date_supplier)) - unix_timestamp(if(arrival_date_supplier='1970-01-01',null,arrival_date_supplier)))) / 86400 as arrival_to_supplier,"
+                        . "abs(avg(unix_timestamp(if(warehousing_time='1970-01-01 08:00:00',null,warehousing_time)) - unix_timestamp(if(arrival_date_supplier='1970-01-01',null,arrival_date_supplier)))) / 86400 as arrival_to_warehousing,"
+                        . "abs(avg(unix_timestamp(if(warehousing_time='1970-01-01 08:00:00',null,warehousing_time)) - unix_timestamp(if(shipment_time='1970-01-01 08:00:00',null,shipment_time)))) / 86400 as warehousing_to_shipment,"
+                        . "abs(avg(unix_timestamp(if(return_money_time='1970-01-01 08:00:00',null,return_money_time)) - unix_timestamp(if(shipment_time='1970-01-01 08:00:00',null,shipment_time)))) / 86400 as shipment_to_return_money,"
+                        . "abs(avg(unix_timestamp(if(carry_sample_date='1970-01-01',null,carry_sample_date)) - unix_timestamp(if(shipment_time='1970-01-01 )8:00:00',null,shipment_time)))) / 86400 as carry_to_shipment,"
+                        . 'avg(shipment_quantity / order_quantity) as progress '
+                        . 'FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sql            = $sqlBase . $sqlCondition;
+
+        return          self::_getStore()->fetchOne($sql);
+    }
+
+    /**
      * 根据条件获取SQL子句
      *
      * @param   array   $condition  条件

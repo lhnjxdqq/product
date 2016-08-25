@@ -262,6 +262,23 @@
 <{/foreach}>
 <{/foreach}>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td<{include file="order/track/class_bg_order.tpl" amount=$averageInfo standard=$standard}>>平均值</td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.carry_sample_to_order standard=$standard.carry_sample_to_order}>><{$averageInfo.carry_sample_to_order|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.order_to_supplier standard=$standard.order_to_supplier}>><{$averageInfo.order_to_supplier|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.confirm_to_supplier standard=$standard.confirm_to_supplier}>><{$averageInfo.confirm_to_supplier|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.delivery_to_supplier standard=$standard.delivery_to_supplier}>><{$averageInfo.delivery_to_supplier|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.arrival_to_supplier standard=$standard.arrival_to_supplier}>><{$averageInfo.arrival_to_supplier|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.arrival_to_warehousing standard=$standard.arrival_to_warehousing}>><{$averageInfo.arrival_to_warehousing|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.warehousing_to_shipment standard=$standard.warehousing_to_shipment}>><{$averageInfo.warehousing_to_shipment|string_format:'%.1f'}></td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.shipment_to_return_money standard=$standard.shipment_to_return_money}>><{$averageInfo.shipment_to_return_money|string_format:'%.1f'}></td>
+                                    <td><{($averageInfo.progress * 100)|string_format:'%.2f'}>%</td>
+                                    <td<{include file="order/track/class_bg.tpl" number=$averageInfo.carry_to_shipment standard=$standard|array_sum}>><{$averageInfo.carry_to_shipment|string_format:'%.1f'}></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                     <!-- /.table-responsive -->
