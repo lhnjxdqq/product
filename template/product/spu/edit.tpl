@@ -234,21 +234,36 @@
         var skuSnObjList    = $('.spu-goods td.goods-sn');
         var skuSnList       = [];
         var spuId           = '<{$smarty.get.spu_id}>';
-        var goodsId         = '';
-        var spuGoodsName    = '';
+        var listGoodsId     = [];
+        var listSpuGoodsName= [];
         $.each(skuSnObjList, function (index, val) {
             skuSnList.push($(val).attr('goodssn'));
         });
-        if (skuSnList.indexOf(skuSn) >= 0) {
-            alert('列表中已存在该SKU');
-            return;
+        // 存在过滤
+        var arr = skuSn.split(' ');
+        var tmp = [];
+        for (var i=0; i<arr.length; i++) {
+            if ( skuSnList.indexOf(arr[i]) >= 0 ){
+                tmp.push(arr[i]);
+            }
         }
 
+        if ( tmp.length>0 ) {
+            alert('该SKU已存在列表中'+tmp.toString());
+            return;
+        }
+        //为空过滤
         if (skuSn.length == 0) {
 
             alert('请输入SKU编号');
             return;
         }
+        //数量过滤
+        if (arr.length>100) {
+            alert('SKU数量过多');
+            return;
+        }
+        
         // 查询该SKU信息
         $.ajax({
             url: '/ajax/get_goods_data.php',
@@ -257,34 +272,45 @@
             async: false,
             data: {goods_sn: skuSn, category_id: categoryId, weight_value_id: weightValueId},
             success: function (data) {
+                
                 if (data.statusCode != 'success') {
                     alert(data.statusInfo);
                     return;
                 }
-                retData = data.resultData;
-                var goodsString = '<tr class="spu-goods"><td><input type="hidden" name="goods-id[]" class="goods-id" value="' + retData.goods_id + '"><input type="text" name="spu-goods-name[]" class="form-control spu-goods-name" value="' + retData.goods_name + '"></td><td class="goods-sn" goodssn="' + retData.goods_sn + '">' + retData.goods_sn + '</td><td>' + retData.goods_name + '</td><td class="goods-category-name" categoryid="' + retData.category_name + '">' + retData.category_name + '</td><td>' + retData.material + '</td><td>' + retData.size + '</td><td class="goods-weight-value" weightvalueid="' + retData.weight + '">' + retData.weight + '</td><td>' + retData.color + '</td><td>' + retData.sale_cost + '</td><td><a href="javascript:void(0);" class="btn btn-warning btn-xs edit-spu-goods"><i class="fa fa-edit"></i> 更新</a> <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td></tr>';
-                $('.spu-goods:last').after(goodsString);
-                goodsId         = retData.goods_id;
-                spuGoodsName    = retData.goods_name;
-            }
-        });
-        // 把该SKU添加到当前SPU
-        $.ajax({
-            url: '/product/spu/ajax_spu_goods_add.php',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {spu_id: spuId, goods_id: goodsId, spu_goods_name: spuGoodsName},
-            success: function (data) {
-                alert(data.statusInfo);
-                if (data.statusCode != 0) {
-                    location.reload();
+                lh_retData = data.resultData;
+                for (var i in lh_retData) {
+                    var retData = lh_retData[i];
+                    var goodsString = '<tr class="spu-goods"><td><input type="hidden" name="goods-id[]" class="goods-id" value="' + retData.goods_id + '"><input type="text" name="spu-goods-name[]" class="form-control spu-goods-name" value="' + retData.goods_name + '"></td><td class="goods-sn" goodssn="' + retData.goods_sn + '">' + retData.goods_sn + '</td><td>' + retData.goods_name + '</td><td class="goods-category-name" categoryid="' + retData.category_name + '">' + retData.category_name + '</td><td>' + retData.material + '</td><td>' + retData.size + '</td><td class="goods-weight-value" weightvalueid="' + retData.weight + '">' + retData.weight + '</td><td>' + retData.color + '</td><td>' + retData.sale_cost + '</td><td><a href="javascript:void(0);" class="btn btn-warning btn-xs edit-spu-goods"><i class="fa fa-edit"></i> 更新</a> <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-goods"><i class="fa fa-trash"></i> 删除</a></td></tr>';
+                    $('.spu-goods:last').after(goodsString);
+                    listGoodsId.push(retData.goods_id);
+                    listSpuGoodsName.push(retData.goods_name);
                 }
             }
         });
+        
+        for (var i=0; i<listGoodsId.length; i++) {
+
+            // 把该SKU添加到当前SPU
+            $.ajax({
+                url: '/product/spu/ajax_spu_goods_add.php',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {spu_id: spuId, goods_id: listGoodsId[i], spu_goods_name: listSpuGoodsName[i]},
+                success: function (data) {
+                    alert(data.statusInfo);
+                    if (data.statusCode != 0) {
+                        location.reload();
+                    }
+                }
+            });
+            
+        }
     });
+    
     $('span.product-image-priview .close').click(function () {
         $(this).parents('.product-image-priview').remove();
     });
+    
 </script>
 </body>
 </html>
