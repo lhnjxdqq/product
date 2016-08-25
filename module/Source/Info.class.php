@@ -228,4 +228,23 @@ class   Source_Info {
 
         return          self::_getStore()->fetchAll($sql);
     }
+    
+    /**
+     * 根据买款代码和厂商获取信息
+     *
+     *  @param  string $sourceCode  买款代码
+     *  @param  int    $supplierId  厂商Id
+     *
+     *  @return array               数据
+     */
+    static public function getBySourceCodeAndSupplierId($sourceCode, $supplierId){
+         
+         if(empty($sourceCode) || empty($supplierId)){
+             
+             return array();
+         }
+         $sql   = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_code` = "'. $sourceCode .'" AND `supplier_id` = "'. $supplierId .'"';
+
+        return          self::_getStore()->fetchOne($sql);
+    }
 }

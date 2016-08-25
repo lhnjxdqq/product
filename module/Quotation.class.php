@@ -102,7 +102,7 @@ class   Quotation {
                 $colorId = self::_getSpecValueId($key,$mapColorSpecValue,$key."颜色工费不正确",$mapEnumeration);
                 if(!is_numeric($val)){
                 
-                    throw   new ApplicationException($key."颜色工费不正确");    
+                    throw   new ApplicationException($key."颜色工费不正确");
                 }
                 $data['cost'][$colorId] = $val;
             }
@@ -790,5 +790,29 @@ class   Quotation {
         }
 
         return      $mapFile;
+    }
+    
+    /**
+     * 保存成本报价信息
+     */
+    static  public function updateCostStore(array $data, array $mapEnumeration,  $isSkuCode = true, $updateCostId, $supplierId){
+ 
+        $data = self::testQuotation($data, $mapEnumeration, $isSkuCode, $supplierId);
+        $sourceInfo  = Source_Info::getBySourceCodeAndSupplierId($data['sku_code'],$supplierId);
+        $sourceId    = $sourceInfo['source_id'];
+        if(!empty($sourceId)){
+            
+            $productInfo    = Product_Info::getByMultiSourceId(array($sourceId));
+            $listProductId  = ArrayUtility::listField($productInfo,'product_id');
+            if($listProductId){
+                $listProductId = implode(',',$listProductId);
+            }
+        }
+        Update_Cost_Source_Info::create(array(
+            'update_cost_id'            => $updateCostId,
+            'source_code'               => $data['sku_code'],
+            'json_data'                 => json_encode($data),
+            'relationship_product_id'   => $listProductId,
+        ));
     }
 }

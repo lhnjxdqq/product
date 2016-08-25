@@ -35,6 +35,10 @@ if (isset($params['enable-listall'])) {
     $template->assign('enableListall', $params['enable-listall']);
 }
 
+if (isset($params['enable-by-condition'])) {
+
+    $template->assign('enableByCondition', true);
+}
 $content        = $template->fetch('php/model.tpl');
 
 if ($params['dump']) {
