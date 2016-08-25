@@ -35,9 +35,9 @@ span.product-image-priview img.img-responsive.img-thumbnail {
 
 .text-align-center{text-align:center;vertical-align:middle;}
 
-.track-day-null{background:lightgrey;}
-.track-day-warnning{background:goldenrod;}
-.track-day-danger{background:salmon;}
+.track-day-null{background:#ecf0f5;}
+.track-day-warnning{background:#f39c12;color:white;}
+.track-day-danger{background:#dd4b39;color:white;}
 .track-day-batch{background:aliceblue;}
 .track-day-standard{background:deepskyblue;}
 .track-table-head{background:#ecf0f5;}
