@@ -11,36 +11,35 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 }
 
 $spuId          = (int) $_POST['spu_id'];
-$goodsId        = (int) $_POST['goods_id'];
-$spuGoodsName   = trim($_POST['spu_goods_name']);
+$goods          = $_POST['goods'];
 
-if (!$goodsId || !$spuId) {
+$errorGoodsSnList = array();
+foreach ($goods as $goodsId => $goodsInfo) {
 
-    echo json_encode(array(
-        'statusCode'    => 1,
-        'statusInfo'    => 'data error',
-    ));
-    exit;
+    $data = array();
+    $data['spu_id'] = $spuId;
+    $data['goods_id'] = $goodsId;
+    $data['spu_goods_name'] = trim($goodsInfo['goods_name']);
+
+    if ( Spu_Goods_RelationShip::create($data) ){
+
+        // 推送新增SPU SKU到选货工具
+        Spu_Goods_Push::addPushSpuGoodsData($spuId, $goodsId);
+    } else {
+        $errorGoodsSnList[] = $goodsInfo['goods_sn'];
+    }
+
 }
 
-$data   = array(
-    'spu_id'            => $spuId,
-    'goods_id'          => $goodsId,
-    'spu_goods_name'    => $spuGoodsName,
-);
-
-if (Spu_Goods_RelationShip::create($data)) {
-
-    // 推送新增SPU SKU到选货工具
-    Spu_Goods_Push::addPushSpuGoodsData($spuId, $goodsId);
+if ( empty($errorGoodsSnList) ) {
     echo json_encode(array(
         'statusCode'    => 0,
         'statusInfo'    => '添加SKU成功',
     ));
 } else {
-
     echo json_encode(array(
         'statusCode'    => 1,
-        'statusInfo'    => '添加SKU失败',
+        'statusInfo'    => implode(',', $errorGoodsSnList) . '添加SKU失败',
     ));
 }
+
