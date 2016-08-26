@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../../init.inc.php';
 $goodsSn        = isset($_POST['goods_sn']) ? trim($_POST['goods_sn']) : '';
 $categoryId     = isset($_POST['category_id']) ? (int) $_POST['category_id'] : 0;
 $weightValueId  = isset($_POST['weight_value_id']) ? (int) $_POST['weight_value_id'] : 0;
-$listGoodsSn    = array_filter(explode(' ', $goodsSn));
+$listGoodsSn    = array_unique(array_map('trim' , array_filter(explode(' ', $goodsSn))));
 $numberGoodsSn  = count($listGoodsSn);
 
 //数量限制
