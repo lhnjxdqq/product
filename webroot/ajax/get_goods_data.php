@@ -26,7 +26,7 @@ if ( !empty($diff) ) {
 
     echo json_encode(array(
         'statusCode'    => 'error',
-        'statusInfo'    => implode(',', $diff) . '查询不到SKU数据',
+        'statusInfo'    => implode(',', $diff) . '不存在',
     ));
     exit;
 }
@@ -39,7 +39,7 @@ if ( !empty($deleteGoodsSn) ) {
 
     echo json_encode(array(
         'statusCode'    => 'error',
-        'statusInfo'    => implode(',', $deleteGoodsSn) . 'SKU已删除',
+        'statusInfo'    => implode(',', $deleteGoodsSn) . '已删除',
     ));
     exit;
 }
@@ -64,7 +64,7 @@ if ( !empty($resultGoodsSn) ) {
 
     echo json_encode(array(
         'statusCode'    => 'error',
-        'statusInfo'    => '查询的SKU与当前SKU列表的三级分类和规格重量不相同, 不能加入该SPU , 编号为' . implode(',', $resultGoodsSn),
+        'statusInfo'    => implode(',', $resultGoodsSn) . '与当前SKU列表的三级分类和规格重量不相同, 无法加入SPU',
     ));
     exit;
 }
