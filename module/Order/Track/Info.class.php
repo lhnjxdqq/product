@@ -161,19 +161,29 @@ class   Order_Track_Info {
      */
     static  public  function averageByCondition (array $condition) {
 
-        $sqlBase        = "SELECT abs(avg(unix_timestamp(if(carry_sample_date='1970-01-01',null,carry_sample_date)) - unix_timestamp(if(order_date='1970-01-01',null,order_date)))) / 86400 as carry_sample_to_order,"
-                        . "abs(avg(unix_timestamp(if(order_date_supplier='1970-01-01',null,order_date_supplier)) - unix_timestamp(if(order_date='1970-01-01',null,order_date)))) / 86400 as order_to_supplier,"
-                        . "abs(avg(unix_timestamp(if(order_date_supplier='1970-01-01',null,order_date_supplier)) - unix_timestamp(if(confirm_date_supplier='1970-01-01',null,confirm_date_supplier)))) / 86400 as confirm_to_supplier,"
-                        . "abs(avg(unix_timestamp(if(delivery_date_supplier='1970-01-01',null,delivery_date_supplier)) - unix_timestamp(if(confirm_date_supplier='1970-01-01',null,confirm_date_supplier)))) / 86400 as delivery_to_supplier,"
-                        . "abs(avg(unix_timestamp(if(delivery_date_supplier='1970-01-01',null,delivery_date_supplier)) - unix_timestamp(if(arrival_date_supplier='1970-01-01',null,arrival_date_supplier)))) / 86400 as arrival_to_supplier,"
-                        . "abs(avg(unix_timestamp(if(warehousing_time='1970-01-01 08:00:00',null,warehousing_time)) - unix_timestamp(if(arrival_date_supplier='1970-01-01',null,arrival_date_supplier)))) / 86400 as arrival_to_warehousing,"
-                        . "abs(avg(unix_timestamp(if(warehousing_time='1970-01-01 08:00:00',null,warehousing_time)) - unix_timestamp(if(shipment_time='1970-01-01 08:00:00',null,shipment_time)))) / 86400 as warehousing_to_shipment,"
-                        . "abs(avg(unix_timestamp(if(return_money_time='1970-01-01 08:00:00',null,return_money_time)) - unix_timestamp(if(shipment_time='1970-01-01 08:00:00',null,shipment_time)))) / 86400 as shipment_to_return_money,"
-                        . "abs(avg(unix_timestamp(if(carry_sample_date='1970-01-01',null,carry_sample_date)) - unix_timestamp(if(shipment_time='1970-01-01 )8:00:00',null,shipment_time)))) / 86400 as carry_to_shipment,"
+        $sqlBase        = "SELECT max(abs(unix_timestamp(if(carry_sample_date='1970-01-01',null,carry_sample_date)) - unix_timestamp(if(order_date='1970-01-01',null,order_date)))) / 86400 as carry_sample_to_order,"
+                        . "max(abs(unix_timestamp(if(order_date_supplier='1970-01-01',null,order_date_supplier)) - unix_timestamp(if(order_date='1970-01-01',null,order_date)))) / 86400 as order_to_supplier,"
+                        . "max(abs(unix_timestamp(if(order_date_supplier='1970-01-01',null,order_date_supplier)) - unix_timestamp(if(confirm_date_supplier='1970-01-01',null,confirm_date_supplier)))) / 86400 as confirm_to_supplier,"
+                        . "max(abs(unix_timestamp(if(delivery_date_supplier='1970-01-01',null,delivery_date_supplier)) - unix_timestamp(if(confirm_date_supplier='1970-01-01',null,confirm_date_supplier)))) / 86400 as delivery_to_supplier,"
+                        . "max(abs(unix_timestamp(if(delivery_date_supplier='1970-01-01',null,delivery_date_supplier)) - unix_timestamp(if(arrival_date_supplier='1970-01-01',null,arrival_date_supplier)))) / 86400 as arrival_to_supplier,"
+                        . "max(abs(unix_timestamp(if(warehousing_time='1970-01-01 08:00:00',null,warehousing_time)) - unix_timestamp(if(arrival_date_supplier='1970-01-01',null,arrival_date_supplier)))) / 86400 as arrival_to_warehousing,"
+                        . "max(abs(unix_timestamp(if(warehousing_time='1970-01-01 08:00:00',null,warehousing_time)) - unix_timestamp(if(shipment_time='1970-01-01 08:00:00',null,shipment_time)))) / 86400 as warehousing_to_shipment,"
+                        . "max(abs(unix_timestamp(if(return_money_time='1970-01-01 08:00:00',null,return_money_time)) - unix_timestamp(if(shipment_time='1970-01-01 08:00:00',null,shipment_time)))) / 86400 as shipment_to_return_money,"
+                        . "max(abs(unix_timestamp(if(carry_sample_date='1970-01-01',null,carry_sample_date)) - unix_timestamp(if(shipment_time='1970-01-01 )8:00:00',null,shipment_time)))) / 86400 as carry_to_shipment,"
                         . 'avg(shipment_quantity / order_quantity) as progress '
                         . 'FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
-        $sql            = $sqlBase . $sqlCondition;
+        $sql            = 'SELECT avg(carry_sample_to_order) as carry_sample_to_order, '
+                        . 'avg(order_to_supplier) as order_to_supplier, '
+                        . 'avg(confirm_to_supplier) as confirm_to_supplier, '
+                        . 'avg(delivery_to_supplier) as delivery_to_supplier, '
+                        . 'avg(arrival_to_supplier) as arrival_to_supplier, '
+                        . 'avg(arrival_to_warehousing) as arrival_to_warehousing, '
+                        . 'avg(warehousing_to_shipment) as warehousing_to_shipment, '
+                        . 'avg(shipment_to_return_money) as shipment_to_return_money, '
+                        . 'avg(carry_to_shipment) as carry_to_shipment, '
+                        . 'avg(progress) as progress '
+                        . 'FROM (' . $sqlBase . $sqlCondition . ' GROUP BY `order_code`) AS `max_order_track_info`';
 
         return          self::_getStore()->fetchOne($sql);
     }

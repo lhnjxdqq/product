@@ -103,21 +103,28 @@
                 <div class="box-body">
                     <form action="/order/track/index.php" method="GET">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select id="customer-name" name="customer_name[]" class="form-control select2-customer" multiple>
 <{foreach $listCustomerName as $customerName}>
                                     <option value="<{$customerName}>"<{if $smarty.get.customer_name && in_array($customerName, $smarty.get.customer_name)}> selected<{/if}>><{$customerName}></option>
 <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select id="sales-name" name="sales_name[]" class="form-control select2-sales" multiple>
 <{foreach $listSalesName as $salesName}>
                                     <option value="<{$salesName}>"<{if $smarty.get.sales_name && in_array($salesName, $smarty.get.sales_name)}> selected<{/if}>><{$salesName}></option>
 <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
+                                <select id="supplier-code" name="supplier_code[]" class="form-control select2-supplier" multiple>
+<{foreach $listSupplierCode as $supplierCode}>
+                                    <option value="<{$supplierCode}>"<{if $smarty.get.supplier_code && in_array($supplierCode, $smarty.get.supplier_code)}> selected<{/if}>><{$supplierCode}></option>
+<{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <select id="order-status" name="order_status" class="form-control">
                                     <option value="">全部订单状态</option>
 <{foreach $mapOrderStatusLang as $statusValue => $statusName}>
@@ -125,6 +132,9 @@
 <{/foreach}>
                                 </select>
                             </div>
+                        </div>
+                        <!-- /.row -->
+                        <div class="row" style="padding-top:2rem;">
                             <div class="col-md-6">
                                 <div class="input-daterange input-group" style="border-left: 1px solid #d2d6de;">
                                     <span class="input-group-addon">下单日期</span>
@@ -133,17 +143,7 @@
                                     <input type="text" name="date_end" class="form-control" readonly value="<{$condition.order_date[1]}>">
                                 </div>
                             </div>
-                        </div>
-                        <!-- /.row -->
-                        <div class="row" style="padding-top:2rem;">
-                            <div class="col-md-2">
-                                <select id="supplier-code" name="supplier_code[]" class="form-control select2-supplier" multiple>
-<{foreach $listSupplierCode as $supplierCode}>
-                                    <option value="<{$supplierCode}>"<{if $smarty.get.supplier_code && in_array($supplierCode, $smarty.get.supplier_code)}> selected<{/if}>><{$supplierCode}></option>
-<{/foreach}>
-                                </select>
-                            </div>
-                            <div class="col-md-4 col-md-offset-6">
+                            <div class="col-md-4 col-md-offset-2">
                                 <div class="btn-group pull-right" role="group">
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                     <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
@@ -309,7 +309,7 @@
         placeholder : '销售员'
     });
     $('.select2-supplier').select2({
-        placeholder : '工厂代码'
+        placeholder : '工厂'
     });
     $('.act-show-batch').click(function () {
         var $this   = $(this),
