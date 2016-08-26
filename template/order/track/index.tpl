@@ -24,86 +24,74 @@
 
         <!-- Main content -->
         <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">总结数据</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">订单总数</span>
+                            <span class="info-box-number"><{$totalOrderCode}></span>
+                        </div>
                     </div>
                 </div>
-                <!-- .box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">订单总数</span>
-                                    <span class="info-box-number"><{$totalOrderCode}></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-green"><i class="fa fa-check"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">已完成数</span>
-                                    <span class="info-box-number"><{$totalOrderCompleted}></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-yellow"><i class="fa fa-hourglass-half"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">未完成数</span>
-                                    <span class="info-box-number"><{$totalOrderUncompleted}></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-aqua"><i class="fa fa-industry"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">生产订单</span>
-                                    <span class="info-box-number"><{$totalBatch}></span>
-                                </div>
-                            </div>
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-check"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">已完成数</span>
+                            <span class="info-box-number"><{$totalOrderCompleted}></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-aqua"><i class="fa fa-cubes"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">下单件数</span>
-                                    <span class="info-box-number"><{$totalOrderQuantity|default:0}></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-green"><i class="fa fa-truck"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">到货件数</span>
-                                    <span class="info-box-number"><{$totalArrivalQuantity|default:0}></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-yellow"><i class="fa fa-users"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text">客户数量</span>
-                                    <span class="info-box-number"><{$totalCustomerCount}></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- .row -->
                 </div>
-                <!-- .box-body -->
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-hourglass-half"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">未完成数</span>
+                            <span class="info-box-number"><{$totalOrderUncompleted}></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="fa fa-industry"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">生产订单</span>
+                            <span class="info-box-number"><{$totalBatch}></span>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="fa fa-cubes"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">下单件数</span>
+                            <span class="info-box-number"><{$totalOrderQuantity|default:0}></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="fa fa-truck"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">到货件数</span>
+                            <span class="info-box-number"><{$totalArrivalQuantity|default:0}></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="fa fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">客户数量</span>
+                            <span class="info-box-number"><{$totalCustomerCount}></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .row -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">条件筛选</h3>
@@ -115,21 +103,28 @@
                 <div class="box-body">
                     <form action="/order/track/index.php" method="GET">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select id="customer-name" name="customer_name[]" class="form-control select2-customer" multiple>
 <{foreach $listCustomerName as $customerName}>
                                     <option value="<{$customerName}>"<{if $smarty.get.customer_name && in_array($customerName, $smarty.get.customer_name)}> selected<{/if}>><{$customerName}></option>
 <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select id="sales-name" name="sales_name[]" class="form-control select2-sales" multiple>
 <{foreach $listSalesName as $salesName}>
                                     <option value="<{$salesName}>"<{if $smarty.get.sales_name && in_array($salesName, $smarty.get.sales_name)}> selected<{/if}>><{$salesName}></option>
 <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
+                                <select id="supplier-code" name="supplier_code[]" class="form-control select2-supplier" multiple>
+<{foreach $listSupplierCode as $supplierCode}>
+                                    <option value="<{$supplierCode}>"<{if $smarty.get.supplier_code && in_array($supplierCode, $smarty.get.supplier_code)}> selected<{/if}>><{$supplierCode}></option>
+<{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <select id="order-status" name="order_status" class="form-control">
                                     <option value="">全部订单状态</option>
 <{foreach $mapOrderStatusLang as $statusValue => $statusName}>
@@ -137,6 +132,9 @@
 <{/foreach}>
                                 </select>
                             </div>
+                        </div>
+                        <!-- /.row -->
+                        <div class="row" style="padding-top:2rem;">
                             <div class="col-md-6">
                                 <div class="input-daterange input-group" style="border-left: 1px solid #d2d6de;">
                                     <span class="input-group-addon">下单日期</span>
@@ -145,10 +143,7 @@
                                     <input type="text" name="date_end" class="form-control" readonly value="<{$condition.order_date[1]}>">
                                 </div>
                             </div>
-                        </div>
-                        <!-- /.row -->
-                        <div class="row" style="padding-top:2rem;">
-                            <div class="col-md-4 col-md-offset-8">
+                            <div class="col-md-4 col-md-offset-2">
                                 <div class="btn-group pull-right" role="group">
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
                                     <a href="/order/track/import.php" class="btn btn-primary"><i class="fa fa-edit"></i> 导入数据</a>
@@ -312,6 +307,9 @@
     });
     $('.select2-sales').select2({
         placeholder : '销售员'
+    });
+    $('.select2-supplier').select2({
+        placeholder : '工厂'
     });
     $('.act-show-batch').click(function () {
         var $this   = $(this),

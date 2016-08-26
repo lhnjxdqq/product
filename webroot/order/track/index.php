@@ -6,6 +6,7 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $listCustomerName   = array_filter(ArrayUtility::listField(Order_Track_Info::listCustomerName(), 'customer_name'));
 $listSalesName      = array_filter(ArrayUtility::listField(Order_Track_Info::listSalesName(), 'sales_name'));
+$listSupplierCode   = array_filter(ArrayUtility::listField(Order_Track_Info::listSupplierCode(), 'supplier_code'));
 $condition          = array();
 
 if (is_array($_GET['customer_name'])) {
@@ -16,6 +17,11 @@ if (is_array($_GET['customer_name'])) {
 if (is_array($_GET['sales_name'])) {
 
     $condition['sales_name']    = $_GET['sales_name'];
+}
+
+if (is_array($_GET['supplier_code'])) {
+
+    $condition['supplier_code'] = $_GET['supplier_code'];
 }
 
 if (isset($_GET['order_status']) && '' !== $_GET['order_status'] && in_array($_GET['order_status'], array(0, 1))) {
@@ -197,6 +203,7 @@ $template->assign('totalCustomerCount', $totalCustomerCount);
 $template->assign('listCustomerName', $listCustomerName);
 $template->assign('listSalesName', $listSalesName);
 $template->assign('listOrderCode', $listOrderCode);
+$template->assign('listSupplierCode', $listSupplierCode);
 $template->assign('mapOrderAmount', $mapOrderAmount);
 $template->assign('mapOrderStatusLang', $mapOrderStatusLang);
 $template->assign('standard', $standard);
