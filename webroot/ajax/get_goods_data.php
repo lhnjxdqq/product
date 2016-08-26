@@ -4,12 +4,12 @@ require_once dirname(__FILE__) . '/../../init.inc.php';
 $goodsSn        = isset($_POST['goods_sn']) ? trim($_POST['goods_sn']) : '';
 $categoryId     = isset($_POST['category_id']) ? (int) $_POST['category_id'] : 0;
 $weightValueId  = isset($_POST['weight_value_id']) ? (int) $_POST['weight_value_id'] : 0;
-
 $listGoodsSn    = array_filter(explode(' ', $goodsSn));
-$numberGoodsSn = count($listGoodsSn);
+$numberGoodsSn  = count($listGoodsSn);
 
 //数量限制
-if ( $numberGoodsSn >100 ) {
+if ( $numberGoodsSn > 100 ) {
+
     echo json_encode(array(
         'statusCode'    => 'error',
         'statusInfo'    => '商品编号过多,数量为' . $numberGoodsSn,
@@ -17,7 +17,7 @@ if ( $numberGoodsSn >100 ) {
     exit;
 }
 
-$listGoodsInfo      = Goods_Info::getByMultiGoodsSn($listGoodsSn);
+$listGoodsInfo       = Goods_Info::getByMultiGoodsSn($listGoodsSn);
 $resultListGoodsSn   = ArrayUtility::listField($listGoodsInfo , 'goods_sn');
 $diff = array_diff($listGoodsSn, $resultListGoodsSn);
 
@@ -31,8 +31,8 @@ if ( !empty($diff) ) {
     exit;
 }
 
-$deleteGoodsInfo = ArrayUtility::searchBy($listGoodsInfo , array('delete_status'=>Goods_DeleteStatus::DELETED));
-$deleteGoodsSn = ArrayUtility::listField($deleteGoodsInfo , 'goods_sn');
+$deleteGoodsInfo   = ArrayUtility::searchBy($listGoodsInfo , array('delete_status'=>Goods_DeleteStatus::DELETED));
+$deleteGoodsSn     = ArrayUtility::listField($deleteGoodsInfo , 'goods_sn');
 
 //查询是否已删除
 if ( !empty($deleteGoodsSn) ) {
@@ -44,13 +44,12 @@ if ( !empty($deleteGoodsSn) ) {
     exit;
 }
 
-$listGoodsId = ArrayUtility::listField($listGoodsInfo , 'goods_id');
-$mapGoodsInfoList = ArrayUtility::indexByField($listGoodsInfo , 'goods_id');
-
+$listGoodsId            = ArrayUtility::listField($listGoodsInfo , 'goods_id');
+$mapGoodsInfoList       = ArrayUtility::indexByField($listGoodsInfo , 'goods_id');
 $listGoodsSpecValue     = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
-$listSpecValueId = ArrayUtility::listField($listGoodsSpecValue , 'spec_value_id');
-$listSpecId = ArrayUtility::listField($listGoodsSpecValue , 'spec_id');
-$mapGoodsSpecValueList = ArrayUtility::groupByField($listGoodsSpecValue , 'goods_id');
+$listSpecValueId        = ArrayUtility::listField($listGoodsSpecValue , 'spec_value_id');
+$listSpecId             = ArrayUtility::listField($listGoodsSpecValue , 'spec_id');
+$mapGoodsSpecValueList  = ArrayUtility::groupByField($listGoodsSpecValue , 'goods_id');
 
 foreach ( $mapGoodsInfoList as $goodsId => $goodsInfo ) {
 
@@ -100,6 +99,7 @@ foreach ( $mapGoodsSpecValueList as $goodsId => $goodsSpecValue ) {
     }
     $mapGoodsInfoList[$goodsId]['category_name'] = $categoryInfo['category_name'];
 }
+
 echo json_encode(array(
     'statusCode'    => 'success',
     'resultData'    => $mapGoodsInfoList,
