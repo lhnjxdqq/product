@@ -22,9 +22,22 @@ $page           = new PageList(array(
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
-$listProduct            = isset($condition['category_id'])
-                        ? Search_Product::listByCondition($condition, $page->getOffset(), $perpage)
-                        : Product_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+if ( $condition['export'] == 1 ) {
+
+    if ( $condition['total'] > 1000 ) {
+            //报错退出(数量过多)
+            Utility::notice('数据超出1000条，无法正常导出');
+    }
+    $listProduct            = isset($condition['category_id'])
+                            ? Search_Product::listByCondition($condition)
+                            : Product_Info::listByCondition($condition, $orderBy);
+} else {
+
+    $listProduct            = isset($condition['category_id'])
+                            ? Search_Product::listByCondition($condition, $page->getOffset(), $perpage)
+                            : Product_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+}
+
 $listGoodsId            = ArrayUtility::listField($listProduct, 'goods_id');
 $listGoodsInfo          = Goods_Info::getByMultiId($listGoodsId);
 $mapGoodsInfo           = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
@@ -116,14 +129,10 @@ $data['onlineStatus']       = array(
     'offline'   => Product_OnlineStatus::OFFLINE,
 );
 
-
 //导出
 if ( $condition['export'] == 1 ) {
 
-    if ( $condition['total'] > 1000 ) {
-        //报错退出(数量过多)
-        Utility::notice('数据超出1000条，无法正常导出');
-    }
+
 
     $listSpuGoodsRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
     $mapSpuGoodsRelation    = ArrayUtility::indexByField($listSpuGoodsRelation , 'goods_id');
