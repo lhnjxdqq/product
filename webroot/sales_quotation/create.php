@@ -32,7 +32,7 @@ $userId          = $_SESSION['user_id'];
 $listCustomer    = Customer_Info::listAll();
 
 $orderBy                = array();
-$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $condition['user_id']   = $userId;
 $countSpu   = Cart_Spu_Info::countByCondition($condition);
 $page           = new PageList(array(
