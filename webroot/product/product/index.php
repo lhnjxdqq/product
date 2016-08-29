@@ -1,4 +1,5 @@
 <?php
+header('content-type:text/html;charset=utf8');
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $condition  = $_GET;
@@ -114,6 +115,71 @@ $data['onlineStatus']       = array(
     'online'    => Product_OnlineStatus::ONLINE,
     'offline'   => Product_OnlineStatus::OFFLINE,
 );
+
+
+//导出
+if ( $condition['export'] == 1 ) {
+
+    if ( $condition['total'] > 1000 ) {
+        //报错退出(数量过多)
+        Utility::notice('数据超出1000条，无法正常导出');
+    }
+
+    $listSpuGoodsRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
+    $mapSpuGoodsRelation    = ArrayUtility::indexByField($listSpuGoodsRelation , 'goods_id');
+    $listSpuId              = ArrayUtility::listField($listSpuGoodsRelation , 'spu_id');
+    $listSpuInfo            = Spu_Info::getByMultiId($listSpuId);
+    $mapSpuInfo             = ArrayUtility::indexByField($listSpuInfo , 'spu_id');
+
+    $export = array();
+    foreach ($listProduct as $product) {
+
+        $tmpSpuId                       = $mapSpuGoodsRelation[$product['goods_id']]['spu_id'];
+        if ( is_array($tmpSpuId) ) {
+            $tmpSpuSnList               = array();
+            foreach ($tmpSpuId as $spuId) {
+                $tmpSpuSnList           = $mapSpuInfo[$spuId]['spu_sn'];
+            }
+            $spuSn                      = implode(',', $tmpSpuSnList);
+        } else {
+            $spuSn                      = $mapSpuInfo[$tmpSpuId]['spu_sn'];
+        }
+
+        $export['product_sn']           = $product['product_sn'];
+        $export['goods_sn']             = $mapGoodsInfo[$product['goods_id']]['goods_sn'];
+        $export['spu_sn']               = $spuSn;
+        $export['product_name']         = $product['product_name'];
+        $export['catgory']              = $mapCategory[$mapGoodsInfo[$product['goods_id']]['category_id']];
+        $export['weight']               = $mapGoodsSpecValue[$product['goods_id']]['规格重量']['spec_value_data'];
+        $export['size']                 = $mapGoodsSpecValue[$product['goods_id']]['规格尺寸']['spec_value_data'];
+        $export['color']                = $mapGoodsSpecValue[$product['goods_id']]['颜色']['spec_value_data'];
+        $export['style']                = !empty($mapGoodsInfo[$product['goods_id']]['style_id']) ? $listStyleInfo[$listStyleInfo[$mapGoodsInfo[$product['goods_id']]['style_id']]['parent_id']]['style_name'] : '';
+        $export['sub_style']            = !empty($mapGoodsInfo[$product['goods_id']]['style_id']) ? $listStyleInfo[$mapGoodsInfo[$product['goods_id']]['style_id']]['style_name'] : '';
+        $export['supplier_id']          = $mapSupplierInfo[$mapSourceInfo[$product['source_id']]['supplier_id']]['supplier_code'];
+        $export['source_code']          = $mapSourceInfo[$product['source_id']]['source_code'];
+        $export['product_cost']         = $product['product_cost'];
+        $export['status']               = ($product['online_status'] == 1) ? '上架' : '下架';
+        $download[] = $export; 
+
+    }
+
+    // 这里是数据转换并下载
+    header('Content-type:text/csv');
+    header("Content-Disposition:attachment;filename=export.csv");
+    header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
+    header('Expires:0');
+    header('Pragma:public');
+
+    $fp = fopen('php://output' , 'w');
+    fputcsv($fp, array_map('Utility::utf8ToGb' , array('产品编号' , 'SKU编号' , 'SPU编号' , '产品名称' , '三级分类' , '规格重量' , '规格尺寸' , '颜色' , '款式' , '子款式' , '供应商ID' , '买款ID' , '进货工费' , '产品状态')));
+    foreach ($download as $v) {
+
+        fputcsv($fp, array_map('Utility::utf8ToGb' , $v));
+    }
+
+    fclose($fp);
+    exit;
+}
 
 $template = Template::getInstance();
 $template->assign('data', $data);

@@ -133,6 +133,7 @@
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash"></i> 批量删除</a>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="offlineMulti"><i class="fa fa-arrow-down"></i> 批量下架</a>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="onlineMulti"><i class="fa fa-arrow-up"></i> 批量上架</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="export" style="margin-left:1px;"><i class="fa"></i> 批量导出</a>
                     <a href="/product/product/add.php" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> 添加产品</a>
                     <button class="btn btn-primary btn-sm pull-right keep-cost hide" style="margin-right: 5px;"> 保存工费</button>
                     <button class="btn btn-primary btn-sm pull-right edit-cost" style="margin-right: 5px;"> 修改本页工费</button>
@@ -225,6 +226,16 @@
 
 <{include file="section/foot.tpl"}>
 <script>
+
+    $('#export').click(function () {
+        var total = <{$data.pageViewData.total}>;
+        if ( total > 1000 ) {
+            alert('数据超出1000条，无法正常导出');
+            return false;
+        }
+        window.location.href = window.location.href + '&export=1&total=<{$data.pageViewData.total}>';
+    });
+
     <{if $data.groupStyleInfo}>
     var styleList   = {};
     var styleIdLv1  = <{$smarty.get.style_id_lv1|default:0}>;
