@@ -2,36 +2,37 @@
 
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
-$salesOrderId       = $_GET['sales_order_id'];
+$salesOrderId               = $_GET['sales_order_id'];
 
-$condition              = $_GET;
+$condition                  = $_GET;
 $condition['delete_status'] = Goods_DeleteStatus::NORMAL;
 
 Validate::testNull($salesOrderId,'销售订单ID不能为空');
-$salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
+
+$salesOrderInfo             = Sales_Order_Info::getById($salesOrderId);
 Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
 //获取对应销售报价单中的所有SPU
-$salesQuotationSpuInfo = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesOrderInfo['sales_quotation_id']));
-$groupSpuInfo       = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
-$groupSalesQuotationSpuId   = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
-$listSpuId             = array_unique(ArrayUtility::listField($salesQuotationSpuInfo ,'spu_id'));
+$salesQuotationId           = explode(',', $salesOrderInfo['sales_quotation_id']);
+$salesQuotationSpuInfo      = Sales_Quotation_Spu_Info::getBySalesQuotationId($salesQuotationId);
+$groupSpuInfo               = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
+$listSpuId                  = array_unique(ArrayUtility::listField($salesQuotationSpuInfo ,'spu_id'));
 
 //获取销售报价单中的sku
-$listGoodsId        = array_unique(ArrayUtility::listField(Spu_Goods_RelationShip::getByMultiSpuId($listSpuId), 'goods_id'));
+$listGoodsId                = array_unique(ArrayUtility::listField(Spu_Goods_RelationShip::getByMultiSpuId($listSpuId), 'goods_id'));
 
 //获取所有订单详情中的所有sku
-$salesGoodsInfo     =  Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
+$salesGoodsInfo             =  Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
 //订单中所有的sku
-$listGoods          = ArrayUtility::listField($salesGoodsInfo,'goods_id');
+$listGoods                  = ArrayUtility::listField($salesGoodsInfo,'goods_id');
 
 //销售订单中的备注
-$indexSales   = ArrayUtility::indexByField($salesGoodsInfo,'goods_id');
+$indexSales                 = ArrayUtility::indexByField($salesGoodsInfo,'goods_id');
 
-$skuRelationShipSpuInfo = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
+$skuRelationShipSpuInfo     = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
 
 //查出所有关联Spu的信息
-$listSpuInfo        = ArrayUtility::indexByField(Spu_Info::getByMultiId(ArrayUtility::listField($skuRelationShipSpuInfo,'spu_id')),'spu_id');
+$listSpuInfo                = ArrayUtility::indexByField(Spu_Info::getByMultiId(ArrayUtility::listField($skuRelationShipSpuInfo,'spu_id')),'spu_id');
 
 foreach($skuRelationShipSpuInfo as &$info) {
     $info = &$info;
