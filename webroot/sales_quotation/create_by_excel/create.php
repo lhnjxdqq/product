@@ -11,7 +11,7 @@ $sortBy         = array(
     'source_code'   => 'ASC',
 );
 
-$perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : '20';
+$perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : '100';
 $countCartData  = Sales_Quotation_Spu_Cart::countByCondition($conditionCart);
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countCartData,

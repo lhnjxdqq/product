@@ -38,7 +38,7 @@ $listCustomer       = Customer_Info::listAll();
 $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
 
 $orderBy                = array();
-$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $condition['sales_quotation_id']   = $salesQuotationId;
 $group              = 'spu_id'; 
 $countSpu   = Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId);
