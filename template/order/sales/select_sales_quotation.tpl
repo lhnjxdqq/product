@@ -75,7 +75,7 @@
                             <tbody>
                                 <{foreach from=$listSpuInfo item=item}>
                                     <tr>
-                                        <td><input type="radio" name='sales_quotation_id' value="<{$item.sales_quotation_id}>"></td>
+                                        <td><input type="checkbox" name='sales_quotation_id[]' value="<{$item.sales_quotation_id}>"></td>
                                         <td><{$item.sales_quotation_name}></td>
                                         <td><{$item.sales_quotation_date}></td>
                                         <td><{if $item.customer_id eq 0}><{else}><{$mapCustomer[$item.customer_id]['customer_name']}><{/if}></td>
@@ -95,7 +95,9 @@
                 </form>
                 <!-- /.box-body -->
                 <div class="box-footer clearfix">
+                <{*}>
                     <{include file="section/pagelist.tpl" viewData=$pageViewData}>
+                <{*}>
                 </div>
                 <!-- /.box-footer-->
             </div>
@@ -168,7 +170,9 @@ $(function(){
         
     });
     $(".select-multiple").select2();
-});    
+});
+
+
 </script>
 </body>
 </html>
