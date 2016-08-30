@@ -48,12 +48,12 @@ class   Sales_Quotation_Info {
      * @param   int     $limit      数量
      * @return  array               列表
      */
-    static  public  function listByCondition (array $condition, array $order, $offset, $limit) {
+    static  public  function listByCondition (array $condition, array $order, $offset = NULL, $limit = NULL) {
 
         $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = self::_order($order);
-        $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
+        $sqlLimit       = empty($limit) ? '' : ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
         $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
 
         return          self::_getStore()->fetchAll($sql);
@@ -212,7 +212,7 @@ class   Sales_Quotation_Info {
     }
 
     /**
-     * 根据一组报价单ID获取报价单信息
+     * 根据一个报价单ID获取单条报价单信息
      *
      * @param $multiId  报价单ID
      * @return array    报价单信息
