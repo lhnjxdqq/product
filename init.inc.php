@@ -14,12 +14,18 @@ date_default_timezone_set(TIME_ZONE_DEFAULT);
 
 Application::initialize();
 
-session_start();
+if(isset($argc) || $argc != 0){
+   
+    return ;
+}else{
+     
+    session_start();
+        
+    if (!Common_Auth::validate()) {
 
-if ((!isset($argc) || $argc == 0) && !Common_Auth::validate()) {
-
-    header('Location: /login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
-    exit;
+        header('Location: /login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+        exit;
+    }   
 }
 
 if ($_SERVER['DOCUMENT_ROOT'] && $_SERVER['SCRIPT_NAME'] != '/') {

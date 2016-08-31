@@ -55,6 +55,24 @@ class   Update_Cost_Info {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+    
+    /**
+     * 根据ID获取信息
+     *
+     * @param   int     $updateCostId  Id
+     * @return  array                  数据
+     */
+    static  public  function getByUpdateCostId($updateCostId){
+        
+        if(empty($updateCostId)){
+            
+            return ;
+        }
+        $sql ='SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE update_cost_id ='. addslashes($updateCostId);
+        
+        return self::_getStore()->fetchOne($sql);
+    }
+     
     /**
      * 根据条件获取数据列表
      *
@@ -71,7 +89,7 @@ class   Update_Cost_Info {
         $sqlOrder       = self::_order($order);
         $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
         $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
-//echo $sql;die;
+
         return          self::_getStore()->fetchAll($sql);
     }
 
@@ -126,7 +144,7 @@ class   Update_Cost_Info {
      */
     static  private function _conditionByStatusId(array $condition){
         
-        return  !isset($condition['status_id']) ? '`status_id` != "'. Update_Cost_Status::DELETED . '"' : '`status_id` = "' . (int) $condition['status_id'] . '"';
+        return  !isset($condition['status_id']) ? '`status_id` != "'. Update_Cost_Status::DELETED . '"' : '`status_id` = "' . addslashes($condition['status_id']) . '"';
     }
 
     /**
