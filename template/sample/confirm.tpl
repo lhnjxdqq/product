@@ -75,33 +75,28 @@
                                     </td>
                                 </tr>
                             <{/foreach}>
-                        </tbody>                
-                        <tfoot>
-                            <tr>
-                                <td colspan='12'>
-                                    <form action='/sample/do_add.php' id='confirm-form' method='post'>
-                                            <div class='row'>
-                                                <div class='col-sm-6'></div>
-                                                <div class='col-sm-2'>
-                                                    <label class='control-label pull-right' style='margin-top:6px'>样板类型</label>
-                                                </div>
-                                                <div class='col-sm-2'>
-                                                    <select class='form-control' id='sample_type' name='sample_type'>
-                                                        <option value='0'>请选择</option>
-<{foreach from=$sampleType item=item}>
-                                                        <option value="<{$item.type_id}>"><{$item.type_name}></option>
-<{/foreach}>
-                                                    </select>
-                                                </div>
-                                                <div class='col-sm-2'>
-                                                    <button class='control-button pull-left btn btn-primary'>确认样板</button>
-                                                </div>
-                                            </div>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
+                </div>
+                <div>
+                    <form action='/sample/do_add.php' id='confirm-form' method='post'>
+                            <div class='row'>
+                                <div class='col-sm-6'></div>
+                                <div class='col-sm-2'>
+                                    <label class='control-label pull-right' style='margin-top:6px'>样板类型</label>
+                                </div>
+                                <div class='col-sm-2'>
+                                    <select class='form-control' id='sample_type' name='sample_type'>
+                                        <option value='0'>请选择</option>
+<{foreach from=$sampleType item=item}>
+                                        <option value="<{$item.type_id}>"><{$item.type_name}></option>
+<{/foreach}>
+                                    </select>
+                                </div>
+                                <div class='col-sm-2'>
+                                    <button class='control-button pull-left btn btn-primary'>确认样板</button>
+                                </div>
+                            </div>
+                    </form>
                 </div>
                 <div class="box-footer clearfix">
                     <{include file="section/pagelist.tpl" viewData=$data['pageViewData']}>
