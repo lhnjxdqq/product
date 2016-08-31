@@ -97,38 +97,39 @@ foreach($mapUpdateCost as $key=>$info){
             'update_cost_id'       => $info['update_cost_id'],
             'status_id'            => Update_Cost_Status::FINISHED,
         ));
-        continue;
-    }
-    $mapEnumeration = array();
-
-    $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
-    $mapStyleInfo       = Style_Info::listAll();
-    $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
-    $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
-    if (empty($listGoodsType)) {
-        exit("表中无匹配产品类型,请修改后重新上传\n");
-    }
-    $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
-    $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
-    $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
-    $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
-    $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
-    $mapEnumeration =array(
-        'mapCategory'          => $mapCategoryName,
-        'mapTypeSpecValue'     => $mapTypeSpecValue,
-        'mapIndexSpecAlias'    => $mapIndexSpecAlias,
-        'mapSpecValue'         => $mapSpecValue,
-        'mapSizeId'            => $mapSizeId,
-        'mapStyle'             => $mapStyleInfo,
-        'mapSpecInfo'          => $mapSpecInfo,
-    );
-
-    foreach ($data as $offsetRow => $row) {
+    }else{
         
-       $goodsIds[] = Quotation::updateCostcreateQuotation($row,$mapEnumeration,1 ,$info['supplier_id']);
+        $mapEnumeration = array();
+
+        $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
+        $mapStyleInfo       = Style_Info::listAll();
+        $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
+        $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
+        if (empty($listGoodsType)) {
+            exit("表中无匹配产品类型,请修改后重新上传\n");
+        }
+        $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
+        $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
+        $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
+        $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
+        $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
+        $mapEnumeration =array(
+            'mapCategory'          => $mapCategoryName,
+            'mapTypeSpecValue'     => $mapTypeSpecValue,
+            'mapIndexSpecAlias'    => $mapIndexSpecAlias,
+            'mapSpecValue'         => $mapSpecValue,
+            'mapSizeId'            => $mapSizeId,
+            'mapStyle'             => $mapStyleInfo,
+            'mapSpecInfo'          => $mapSpecInfo,
+        );
+
+        foreach ($data as $offsetRow => $row) {
+            
+           $goodsIds[] = Quotation::updateCostcreateQuotation($row,$mapEnumeration,1 ,$info['supplier_id']);
+        }
+        Update_Cost_Info::update(array(
+            'update_cost_id'       => $info['update_cost_id'],
+            'status_id'            => Update_Cost_Status::FINISHED,
+        ));   
     }
-    Update_Cost_Info::update(array(
-        'update_cost_id'       => $info['update_cost_id'],
-        'status_id'            => Update_Cost_Status::FINISHED,
-    ));
 }
