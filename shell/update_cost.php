@@ -15,7 +15,6 @@ if(empty($mapUpdateCost)){
     
     exit;
 }
-//var_dump(Goods_Type_Spec_Value_Relationship::listAll());die;
 foreach($mapUpdateCost as $key=>$info){
     
     $mapUpdateCostSourceInfo    = Update_Cost_Source_Info::getByUpdateCostId($info['update_cost_id']);
@@ -69,7 +68,7 @@ foreach($mapUpdateCost as $key=>$info){
                         ));
                     }
                 }else{
-                        $cost[$colorId] = $colorPrice;
+                    $cost[$colorId] = $colorPrice;
                 }
                 
             }
@@ -93,8 +92,12 @@ foreach($mapUpdateCost as $key=>$info){
         }
     }
     if(empty($data)){
-            
-            continue;
+                
+        Update_Cost_Info::update(array(
+            'update_cost_id'       => $info['update_cost_id'],
+            'status_id'            => Update_Cost_Status::FINISHED,
+        ));
+        continue;
     }
     $mapEnumeration = array();
 
