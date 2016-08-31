@@ -46,7 +46,6 @@
 <{/foreach}>
                                     </select>
                                 </div>
-                                <input type='hidden' name='is_table_sku_code' value='1'>
                                 <input type='hidden' name='is_sku_code' value='1'>
                                 <div class="form-group">
                                     <label>选择报价单: </label>
