@@ -82,12 +82,16 @@
                                     <td><a href="/update_cost/update_cost_delete.php?&spu_id=<{$item.spu_id}>&source_code=<{$item.sku_code}>&update_cost_id=<{$updateCostInfo.update_cost_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
 <{/foreach}>                     
-                                <tr>
-                                    <td colspan="2"><button type="submit" class="btn btn-primary pull-left"><i class="fa fa-save"></i> 保存修改</button></td>
-                                    <td colspan="<{$countColor+10}>"><a type="button" href='/update_cost/pass.php?update_cost_id=<{$updateCostInfo.update_cost_id}>' class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 审核通过</a></td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom:20px;height:30px;">
+                        <div class='col-md-6'>
+                            <button type="submit" class="btn btn-primary pull-left"><i class="fa fa-save"></i> 保存修改</button>
+                        </div>
+                        <div class='col-md-6'>
+                            <a type="button" href='/update_cost/pass.php?update_cost_id=<{$updateCostInfo.update_cost_id}>' class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 审核通过</a>                             
+                        </div>
                     </div>
                     <div class="box-footer clearfix">
                         <{include file="section/pagelist.tpl" viewData=$pageViewData}>
