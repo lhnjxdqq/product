@@ -88,7 +88,7 @@
                                     <th>样板数量</th>
                                     <th>状态</th>
                                     <th>创建时间</th>
-                                    <th width="150px" style='text-align:center'>操作</th>
+                                    <th width="200px" style='text-align:center'>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,8 +100,8 @@
                                         <td><{$statusInfo[$item.status_id]}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
-                                            <{if $item.status_id eq 1 || $item.status_id eq 2}>
-                                                <a href='/update_cost/delete.php?update_cost_id=<{$item.update_cost_id}>' class='btn btn-xs btn-worning delete-confirm'>删除</a>
+                                            <{if $item.status_id eq 1}>
+                                                <a href='/update_cost/delete.php?update_cost_id=<{$item.update_cost_id}>' class='btn btn-xs btn-warning delete-confirm'>删除</a>
                                             <{else}>
                                             <{if $item.status_id eq 2}>
                                             <a href='/update_cost/review.php?update_cost_id=<{$item.update_cost_id}>' class='btn btn-xs btn-primary'>审核</a>

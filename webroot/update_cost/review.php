@@ -24,7 +24,7 @@ $page           = new PageList(array(
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
-$listUpdateCostProductInfo  = Update_Cost_Source_Info::listByCondition($condition, array(), $page->getOffset(), $perpage);
+$listUpdateCostProductInfo  = Update_Cost_Source_Info::listByCondition($condition, array('relationship_product_id'=>'DESC'), $page->getOffset(), $perpage);
 $indexSourceCode            = ArrayUtility::indexByField($listUpdateCostProductInfo,'source_code');
 
 //属性列表
