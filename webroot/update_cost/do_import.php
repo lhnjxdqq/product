@@ -94,7 +94,16 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
     unset($data['cost']);
     $list[] = $data;
 }
+$listSkuCode    = ArrayUtility::listField($list,'sku_code');
+$skuCodeCount   = array_count_values($listSkuCode);
 
+foreach($skuCodeCount as $key=>$val){
+
+    if($val>1){
+        
+        throw   new ApplicationException('买款ID为'.$key.'的记录重复,请检查表格');
+    }
+}
 $mapEnumeration = array();
 
 $addNums = 1;

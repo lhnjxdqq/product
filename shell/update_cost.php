@@ -15,7 +15,6 @@ if(empty($mapUpdateCost)){
     
     exit;
 }
-//var_dump(Goods_Type_Spec_Value_Relationship::listAll());die;
 foreach($mapUpdateCost as $key=>$info){
     
     $mapUpdateCostSourceInfo    = Update_Cost_Source_Info::getByUpdateCostId($info['update_cost_id']);
@@ -50,26 +49,51 @@ foreach($mapUpdateCost as $key=>$info){
                         if(empty($updateGoodsInfo)){
                             
                             $size[] = $sizeId;
+                        }else{    
+                            $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId,'size_value_id'=>$sizeId)),'goods_id');
+                            if(!empty($updateGoodsId)){
+                                
+                                foreach($updateGoodsId as $id){
+
+                                    Goods_Info::update(array(
+                                        'goods_id'      => $id,
+                                        'self_cost'     => $colorPrice+PLUS_COST,
+                                        'sale_cost'     => $colorPrice+PLUS_COST,
+                                        'delete_status' => Goods_DeleteStatus::NORMAL,
+                                        'online_status' => Goods_OnlineStatus::ONLINE,
+                                    ));
+                                    Product_Info::update(array(
+                                        'product_id'    => $indexGoodsIdProductId[$id],
+                                        'product_cost'  => $colorPrice,
+                                        'delete_status' => Product_DeleteStatus::NORMAL,
+                                        'online_status' => Product_OnlineStatus::ONLINE,
+                                    ));
+                                }
+                            }else{
+                                $cost[$colorId] = $colorPrice;
+                            }
                         }
                     }
-                }            
-                $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId)),'goods_id');
-                if(!empty($updateGoodsId)){
                     
-                    foreach($updateGoodsId as $id){
+                }else{                                 
+                    $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId)),'goods_id');
+                    if(!empty($updateGoodsId)){
+                        
+                        foreach($updateGoodsId as $id){
 
-                        Goods_Info::update(array(
-                            'goods_id'      => $id,
-                            'self_cost'     => $colorPrice+PLUS_COST,
-                            'sale_cost'     => $colorPrice+PLUS_COST,
-                        ));
-                        Product_Info::update(array(
-                            'product_id'    => $indexGoodsIdProductId[$id],
-                            'product_cost'  => $colorPrice,
-                        ));
-                    }
-                }else{
+                            Goods_Info::update(array(
+                                'goods_id'      => $id,
+                                'self_cost'     => $colorPrice+PLUS_COST,
+                                'sale_cost'     => $colorPrice+PLUS_COST,
+                            ));
+                            Product_Info::update(array(
+                                'product_id'    => $indexGoodsIdProductId[$id],
+                                'product_cost'  => $colorPrice,
+                            ));
+                        }
+                    }else{
                         $cost[$colorId] = $colorPrice;
+                    }   
                 }
                 
             }
@@ -93,39 +117,44 @@ foreach($mapUpdateCost as $key=>$info){
         }
     }
     if(empty($data)){
-            
-            continue;
-    }
-    $mapEnumeration = array();
-
-    $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
-    $mapStyleInfo       = Style_Info::listAll();
-    $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
-    $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
-    if (empty($listGoodsType)) {
-        exit("表中无匹配产品类型,请修改后重新上传\n");
-    }
-    $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
-    $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
-    $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
-    $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
-    $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
-    $mapEnumeration =array(
-        'mapCategory'          => $mapCategoryName,
-        'mapTypeSpecValue'     => $mapTypeSpecValue,
-        'mapIndexSpecAlias'    => $mapIndexSpecAlias,
-        'mapSpecValue'         => $mapSpecValue,
-        'mapSizeId'            => $mapSizeId,
-        'mapStyle'             => $mapStyleInfo,
-        'mapSpecInfo'          => $mapSpecInfo,
-    );
-
-    foreach ($data as $offsetRow => $row) {
+                
+        Update_Cost_Info::update(array(
+            'update_cost_id'       => $info['update_cost_id'],
+            'status_id'            => Update_Cost_Status::FINISHED,
+        ));
+    }else{
         
-       $goodsIds[] = Quotation::updateCostcreateQuotation($row,$mapEnumeration,1 ,$info['supplier_id']);
+        $mapEnumeration = array();
+
+        $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
+        $mapStyleInfo       = Style_Info::listAll();
+        $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
+        $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
+        if (empty($listGoodsType)) {
+            exit("表中无匹配产品类型,请修改后重新上传\n");
+        }
+        $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
+        $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
+        $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
+        $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
+        $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
+        $mapEnumeration =array(
+            'mapCategory'          => $mapCategoryName,
+            'mapTypeSpecValue'     => $mapTypeSpecValue,
+            'mapIndexSpecAlias'    => $mapIndexSpecAlias,
+            'mapSpecValue'         => $mapSpecValue,
+            'mapSizeId'            => $mapSizeId,
+            'mapStyle'             => $mapStyleInfo,
+            'mapSpecInfo'          => $mapSpecInfo,
+        );
+
+        foreach ($data as $offsetRow => $row) {
+            
+           $goodsIds[] = Quotation::updateCostcreateQuotation($row,$mapEnumeration,1 ,$info['supplier_id']);
+        }
+        Update_Cost_Info::update(array(
+            'update_cost_id'       => $info['update_cost_id'],
+            'status_id'            => Update_Cost_Status::FINISHED,
+        ));   
     }
-    Update_Cost_Info::update(array(
-        'update_cost_id'       => $info['update_cost_id'],
-        'status_id'            => Update_Cost_Status::FINISHED,
-    ));
 }
