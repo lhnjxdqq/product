@@ -59,10 +59,14 @@ foreach($mapUpdateCost as $key=>$info){
                                         'goods_id'      => $id,
                                         'self_cost'     => $colorPrice+PLUS_COST,
                                         'sale_cost'     => $colorPrice+PLUS_COST,
+                                        'delete_status' => Goods_DeleteStatus::NORMAL,
+                                        'online_status' => Goods_OnlineStatus::ONLINE,
                                     ));
                                     Product_Info::update(array(
                                         'product_id'    => $indexGoodsIdProductId[$id],
                                         'product_cost'  => $colorPrice,
+                                        'delete_status' => Product_DeleteStatus::NORMAL,
+                                        'online_status' => Product_OnlineStatus::ONLINE,
                                     ));
                                 }
                             }else{
