@@ -49,26 +49,47 @@ foreach($mapUpdateCost as $key=>$info){
                         if(empty($updateGoodsInfo)){
                             
                             $size[] = $sizeId;
+                        }else{    
+                            $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId,'size_value_id'=>$sizeId)),'goods_id');
+                            if(!empty($updateGoodsId)){
+                                
+                                foreach($updateGoodsId as $id){
+
+                                    Goods_Info::update(array(
+                                        'goods_id'      => $id,
+                                        'self_cost'     => $colorPrice+PLUS_COST,
+                                        'sale_cost'     => $colorPrice+PLUS_COST,
+                                    ));
+                                    Product_Info::update(array(
+                                        'product_id'    => $indexGoodsIdProductId[$id],
+                                        'product_cost'  => $colorPrice,
+                                    ));
+                                }
+                            }else{
+                                $cost[$colorId] = $colorPrice;
+                            }
                         }
                     }
-                }            
-                $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId)),'goods_id');
-                if(!empty($updateGoodsId)){
                     
-                    foreach($updateGoodsId as $id){
+                }else{                                 
+                    $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId)),'goods_id');
+                    if(!empty($updateGoodsId)){
+                        
+                        foreach($updateGoodsId as $id){
 
-                        Goods_Info::update(array(
-                            'goods_id'      => $id,
-                            'self_cost'     => $colorPrice+PLUS_COST,
-                            'sale_cost'     => $colorPrice+PLUS_COST,
-                        ));
-                        Product_Info::update(array(
-                            'product_id'    => $indexGoodsIdProductId[$id],
-                            'product_cost'  => $colorPrice,
-                        ));
-                    }
-                }else{
-                    $cost[$colorId] = $colorPrice;
+                            Goods_Info::update(array(
+                                'goods_id'      => $id,
+                                'self_cost'     => $colorPrice+PLUS_COST,
+                                'sale_cost'     => $colorPrice+PLUS_COST,
+                            ));
+                            Product_Info::update(array(
+                                'product_id'    => $indexGoodsIdProductId[$id],
+                                'product_cost'  => $colorPrice,
+                            ));
+                        }
+                    }else{
+                        $cost[$colorId] = $colorPrice;
+                    }   
                 }
                 
             }
