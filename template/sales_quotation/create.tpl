@@ -101,12 +101,12 @@
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
 <{/foreach}>                     
-                                <tr>
-                                    <td colspan="2"><button type="submit" class="btn btn-primary pull-left"><i class="fa fa-save"></i> 保存修改</button></td>
-                                    <td colspan="<{$countColor+8}>"><button type="button" class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 提交报价单</button></td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom:20px;height:30px;">
+                        <td colspan="2"><button type="submit" class="btn btn-primary pull-left"><i class="fa fa-save"></i> 保存修改</button></td>
+                        <td colspan="<{$countColor+8}>"><button type="button" class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 提交报价单</button></td>
                     </div>
                     <div class="box-footer clearfix">
                         <{include file="section/pagelist.tpl" viewData=$pageViewData}>

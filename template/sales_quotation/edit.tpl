@@ -105,12 +105,10 @@
                                 </tr>
 <{/foreach}>                     
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="<{$countColor+11}>"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 修改报价单</button></td>
-                                </tr>
-                            </tfoot>
                         </table>
+                    </div>
+                    <divclass="col-md-12" style="margin-bottom:20px;height:30px;">
+                        <td colspan="<{$countColor+11}>"><button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> 修改报价单</button></td>
                     </div>
                     <div class="box-footer clearfix">
                         <{include file="section/pagelist.tpl" viewData=$pageViewData}>
