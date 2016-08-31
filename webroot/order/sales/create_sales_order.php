@@ -4,10 +4,10 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 $ListSalesQuotationId   = $_POST['sales_quotation_id'];
 Validate::testNull($ListSalesQuotationId,'销售报价单ID不能为空');
-
+print_r($ListSalesQuotationId);exit;
 //最多5个
 if ( count($ListSalesQuotationId) > 5 ) {
-    Validate::testNull($ListSalesQuotationId, '报价单最多只能选择5个');
+    Validate::testNull(false, '报价单最多只能选择5个');
 }
 
 $listCustomerId = array();
