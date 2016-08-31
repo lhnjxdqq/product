@@ -76,15 +76,11 @@
                                     </td>
                                 </tr>
                             <{/foreach}>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan='13'>
-                                            <a href='/sample/borrow/edit_borrow.php?borrow_id=<{$smarty.get.borrow_id}>' class='pull-right btn btn-primary'>确认样板</a>
-                                        </td>
-                                    </tr>
-                                </tfoot>
                         </tbody>                
                     </table>
+                </div>
+                <div class="col-md-12" style="margin-bottom:20px;height:30px;">
+                    <a href='/sample/borrow/edit_borrow.php?borrow_id=<{$smarty.get.borrow_id}>' class='pull-right btn btn-primary'>确认样板</a>
                 </div>
                 <div class="box-footer clearfix">
                     <{include file="section/pagelist.tpl" viewData=$data['pageViewData']}>
