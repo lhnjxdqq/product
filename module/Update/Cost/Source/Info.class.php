@@ -60,17 +60,34 @@ class   Update_Cost_Source_Info {
      * @param   int     $limit      数量
      * @return  array               列表
      */
-    static  public  function listByCondition (array $condition, array $order, $offset, $limit) {
+    static  public  function listByCondition (array $condition, array $order, $offset = Null, $limit = Null) {
 
         $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = self::_order($order);
-        $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
+        $sqlLimit       = empty($offset)? ' ' :' LIMIT ' . (int) $offset . ', ' . (int) $limit;
         $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
 
         return          self::_getStore()->fetchAll($sql);
     }
 
+    /**
+     * 删除
+     *
+     * @param  int      $updateCostId  新报价单ID
+     * @param  string   $sourceCode    买款ID
+     */
+    static public  function  delete($updateCostId, $sourceCode){
+        
+        if(empty($updateCostId) || empty($sourceCode)){
+             
+             throw  new ApplicationException('新报价单ID和买款ID不能为空');
+        }
+        $condition  = "`update_cost_id` = '" . addslashes($updateCostId) . "' AND `source_code` = '" . addslashes($sourceCode) . "'";
+
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
+    
     /**
      * 根据条件获取数据总数
      *
@@ -96,11 +113,37 @@ class   Update_Cost_Source_Info {
     static  private function _condition (array $condition) {
 
         $sql        = array();
+        $sql[]      = self::_conditionByUpdateCostId($condition);
+        $sql[]      = self::_conditionBySourceCode($condition);
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
     }
 
+    /**
+     * 根据成本记录ID拼接sql
+     */
+    static private function _conditionByUpdateCostId(array $condition){
+        
+        if(empty($condition['update_cost_id'])){
+            
+            return ;
+        }
+        return '`update_cost_id`='.addslashes($condition['update_cost_id']);
+    }
+     
+    /**
+     * 根据买款ID拼接sql
+     */
+    static private function _conditionBySourceCode(array $condition){
+        
+        if(empty($condition['source_code'])){
+            
+            return ;
+        }
+        return '`source_code`=' . "'". addslashes($condition['source_code'])."'";
+    }
+     
     /**
      * 获取排序子句
      *
@@ -119,7 +162,24 @@ class   Update_Cost_Source_Info {
 
         return  empty($sql) ? ''    : ' ORDER BY ' . implode(',', $sql);
     }
+    
+    /**
+     * 根据新报价单ID查询数据
+     *  
+     * @param  int   $updateCostId 新报价单ID
+     * @return array               报价单数据
+     */
+    static public  function getByUpdateCostId($updateCostId){
 
+        if(empty($updateCostId)){
+            
+            return array();
+        }
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `update_cost_id`=' . addslashes($updateCostId);
+
+        return self::_getStore()-> fetchAll($sql);
+    }
+     
     /**
      * 获取排序方向
      *

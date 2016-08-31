@@ -139,15 +139,6 @@ foreach ($listInfo as $info) {
 
     setlocale(LC_ALL,NULL);
 
-    if(!empty($errorList)){
-
-        Quotation_Info::update(array(
-            'quotation_id'  => $toGenerateFile['quotation_id'],
-            'status_code'   => Quotation_StatusCode::GENERATEFAILED,
-        ));
-        exit;
-    }
-
     $time        = microtime(true);
     $uploadPath  = Config::get('path|PHP', 'quotation_import') . date('Ym',$time)."/";
 

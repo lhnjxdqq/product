@@ -153,6 +153,93 @@ class   Quotation {
         //生成SPU SKU关系
         $goodsId = ArrayUtility::listField($goodsInfo, 'goods_id');
         $spuGoodsInfo           = Spu_Goods_RelationShip::getByMultiGoodsId($goodsId);
+        if(!empty($data['list_spu_id'])){
+            
+            foreach($data['list_spu_id'] as $spuId){
+ 
+                foreach($goodsInfo as $key=>$info) {
+                    
+                    $content =array(
+                        'spu_id'            => $spuId,
+                        'goods_id'          => $info['goods_id'],
+                        'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
+                    );
+                    Spu_Goods_RelationShip::create($content);
+                } 
+            }
+            return ;
+        }
+        if(empty($spuGoodsInfo)){
+            
+            $indexCategoryId    = ArrayUtility::indexByField($mapEnumeration['mapCategory'], 'category_id');
+            
+            $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
+            $spu['spu_remark']  = $data['remark'];
+            $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
+
+            $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
+        }
+        foreach($spuGoodsInfo as $mapSpuGoods=>$spuInfo) {
+            
+            foreach($goodsInfo as $key=>$info) {
+                
+                $content =array(
+                    'spu_id'            => $spuInfo['spu_id'],
+                    'goods_id'          => $info['goods_id'],
+                    'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
+                );
+                Spu_Goods_RelationShip::create($content);
+            }
+        }
+        Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
+    }
+    
+    /**
+     *  修改新报价导入报价单
+     *
+     * @param   array   $data             数据 
+     * @param   array   $mapEnumeration   枚举数据
+     * @param   string  $isSkuCode        是否忽略买款ID重复
+     *
+     * @return  array                     验证后的数据
+     */
+    static public function updateCostcreateQuotation(array $data, array $mapEnumeration,  $isSkuCode = true, $supplierId) {
+
+        $content['suppplier_id'] = $supplierId;
+        
+        foreach($data['cost'] as $colorId=>$price) {
+            
+            if(!empty($data['size_name'])) {
+                
+                foreach($data['size'] as $key=>$sizeId){
+                    
+                    $goodsInfo[] = self::_createGoods($data,$sizeId,$colorId,$mapEnumeration,$supplierId);
+                }
+                
+            }else{
+                
+                    $goodsInfo[] = self::_createGoods($data,$sizeId,$colorId,$mapEnumeration,$supplierId);
+            }
+        }
+        //生成SPU SKU关系
+        $goodsId = ArrayUtility::listField($goodsInfo, 'goods_id');
+        $spuGoodsInfo           = Spu_Goods_RelationShip::getByMultiGoodsId($goodsId);
+        if(!empty($data['list_spu_id'])){
+            
+            foreach($data['list_spu_id'] as $spuId){
+ 
+                foreach($goodsInfo as $key=>$info) {
+                    
+                    $content =array(
+                        'spu_id'            => $spuId,
+                        'goods_id'          => $info['goods_id'],
+                        'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
+                    );
+                    Spu_Goods_RelationShip::create($content);
+                } 
+            }
+            return ;
+        }
         if(empty($spuGoodsInfo)){
             
             $indexCategoryId    = ArrayUtility::indexByField($mapEnumeration['mapCategory'], 'category_id');
@@ -243,8 +330,8 @@ class   Quotation {
                 'goods_name'    => $content['product_name'],
                 'goods_type_id' => $data['goods_type_id'],
                 'category_id'   => $data['category_id'],
-                'self_cost'     => $productData['product_cost']+2,
-                'sale_cost'     => $productData['product_cost']+2,
+                'self_cost'     => $productData['product_cost']+PLUS_COST,
+                'sale_cost'     => $productData['product_cost']+PLUS_COST,
                 'style_id'      => $data['style_id'] ? $data['style_id'] : 0,
                 'goods_remark'  => $data['remark'],
             );
