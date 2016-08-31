@@ -9,7 +9,7 @@ $mapSupplierInfo    = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id
 $mapStatusCode      = Quotation_StatusCode::getStatusCode();
 
 $orderBy    = array(
-    'create_time' => 'DESC',
+    'update_cost_id' => 'DESC',
 );
 $statusInfo = Update_Cost_Status::getUpdateCostStatus();
 // 分页
