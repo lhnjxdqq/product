@@ -80,11 +80,10 @@
                 <div>
                     <form action='/sample/do_add.php' id='confirm-form' method='post'>
                             <div class='row'>
-                                <div class='col-sm-6'></div>
-                                <div class='col-sm-2'>
+                                <div class="col-xs-4 col-sm-4 col-md-2 col-md-offset-7">
                                     <label class='control-label pull-right' style='margin-top:6px'>样板类型</label>
                                 </div>
-                                <div class='col-sm-2'>
+                                <div class="col-xs-4 col-md-2 col-sm-4">
                                     <select class='form-control' id='sample_type' name='sample_type'>
                                         <option value='0'>请选择</option>
 <{foreach from=$sampleType item=item}>
@@ -92,8 +91,8 @@
 <{/foreach}>
                                     </select>
                                 </div>
-                                <div class='col-sm-2'>
-                                    <button class='control-button pull-left btn btn-primary'>确认样板</button>
+                                <div class="col-xs-4 col-md-1 col-sm-4">
+                                    <button class="control-button pull-left btn btn-primary btn-sm">确认样板</button>
                                 </div>
                             </div>
                     </form>
