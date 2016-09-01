@@ -61,6 +61,15 @@ $productInfo    = Product_Info::getById($productId);
 $goodsId        = (int) $productInfo['goods_id'];
 if (Product_Info::update($data)) {
 
+    if(sprintf('%.2f',$productInfo['product_cost']) != sprintf('%.2f',$data['product_cost'])){
+        
+        Cost_Update_Log_Info::create(array(
+            'product_id'        => $productId,
+            'cost'              => sprintf('%.2f',$data['product_cost']),
+            'handle_user_id'    => $_SESSION['user_id'],
+            'update_means'      => Cost_Update_Log_UpdateMeans::MANUAL,
+        ));
+    }
     // 更新商品 成本工费和基础销售工费
     $goodsCost  = Goods_Info::getGoodsCost($goodsId);
     $goodsData  = array_merge(array('goods_id'=>$goodsId), $goodsCost);

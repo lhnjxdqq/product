@@ -267,7 +267,7 @@ class   Goods_Info {
         $listCost       = ArrayUtility::listField($listProduct, 'product_cost');
         asort($listCost);
 
-        $selfCost       = current($listCost) + 2;
+        $selfCost       = current($listCost) + PLUS_COST;
         return          array(
             'self_cost' => $selfCost,
             'sale_cost' => $selfCost,
