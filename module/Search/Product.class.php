@@ -54,9 +54,21 @@ class Search_Product {
         $sql[]      = self::_conditionByColorId($condition);
         $sql[]      = self::_conditionBySearchType($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByOnlineStatus($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    /**
+     * 根据上下架状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
+    static private function _conditionByOnlineStatus (array $condition) {
+
+        return  !isset($condition['online_status']) ? '' : '`pi`.`online_status` = "' . (int) $condition['online_status'] . '"';
     }
 
     /**

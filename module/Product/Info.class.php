@@ -107,9 +107,21 @@ class   Product_Info {
 
         $sql            = array();
         $sql[]          = self::_conditionByDeleteStatus($condition);
+        $sql[]          = self::_conditionByOnlineStatus($condition);
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
+    }
+
+    /**
+     * 根据上下架状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
+    static private function _conditionByOnlineStatus (array $condition) {
+
+        return  !isset($condition['online_status']) ? '' : '`online_status` = "' . (int) $condition['online_status'] . '"';
     }
 
     /**

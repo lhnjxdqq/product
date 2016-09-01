@@ -95,7 +95,7 @@
                                     <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/产品编号" value="<{$smarty.get.search_value_list}>">
                             </div>
                             <div class="col-md-2">
@@ -104,6 +104,12 @@
                                     <{foreach from=$data.searchType item=typeName key=typeId}>
                                 <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
                                     <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <select name="online_status" class="form-control">
+                                    <option value="1">上架</option>
+                                    <option value="2">下架</option>
                                 </select>
                             </div>
                             <div class="col-md-1">

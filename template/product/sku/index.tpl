@@ -117,6 +117,12 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
+                                <select name="online_status" class="form-control">
+                                    <option value="1">上架</option>
+                                    <option value="2">下架</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <button type="submit" style="width:100px" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
                             </div>
                         </div>

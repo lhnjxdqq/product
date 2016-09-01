@@ -92,7 +92,7 @@ class Spu_List {
     }
     
     /**
-     * 根据删除状态拼接WHERE子句
+     * 根据上下架状态拼接WHERE子句
      *
      * @param array $condition  条件
      * @return string
