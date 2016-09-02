@@ -352,7 +352,13 @@ class   Quotation {
         }
         
         $productId                  = Product_Info::create($productData);
-        
+     
+        Cost_Update_Log_Info::create(array(
+            'product_id'        => $productId,
+            'cost'              => $productData['product_cost'],
+            'update_means'      => Cost_Update_Log_UpdateMeans::BATCH,
+        ));
+
         $goodsInfo                  = array(  
                 'goods_id'   => $goodsId,
                 'goods_size' => self::_getGoodsSize($data,$sizeId,$mapEnumeration),

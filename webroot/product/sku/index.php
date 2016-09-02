@@ -5,6 +5,15 @@ $userId                 = (int) $_SESSION['user_id'];
 $condition              = $_GET;
 $condition['delete_status'] = Goods_DeleteStatus::NORMAL;
 
+// 判断上下架状态
+if ( !empty($condition['online_status']) ) {
+    
+    if ( ($condition['online_status'] != 1) && ($condition['online_status'] != 2) ) {
+        Utility::notice('上下架状态不对,请重试');
+    }
+}
+
+
 $page                   = new PageList(array(
     PageList::OPT_TOTAL     => isset($condition['category_id'])
                                ? Search_Sku::countByCondition($condition)

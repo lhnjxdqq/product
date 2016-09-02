@@ -121,6 +121,14 @@ if ($goodsId) {
 }
 
 $productId  = Product_Info::create($productData);
+
+Cost_Update_Log_Info::create(array(
+    'product_id'        => $productId,
+    'cost'              => $productData['product_cost'],
+    'handle_user_id'    => $_SESSION['user_id'],
+    'update_means'      => Cost_Update_Log_UpdateMeans::MANUAL,
+));
+
 // 更新商品 成本工费和基础销售工费
 $goodsCost  = Goods_Info::getGoodsCost($goodsId);
 $goodsData  = array_merge(array('goods_id'=>$goodsId), $goodsCost);

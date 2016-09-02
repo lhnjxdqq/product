@@ -57,7 +57,7 @@
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询</button>
                             </div>
                             <div class="col-md-2">
-                                <a href='/update_cost/add.php' type="button" class="btn btn-success">提交新订单</a>
+                                <a href='/update_cost/add.php' type="button" class="btn btn-success">提交新报价</a>
                             </div>
                         </div>
                         <!-- /.row -->

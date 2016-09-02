@@ -68,6 +68,13 @@ foreach($mapUpdateCost as $key=>$info){
                                         'delete_status' => Product_DeleteStatus::NORMAL,
                                         'online_status' => Product_OnlineStatus::ONLINE,
                                     ));
+                                                                
+                                    Cost_Update_Log_Info::create(array(
+                                        'product_id'        => $indexGoodsIdProductId[$id],
+                                        'cost'              => sprintf('%.2f',$colorPrice),
+                                        'handle_user_id'    => $info['auditor_user_id'],
+                                        'update_means'      => Cost_Update_Log_UpdateMeans::BATCH,
+                                    ));
                                 }
                             }else{
                                 $cost[$colorId] = $colorPrice;

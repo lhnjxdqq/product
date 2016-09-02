@@ -60,6 +60,7 @@ class Search_Sku {
         $sql[]      = self::_conditionByColorId($condition);
         $sql[]      = self::_conditionBySearchType($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByOnlineStatus($condition);
         $sql[]      = self::_conditionByListGoodsId($condition);
         $sql[]      = self::_conditionByCreateTimeRange($condition);
         $sqlFilter  = array_filter($sql);
@@ -248,6 +249,17 @@ class Search_Sku {
     }
 
     /**
+     * 根据上下架状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByOnlineStatus (array $condition) {
+
+        return  !isset($condition['online_status']) ? '' : '`goods_info`.`online_status`= "' . (int) $condition['online_status'] . '"';
+    }
+
+    /**
      * 根据删除状态拼接WHERE子句
      *
      * @param array $condition  条件
@@ -255,7 +267,7 @@ class Search_Sku {
      */
     static private function _conditionByDeleteStatus (array $condition) {
 
-        return  '`goods_info`.`delete_status`= "' . (int) $condition['delete_status'] . '"';
+        return  !isset($condition['delete_status']) ? '' : '`goods_info`.`delete_status`= "' . (int) $condition['delete_status'] . '"';
     }
 
     /**

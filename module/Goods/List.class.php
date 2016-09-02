@@ -51,10 +51,22 @@ class Goods_List {
 
         $sql        = array();
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByOnlineStatus($condition);
         $sql[]      = self::_conditionByListGoodsId($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    /**
+     * 根据SKU上下架状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByOnlineStatus (array $condition) {
+
+        return  !isset($condition['online_status']) ? '' : '`goods_info`.`online_status` = "' . (int) $condition['online_status'] . '"';
     }
 
     /**
@@ -65,7 +77,7 @@ class Goods_List {
      */
     static private function _conditionByDeleteStatus (array $condition) {
 
-        return  '`goods_info`.`delete_status` = "' . (int) $condition['delete_status'] . '"';
+        return  !isset($condition['delete_status']) ? '' : '`goods_info`.`delete_status` = "' . (int) $condition['delete_status'] . '"';
     }
 
     /**
