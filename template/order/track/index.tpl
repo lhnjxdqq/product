@@ -183,6 +183,21 @@
                                     <th width="68" class="text-align-center">操作</th>
                                     <th width="68" class="text-align-center">订单状态</th>
                                 </tr>
+                                <tr class="track-day-standard">
+                                    <td>参考值</td>
+                                    <td><{$standard.carry_sample_to_order}></td>
+                                    <td><{$standard.order_to_supplier}></td>
+                                    <td><{$standard.confirm_to_supplier}></td>
+                                    <td><{$standard.delivery_to_supplier}></td>
+                                    <td><{$standard.arrival_to_supplier}></td>
+                                    <td><{$standard.arrival_to_warehousing}></td>
+                                    <td><{$standard.warehousing_to_shipment}></td>
+                                    <td><{$standard.shipment_to_return_money}></td>
+                                    <td></td>
+                                    <td><{$standard|array_sum}></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             </thead>
                             <tbody>
 <{foreach $listOrderCode as $orderCode}>
