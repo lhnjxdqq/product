@@ -1,6 +1,6 @@
 <?php
 /**
- * 从sku购物车中批量删除
+ * 从sku购物车中删除
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
@@ -15,4 +15,5 @@ Sample_Info::update(array(
     ));
 
 Cart_Sample_Info::deleteByGoodsId($goodsId);
+Cart_Goods_Sample::deleteByGoodsId($goodsId);
 Utility::notice('删除成功','/sample/index.php');

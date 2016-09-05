@@ -208,4 +208,20 @@ class   Cart_Goods_Sample {
 
         self::_getStore()->delete(self::_tableName(), $condition);
     }
+        
+    /**
+     * 根据goodsID删除
+     *
+     * @param   int   $goodsId   goodsId
+     */
+    static  public  function deleteByGoodsId ($goodsId) {
+
+        if(empty($goodsId)){
+            
+            return ;
+        }
+        $condition  = "`goods_id` = '" . addslashes($goodsId) . "'";
+
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
 }
