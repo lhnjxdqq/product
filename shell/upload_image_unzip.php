@@ -51,6 +51,107 @@ function getByDirFile($path,&$files){
 
 }
 
+/**
+* 检测图片在spu里面是否存在,如不存在,则添加
+*/
+function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
+
+	$listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuId($spuId);
+	$spuflag = 0;
+	foreach ( $listSpuImagesRelationship as $spuImagesRelationship) {
+
+		$imageKey = $spuImagesRelationship['image_key'];
+		$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesSPU/' . $imageKey . '.jpg';
+		
+		if ( md5_file($url) == $imageMd5 ) {
+			$spuflag++;
+		}
+
+	}
+	if ($spuflag) {
+
+		unset($spuflag);
+		return ;
+
+	}
+    $spuImageInstance 	= AliyunOSS::getInstance('images-spu');
+    $spuImageKey 			= $spuImageInstance->create($fileSavePath , null , true);
+    $data = array(
+    	'spu_id'=>$spuId,
+    	'image_key'=>$spuImageKey,
+    	);
+    if (Spu_Images_RelationShip::create($data)) {
+    	Spu_Push::updatePushSpuData($spuId);
+    }
+}
+
+/**
+* 检测图片在product里面是否存在,如不存在,则添加
+*/
+
+function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
+	
+	$listProductImageRelationShip = Product_Images_RelationShip::getById($productId);
+	$productflag = 0;
+
+	foreach ($listProductImageRelationShip as $productImageRelationShip) {
+
+		$imageKey = $productImageRelationShip['image_key'];
+		$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesProduct/' . $imageKey . '.jpg';
+		if ( md5_file($url) == $imageMd5 ) {
+			$productflag++;
+		}
+
+	}
+
+	if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
+		unset($productflag);
+		return ;
+	}
+	// 上传开始了
+	$productImageInstance 				= AliyunOSS::getInstance('images-product');
+    $prodImageKey 						= $productImageInstance->create($fileSavePath, null, true);
+
+    //写入数据库
+    $data = array(
+    	'product_id'=>$productId,
+    	'image_key'=>$prodImageKey,
+    	);
+    Product_Images_RelationShip::create($data);
+
+}
+
+/**
+* 检测图片在goods里面是否存在,如不存在,则添加
+*/
+
+function addImageForGoods($goodsId , $imageMd5 , $fileSavePath) {
+
+    $listGoodsImageRelationship = Goods_Images_RelationShip::getByGoodsId($goodsId);
+    $goodsflag = 0;
+    foreach ($listGoodsImageRelationship as $goodsImageRelationship) {
+    	$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesSKU/' . $goodsImageRelationship['image_key'] . '.jpg';
+		if ( md5_file($url) == $imageMd5 ) {
+			$goodsflag++;
+		}
+    }
+
+    if ($goodsflag) {
+    	unset($goodsflag);
+    	return false;
+    }
+    $goodsImageInstance 					= AliyunOSS::getInstance('images-sku');
+    $goodsImageKey 							= $goodsImageInstance->create($fileSavePath , null , true);
+    $data = array(
+    	'goods_id'=>$goodsId,
+    	'image_key'=>$goodsImageKey,
+    	);
+
+    if (Goods_Images_RelationShip::create($data)) {
+    	Goods_Push::updatePushGoodsData($goodsId);
+    }
+}
+
 //获取要递归处理的文件目录路径
 $rootPath = rtrim(UPLOAD_IMAGE_UNZIP_PATH,DIRECTORY_SEPARATOR);
 //存储获取的文件路径
@@ -90,60 +191,24 @@ if( !empty($files) && is_array($files) ){
 			}
 			foreach ($listProductInfo as $productInfo) {
 
-				$productId = $productInfo['product_id'];
-				$listProductImageRelationShip = Product_Images_RelationShip::getById($productId);
 				$imageMd5 = md5_file($fileSavePath);
-				$productflag = 0;
-				foreach ($listProductImageRelationShip as $productImageRelationShip) {
+				addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath);
 
-					$imageKey = $productImageRelationShip['image_key'];
-					$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesProduct/' . $imageKey . '.jpg';
-					$imageinfo = get_headers($url);
-					if ( substr(strstr($imageinfo[4] , ':') , 1) && strtolower(substr(strstr($imageinfo[8] , ':') , 1)) == $imageMd5 ) {
-						$productflag++;
-					}
-
-				}
-				
-				if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
-					unset($productflag);
-					continue;
-				}
-
-				// 上传开始了
-		        $productImageInstance = AliyunOSS::getInstance('images-product');
-		        $prodImageKey = $productImageInstance->create($fileSavePath, null, true);
-
-		        //写入数据库
-		        $data = array(
-		        	'product_id'=>$productId,
-		        	'image_key'=>$prodImageKey,
-		        	);
-		        Product_Images_RelationShip::create($data);
-				
 				//查询 goods 图片是否有
 		        $goodsId = $productInfo['goods_id'];
-		        $listGoodsImageRelationship = Goods_Images_RelationShip::getByGoodsId($goodsId);
-		        $goodsflag = 0;
-		        foreach ($listGoodsImageRelationship as $goodsImageRelationship) {
-		        	$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesSKU/' . $goodsImageRelationship['image_key'] . '.jpg';
-					$imageinfo = get_headers($url);
-					if ( substr(strstr($imageinfo[4] , ':') , 1) && strtolower(substr(strstr($imageinfo[8] , ':') , 1)) == $imageMd5 ) {
-						$productflag++;
-					}
-		        }
+		        addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
 
-		        if ($goodsflag) {
-		        	unset($goodsflag);
-		        	continue;
-		        }
+		        // 通过goods_id查询spu_id
+		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
+				if ($listSpuGoodsRelationship) {
 
-		        $goodsImageKey = AliyunOSS::getInstance('images-sku')->copyCreate($productImageInstance, $prodImageKey, null, true);
-		        $data = array(
-		        	'goods_id'=>$goodsId,
-		        	'image_key'=>$goodsImageKey,
-		        	);
-		        Goods_Images_RelationShip::create($data);
+			        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
+			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
+			        	if ($spuInfo) {
+			        		addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath);
+			        	}
+			        }
+				}		        
 			}
 
 		}else{
@@ -157,8 +222,9 @@ if( !empty($files) && is_array($files) ){
 	}
 }
 
+
 //递归删除 未处理完的文件、目录，有可能这些文件没有匹配到数据，则不需要保留
-// deleteByDirFile($rootPath,$rootPath);
+deleteByDirFile($rootPath,$rootPath);
 
 echo "\r\n\r\n";
 echo 'upload_image_unzip php action end!';
