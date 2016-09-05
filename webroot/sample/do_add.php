@@ -19,14 +19,15 @@ $listSkuId          = ArrayUtility::listField($listGoodsInfo,'goods_id');
 
 foreach($listGoodsId as $id){
     
-    if(in_array($id,$listSkuId)){
+    if(!empty(ArrayUtility::searchBy($listGoodsInfo,array('goods_id'=>$id,'is_delete'=>Role_DeleteStatus::DELETED)))){
         
         Sample_Info::update(array(
                 'goods_id'      => $id,
                 'sample_type'   => $sampleType,
                 'is_delete'     => Goods_DeleteStatus::NORMAL,
         ));
-    }else{
+    }
+    if(!in_array($id,$listSkuId)){
          
         Sample_Info::create(array(
                 'goods_id'      => $id,

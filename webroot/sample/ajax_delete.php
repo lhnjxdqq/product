@@ -16,6 +16,7 @@ foreach($goodsId as $id){
         ));
     
     Cart_Sample_Info::deleteByGoodsId($id);
+    Cart_Goods_Sample::deleteByGoodsId($id);
 }
 
 echo    json_encode(array(
