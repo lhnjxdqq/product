@@ -13,3 +13,4 @@ shell/test.php
 .DS_Store
 .idea
 .gitignore
+webroot/demo.php

@@ -1,0 +1,10 @@
+#!/bin/bash
+#要解压zip包的目录根路径
+rootPath='/home/tag_operator'
+#解压zip包完毕后，zip包内容的临时存储路径
+savePath='/tmp/tags.kuandd.com'
+#解压zip包失败后，将解压失败的zip包存储到临时存储路径
+errorPath='/data/tags.kuandd.com/error_zip'
+#后缀名称
+suffixName='zip'
+phpBin='/alidata/server/php/bin/php'
