@@ -94,7 +94,8 @@
                                         <td><{$item.product_cost}></td>
                                         <td><{$item.quantity}></td>
                                         <td>
-                                            <input type='text' value='<{$item.arrive_weight}>' product-id="<{$item.product_id}>" size='7' class='arrive_weight arrive-weight-<{$item.product_id}>' name='product_id<{$item.product_id}>[arrive_weight]'></td>
+                                            <input type='text' value='<{$item.arrive_weight}>' product-id="<{$item.product_id}>" size='5' class='form-control arrive_weight arrive-weight-<{$item.product_id}>' name='product_id<{$item.product_id}>[arrive_weight]'>
+                                            <input type='hidden' value='<{$item.arrive_weight}>' class='arrive-product-id-<{$item.product_id}>'>
                                         </td>
                                         <td>
                                             <div class="input-group width-130 assign-number">
@@ -102,7 +103,8 @@
                                                     <button type='button' product-id="<{$item.product_id}>" quantity-type='arrive' class="btn btn-default reduce">-</button>
                                                 </span>
                                                     <input type="text" class="form-control arrive-quantity arrive-quantity-<{$item.product_id}>" product-id="<{$item.product_id}>" name="product_id<{$item.goods_id}>[quantity]" value="<{if $item.arrive_quantity!='' }><{$item.arrive_quantity}><{else}>0<{/if}>"/>
-                                                <span class="input-group-btn">
+                                                    <input type='hidden' value='<{$item.arrive_quantity}>' class='arrive-quantity-product-id-<{$item.product_id}>'>                                              
+                                              <span class="input-group-btn">
                                                     <button type='button' product-id="<{$item.product_id}>" quantity-type='arrive' class="btn btn-default plus">+</button>
                                                 </span>
                                             </div>
@@ -113,13 +115,15 @@
                                                     <button type='button' quantity-type='storage' product-id="<{$item.product_id}>" class="btn btn-default reduce">-</button>
                                                 </span>
                                                     <input type="text" class="form-control storage-quantity storage-quantity-<{$item.product_id}>" product-id="<{$item.product_id}>" name="product_id<{$item.goods_id}>[quantity]" value="<{if $item.storage_quantity!='' }><{$item.storage_quantity}><{else}>0<{/if}>"/>
+                                                    <input type='hidden' value='<{$item.storage_quantity}>' class='storage-quantity-product-id-<{$item.product_id}>'>
                                                 <span class="input-group-btn">
                                                     <button type='button' quantity-type='storage' product-id="<{$item.product_id}>" class="btn btn-default plus">+</button>
                                                 </span>
                                             </div>
                                         </td>
                                         <td>
-                                            <input type='text' value='<{$item.storage_weight}>' product-id="<{$item.product_id}>" size='7' class='storage_weight storage-weight-<{$item.product_id}>' name='product_id<{$item.product_id}>[storage_id]'></td>
+                                            <input type='text' value='<{$item.storage_weight}>' product-id="<{$item.product_id}>" size='5' class='form-control storage_weight storage-weight-<{$item.product_id}>' name='product_id<{$item.product_id}>[storage_id]'></td>
+                                           <input type='hidden' value='<{$item.storage_weight}>' class='storage-product-id-<{$item.product_id}>'>
                                         </td>
                                     </tr>
                                 <{/foreach}>
@@ -273,6 +277,7 @@
                 $("#count_product").html(response.data.count);
                 $("#quantity").html(response.data.quantityTotal);
                 $("#weight_total").html(response.data.weightTotal);
+                $('.arrive-quantity-product-id-'+productId).val(quantity);
             }
             
         }, 'json');
@@ -296,6 +301,7 @@
                 $("#count_product").html(response.data.count);
                 $("#quantity").html(response.data.quantityTotal);
                 $("#weight_total").html(response.data.weightTotal);
+                $('.storage-quantity-product-id-'+productId).val(quantity);
             }
             
         }, 'json');
@@ -305,10 +311,11 @@
         
         quantity        = parseFloat($(this).val());
         productId       = $(this).attr('product-id');
-        storagequantity   = parseFloat($(".storage-quantity-"+productId).val());
+        storagequantity   = parseFloat($(".arrive-quantity-product-id-"+productId).val());
         
         if(storagequantity > quantity){
         
+            $(this).val($('.arrive-quantity-product-id-'+productId).val());
             alert('到货件数不能小于入库件数');
             return false;
         }
@@ -322,7 +329,8 @@
         arriveQuantity  = parseFloat($(".arrive-quantity-"+productId).val());
         
         if(arriveQuantity < quantity){
-        
+            
+            $(this).val($('.storage-quantity-product-id-'+productId).val());
             alert('入库件数不能大于到货件数');
             return false;
         }
@@ -339,6 +347,7 @@
         if(storageWeight > weight){
         
             alert('到货重量不能小于入库重量');
+            $(this).val($(".arrive-product-id-"+productId).val());
             return false;
         }
 
@@ -359,6 +368,7 @@
                 $("#count_product").html(response.data.count);
                 $("#quantity").html(response.data.quantityTotal);
                 $("#weight_total").html(response.data.weightTotal);
+                $(".arrive-product-id-"+productId).val(weight)
             }
             
         }, 'json');
@@ -374,6 +384,7 @@
         if(arriveWeight < weight){
         
             alert('入库重量不能大于到货重量');
+            $(this).val($(".storage-product-id-"+productId).val());
             return false;
         }
 
@@ -394,6 +405,7 @@
                 $("#goodsQuantity").html(response.data.count);
                 $("#weight_total").html(response.data.weightTotal);
                 $("#quantity").html(response.data.quantity_total);
+                $(".storage-product-id-"+productId).val(weight);
             }
             
         }, 'json');

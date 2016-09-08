@@ -49,6 +49,7 @@
                             <th>缺货数量</th>
                             <td></td>
                         </tr>
+                        <{if $produceOrderInfo['status_code'] != 5}>
                         <tr>
                             <th>导入到货表</th>
                             <td colspan=4>
@@ -64,10 +65,9 @@
                                     </div>
                                 </form>
                             </td>
-                            <{if $produceOrderInfo['status_code'] != 5}>
-                                <td><a href='/order/produce/endOrder.php?produce_order_id=<{$smarty.get.produce_order_id}>' class='btn btn-primary btn-xs'>结束订单</a></td>
-                            <{/if}>
+                            <td><a href='/order/produce/endOrder.php?produce_order_id=<{$smarty.get.produce_order_id}>' class='btn btn-primary btn-xs'>结束订单</a></td>
                         </tr>
+                        <{/if}>
                     </table>
                 </div>
                 <!-- /.box-body -->
@@ -120,8 +120,10 @@
                                         <td><{$item.transaction_amount}></td>
                                         <td>
                                             <{if $item.is_storage == 0}>
-                                            <a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a></td>
+                                                <a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a>
                                             <{/if}>
+                                            <a href='/order/produce/arrive_detail.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>' class='btn btn-primary btn-xs'>产看清单</a>
+                                        </td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
