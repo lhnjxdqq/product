@@ -16,7 +16,7 @@ $sheet              = $objPHPExcel->getActiveSheet();
 $rowIterator        = $sheet->getRowIterator(1);
 
 $excelHead          = array(
-    '买款ID'             =>  'source_id',
+    '买款ID'             =>  'source_code',
     '三级分类'            => 'categoryLv3',
     '款式'                => 'style_one_level',
     '子款式'              => 'style_two_level',
@@ -74,15 +74,19 @@ $mapEnumeration = array();
 $addNums = 1;
 
 $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
-$listSourceId       = ArrayUtility::listField($list,'source_id');
+$listSourceCode     = ArrayUtility::listField($list,'source_code');
 //根据导入数据查出所有的产品
-$listMapProudctInfo = Product_Info::getByMultiSourceId($listSourceId);
-Validate::testNull($listMapProudctInfo, '生产系统中不存在所有的买款ID');
+$listMapSourceInfo = Source_Info::getByMultiSourceCode($listSourceCode);
+
+$listSourceId       = ArrayUtility::listField($listMapSourceInfo,'source_id');
+Validate::testNull($listMapSourceInfo, '生产系统中不存在所有的买款ID');
+$indexSourceCode    = ArrayUtility::indexByField($listMapSourceInfo,'source_code');
 
 //获取生产订单中的所有产品
-$listProduceProductInfo    = Produce_Order_Product_Info::getByProduceOrderId($produceOrderId);
+$orderProductInfo   = Produce_Order_Product_Info::getByProduceOrderId($produceOrderId);
+$listProductId      = ArrayUtility::listField($orderProductInfo,'product_id');
 
-$listProduceProductId       = ArrayUtility::listField($listProduceProductInfo,'product_id');
+$listMapProudctInfo = Product_Info::getByMultiId($listProductId);
 
 $mapStyleInfo       = Style_Info::listAll();
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
@@ -103,7 +107,8 @@ $mapEnumeration     = array(
    'mapStyle'             => $mapStyleInfo,
    'mapSpecInfo'          => $mapSpecInfo,
    'listMapProudctInfo'   => $listMapProudctInfo,
-   'listProduceProductId' => $listProduceProductId,
+   'listProductId'        => $listProductId,
+   'indexSourceCode'      => $indexSourceCode,
 );
 
 foreach ($list as $offsetRow => $row) {
@@ -123,4 +128,49 @@ foreach ($list as $offsetRow => $row) {
         continue;
     }
 }
-Utility::dump($errorList);
+
+$template           = Template::getInstance();
+$template->assign('mainMenu', $mainMenu);
+if(!empty($errorList)){
+     
+    $template->assign('errorList',   $errorList);
+    $template->assign('addNums',   $addNums);
+    $template->display('import_quotation.tpl');
+    exit;
+}
+
+$time       = microtime(true);
+$floderPath = date('Ym',$time)."/";
+$uploadPath = Config::get('path|PHP', 'storage_import') . $floderPath;
+
+if(!is_dir($uploadPath)) {
+
+    mkdir($uploadPath,0777,true);
+}
+$fileName           = $time.".xlsx";
+$storageFilePath  = $uploadPath.$fileName;
+$fileStoragePath    = $floderPath . $fileName;
+rename($filePath,$storageFilePath);
+chmod($storageFilePath, 0777);
+
+$produceOrderArriveId   = Produce_Order_Arrive_Info::create(array(
+    'produce_order_id'  => $produceOrderId,
+    'count_product'     => count($datas),
+    'weight_total'      => array_sum(ArrayUtility::listField($datas,'weight')),
+    'quantity_total'    => array_sum(ArrayUtility::listField($datas,'quantity')),
+    'file_path'         => $fileStoragePath,
+    'arrive_time'       => date('Y-m-d'),
+));
+
+foreach($datas as $info){
+
+    Produce_Order_Arrive_Product_Info::create(array(
+        'product_id'                => $info['product_id'],
+        'produce_order_arrive_id'   => $produceOrderArriveId,
+        'quantity'                  => $info['quantity'],
+        'weight'                    => $info['weight'],
+        'storage_weight'            => $info['weight'],
+        'storage_quantity'          => $info['quantity'],
+    ));   
+}
+Utility::notice('导入成功');

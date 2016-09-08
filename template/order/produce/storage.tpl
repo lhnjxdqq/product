@@ -25,64 +25,48 @@
             <div class="box">
                 <div class="box-header with-border">
                     <div class="box-title">订单概览</div>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
-                    </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-hover general-view">
+                    <table class="table table-hover general-view border-1">
                         <tr>
                             <th>下单数量</th>
-                            <td><{$data.produceOrderInfo.count_quantity}></td>
-                        </tr>
-                        <tr>
+                            <td><{$productTotal}></td>
                             <th>商品款数</th>
-                            <td><{$data.produceOrderInfo.count_goods}></td>
-                        </tr>
-                        <tr>
+                            <td><{$countProduct}></td>
                             <th>下单重量</th>
-                            <td><{$data.produceOrderInfo.count_weight}></td>
+                            <td><{$countWeight}></td>                        
+                            <th>到货数量</th>
+                            <td><{$quantityTotal}></td>
                         </tr>
-                        <tr>
-                            <th>到货重量</th>
-                            <td><{$data.mapUserInfo[$data.produceOrderInfo.create_user]}></td>
-                        </tr>
-                        <tr>
+                        <tr>    
                             <th>到货款数</th>
-                            <td><{$data.produceOrderInfo.create_time}></td>
-                        </tr>
-                        <tr>
+                            <td><{$quantityTotal}></td>
                             <th>到货重量</th>
-                            <td><{$data.produceOrderInfo.arrival_date}></td>
-                        </tr>
-                        <tr>
+                            <td><{$weightTotal}></td>
                             <th>入库次数</th>
-                            <td><{$data.mapOrderType[$data.produceOrderInfo.order_type]}></td>
-                        </tr>
-                        <tr>
+                            <td><{$countStorage}></td>
                             <th>缺货数量</th>
-                            <td><{$data.produceOrderInfo.produce_order_remark}></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th>导入到货表</th>
-                            <td>
+                            <td colspan=4>
                                 <form action='/order/produce/storage_import.php' method="post" enctype="multipart/form-data" class="form-horizontal">
                                     <div class='form-group'>
                                         <div class='col-sm-4'>
                                             <input type='file' name='storage_import'>
                                             <input type='hidden' name='produce_order_id' value='<{$produceOrderId}>'>
                                         </div>
-                                        <div class='col-sm-2'>
+                                        <div class='col-sm-1'>
                                             <button class='btn btn-primary btn-xs'>确定</button>
                                         </div>
                                     </div>
                                 </form>
                             </td>
-                        </tr>
-                        <tr>
-                            <th>操作</th>
-                            <td>结束订单</td>
+                            <{if $produceOrderInfo['status_code'] != 5}>
+                                <td><a href='/order/produce/endOrder.php?produce_order_id=<{$smarty.get.produce_order_id}>' class='btn btn-primary btn-xs'>结束订单</a></td>
+                            <{/if}>
                         </tr>
                     </table>
                 </div>
@@ -125,16 +109,19 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <{foreach from=$data.listOrderDetail item=item}>
+                                <{foreach from=$mapProduceOrderArriveInfo item=item}>
                                     <tr>
-                                        <td><{$item.product_sn}></td>
-                                        <td><{$item.source_code}></td>
-                                        <td></td>
-                                        <td><{$item.goods_name}></td>
-                                        <td><{$item.category_name}></td>
-                                        <td><{$item.parent_style_name}></td>
-                                        <td><{$item.child_style_name}></td>
-                                        <td><{$item.weight_value_data}></td>
+                                        <td><{$item.arrive_time}></td>
+                                        <td><{$item.count_product}></td>
+                                        <td><{$item.quantity_total}></td>
+                                        <td><{$item.weight_total}></td>
+                                        <td><{if $item.storage_quantity_total !=0 }><{$item.storage_quantity_total}><{else}>0<{/if}></td>
+                                        <td><{$item.storage_weight}></td>
+                                        <td><{$item.transaction_amount}></td>
+                                        <td>
+                                            <{if $item.is_storage == 0}>
+                                            <a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a></td>
+                                            <{/if}>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
@@ -175,6 +162,18 @@
         selector    : '#prod-list',
         container   : '#prod-list-vis'
     });
+    $(".storage").click(function(){
+        
+        arriveId    = $(this).attr('arrive-id');
+        var auPrice=prompt("请输入当前金价","");
+
+        if(parseFloat(auPrice)>0){
+        
+            location.href='/order/produce/storage.php?arrive_id='+arriveId+'&au_price='+parseFloat(auPrice);
+        }else{
+            alert('请输入正确金价,不含英文和汉字,且不能为空');
+        }
+    })
 </script>
 </body>
 </html>

@@ -150,6 +150,7 @@ class   Goods_Spec_Value_RelationShip {
         $sql    .= "(".implode(' OR ', $where).")" . $sqlStyle . ' AND `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '")' .' AND `category_id` = "' . (int) $categoryId . '" GROUP BY `gi`.`goods_id` ';
 
         $result = self::_getStore()->fetchAll($sql);
+
         if (!$result) {
 
             return;
@@ -157,6 +158,7 @@ class   Goods_Spec_Value_RelationShip {
         $result = ArrayUtility::indexByField($result, 'goods_id', 'cnt');
         
         $count  = count($specValueList);
+
         foreach ($result as $goodsId => $cnt) {
 
             if ($cnt == $count) {

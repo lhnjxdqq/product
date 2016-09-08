@@ -1,0 +1,9 @@
+<?php
+class Produce_Order_Arrive_IsStorage extends SplEnum {
+
+    // Î´Èë¿â
+    const   NO  = 0;
+
+    // Èë¿â
+    const   YES = 1;
+}
