@@ -47,7 +47,7 @@ foreach($arriveProductInfo as $key=>$info){
 
     $amount[] = sprintf('%.2f',$info['storage_weight']*($auPrice+$indexProductId[$info['product_id']]['product_cost']));
 }
-die;
+
 Produce_Order_Arrive_Info::update(array(
     'produce_order_arrive_id'   => $arriveId,
     'transaction_amount'        => array_sum($amount),
