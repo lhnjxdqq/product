@@ -157,12 +157,14 @@ rename($filePath,$storageFilePath);
 chmod($storageFilePath, 0777);
 
 $produceOrderArriveId   = Produce_Order_Arrive_Info::create(array(
-    'produce_order_id'  => $produceOrderId,
-    'count_product'     => count($datas),
-    'weight_total'      => array_sum(ArrayUtility::listField($datas,'weight')),
-    'quantity_total'    => array_sum(ArrayUtility::listField($datas,'quantity')),
-    'file_path'         => $fileStoragePath,
-    'arrive_time'       => date('Y-m-d'),
+    'produce_order_id'      => $produceOrderId,
+    'count_product'         => count($datas),
+    'weight_total'          => array_sum(ArrayUtility::listField($datas,'weight')),
+    'quantity_total'        => array_sum(ArrayUtility::listField($datas,'quantity')),
+    'storage_weight'        => array_sum(ArrayUtility::listField($datas,'weight')),
+    'storage_quantity_total'=> array_sum(ArrayUtility::listField($datas,'quantity')),
+    'file_path'             => $fileStoragePath,
+    'arrive_time'           => date('Y-m-d'),
 ));
 
 foreach($datas as $info){
