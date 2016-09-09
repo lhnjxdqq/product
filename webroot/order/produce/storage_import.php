@@ -76,7 +76,9 @@ $addNums = 1;
 $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
 $listSourceCode     = ArrayUtility::listField($list,'source_code');
 //根据导入数据查出所有的产品
-$listMapSourceInfo = Source_Info::getByMultiSourceCode($listSourceCode);
+
+$produceOrderInfo   = Produce_Order_Info::getById($produceOrderId);
+$listMapSourceInfo = Source_Info::getBySourceCodeAndMulitSupplierId($listSourceCode,$produceOrderInfo['supplier_id']);
 
 $listSourceId       = ArrayUtility::listField($listMapSourceInfo,'source_id');
 Validate::testNull($listMapSourceInfo, '生产系统中不存在所有的买款ID');
@@ -84,6 +86,7 @@ $indexSourceCode    = ArrayUtility::indexByField($listMapSourceInfo,'source_code
 
 //获取生产订单中的所有产品
 $orderProductInfo   = Produce_Order_Product_Info::getByProduceOrderId($produceOrderId);
+
 $listProductId      = ArrayUtility::listField($orderProductInfo,'product_id');
 
 $listMapProudctInfo = Product_Info::getByMultiId($listProductId);
