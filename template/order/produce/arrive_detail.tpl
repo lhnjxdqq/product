@@ -36,7 +36,7 @@
                     <table class="table table-hover general-view border-1">
                         <tr>
                             <th>入库款数</th>
-                            <td><{$produceOrderArriveInfo.storage_quantity_total}></td>
+                            <td><{$produceOrderArriveInfo.storage_count_product}></td>
                             <th>入库数量</th>
                             <td><{$produceOrderArriveInfo.storage_quantity_total}></td>
                             <th>入库重量</th>

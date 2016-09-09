@@ -20,10 +20,11 @@ $quantityTotal              = array_sum(ArrayUtility::listField($arriveProductIn
 $weightTotal                = array_sum(ArrayUtility::listField($arriveProductInfo,'weight'));
 $storageWeightTotal         = array_sum(ArrayUtility::listField($arriveProductInfo,'storage_weight'));
 $storageQuantityTotal        = array_sum(ArrayUtility::listField($arriveProductInfo,'storage_quantity'));
+
 Produce_Order_Arrive_Info::update(array(
     'produce_order_arrive_id'   => $_POST['produce_order_arrive_id'],
     'count_product'             => $count,
-    'quantity_tatal'            => $quantityTotal,
+    'quantity_total'            => $quantityTotal,
     'weight_total'              => $weightTotal,
     'storage_quantity_total'    => $storageQuantityTotal,
     'storage_weight'            => $storageWeightTotal,
