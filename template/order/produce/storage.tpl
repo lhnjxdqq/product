@@ -122,7 +122,7 @@
                                             <{if $item.is_storage == 0}>
                                                 <a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a>
                                             <{/if}>
-                                            <a href='/order/produce/arrive_detail.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>' class='btn btn-primary btn-xs'>产看清单</a>
+                                            <a href='/order/produce/arrive_detail.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>' class='btn btn-primary btn-xs'>查看清单</a>
                                         </td>
                                     </tr>
                                 <{/foreach}>
