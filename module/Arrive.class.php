@@ -15,10 +15,10 @@ class   Arrive {
     static public function testStorage (array $data, array $mapEnumeration) {
 
         $data['source_id']                  = $mapEnumeration['indexSourceCode'][$data['source_code']]['source_id'];
-        Validate::testNull($data['source_id'],'买款ID不存生产系统中');
+        Validate::testNull($data['source_id'],'买款ID不存生产订单中');
         $listProductInfo                    = ArrayUtility::searchBy($mapEnumeration['listMapProudctInfo'],array('source_id'=>$data['source_id']));
 
-        Validate::testNull($listProductInfo,'买款ID不存生产系统中');
+        Validate::testNull($listProductInfo,'买款ID不存生产订单中');
         $mapEnumeration['listGoodsId']      = ArrayUtility::listField($listProductInfo,'goods_id');
 
         Validate::testNull($data['categoryLv3'],'三级分类不能为空');
