@@ -309,10 +309,10 @@
     
     $(".arrive-quantity").blur(function(){
         
-        quantity        = parseFloat($(this).val());
+        quantity        = parseInt($(this).val());
         productId       = $(this).attr('product-id');
-        storagequantity   = parseFloat($(".arrive-quantity-product-id-"+productId).val());
-        
+        storagequantity   = parseInt($(".storage-quantity-product-id-"+productId).val());
+
         if(storagequantity > quantity){
         
             $(this).val($('.arrive-quantity-product-id-'+productId).val());
@@ -324,9 +324,9 @@
     
     $(".storage-quantity").blur(function(){
         
-        quantity        = parseFloat($(this).val());
+        quantity        = parseInt($(this).val());
         productId       = $(this).attr('product-id');
-        arriveQuantity  = parseFloat($(".arrive-quantity-"+productId).val());
+        arriveQuantity  = parseInt($(".arrive-quantity-"+productId).val());
         
         if(arriveQuantity < quantity){
             
@@ -343,7 +343,7 @@
         weight          = parseFloat($(this).val());
         productId       = $(this).attr('product-id');
         storageWeight   = parseFloat($(".storage-weight-"+productId).val());
-        
+
         if(storageWeight > weight){
         
             alert('到货重量不能小于入库重量');
