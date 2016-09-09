@@ -41,7 +41,7 @@
                         </tr>
                         <tr>    
                             <th>到货款数</th>
-                            <td><{$quantityTotal}></td>
+                            <td><{$countProductTotal}></td>
                             <th>到货重量</th>
                             <td><{$weightTotal}></td>
                             <th>入库次数</th>
