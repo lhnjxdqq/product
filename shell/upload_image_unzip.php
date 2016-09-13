@@ -124,6 +124,8 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
         }
         echo 'product产品图片' . $imageKey . "\n";
         if (!$productImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            echo 'product产品图片删除' . $imageKey . "\n";
+
             Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
             continue;
         }
@@ -241,36 +243,38 @@ if( !empty($files) && is_array($files) ){
 
 		//若存在，修改产品对应的图片路径；若不存在，则删除该文件
 		if( !empty($sourceInfo) ){
+            foreach ($sourceInfo as $source) {
 
-			$listProductInfo = Product_Info::getByMultiSourceId(array($sourceInfo[0]['source_id']));
-			$listProductInfo = array_values(ArrayUtility::searchBy($listProductInfo , array('delete_status'=>0 , 'online_status'=>1)));
+    			$listProductInfo = Product_Info::getByMultiSourceId(array($source['source_id']));
+    			$listProductInfo = array_values(ArrayUtility::searchBy($listProductInfo , array('delete_status'=>0 , 'online_status'=>1)));
 
-			if (!$listProductInfo) {
-				// 东西不存在,跳过
-				continue;
-			}
-            
-			foreach ($listProductInfo as $productInfo) {
+    			if (!$listProductInfo) {
+    				// 东西不存在,跳过
+    				continue;
+    			}
+                
+    			foreach ($listProductInfo as $productInfo) {
 
-				$imageMd5       = md5_file($fileSavePath);
-				addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath);
+    				$imageMd5       = md5_file($fileSavePath);
+    				addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath);
 
-				//查询 goods 图片是否有
-		        $goodsId = $productInfo['goods_id'];
-		        $imageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
+    				//查询 goods 图片是否有
+    		        $goodsId = $productInfo['goods_id'];
+    		        $imageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
 
-		        // 通过goods_id查询spu_id
-		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
-				if ($listSpuGoodsRelationship) {
+    		        // 通过goods_id查询spu_id
+    		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
+    				if ($listSpuGoodsRelationship) {
 
-			        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
-			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
-			        	if ($spuInfo) {
-			        		addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath);
-			        	}
-			        }
-				}		        
-			}
+    			        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
+    			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
+    			        	if ($spuInfo) {
+    			        		addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath);
+    			        	}
+    			        }
+    				}		        
+    			}
+            }
 
 		}else{
 			
