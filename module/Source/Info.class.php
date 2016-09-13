@@ -247,4 +247,26 @@ class   Source_Info {
 
         return          self::_getStore()->fetchOne($sql);
     }
+    
+    /**
+     * 根据买款代码和厂商获取信息
+     *
+     *  @param  array  $multiSourceCode  买款代码
+     *  @param  int    $supplierId       厂商Id
+     *
+     *  @return array               数据
+     */
+    static public function getBySourceCodeAndMulitSupplierId($multiSourceCode, $supplierId){
+         
+        if(empty($multiSourceCode) || empty($supplierId)){
+             
+            return array();
+        }
+         
+        $multiCode  = array_map('trim', array_map('addslashes', array_unique(array_filter($multiSourceCode))));
+
+        $sql   = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_code` IN ("' . implode('","', $multiCode) . '") AND `supplier_id` = "'. $supplierId .'"';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
 }

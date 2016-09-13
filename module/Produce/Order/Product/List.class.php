@@ -52,6 +52,7 @@ class Produce_Order_Product_List {
         $sql        = array();
         $sql[]      = self::_conditionByProduceOrderId($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByMultiProductId($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter)
@@ -70,6 +71,23 @@ class Produce_Order_Product_List {
         return  isset($condition['produce_order_id'])
                 ? '`popi`.`produce_order_id` = "' . (int) $condition['produce_order_id'] . '"'
                 : '';
+    }
+
+    /**
+     * 根据产品ID拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByMultiProductId (array $condition) {
+
+        if(empty($condition['list_product_id'])){
+            
+            return ;
+        }
+        $multiProductId = array_map('intval', array_unique(array_filter($condition['list_product_id'])));
+        
+        return '`pi`.`product_id` IN ("' . implode('","', $multiProductId) . '")';
     }
 
     /**

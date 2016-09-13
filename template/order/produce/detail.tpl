@@ -94,7 +94,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <div class="table-response">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="prod-list">
                             <thead>
                             <tr>

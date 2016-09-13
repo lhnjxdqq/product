@@ -25,14 +25,16 @@ foreach($listGoodsId as $id){
                 'goods_id'      => $id,
                 'sample_type'   => $sampleType,
                 'is_delete'     => Goods_DeleteStatus::NORMAL,
-        ));
+        ));        
+        Cart_Goods_Sample::deleteByGoodsId($id);
     }
     if(!in_array($id,$listSkuId)){
          
         Sample_Info::create(array(
                 'goods_id'      => $id,
                 'sample_type'   => $sampleType,
-        ));   
+        ));
+        Cart_Goods_Sample::deleteByGoodsId($id);
     }
 }
 Cart_Goods_Sample::cleanByUserId($userId);
