@@ -111,6 +111,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
 
 function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
     echo 'product标记' . "\n";
+    echo 'productID标记' . $productId . "\n";
 	
 	$listProductImageRelationShip       = Product_Images_RelationShip::getById($productId);
     $productImageInstance               = AliyunOSS::getInstance('images-product');
