@@ -20,5 +20,3 @@ define('PLUS_COST',2);
 
 define('UPLOAD_IMAGE_UNZIP_PATH' , '/home/dalei/tmp/');
 define('DOWNLOAD_IMAGE_TMP' , '/home/dalei/tmp/image_tmp/');
-// php 锁文件路径
-define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
