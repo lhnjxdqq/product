@@ -66,6 +66,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
         if (!$imageKey) {
             continue;
         }
+        echo 'spu产品图片' . $imageKey . "\n";
         if (!$spuImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
             Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
             continue;
@@ -119,6 +120,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
         if (!$imageKey) { // 如果数据库数据不存在,直接跳过
             continue;
         }
+        echo 'product产品图片' . $imageKey . "\n";
         if (!$productImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
             Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
             continue;
@@ -170,13 +172,11 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath) {
         if (!$goodsImageRelationship['image_key']) {
             continue;
         }
+        echo 'sku产品图片' . $imageKey . "\n";
         if (!$goodsImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
-            // $goodsImageInstance->delete($imageKey);
             Goods_Images_RelationShip::deleteByIdAndKey($goodsId , $imageKey);
             continue;
         }
-        echo $goodsId . "\n";
-
         try {
 
             $data = $goodsImageInstance->downLoadFile($imageKey);
