@@ -1,7 +1,7 @@
 <?php
 
 /**
-* 生产生产订单
+* 生成生产订单
 */
 require_once dirname(__FILE__) . '/../init.inc.php';
 // 取一条待执行的任务
