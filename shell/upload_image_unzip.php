@@ -4,6 +4,14 @@
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
 
+
+if (is_file(LOCK_FILE)) {
+
+    exit;
+}
+
+file_put_contents(LOCK_FILE, 'file.lock');
+
 /**
  * 递归删除文件、文件所属的目录路径
  * @param string $path 要递归删除文件或目录的
@@ -292,6 +300,7 @@ if( !empty($files) && is_array($files) ){
 //递归删除 未处理完的文件、目录，有可能这些文件没有匹配到数据，则不需要保留
 deleteByDirFile($rootPath,$rootPath);
 deleteByDirFile(DOWNLOAD_IMAGE_TMP,DOWNLOAD_IMAGE_TMP);
+@unlink(LOCK_FILE);
 
 echo "\r\n\r\n";
 echo 'upload_image_unzip php action end!';
