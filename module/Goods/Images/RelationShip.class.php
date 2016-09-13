@@ -96,14 +96,14 @@ class   Goods_Images_RelationShip {
     }
 
     /**
-     * 根据SKUID删除图片
+     * 根据SKUID和key删除一张图片
      *
      * @param $goodsId
      * @return int
      */
-    static public function deleteById ($goodsId) {
+    static public function deleteByIdAndKey ($goodsId , $key) {
 
-        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '"';
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `goods_id` = "' . (int) $goodsId . '" AND `image_key` = \'' . addslashes($key) . '\'';
 
         return  self::_getStore()->execute($sql);
     }

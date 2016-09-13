@@ -95,6 +95,19 @@ class   Spu_Images_RelationShip {
     }
 
     /**
+     * 根据SPUID 删出该SPU下图片
+     *
+     * @param $spuId    SPUID
+     * @return int
+     */
+    static public function deleteByIdAndKey ($spuId , $key) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '" AND `image_key` = \'' . addslashes($key) . '\'';
+
+        return  self::_getStore()->execute($sql);
+    }
+
+    /**
      * 根据一组SPUID 删除图片
      *
      * @param $multiSpuId   一组SPUID

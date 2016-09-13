@@ -57,25 +57,43 @@ function getByDirFile($path,&$files){
 function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
 
 	$listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuId($spuId);
-	$spuflag = 0;
-	foreach ( $listSpuImagesRelationship as $spuImagesRelationship) {
+    $spuImageInstance 	       = AliyunOSS::getInstance('images-spu');
+    $spuflag = 0;
+    foreach ( $listSpuImagesRelationship as $spuImagesRelationship) {
 
-		$imageKey = $spuImagesRelationship['image_key'];
-		$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesSPU/' . $imageKey . '.jpg';
-		
-		if ( md5_file($url) == $imageMd5 ) {
-			$spuflag++;
-		}
+        $imageKey = $spuImagesRelationship['image_key'];
+        // 如果数据库字段为空 , 则跳过
+        if (!$imageKey) {
+            continue;
+        }
+        if (!$spuImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
+            continue;
+        }
+        try {
 
-	}
-	if ($spuflag) {
+            $data = $spuImageInstance->downLoadFile($imageKey);
+            $path = DOWNLOAD_IMAGE_TMP . 'spu/';
+            is_dir($path) || mkdir($path , 0777 , true);
+            file_put_contents($path . $imageKey, $data);
+        } catch (Exception $e){
+            print_r($e);
+            exit;
+        }
 
-		unset($spuflag);
-		return ;
+        if ( md5_file($path . $imageKey) == $imageMd5 ) {
+            $spuflag++;
+        }
 
-	}
-    $spuImageInstance 	= AliyunOSS::getInstance('images-spu');
-    $spuImageKey 			= $spuImageInstance->create($fileSavePath , null , true);
+    }
+    if ($spuflag) {
+
+        unset($spuflag);
+        return false;
+
+    }
+
+    $spuImageKey			 = $spuImageInstance->create($fileSavePath , null , true);
     $data = array(
     	'spu_id'=>$spuId,
     	'image_key'=>$spuImageKey,
@@ -91,14 +109,29 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
 
 function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
 	
-	$listProductImageRelationShip = Product_Images_RelationShip::getById($productId);
+	$listProductImageRelationShip       = Product_Images_RelationShip::getById($productId);
+    $productImageInstance               = AliyunOSS::getInstance('images-product');
 	$productflag = 0;
 
 	foreach ($listProductImageRelationShip as $productImageRelationShip) {
 
 		$imageKey = $productImageRelationShip['image_key'];
-		$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesProduct/' . $imageKey . '.jpg';
-		if ( md5_file($url) == $imageMd5 ) {
+        if (!$imageKey) { // 如果数据库数据不存在,直接跳过
+            continue;
+        }
+        if (!$productImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
+            continue;
+        }
+        try {
+
+            $data = $productImageInstance->downLoadFile($imageKey);
+            $path = DOWNLOAD_IMAGE_TMP . 'product/';
+            is_dir($path) || mkdir($path , 0777 , true);
+            file_put_contents($path . $imageKey, $data);
+        } catch (Exception $e){}
+
+		if ( md5_file($path . $imageKey) == $imageMd5 ) {
 			$productflag++;
 		}
 
@@ -106,11 +139,11 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
 
 	if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
 		unset($productflag);
-		return ;
+		return false;
 	}
+    
 	// 上传开始了
-	$productImageInstance 				= AliyunOSS::getInstance('images-product');
-    $prodImageKey 						= $productImageInstance->create($fileSavePath, null, true);
+    $prodImageKey               = $productImageInstance->create($fileSavePath, null, true);
 
     //写入数据库
     $data = array(
@@ -128,20 +161,44 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
 function addImageForGoods($goodsId , $imageMd5 , $fileSavePath) {
 
     $listGoodsImageRelationship = Goods_Images_RelationShip::getByGoodsId($goodsId);
+    $goodsImageInstance 					 = AliyunOSS::getInstance('images-sku');
     $goodsflag = 0;
     foreach ($listGoodsImageRelationship as $goodsImageRelationship) {
-    	$url = 'http://kuandd-product-dev.oss-cn-beijing.aliyuncs.com/imagesSKU/' . $goodsImageRelationship['image_key'] . '.jpg';
-		if ( md5_file($url) == $imageMd5 ) {
-			$goodsflag++;
-		}
+
+        $imageKey = $goodsImageRelationship['image_key'];
+        // 如数据库文件不存在,则跳过
+        if (!$goodsImageRelationship['image_key']) {
+            continue;
+        }
+        if (!$goodsImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            // $goodsImageInstance->delete($imageKey);
+            Goods_Images_RelationShip::deleteByIdAndKey($goodsId , $imageKey);
+            continue;
+        }
+        echo $goodsId . "\n";
+
+        try {
+
+            $data = $goodsImageInstance->downLoadFile($imageKey);
+            $path = DOWNLOAD_IMAGE_TMP . 'goods/';
+            is_dir($path) || mkdir($path , 0777 , true);
+            file_put_contents($path.$imageKey, $data);
+        } catch (Exception $e){
+            print_r($e);
+            exit;
+        }
+        echo $path . $imageKey . "\n";
+        if ( md5_file($path . $imageKey) == $imageMd5 ) {
+            $goodsflag++;
+        }
     }
 
     if ($goodsflag) {
-    	unset($goodsflag);
-    	return false;
+        unset($goodsflag);
+        return false;
     }
-    $goodsImageInstance 					= AliyunOSS::getInstance('images-sku');
-    $goodsImageKey 							= $goodsImageInstance->create($fileSavePath , null , true);
+
+    $goodsImageKey      				 = $goodsImageInstance->create($fileSavePath , null , true);
     $data = array(
     	'goods_id'=>$goodsId,
     	'image_key'=>$goodsImageKey,
@@ -150,6 +207,7 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath) {
     if (Goods_Images_RelationShip::create($data)) {
     	Goods_Push::updatePushGoodsData($goodsId);
     }
+    return $goodsImageKey;
 }
 
 //获取要递归处理的文件目录路径
@@ -174,7 +232,6 @@ if( !empty($files) && is_array($files) ){
 		
 		//获取产品编号/不带后缀的文件名称
 		$sourceSn = pathinfo($fileSavePath,PATHINFO_FILENAME);
-
 		//查找该产品编号对应的产品数据是否存在
 		$sourceInfo = Source_Info::getBySourceCode($sourceSn);
 		$sourceInfo = ArrayUtility::searchBy($sourceInfo , array('delete_status'=>0));
@@ -189,14 +246,15 @@ if( !empty($files) && is_array($files) ){
 				// 东西不存在,跳过
 				continue;
 			}
+            
 			foreach ($listProductInfo as $productInfo) {
 
-				$imageMd5 = md5_file($fileSavePath);
+				$imageMd5       = md5_file($fileSavePath);
 				addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath);
 
 				//查询 goods 图片是否有
 		        $goodsId = $productInfo['goods_id'];
-		        addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
+		        $imageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
 
 		        // 通过goods_id查询spu_id
 		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
@@ -225,11 +283,7 @@ if( !empty($files) && is_array($files) ){
 
 //递归删除 未处理完的文件、目录，有可能这些文件没有匹配到数据，则不需要保留
 deleteByDirFile($rootPath,$rootPath);
+deleteByDirFile(DOWNLOAD_IMAGE_TMP,DOWNLOAD_IMAGE_TMP);
 
 echo "\r\n\r\n";
 echo 'upload_image_unzip php action end!';
-
-
-
-
-

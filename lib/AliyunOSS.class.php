@@ -233,4 +233,18 @@ class   AliyunOSS {
         return      base_convert(floor($microtime * 1000), 10, 36);
     }
 
+     /**
+     * 是否存在
+     *
+     * @param   string  $id object id
+     * @return  bool        判断结果
+     */
+    public  function downLoadFile ($id) {
+        
+        $options = array(
+            OssClient::OSS_FILE_DOWNLOAD => $localfile,
+            );
+        return  $this->_ossClient->getObject($this->_bucket, $this->_getKey($id) , $options);
+    }
+
 }

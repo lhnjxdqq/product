@@ -93,4 +93,17 @@ class   Product_Images_RelationShip {
 
         return  self::_getStore()->execute($sql);
     }
+
+    /**
+     * 根据产品ID 删除产品和图片关联关系
+     *
+     * @param $id
+     * @return int
+     */
+    static public function deleteByIdAndKey ($productId , $key) {
+
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `product_id` = "' . (int) $productId . '" AND `image_key` = \'' . addslashes($key) . '\'';
+
+        return  self::_getStore()->execute($sql);
+    }
 }
