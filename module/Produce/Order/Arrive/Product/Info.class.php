@@ -20,7 +20,7 @@ class   Produce_Order_Arrive_Product_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'product_id,produce_order_arrive_id,quantity,weight,is_isset_produce_order,storage_quantity,refunds,storage_weight';
+    const   FIELDS      = 'product_id,produce_order_arrive_id,quantity,weight,is_isset_produce_order,storage_quantity,storage_weight';
     /**
      * 新增
      *

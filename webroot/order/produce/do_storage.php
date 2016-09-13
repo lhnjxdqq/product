@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * 脚本 生成退货单
+ */
 require_once dirname(__FILE__).'/../../../init.inc.php';
 
 $arriveId                   = $_GET['arrive_id'];
@@ -58,6 +61,7 @@ Produce_Order_Arrive_Info::update(array(
     'au_price'                  => $auPrice,
     'storage_time'              => date('Y-m-d H:i:s',time()),
     'storage_user_id'           => $_SESSION['user_id'],
+    'refund_file_status'        => Produce_Order_Arrive_RefundStatus::WAIT_TO_START,
 ));
 
 Utility::notice('入库成功','/order/produce/order_storage.php?produce_order_id='.$produceOrderId);

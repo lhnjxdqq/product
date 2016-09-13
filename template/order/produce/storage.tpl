@@ -121,6 +121,12 @@
                                         <td>
                                             <{if $item.is_storage == 0}>
                                                 <a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a>
+                                            <{else if $item.is_storage == 1}>
+                                                <{if $item.refund_file_path != ''}>
+                                                    <a href='/common/download.php?file=<{$item.refund_file_path}>&module=refund_export&name=refund' class='btn btn-primary btn-xs'>下载退货单</a>
+                                                <{else}>
+                                                    退货单生成中
+                                                <{/if}>
                                             <{/if}>
                                             <a href='/order/produce/arrive_detail.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>' class='btn btn-primary btn-xs'>查看清单</a>
                                         </td>
