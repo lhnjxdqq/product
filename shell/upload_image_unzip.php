@@ -5,6 +5,9 @@
 require_once    dirname(__FILE__) . '/../init.inc.php';
 
 
+// php 锁文件路径
+define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
+
 if (is_file(LOCK_FILE)) {
 
     exit;
