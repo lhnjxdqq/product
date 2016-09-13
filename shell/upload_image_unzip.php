@@ -55,6 +55,7 @@ function getByDirFile($path,&$files){
 * 检测图片在spu里面是否存在,如不存在,则添加
 */
 function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
+    echo 'spu标记' . "\n";
 
 	$listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuId($spuId);
     $spuImageInstance 	       = AliyunOSS::getInstance('images-spu');
@@ -109,6 +110,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
 */
 
 function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
+    echo 'product标记' . "\n";
 	
 	$listProductImageRelationShip       = Product_Images_RelationShip::getById($productId);
     $productImageInstance               = AliyunOSS::getInstance('images-product');
@@ -161,6 +163,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
 */
 
 function addImageForGoods($goodsId , $imageMd5 , $fileSavePath) {
+    echo 'sku标记' . "\n";
 
     $listGoodsImageRelationship = Goods_Images_RelationShip::getByGoodsId($goodsId);
     $goodsImageInstance 					 = AliyunOSS::getInstance('images-sku');
