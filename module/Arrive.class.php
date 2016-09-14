@@ -200,7 +200,7 @@ class   Arrive {
         // 生产订单详情
         $listOrderProduct   = Produce_Order_List::getDetailByMultiProduceOrderId((array) $produceOrderId);
        
-        //$mapProductImage    = Common_Product::getProductThumbnail($listProductId);
+        $mapProductImage    = Common_Product::getProductThumbnail($listProductId);
         $listGoodsId        = ArrayUtility::listField($listOrderProduct, 'goods_id');
         $mapGoodsSpuList    = Common_Spu::getGoodsSpu($listGoodsId);
         $listGoodsSpecValue = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
