@@ -13,6 +13,10 @@ $order      = array(
 );
 $listInfo   = Produce_Order_Arrive_Info::listByCondition($condition, $order, 0, 100);
 
+if(empty($listInfo)){
+    
+    exit;
+}
 foreach ($listInfo as $info) {
 
     Produce_Order_Arrive_Info::update(array(
