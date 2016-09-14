@@ -350,8 +350,8 @@ class   Arrive {
             'weight'                => $info['arrive_weight'],
             'storage_weight'        => $info['storage_weight'],
             'storage_quantity'      => $info['storage_quantity'],
-            'refund_quantity'       => sprintf('%2.f',$info['arrive_quantity'] - $info['storgae_quantity']),
-            'refund_weight'         => sprintf('%2.f',$info['arrive_weight'] - $info['storgae_weight']),
+            'refund_quantity'       => sprintf('%2.f',($info['arrive_quantity'] - $info['storgae_quantity'])),
+            'refund_weight'         => sprintf('%2.f',($info['arrive_weight'] - $info['storgae_weight'])),
             'cost'                  => $info['product_cost'],
         );
     }
