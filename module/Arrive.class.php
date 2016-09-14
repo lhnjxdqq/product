@@ -199,8 +199,8 @@ class   Arrive {
         }
         // 生产订单详情
         $listOrderProduct   = Produce_Order_List::getDetailByMultiProduceOrderId((array) $produceOrderId);
+       
         $mapProductImage    = Common_Product::getProductThumbnail($listProductId);
-
         $listGoodsId        = ArrayUtility::listField($listOrderProduct, 'goods_id');
         $mapGoodsSpuList    = Common_Spu::getGoodsSpu($listGoodsId);
         $listGoodsSpecValue = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
@@ -282,17 +282,23 @@ class   Arrive {
         $data['pageViewData']       = $page->getViewData();
         $data['mapOrderType']       = Produce_Order_Type::getOrderType();        
 
+        $numberRow = 1;
         foreach ($listOrderDetail as $offsetInfo => $goodsInfo) {
             
-            if($goodsInfo['arrive_quantity'] == 0 || $goodsInfo['arrive_weight'] == 0){
+            $refundQuantity             = $goodsInfo['arrive_quantity'] - $goodsInfo['storage_quantity'];
+            $refundWeight               = $goodsInfo['arrive_weight'] - $goodsInfo['storage_weight'];
+            
+            if($goodsInfo['arrive_quantity'] == 0 || $goodsInfo['arrive_weight'] == 0 || $refundQuantity == 0 || $refundWeight == 0){
                 
                 continue;
             }
+            $numberRow++;
             $goodsId    = $goodsInfo['goods_id'];
             $goodsInfo['image_url']     = $goodsInfo['image_url'];
+            $goodsInfo['refund_quantity']   = $refundQuantity;
+            $goodsInfo['refund_weight']     = $refundWeight;
             $row        = self::_getExcelRow($goodsInfo,$data);
 
-            $numberRow  = $offsetInfo + 2;
             self::_saveExcelRow($sheet, $numberRow, array_values($row));
             $draw       = self::_appendExcelImage($sheet, $numberRow, $row, $goodsInfo['image_url']);
 
@@ -350,8 +356,8 @@ class   Arrive {
             'weight'                => $info['arrive_weight'],
             'storage_weight'        => $info['storage_weight'],
             'storage_quantity'      => $info['storage_quantity'],
-            'refund_quantity'       => sprintf('%2.f',$info['arrive_quantity'] - $info['storgae_quantity']),
-            'refund_weight'         => sprintf('%2.f',$info['arrive_weight'] - $info['storgae_weight']),
+            'refund_quantity'       => $info['refund_quantity'],
+            'refund_weight'         => $info['refund_weight'],
             'cost'                  => $info['product_cost'],
         );
     }
