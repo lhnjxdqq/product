@@ -48,6 +48,11 @@ class   AliyunOSS {
     private $_endpoint;
 
     /**
+     * oss域
+     */
+    private $_endpointInternal;
+
+    /**
      * 获取OSS客户端实例
      *
      * @param   string  $config 配置项
@@ -80,13 +85,14 @@ class   AliyunOSS {
         }
 
         extract($configData);
-        $this->_ossClient   = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+        $this->_ossClient   = new OssClient($accessKeyId, $accessKeySecret, $endpointInternal);
         $this->_bucket      = $bucket;
         $this->_prefix      = $prefix;
         $this->_suffix      = $suffix;
         $this->_domain      = $domain;
         $this->_protocol    = $hostProtocol;
-        $this->_endpoint    = $endpointInternal;
+        $this->_endpoint    = $endpoint;
+        $this->_endpointInternal    = $endpointInternal;
     }
 
     /**
