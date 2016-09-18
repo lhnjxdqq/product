@@ -28,17 +28,35 @@ foreach($mapUpdateCost as $key=>$info){
         if(!empty($updateCostSourceInf['relationship_product_id'])){
             
             $mapProductId             = explode(',',$updateCostSourceInf['relationship_product_id']);
-            $mapProductInfo           = Product_Info::getByMultiId($mapProductId);
+            $mapProductInfo           = ArrayUtility::searchBy(Product_Info::getByMultiId($mapProductId),array('delete_status'=>0));
+            if(empty($mapProductInfo)){
+                
+                $data[] = $jsonData;
+                continue;
+            }
             $listGoodsId              = ArrayUtility::listField($mapProductInfo,'goods_id');
             $indexGoodsIdProductId    = ArrayUtility::indexByField($mapProductInfo,'goods_id','product_id');
-            $listGoodsInfo            = Goods_List::listByCondition(array('list_goods_id'=>$listGoodsId));
+            $listGoodsInfo            = Goods_List::listByCondition(array('list_goods_id'=>$listGoodsId,'delete_status'=>'0'));
+            if(empty($listGoodsInfo)){
+                
+                $data[] = $jsonData;
+                continue;
+            }
             $indexGoodsId             = ArrayUtility::indexByField($listGoodsInfo,'goods_id');
             
             $productCost              = $jsonData['cost'];
             $productSize              = $jsonData['size'];
             $mapGoodsIdSpuId          = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
+            $indexSpuIdGoodsId        = ArrayUtility::groupByField($mapGoodsIdSpuId,'goods_id');
             $listSpuId                = array_unique(ArrayUtility::listField($mapGoodsIdSpuId,'spu_id'));
+            $mapSpuInfo               = ArrayUtility::searchBy(Spu_Info::getByMultiId($listSpuId),array('delete_status'=>0));
+            $listNotDeletedSpuId      = ArrayUtility::listField($mapSpuInfo,'spu_id');    
             
+            if(empty($mapSpuInfo)){
+                
+                $data[] = $jsonData;
+                continue;
+            }
             foreach($productCost as $colorId=>$colorPrice){
                 
                 if(!empty($productSize)){
@@ -46,15 +64,25 @@ foreach($mapUpdateCost as $key=>$info){
                     foreach($productSize as $sizeId){
                         
                         $updateGoodsInfo  = ArrayUtility::searchBy($listGoodsInfo,array('size_value_id'=>$sizeId));
+
                         if(empty($updateGoodsInfo)){
                             
                             $size[] = $sizeId;
+                            
                         }else{    
                             $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId,'size_value_id'=>$sizeId)),'goods_id');
                             if(!empty($updateGoodsId)){
                                 
                                 foreach($updateGoodsId as $id){
+                                    
+                                    $listSpuId  = ArrayUtility::listField($indexSpuIdGoodsId[$id],'spu_id');
 
+                                    if(array_intersect($listSpuId,$listNotDeletedSpuId)){
+                                          
+                                            $jsonData['cost']           = $colorPrice;
+                                            $data[] = $jsonData;
+                                            $cost   = array();
+                                    }
                                     Goods_Info::update(array(
                                         'goods_id'      => $id,
                                         'self_cost'     => $colorPrice+PLUS_COST,
@@ -123,6 +151,7 @@ foreach($mapUpdateCost as $key=>$info){
             $data[] = $jsonData;
         }
     }
+
     if(empty($data)){
                 
         Update_Cost_Info::update(array(
