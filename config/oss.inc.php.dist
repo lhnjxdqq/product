@@ -5,7 +5,7 @@ return  array(
         'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
         'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
         'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
-        'endpointInternal'  =>'kuandd-product.oss-cn-beijing-internal.aliyuncs.com',//内网域名
+        'endpointInternal'  => 'oss-cn-beijing-internal.aliyuncs.com',//内网域名
         'isCName'           => false,//OSS域名绑定；true 绑定、false 不绑定
         'securityToken'     => NULL,//OSS的STS临时token
         //存储空间
@@ -21,7 +21,7 @@ return  array(
         'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
         'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
         'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
-        'endpointInternal'  =>'kuandd-product.oss-cn-beijing-internal.aliyuncs.com',//内网域名
+        'endpointInternal'  => 'oss-cn-beijing-internal.aliyuncs.com',//内网域名
         'isCName'           => false,//OSS域名绑定；true 绑定、false 不绑定
         'securityToken'     => NULL,//OSS的STS临时token
         //存储空间
@@ -37,7 +37,7 @@ return  array(
         'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
         'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
         'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
-        'endpointInternal'  =>'kuandd-product.oss-cn-beijing-internal.aliyuncs.com',//内网域名
+        'endpointInternal'  => 'oss-cn-beijing-internal.aliyuncs.com',//内网域名
         'isCName'           => false,//OSS域名绑定；true 绑定、false 不绑定
         'securityToken'     => NULL,//OSS的STS临时token
         //存储空间

@@ -90,8 +90,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath) {
             is_dir($path) || mkdir($path , 0777 , true);
             file_put_contents($path . $imageKey, $data);
         } catch (Exception $e){
-            print_r($e);
-            exit;
+            echo $e->getMessage();
         }
 
         if ( md5_file($path . $imageKey) == $imageMd5 ) {
@@ -147,7 +146,9 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath) {
             $path = DOWNLOAD_IMAGE_TMP . 'product/';
             is_dir($path) || mkdir($path , 0777 , true);
             file_put_contents($path . $imageKey, $data);
-        } catch (Exception $e){}
+        } catch (Exception $e){
+            echo $e->getMessage();
+        }
 
 		if ( md5_file($path . $imageKey) == $imageMd5 ) {
 			$productflag++;
@@ -201,8 +202,7 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath) {
             is_dir($path) || mkdir($path , 0777 , true);
             file_put_contents($path.$imageKey, $data);
         } catch (Exception $e){
-            print_r($e);
-            exit;
+            echo $e->getMessage();
         }
         echo $path . $imageKey . "\n";
         if ( md5_file($path . $imageKey) == $imageMd5 ) {
@@ -268,11 +268,19 @@ if( !empty($files) && is_array($files) ){
     			foreach ($listProductInfo as $productInfo) {
 
     				$imageMd5       = md5_file($fileSavePath);
-    				addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath);
+                    try {
+    				    addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath);
+                    } catch (Exception $e) {
+                        echo $e->getMessage();
+                    }
 
     				//查询 goods 图片是否有
     		        $goodsId = $productInfo['goods_id'];
-    		        $imageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
+                    try {
+    		            $imageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath);
+                    } catch (Exception $e) {
+                        echo $e->getMessage();
+                    }
 
     		        // 通过goods_id查询spu_id
     		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
@@ -281,7 +289,11 @@ if( !empty($files) && is_array($files) ){
     			        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
     			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
     			        	if ($spuInfo) {
-    			        		addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath);
+                                try {
+    			        		    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath);
+                                } catch (Exception $e) {
+                                    echo $e->getMessage();
+                                }
     			        	}
     			        }
     				}		        
