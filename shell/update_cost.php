@@ -15,6 +15,7 @@ if(empty($mapUpdateCost)){
     
     exit;
 }
+
 foreach($mapUpdateCost as $key=>$info){
     
     $mapUpdateCostSourceInfo    = Update_Cost_Source_Info::getByUpdateCostId($info['update_cost_id']);
@@ -70,39 +71,41 @@ foreach($mapUpdateCost as $key=>$info){
                             $size[] = $sizeId;
                             
                         }else{    
+                            
                             $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId,'size_value_id'=>$sizeId)),'goods_id');
+                            
                             if(!empty($updateGoodsId)){
                                 
                                 foreach($updateGoodsId as $id){
                                     
                                     $listSpuId  = ArrayUtility::listField($indexSpuIdGoodsId[$id],'spu_id');
 
-                                    if(array_intersect($listSpuId,$listNotDeletedSpuId)){
-                                          
-                                            $jsonData['cost']           = $colorPrice;
-                                            $data[] = $jsonData;
-                                            $cost   = array();
+                                    if(empty(array_intersect($listSpuId,$listNotDeletedSpuId))){
+                                        
+                                        $cost[$colorId] = $colorPrice;
+                                    }else{
+                                         
+                                        Goods_Info::update(array(
+                                            'goods_id'      => $id,
+                                            'self_cost'     => $colorPrice+PLUS_COST,
+                                            'sale_cost'     => $colorPrice+PLUS_COST,
+                                            'delete_status' => Goods_DeleteStatus::NORMAL,
+                                            'online_status' => Goods_OnlineStatus::ONLINE,
+                                        ));
+                                        Product_Info::update(array(
+                                            'product_id'    => $indexGoodsIdProductId[$id],
+                                            'product_cost'  => $colorPrice,
+                                            'delete_status' => Product_DeleteStatus::NORMAL,
+                                            'online_status' => Product_OnlineStatus::ONLINE,
+                                        ));
+                                                                    
+                                        Cost_Update_Log_Info::create(array(
+                                            'product_id'        => $indexGoodsIdProductId[$id],
+                                            'cost'              => sprintf('%.2f',$colorPrice),
+                                            'handle_user_id'    => $info['auditor_user_id'],
+                                            'update_means'      => Cost_Update_Log_UpdateMeans::BATCH,
+                                        )); 
                                     }
-                                    Goods_Info::update(array(
-                                        'goods_id'      => $id,
-                                        'self_cost'     => $colorPrice+PLUS_COST,
-                                        'sale_cost'     => $colorPrice+PLUS_COST,
-                                        'delete_status' => Goods_DeleteStatus::NORMAL,
-                                        'online_status' => Goods_OnlineStatus::ONLINE,
-                                    ));
-                                    Product_Info::update(array(
-                                        'product_id'    => $indexGoodsIdProductId[$id],
-                                        'product_cost'  => $colorPrice,
-                                        'delete_status' => Product_DeleteStatus::NORMAL,
-                                        'online_status' => Product_OnlineStatus::ONLINE,
-                                    ));
-                                                                
-                                    Cost_Update_Log_Info::create(array(
-                                        'product_id'        => $indexGoodsIdProductId[$id],
-                                        'cost'              => sprintf('%.2f',$colorPrice),
-                                        'handle_user_id'    => $info['auditor_user_id'],
-                                        'update_means'      => Cost_Update_Log_UpdateMeans::BATCH,
-                                    ));
                                 }
                             }else{
                                 $cost[$colorId] = $colorPrice;

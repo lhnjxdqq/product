@@ -66,6 +66,10 @@ foreach($indexSourceCode as $source_code => $info){
     //所有SPU
     $mapSpuInfo[$source_code][1]            = ArrayUtility::searchBy(Spu_Info::getByMultiId($mapSpuId[$source_code]),array('delete_status'=>0));
 
+    if(empty($mapSpuInfo[$source_code][1])){
+        
+        continue;
+    }
     // 查所当前所有SPU的商品 商品信息 规格和规格值
     $allGoodsInfo           = Goods_Info::getByMultiId($mapGoodsId[$source_code]);
     $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
@@ -184,7 +188,7 @@ foreach($mapSpuInfo as $source=>$listSpu){
     $productInfo['source_row']          = $row;  
     unset($productInfo['price']);
     unset($productInfo['cost']);
-    if(empty($mapSpuInfo[$source][0]['relationship_product_id'])){
+    if(empty($mapSpuInfo[$source][1])){
      
         $productInfo['is_new']  = 2;
         $listSpuInfo[]  = $productInfo;
