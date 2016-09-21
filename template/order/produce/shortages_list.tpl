@@ -80,7 +80,7 @@
                                         <td>
                                             <{foreach from=$item.spu_list item=spu name=spulist}>
                                                 <{$spu.spu_sn}>
-                                                <{if !$smarty.foreach.spulist.last}><br><{/if}>
+                                                <{if !$smarty.foreach.spulist.last}>,<{/if}>
                                             <{/foreach}>
                                         </td>
                                         <td>
