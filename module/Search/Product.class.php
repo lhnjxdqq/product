@@ -12,7 +12,7 @@ class Search_Product {
 
         $fields         = implode(',', self::_getQueryFields());
         $sqlBase        = 'SELECT ' . $fields . ' FROM `product_info` AS `pi` LEFT JOIN ';
-        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables($condition));
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = ' ORDER BY `pi`.`product_id` DESC ';
         $sqlLimit       = self::_limit($offset, $limit);
@@ -25,7 +25,7 @@ class Search_Product {
     static public function countByCondition (array $condition) {
 
         $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM `product_info` AS `pi` LEFT JOIN ';
-        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables($condition));
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = ' ORDER BY `pi`.`product_id` DESC ';
         $sqlLimit       = self::_limit($offset, $limit);
@@ -215,6 +215,9 @@ class Search_Product {
             case 'product_sn' :
                 $filed      = '`pi`.`product_sn`';
             break;
+            case 'spu_sn'   :
+                $filed      = '`spu_info`.spu_sn';
+            break;
         }
         return              $filed
                             ? $filed . ' IN ("' . implode('","', $searchValueList) . '")'
@@ -238,7 +241,7 @@ class Search_Product {
      *
      * @return array
      */
-    static private function _getJoinTables () {
+    static private function _getJoinTables (array $condition) {
 
         $listSpecInfo   = Spec_Info::listAll();
         $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias', 'spec_id');
@@ -247,7 +250,7 @@ class Search_Product {
         $colorId        = $mapSpecInfo['color'];
         $materialId     = $mapSpecInfo['material'];
 
-        return  array(
+        $joinSql        = array(
             '`goods_info` AS `gi` ON `gi`.`goods_id`=`pi`.`goods_id`',
             '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`pi`.`goods_id` AND `weight_info`.`spec_id` = ' . $weightId,
             '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`pi`.`goods_id` AND `size_info`.`spec_id` = ' . $sizeId,
@@ -255,6 +258,14 @@ class Search_Product {
             '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`pi`.`goods_id` AND `material_info`.`spec_id` = ' . $materialId,
             '`source_info` AS `si` ON `si`.`source_id`=`pi`.`source_id`',
         );
+        
+        if($condition['search_type'] == 'spu_sn'){
+             
+                $joinSql[] = "`spu_goods_relationship` AS `sgr` ON `sgr`.`goods_id`=`gi`.`goods_id`";  
+                $joinSql[] = "`spu_info` ON `spu_info`.`spu_id`=`sgr`.`spu_id`";    
+        }
+
+        return  $joinSql;
     }
 
     /**
@@ -294,6 +305,7 @@ class Search_Product {
             'source_code'   => '买款ID',
             'goods_sn'      => 'SKU编号',
             'product_sn'    => '产品编号',
+            'spu_sn'        => 'SPU编号',
         );
     }
 }
