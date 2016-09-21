@@ -55,7 +55,7 @@
                                 <th>买款ID</th>
                                 <th>SPU编号</th>
                                 <th>产品图片</th>
-                                <th>SKU名称</th>
+                                <th>SKU编号</th>
                                 <th>三级分类</th>
                                 <th>款式</th>
                                 <th>子款式</th>
@@ -63,11 +63,11 @@
                                 <th>规格尺寸</th>
                                 <th>颜色</th>
                                 <th>主料材质</th>
-                                <th>下单数量</th>
+                                <th>下单件数</th>
                                 <th>下单重量</th>
-                                <th>入库数量</th>
+                                <th>入库件数</th>
                                 <th>入库重量</th>
-                                <th>缺货数量</th>
+                                <th>缺货件数</th>
                                 <th>缺货重量</th>
                                 <th>缺货比率</th>
                             </tr>
@@ -86,7 +86,7 @@
                                         <td>
                                             <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60" alt=""></a>
                                         </td>
-                                        <td><{$item.goods_name}></td>
+                                        <td><{$item.goods_sn}></td>
                                         <td><{$item.category_name}></td>
                                         <td><{$item.parent_style_name}></td>
                                         <td><{$item.child_style_name}></td>
