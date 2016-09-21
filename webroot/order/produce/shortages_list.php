@@ -90,7 +90,11 @@ foreach ($listOrderDetail as &$detail) {
     $detail['short_weight']         = $indexProductId[$productId]['short_weight'];
     $detail['storage_weight']       = $detail['order_weight'] - $indexProductId[$productId]['short_weight'];
     $detail['storage_quantity']     = $indexProductId[$productId]['quantity'] - $indexProductId[$productId]['short_quantity'];
-    $detail['short_ratio']          = sprintf('%.4f',($indexProductId[$productId]['short_quantity'])/($indexProductId[$productId]['quantity']));
+    if(!empty($indexProductId[$productId]['quantity'])){
+
+        $detail['short_ratio']          = sprintf('%.4f',($indexProductId[$productId]['short_quantity'])/($indexProductId[$productId]['quantity']));
+        
+    }
 }
 
 $data['produceOrderInfo']   = $produceOrderInfo;

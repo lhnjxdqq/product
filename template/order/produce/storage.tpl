@@ -66,7 +66,7 @@
                                 </form>
                             </td>
                         <td>
-                            <a class='btn btn-primary btn-xs' href='/order/produce/shortages_list.php?produce_order_id=<{$produceOrderInfo['produce_order_id']}>'>查看清单</a>
+                            <a class='btn btn-primary btn-xs' href='/order/produce/shortages_list.php?produce_order_id=<{$produceOrderInfo['produce_order_id']}>'>查看缺货清单</a>
                         </td>
                         <td><a href='/order/produce/endOrder.php?produce_order_id=<{$smarty.get.produce_order_id}>' class='btn btn-primary btn-xs'>结束订单</a></td>
                         </tr>
