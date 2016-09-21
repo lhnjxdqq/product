@@ -61,12 +61,16 @@ $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? 
 // 分页
 $page               = new PageList(array(
     PageList::OPT_TOTAL     => Produce_Order_Product_List::countByCondition($condition),
-    PageList::OPT_URL       => '/order/produce/arrive_detail.php',
+    PageList::OPT_URL       => '/order/produce/shortages_list.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
 $listOrderDetail    = Produce_Order_Product_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
+if(empty($listProductId)){
+
+    $listOrderDetail = array();
+}
 foreach ($listOrderDetail as &$detail) {
 
     $goodsId        = $detail['goods_id'];

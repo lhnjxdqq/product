@@ -40,7 +40,7 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-minus"></i></button>
                     </div>
                     <{if $data['produceOrderInfo']['shortage_file_path'] != ''}>
-                        <a href='/common/download.php?file=<{$data['produceOrderInfo']['shortage_file_path']}>&module=shortages_export&name=shortages' class='btn btn-primary'>导出结果</a>          
+                        <a href='/common/download.php?file=<{$data['produceOrderInfo']['shortage_file_path']}>&module=shortages_export&file_name=shortage' class='btn btn-primary'>导出结果</a>          
                     <{else}>
                         <a href='#' class='btn btn-primary'>缺货单生成中</a>
                     <{/if}>

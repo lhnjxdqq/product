@@ -66,6 +66,11 @@ foreach($arriveProductInfo as $key=>$info){
         'short_weight'          => $shortWeight,
     ));
 }
+
+Produce_Order_Info::update(array(
+    'produce_order_id'          => $produceOrderId,
+    'update_shortage_status'    => Produce_Order_ShortageStatus::WAITING,
+));
 Produce_Order_Arrive_Info::update(array(
     'produce_order_arrive_id'   => $arriveId,
     'transaction_amount'        => array_sum($amount),

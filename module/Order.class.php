@@ -246,6 +246,10 @@ class   Order {
 
         $listOrderDetail    = Produce_Order_Product_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
+        if(empty($listProductId)){
+
+            $listOrderDetail = array();
+        }
         foreach ($listOrderDetail as &$detail) {
 
             $goodsId        = $detail['goods_id'];
@@ -276,7 +280,15 @@ class   Order {
             }
             $listIsArrive[] = $detail['is_arrive'];
         }
+        if(!empty($listOrderDetail)){
+            
+            foreach($listOrderDetail as $key => $info){
+                
+                $fieldArr[$key] = $info['short_ratio'];
+            }
 
+            array_multisort($fieldArr,SORT_DESC,$listOrderDetail);            
+        }
         $data['produceOrderInfo']   = $produceOrderInfo;
         $data['supplierInfo']       = $supplierInfo;
         $data['customerInfo']       = $customerInfo;
