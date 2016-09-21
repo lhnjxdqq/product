@@ -35,6 +35,7 @@ $listGoodsId        = ArrayUtility::listField($listOrderProduct, 'goods_id');
 $listGoodsSpecValue = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
 $mapGoodsSpecValue  = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
 $produceOrderInfo['count_weight']   = 0;
+
 foreach ($listOrderProduct as $orderProduct) {
 
     $goodsId            = $orderProduct['goods_id'];
@@ -42,7 +43,7 @@ foreach ($listOrderProduct as $orderProduct) {
     $weightValueData    = $mapGoodsSpecValue[$goodsId]['weight_value_data'];
     $countWeight+= $quantity * $weightValueData;
 }
-
+$shortagesQuantity  = array_sum(ArrayUtility::listField($listOrderProduct,'short_quantity'));
 
 $template = Template::getInstance();
 
@@ -52,6 +53,7 @@ $template->assign('quantityTotal',$quantityTotal);
 $template->assign('countProductTotal',$countProductTotal);
 $template->assign('countStorage',$countStorage);
 $template->assign('weightTotal',$weightTotal);
+$template->assign('shortagesQuantity',$shortagesQuantity);
 $template->assign('productTotal',$productTotal);
 $template->assign('countProduct',$countProduct);
 $template->assign('produceOrderInfo',$produceOrderInfo);

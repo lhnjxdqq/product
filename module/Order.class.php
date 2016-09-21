@@ -155,6 +155,291 @@ class   Order {
         
         return   Config::get('path|PHP', 'sales_order_import') . $year .'/' . $month .'/'. $salesOrderSn. '.xlsx';
     }
+        
+    /**
+     * 输出到流 excel格式
+     */
+    static  public  function outputShortExcel ($taskInfo) {
+
+        $tableHead = "产品图片,产品编号,SKU编号,SPU编号,买款ID,三级分类,款式,子款式,主料材质,颜色,规格重量,规格尺寸,下单件数,下单重量,入库重量,入库件数,缺货件数,缺货重量,缺货比率";
+        
+        $tableHead          = explode(",",$tableHead);
+        $order              = array();
+
+        $listDraw           = array();
+        $excel              = ExcelFile::create();
+        $sheet              = $excel->getActiveSheet();
+        $sheet->getRowDimension(1)->setRowHeight(-1);
+        self::_saveExcelRow($sheet, 1, $tableHead);
+
+        $maxWidth           = 0;
+        $filePath                   = self::getFilePathByBorrowId($taskInfo['produce_order_id']);
+        $stream                     = Config::get('path|PHP', 'shortages_export').$filePath;
+        $dir                        = pathinfo($stream, PATHINFO_DIRNAME);
+
+        if (!is_dir($dir)) {
+            
+            mkdir($dir, 0766, true);
+        }
+
+        $produceOrderId             = $taskInfo['produce_order_id'];
+        //到货单中的产品
+        $listProduceOrderProduct    = Produce_Order_Product_Info::getShortByProduceOrderId($produceOrderId);
+
+        $indexProductId             = ArrayUtility::indexByField($listProduceOrderProduct,'product_id');
+        $listProductId              = ArrayUtility::listField($listProduceOrderProduct,'product_id');
+        $produceOrderInfo           = Produce_Order_Info::getById($produceOrderId);
+        
+        if (!$produceOrderInfo) {
+
+            Utility::notice('生产订单不存在');
+        }
+        // 生产订单详情
+        $listOrderProduct   = Produce_Order_List::getDetailByMultiProduceOrderId((array) $produceOrderId);
+       
+        $mapProductImage    = Common_Product::getProductThumbnail($listProductId);
+        $listGoodsId        = ArrayUtility::listField($listOrderProduct, 'goods_id');
+        $mapGoodsSpuList    = Common_Spu::getGoodsSpu($listGoodsId);
+        $listGoodsSpecValue = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
+        $mapGoodsSpecValue  = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
+        $produceOrderInfo['count_goods']    = count($listOrderProduct);
+        $produceOrderInfo['count_quantity'] = 0;
+        $produceOrderInfo['count_weight']   = 0;
+        foreach ($listOrderProduct as $orderProduct) {
+
+            $goodsId            = $orderProduct['goods_id'];
+            $quantity           = $orderProduct['quantity'];
+            $weightValueData    = $mapGoodsSpecValue[$goodsId]['weight_value_data'];
+            $produceOrderInfo['count_quantity'] += $quantity;
+            $produceOrderInfo['count_weight']   += $quantity * $weightValueData;
+        }
+        // 供应商信息
+        $supplierId         = $produceOrderInfo['supplier_id'];
+        $supplierInfo       = Supplier_Info::getById($supplierId);
+        // 销售订单信息
+        $salesOrderId       = $produceOrderInfo['sales_order_id'];
+        $salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
+        // 客户信息
+        $customerId         = $salesOrderInfo['customer_id'];
+        $customerInfo       = Customer_Info::getById($customerId);
+        // 用户信息
+        $listUserInfo       = User_Info::listAll();
+        $mapUserInfo        = ArrayUtility::indexByField($listUserInfo, 'user_id', 'username');
+        // 分类信息
+        $listCategoryInfo   = Category_Info::listAll();
+        $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
+        // 款式信息
+        $listStyleInfo      = Style_Info::listAll();
+        $mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
+
+        $condition['produce_order_id']  = $produceOrderId;
+        $condition['delete_status']     = Produce_Order_DeleteStatus::NORMAL;
+        $condition['list_product_id']   = $listProductId;
+        $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
+
+        // 分页
+        $page               = new PageList(array(
+            PageList::OPT_TOTAL     => Produce_Order_Product_List::countByCondition($condition),
+            PageList::OPT_URL       => '',
+            PageList::OPT_PERPAGE   => $perpage,
+        ));
+
+        $listOrderDetail    = Produce_Order_Product_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
+
+        foreach ($listOrderDetail as &$detail) {
+
+            $goodsId        = $detail['goods_id'];
+            $productId      = $detail['product_id'];
+            $categoryId     = $detail['category_id'];
+            $childStyleId   = $detail['style_id'];
+            $parentStyleId  = $mapStyleInfo[$childStyleId]['parent_id'];
+            $detail['category_name']        = $mapCategoryInfo[$categoryId]['category_name'];
+            $detail['parent_style_name']    = $mapStyleInfo[$parentStyleId]['style_name'];
+            $detail['child_style_name']     = $mapStyleInfo[$childStyleId]['style_name'];
+            $detail['weight_value_data']    = $mapGoodsSpecValue[$goodsId]['weight_value_data'];
+            $detail['size_value_data']      = $mapGoodsSpecValue[$goodsId]['size_value_data'];
+            $detail['color_value_data']     = $mapGoodsSpecValue[$goodsId]['color_value_data'];
+            $detail['material_value_data']  = $mapGoodsSpecValue[$goodsId]['material_value_data'];
+            $detail['spu_list']             = $mapGoodsSpuList[$goodsId];
+            $detail['image_url']            = $mapProductImage[$productId]['image_url'];
     
+            $detail['order_weight']         = $mapGoodsSpecValue[$goodsId]['weight_value_data'] * $indexProductId[$productId]['quantity'];
+            $detail['order_quantity']       = $indexProductId[$productId]['quantity'];
+            $detail['short_quantity']       = $indexProductId[$productId]['short_quantity'];
+            $detail['short_weight']         = $indexProductId[$productId]['short_weight'];
+            $detail['storage_weight']       = $detail['order_weight'] - $indexProductId[$productId]['short_weight'];
+            $detail['storage_quantity']     = $indexProductId[$productId]['quantity'] - $indexProductId[$productId]['short_quantity'];
+            $detail['short_ratio']          = sprintf('%.4f',($indexProductId[$productId]['short_quantity'])/($indexProductId[$productId]['quantity']));
+
+            $listIsArrive[] = $detail['is_arrive'];
+        }
+
+        $data['produceOrderInfo']   = $produceOrderInfo;
+        $data['supplierInfo']       = $supplierInfo;
+        $data['customerInfo']       = $customerInfo;
+        $data['mapUserInfo']        = $mapUserInfo;
+        $data['listOrderDetail']    = $listOrderDetail;
+        $data['pageViewData']       = $page->getViewData();
+        $data['mapOrderType']       = Produce_Order_Type::getOrderType();        
+
+        $numberRow = 1;
+        foreach ($listOrderDetail as $offsetInfo => $goodsInfo) {
+            
+            $numberRow++;
+            $goodsId    = $goodsInfo['goods_id'];
+            $goodsInfo['image_url']     = $goodsInfo['image_url'];
+            $goodsInfo['refund_quantity']   = $refundQuantity;
+            $goodsInfo['refund_weight']     = $refundWeight;
+            $row        = self::_getExcelRow($goodsInfo,$data);
+
+            self::_saveExcelRow($sheet, $numberRow, array_values($row));
+            $draw       = self::_appendExcelImage($sheet, $numberRow, $row, $goodsInfo['image_url']);
+
+            if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
+                
+                $imageWidth = $draw->getWidth();
+                $maxWidth   = $maxWidth < $imageWidth   ? $imageWidth   : $maxWidth; 
+                $sheet->getRowDimension($numberRow)->setRowHeight($draw->getHeight() * (3 / 4));
+                
+            }
+        }
+        $listDraw[] = $draw;
+        if ($maxWidth > 0) {
+        
+            $sheet->getColumnDimension('A')->setWidth($maxWidth / 7.2);
+        }
+        $writer   = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $writer->save($stream);
+
+        return $filePath;
+        
+    }
+    
+    /**
+      * 获取文件路径
+      *
+      */
+    static  public  function getFilePathByBorrowId ($orderId) {
+
+        $year       = date('Y');
+        $month      = date('m');
+        
+        return  $year .'/' . $month .'/'. $orderId. '.xlsx';
+    }
+    
+    /**
+     *
+     */
+    static private function _getExcelRow(array $info,array $data) {
+
+        return  array(
+            'image_url'             => '',
+            'product_sn'            => $info['product_sn'],
+            'goods_sn'              => $info['goods_sn'],
+            'spu_sn'                => implode(',',ArrayUtility::listField($info['spu_list'],'spu_sn')),
+            'source_code'           => $info['source_code'],
+            'categoryLv3'           => $info['category_name'],
+            'parentStyleName'       => $info['parent_style_name'],
+            'childStyleName'        => $info['child_style_name'],
+            'material_value_data'   => $info['material_value_data'],
+            'color_value_data'      => $info['color_value_data'],
+            'weight_value_data'     => $info['weight_value_data'],
+            'size_value_data'       => $info['size_value_data'],
+            'quantity'              => $info['order_quantity'],
+            'weight'                => $info['order_weight'],
+            'storage_weight'        => $info['storage_weight'],
+            'storage_quantity'      => $info['storage_quantity'],
+            'short_quantity'        => $info['short_quantity'],
+            'short_weight'          => $info['short_weight'],
+            'short_ratio'           => ($info['short_ratio']*100).'%',
+        );
+    }
+        
+    static private function _appendExcelImage ($sheet, $numberRow, array $row, $imagePath) {
+
+        if (empty($imagePath)) {
+
+            return  ;
+        }
+
+        if(!@fopen( $imagePath, 'r' ) ) 
+        { 
+            return ;
+        }
+
+        $coordinate = $sheet->getCellByColumnAndRow(0, $numberRow)->getCoordinate();
+        $draw       = self::_loadImage($imagePath);
+
+        if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
+
+            $draw->setWorksheet($sheet);
+            $draw->setCoordinates($coordinate);
+
+            return      $draw;
+        }
+    }
+    
+    
+    static private function _loadImage ($path) {
+
+        $info   = getimagesize($path);
+
+        switch ($info['mime']) {
+            case    'image/jpeg'    :
+                $image  = imagecreatefromjpeg($path);
+                break;
+
+            case    'image/png'     :
+                $image  = imagecreatefrompng($path);
+                break;
+
+            case    'image/gif'     :
+                $image  = imagecreatefromgif($path);
+                break;
+
+            default :
+                return  ;
+        }
+        // 更改图像资源大小
+        $height = 150;
+        $image = self::_resizeImage($image, $height);
+
+        $draw   = new PHPExcel_Worksheet_MemoryDrawing();
+        $draw->setImageResource($image);
+        $draw->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+        $draw->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+
+        return  $draw;
+    }
+    
+    
+    /**
+     * 重置图像资源大小
+     *
+     * @param  resource  $srcImage  源图像资源
+     * @param  int       $dstHeight 更改后的图像资源高度
+     * @return resource  $dstImage  更改后的图像资源
+     */
+    static private function _resizeImage ($srcImage, $dstHeight) {
+        $srcWidth = imagesx($srcImage);
+        $srcHeight = imagesy($srcImage);
+        if ($srcHeight <= $dstHeight) {
+
+            return $srcImage;
+        }
+        # 重新生成图像资源
+        $dstWidth = ($dstHeight/$srcHeight)*$srcWidth;
+        $dstImage = imagecreatetruecolor($dstWidth, $dstHeight);
+        imagecopyresized($dstImage, $srcImage, 0, 0, 0, 0, $dstWidth, $dstHeight, $srcWidth, $srcHeight);
+        return $dstImage;
+    }
+    
+    static private function _saveExcelRow ($sheet, $rowNumber, $listCell) {
+
+        foreach ($listCell  as $cellOffset => $cellValue) {
+
+            $sheet->setCellValueByColumnAndRow($cellOffset, $rowNumber, $cellValue);
+        }
+    }
     
 }   

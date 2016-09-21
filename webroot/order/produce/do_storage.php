@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 脚本 生成退货单
+ * 入库
  */
 require_once dirname(__FILE__).'/../../../init.inc.php';
 
@@ -51,6 +51,21 @@ foreach($arriveProductInfo as $key=>$info){
     $amount[] = sprintf('%.2f',$info['storage_weight']*($auPrice+$indexProductId[$info['product_id']]['product_cost']));
 }
 
+$produceOrderProductInfo        = Produce_Order_Product_Info::getByProduceOrderId($produceOrderId);
+$indexProductIdProduceOrder     = ArrayUtility::indexByField($produceOrderProductInfo,'product_id');
+
+foreach($arriveProductInfo as $key=>$info){
+
+    $shortQuantity  = $indexProductIdProduceOrder[$info['product_id']]['short_quantity'] - $info['storage_quantity'];
+    $shortWeight    = $indexProductIdProduceOrder[$info['product_id']]['short_weight'] - $info['storage_weight'];
+    $shortQuantity  = $shortQuantity > 0 ? $shortQuantity : 0 ;
+    Produce_Order_Product_Info::update(array(
+        'produce_order_id'      => $produceOrderId,
+        'product_id'            => $info['product_id'],
+        'short_quantity'        => $shortQuantity,
+        'short_weight'          => $shortWeight,
+    ));
+}
 Produce_Order_Arrive_Info::update(array(
     'produce_order_arrive_id'   => $arriveId,
     'transaction_amount'        => array_sum($amount),

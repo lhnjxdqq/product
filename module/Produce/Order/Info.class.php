@@ -19,7 +19,7 @@ class   Produce_Order_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'produce_order_id,produce_order_sn,produce_order_remark,sales_order_id,supplier_id,prepaid_amount,arrival_date,order_type,create_user,verify_user,batch_code,status_code,delete_status,create_time,update_time';
+    const   FIELDS      = 'produce_order_id,produce_order_sn,produce_order_remark,sales_order_id,supplier_id,prepaid_amount,arrival_date,order_type,create_user,verify_user,batch_code,status_code,delete_status,create_time,update_time,update_shortage_status,shortage_file_path';
     /**
      * 新增
      *
@@ -60,6 +60,19 @@ class   Produce_Order_Info {
         return  self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
+    /**
+     * 根据缺货单更新状态 查询生产订单
+     *
+     * @param $salesOrderId 销售订单ID
+     * @return array
+     */
+    static public function getByUpdateShortageStatus ($updateShortageStatus) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `update_shortage_status` = "' . (int) $updateShortageStatus . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+    
     /**
      * 根据销售订单ID 查询生产订单
      *

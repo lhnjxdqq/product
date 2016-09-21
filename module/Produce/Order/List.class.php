@@ -183,7 +183,8 @@ SELECT
   `poi`.`produce_order_id`,
   `popi`.`product_id`,
   `popi`.`quantity`,
-  `pi`.`goods_id`
+  `pi`.`goods_id`,
+  `popi`.`short_quantity`
 FROM
   `produce_order_info` AS `poi`
 LEFT JOIN

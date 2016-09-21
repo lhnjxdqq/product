@@ -14,6 +14,13 @@ if (!$_POST['order-type']) {
 $salesOrderId       = (int) $_POST['sales-order-id'];
 $supplierId         = (int) $_POST['supplier-id'];
 $produceOrderCart   = Produce_Order_Cart::getBySalesOrderAndSupplier($salesOrderId, $supplierId);
+$listProductId      = ArrayUtility::listField($produceOrderCart,'product_id');
+$productInfo        = Product_Info::getByMultiId($listProductId);
+$indexProductId     = ArrayUtility::indexByField($productInfo,'product_id','goods_id');
+$listGoodsId        = ArrayUtility::listField($productInfo,'goods_id');
+// SKU规格 规格值
+$listGoodsSpecValue     = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
+$mapGoodsSpecValue      = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
 
 if (!$produceOrderCart) {
 
@@ -42,6 +49,8 @@ if ($produceOrderId) {
             'product_id'        => $item['product_id'],
             'quantity'          => $item['quantity'],
             'remark'            => $item['remark'],
+            'short_quantity'    => $item['quantity'],
+            'short_weight'      => sprintf('%.2f',$item['quantity'] * $mapGoodsSpecValue[$indexProductId[$item['product_id']]]['weight_value_data']),
         );
         Produce_Order_Product_Info::create($data);
     }

@@ -19,7 +19,7 @@ class   Produce_Order_Product_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'produce_order_id,product_id,quantity,remark,delete_status,create_time,update_time';
+    const   FIELDS      = 'produce_order_id,product_id,quantity,remark,delete_status,create_time,update_time,short_quantity,short_weight';
     /**
      * 新增
      *
@@ -69,6 +69,19 @@ class   Produce_Order_Product_Info {
     static public function getByProduceOrderId ($produceOrderId) {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据生产订单ID查询 产品列表
+     *
+     * @param $produceOrderId
+     * @return array
+     */
+    static public function getShortByProduceOrderId ($produceOrderId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '" AND short_quantity >0';
 
         return  self::_getStore()->fetchAll($sql);
     }
