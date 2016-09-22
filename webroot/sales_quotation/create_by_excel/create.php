@@ -51,15 +51,26 @@ foreach ($listCartData as &$cartData) {
     $cartData['map_spu_list']   = ArrayUtility::indexByField($spuListField, 'spuId');
     unset($cartData);
 }
+$listSpuInfo        = array();
+$mapCartInfo        = Sales_Quotation_Spu_Cart::getByUserId($_SESSION['user_id']);
+$listSpuInfo        = ArrayUtility::listField($mapCartInfo,'spu_list');
+$spuCount   = 0;
+foreach($listSpuInfo as $info){
+    
+    $spuInfo    = json_decode($info,true);
+    $spuCount   += count($spuInfo);
+}
 
 $listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorValueId);
 $mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo, 'spec_value_id', 'spec_value_data');
 
+$pageViewData               = $page->getViewData();
+$pageViewData['total']      = $spuCount;
 $template = Template::getInstance();
 $template->assign('mainMenu', Menu_Info::getMainMenu());
-$template->assign('countCartData', $countCartData);
+$template->assign('spuCount', $spuCount);
 $template->assign('listCustomerInfo', $listCustomerInfo);
 $template->assign('listCartData', $listCartData);
 $template->assign('mapColorSpecValueInfo', $mapColorSpecValueInfo);
-$template->assign('pageViewData', $page->getViewData());
+$template->assign('pageViewData', $pageViewData);
 $template->display('sales_quotation/create_by_excel/create.tpl');

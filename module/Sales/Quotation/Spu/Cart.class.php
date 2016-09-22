@@ -181,6 +181,20 @@ class   Sales_Quotation_Spu_Cart {
     }
 
     /**
+     * 根据用户Id获取数据
+     *
+     * @param $userId       用户ID
+     * @return array
+     */
+    static public function getByUserId ($userId) {
+        
+        Validate::testNull($userId,'用户ID不能为空');
+        
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `user_id` = ' . (int) $userId ;
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据主键删除数据
      *
      * @param $userId       用户ID
