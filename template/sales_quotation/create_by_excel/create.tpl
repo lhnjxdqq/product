@@ -54,7 +54,7 @@
                 <div class="box-header">
                     <input type="checkbox" name="select-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="del-spu-multi"><i class="fa fa-trash-o"></i> 批量删除</a>
-                    <a href="javascript:void(0);" class="btn btn-default btn-sm">共计<span class="text text-success"><{$countCartData}></span>款产品</a>
+                    <a href="javascript:void(0);" class="btn btn-default btn-sm">共计<span class="text text-success"><{$pageViewData.total}></span>款产品</a>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
