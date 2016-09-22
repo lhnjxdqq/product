@@ -89,7 +89,7 @@
                                     <td><{$spuDetail.spu_name}></td>
                                     <td>
                                         <a href="<{$spuDetail.image_url|default:'/images/product_default.png'}>" target="_blank">
-                                            <img src="<{$spuDetail.image_url|default:'/images/product_default.png'}>" height="60">
+                                            <img src="<{$spuDetail.image_url|default:'/images/product_default.png'}>" class='act-zoom' height="60">
                                         </a>
                                     </td>
                                     <td><{$sourceDetail.source_code}></td>
@@ -252,6 +252,20 @@
         $('#list-chart-data input').prop('checked', $(this).prop('checked') );
     });
 
+    $('.act-zoom').popover({
+        html        : true,
+        trigger     : 'hover',
+        placement   : 'right',
+        container   : 'body',
+        template    : '<div class="popover" role="tooltip" style="min-width:350px;"><div class="arrow"></div><div class="popover-content"></div></div>',
+        content     : function () {
+
+            var width   = 320,
+                height  = width * $(this).height() / 100;
+            return  '<img width="'+width+'" height="'+height+'" src="' + $(this).attr('src') + '" />';
+        }
+    });
+    
     // 批量删除
     $('#del-spu-multi').click(function () {
 
