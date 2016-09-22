@@ -91,7 +91,7 @@
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
-                                    <td><img src="<{$item.image_url|default:'/images/spu_default.png'}>" class='width-100' alt="..."></td>
+                                    <td><img  src="<{$item.image_url|default:'/images/spu_default.png'}>" class='width-100 act-zoom' alt="..."></td>
                                     <td><{$item.source_id}></td>
                                     <td><{$item.category_name}></td>
                                     <td><{$item.weight_value}></td>
@@ -266,6 +266,21 @@ $(function(){
         
             return false;
     });
+    
+    $('.act-zoom').popover({
+        html        : true,
+        trigger     : 'hover',
+        placement   : 'right',
+        container   : 'body',
+        template    : '<div class="popover" role="tooltip" style="min-width:350px;"><div class="arrow"></div><div class="popover-content"></div></div>',
+        content     : function () {
+
+            var width   = 320,
+                height  = width * $(this).height() / 100;
+            return  '<img width="'+width+'" height="'+height+'" src="' + $(this).attr('src') + '" />';
+        }
+    });
+    
 });
 $(document).ready(function() { 
     
