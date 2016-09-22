@@ -89,7 +89,7 @@
                                     <td><{$spuDetail.spu_name}></td>
                                     <td>
                                         <a href="<{$spuDetail.image_url|default:'/images/product_default.png'}>" target="_blank">
-                                            <img src="<{$spuDetail.image_url|default:'/images/product_default.png'}>" class='act-zoom' height="60">
+                                            <img src="<{$spuDetail.image_url|default:'/images/product_default.png'}>" class='act-zoom width-100'">
                                         </a>
                                     </td>
                                     <td><{$sourceDetail.source_code}></td>
