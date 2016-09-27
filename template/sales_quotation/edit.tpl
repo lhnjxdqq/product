@@ -87,7 +87,7 @@
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                               
-                                <tr class="<{if $item.is_exist eq 1}>bg-success<{/if}>">
+                                <tr class="<{if $item.is_exist eq 1}>bg-success<{/if}><{if $item.is_red eq 1}>danger<{/if}>">
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
@@ -296,7 +296,7 @@ $(document).ready(function() {
         "bFilter": false, //过滤功能
         "bInfo"  : false,//页脚信息
         "bPaginate": false, //翻页功能
-        "aaSorting": [ [1,'asc'] ],
+        "aaSorting": [ [0,'asc'] ],
         "aoColumnDefs": [ { "bSortable": false, "aTargets": str }]
     });
 });

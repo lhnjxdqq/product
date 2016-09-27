@@ -390,6 +390,7 @@ SQL;
                 'color_cost'    => json_encode($rowData['color_cost']),
                 'spu_list'      => json_encode($spuListField),
                 'is_red_bg'     => $isRedBackground,
+                'spu_quantity'  => count($spuListField),
             );
             if ($spuListField) {
 

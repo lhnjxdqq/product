@@ -55,6 +55,7 @@ $updateData     = array(
     'user_id'       => $userId,
     'source_code'   => $sourceCode,
     'spu_list'      => json_encode($spuList),
+    'spu_quantity'  => count($spuList),
 );
 
 Sales_Quotation_Spu_Cart::update($updateData);

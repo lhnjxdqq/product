@@ -54,9 +54,30 @@ if(is_numeric($customerId) && !empty($customerId)){
         }
     }
 }
+$listSpuId                  = ArrayUtility::listField($listCartInfo,'spu_id');
+$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+$mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'source_code');
 
 foreach($listCartInfo as $cartSpuId => $info){
- 
+
+    $identicalSourceCodeSpuNum  = 1;
+    foreach($mapSpuSourceCode as $sourceCode => $sourceInfo){
+        
+        if($identicalSourceCodeSpuNum > 1){
+            
+            break;
+        }
+        foreach($sourceInfo as $sourceSpuId){
+            
+            if($sourceSpuId['spu_id'] == $info['spu_id']){
+                
+                $identicalSourceCodeSpuNum  = count($mapSpuSourceCode[$sourceCode]);   
+                
+                break;
+            }
+        }
+    }
+
     if(!empty($indexCartColorId[$info['spu_id']])){
         
         foreach($indexCartColorId[$info['spu_id']]['color'] as $colorId => $cost){
@@ -68,11 +89,12 @@ foreach($listCartInfo as $cartSpuId => $info){
             if(!empty($cost)){
                  
                 $content = array(
-                    'sales_quotation_id'    => $salesQuotationId,
-                    'spu_id'                => $info['spu_id'],
-                    'cost'                  => $cost,
-                    'color_id'              => $colorId,
-                    'sales_quotation_remark'=> $indexCartColorId[$info['spu_id']]['sales_quotation_remark'][$info['spu_id']],
+                    'sales_quotation_id'            => $salesQuotationId,
+                    'spu_id'                        => $info['spu_id'],
+                    'cost'                          => $cost,
+                    'color_id'                      => $colorId,
+                    'sales_quotation_remark'        => $indexCartColorId[$info['spu_id']]['sales_quotation_remark'][$info['spu_id']],
+                    'identical_source_code_spu_num' => $identicalSourceCodeSpuNum,
                 );
                 Sales_Quotation_Spu_Info::create($content);
             }      
@@ -88,11 +110,12 @@ foreach($listCartInfo as $cartSpuId => $info){
             if(!empty($cost)){
                  
                 $content = array(
-                    'sales_quotation_id'    => $salesQuotationId,
-                    'spu_id'                => $info['spu_id'],
-                    'cost'                  => $cost,
-                    'color_id'              => $colorId,
-                    'sales_quotation_remark'=> $info['remark'],
+                    'sales_quotation_id'            => $salesQuotationId,
+                    'spu_id'                        => $info['spu_id'],
+                    'cost'                          => $cost,
+                    'color_id'                      => $colorId,
+                    'sales_quotation_remark'        => $info['remark'],
+                    'identical_source_code_spu_num' => $identicalSourceCodeSpuNum,
                 );
                 Sales_Quotation_Spu_Info::create($content);
             }      

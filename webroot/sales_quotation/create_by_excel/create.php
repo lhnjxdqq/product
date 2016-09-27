@@ -8,7 +8,8 @@ $conditionCart  = array(
     'user_id'   => (int) $_SESSION['user_id'],
 );
 $sortBy         = array(
-    'source_code'   => 'ASC',
+    'is_red_bg'         => 'DESC',
+    'spu_quantity'      => 'DESC',
 );
 
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : '100';
@@ -53,13 +54,8 @@ foreach ($listCartData as &$cartData) {
 }
 $listSpuInfo        = array();
 $mapCartInfo        = Sales_Quotation_Spu_Cart::getByUserId($_SESSION['user_id']);
-$listSpuInfo        = ArrayUtility::listField($mapCartInfo,'spu_list');
-$spuCount   = 0;
-foreach($listSpuInfo as $info){
-    
-    $spuInfo    = json_decode($info,true);
-    $spuCount   += count($spuInfo);
-}
+
+$spuCount           = array_sum(ArrayUtility::listField($mapCartInfo,'spu_quantity'));
 
 $listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorValueId);
 $mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo, 'spec_value_id', 'spec_value_data');

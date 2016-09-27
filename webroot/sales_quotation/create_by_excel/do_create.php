@@ -41,12 +41,15 @@ foreach ($listCartData as $cartData) {
     foreach ($spuListField as $spuCost) {
 
         foreach ($spuCost['mapColorCost'] as $colorValueId => $colorCost) {
+            
             $salesQuotationSpuData = array(
-                'sales_quotation_id'        => $salesQuotationId,
-                'spu_id'                    => $spuCost['spuId'],
-                'cost'                      => $colorCost,
-                'color_id'                  => $colorValueId,
-                'sales_quotation_remark'    => $spuCost['remark'],
+                'sales_quotation_id'            => $salesQuotationId,
+                'spu_id'                        => $spuCost['spuId'],
+                'cost'                          => $colorCost,
+                'color_id'                      => $colorValueId,
+                'sales_quotation_remark'        => $spuCost['remark'],
+                'is_red_bg'                     => $cartData['is_red_bg'],
+                'identical_source_code_spu_num' => $cartData['spu_quantity'],
             );
             Sales_Quotation_Spu_Info::create($salesQuotationSpuData);
         }

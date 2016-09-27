@@ -37,7 +37,10 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($sa
 $listCustomer       = Customer_Info::listAll();
 $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
 
-$orderBy                = array();
+$orderBy                = array(
+    'is_red_bg'                          => 'DESC',
+    'identical_source_code_spu_num'      => 'DESC',
+);
 $perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $condition['sales_quotation_id']   = $salesQuotationId;
 $group              = 'spu_id'; 
@@ -48,8 +51,9 @@ $page           = new PageList(array(
     PageList::OPT_URL       => '/sales_quotation/edit.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
-$listQuotationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
-$listSpuId              = ArrayUtility::listField($listQuotationSpuInfo,'spu_id');
+$listQuotationSpuInfo       = Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
+$listSpuId                  = ArrayUtility::listField($listQuotationSpuInfo,'spu_id');
+$indexSpuIdRed              = ArrayUtility::indexByField($listQuotationSpuInfo,'spu_id','is_red_bg');
 
 //获取颜色工费和备注
 $indexCartColorId   = array();
@@ -62,7 +66,13 @@ foreach($spuInfo as $spuId=>$info){
     $indexCartColorId[$spuId]['sales_quotation_remark'] = ArrayUtility::indexByField($info, 'spu_id', 'sales_quotation_remark');
 }
 
-$listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
+$mapSpuInfo     = ArrayUtility::indexByField(Spu_Info::getByMultiId($listSpuId),'spu_id');
+
+foreach($listSpuId as $spuId){
+
+    $listSpuInfo[] = $mapSpuInfo[$spuId];
+}
+
 //获取SPU数量
 $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
@@ -266,6 +276,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     }
     $listSpuInfo[$key]['source_id'] = $sourceId[$spuInfo['spu_id']];
     $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
+    $listSpuInfo[$key]['is_red']    = $indexSpuIdRed[$spuInfo['spu_id']];
 }
 
 $template       = Template::getInstance();
