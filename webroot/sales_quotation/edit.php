@@ -96,7 +96,6 @@ $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
 $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
 $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
 
-
 // 查所当前所有SPU的商品 商品信息 规格和规格值
 $allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
 $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');

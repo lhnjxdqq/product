@@ -43,11 +43,73 @@ $slaesQuotation = array(
     );
     
 Sales_Quotation_Info::update($slaesQuotation);
+$listSpuId    = array_keys($data);
+
+// 查询SPU下的商品
+$listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
+$groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
+$listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
+
+//属性列表
+$listSpecInfo       = Spec_Info::listAll();
+$listSpecInfo       = ArrayUtility::searchBy($listSpecInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+$mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
+
+// 查所当前所有SPU的商品 商品信息 规格和规格值
+$allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
+$mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
+$allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listAllGoodsId);
+$mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
+
+$specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+$specColorId          = $specColorInfo['color'];
+
+$spuCost    = array();
+$mapSpuSalerCostByColor = array();
+foreach ($groupSpuGoods as $spuId => $spuGoods) {
+
+    $mapColor   = array();
+    foreach ($spuGoods as $goods) {
+
+        $goodsId        = $goods['goods_id'];
+        $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+
+        foreach ($goodsSpecValue as $key => $val) {
+
+            if($val['spec_id'] == $specColorId) {
+                
+                $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+            }
+        }
+    }
+   
+    $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
+    $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
+
+    foreach($mapColor as $spuIdKey => $colorInfo){
+
+        foreach($colorInfo as $colorId => $cost){
+            
+            rsort($cost);
+            $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+        }
+    }
+}
 
 foreach($data as $spuId => $colorCost){
     
     $remark = $colorCost['spu_remark'];
     unset($colorCost['spu_remark']);
+    
+    $isRed = '0';
+    foreach($colorCost as $colorId => $cost){
+        
+        if($mapColorInfo[$spuId][$colorId] > $cost){
+            
+            $isRed = 1;
+        }
+    }
+
     foreach($colorCost as $colorId => $cost){
         
         if(!is_numeric($cost)){
@@ -62,6 +124,7 @@ foreach($data as $spuId => $colorCost){
                 'cost'                  => $cost,
                 'color_id'              => $colorId,
                 'sales_quotation_remark'=> $remark,
+                'is_red_bg'             => $isRed,
             );       
             Sales_Quotation_Spu_Info::update($content);
         }      
