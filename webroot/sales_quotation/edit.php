@@ -54,6 +54,7 @@ $page           = new PageList(array(
 $listQuotationSpuInfo       = Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
 $listSpuId                  = ArrayUtility::listField($listQuotationSpuInfo,'spu_id');
 $indexSpuIdRed              = ArrayUtility::indexByField($listQuotationSpuInfo,'spu_id','is_red_bg');
+$indexSpuIdSource           = ArrayUtility::indexByField($listQuotationSpuInfo,'spu_id','identical_source_code_spu_num');
 
 //获取颜色工费和备注
 $indexCartColorId   = array();
@@ -271,14 +272,23 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             }else{
                 $listSpuInfo[$key]['color'][$colorId] = "-";
             }
-                    
         }
     }
-    $listSpuInfo[$key]['source_id'] = $sourceId[$spuInfo['spu_id']];
-    $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
-    $listSpuInfo[$key]['is_red']    = $indexSpuIdRed[$spuInfo['spu_id']];
+    $listSpuInfo[$key]['source_id']     = $sourceId[$spuInfo['spu_id']];
+    $listSpuInfo[$key]['image_url']     = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
+    $listSpuInfo[$key]['is_red']        = $indexSpuIdRed[$spuInfo['spu_id']];
+    $listSpuInfo[$key]['source_code_num']   = $indexSpuIdSource[$spuInfo['spu_id']];
 }
-
+foreach($listSpuInfo as $key => $info){
+    
+    $sortIsRed[$key]          = $info['is_red'];
+    $sortSourceId[$key]       = $info['source_id'];
+    $sortSourceCodeNum[$key]  = $info['source_code_num'];
+}
+if(!empty($listSpuInfo)){
+ 
+    array_multisort($sortIsRed,SORT_DESC,$sortSourceId,SORT_DESC,$sortSourceCodeNum,SORT_ASC,$listSpuInfo);   
+}
 $template       = Template::getInstance();
 
 $template->assign('listCustomer', $listCustomer);
