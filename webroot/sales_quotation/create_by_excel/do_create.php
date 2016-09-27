@@ -101,7 +101,7 @@ foreach ($listCartData as $cartData) {
         $isRed = '0';
         foreach ($spuCost['mapColorCost'] as $colorValueId => $colorCost) {
             
-            if($mapColorInfo[$spuId][$colorId] > $colorCost){
+            if($mapColorInfo[$spuCost['spuId']][$colorId] > $colorCost){
             
                 $isRed = 1;
             }   
