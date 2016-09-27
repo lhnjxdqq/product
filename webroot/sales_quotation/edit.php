@@ -286,7 +286,7 @@ foreach($listSpuInfo as $key => $info){
 }
 if(!empty($listSpuInfo)){
  
-    array_multisort($sortIsRed,SORT_DESC,$sortSourceId,SORT_DESC,$sortSourceCodeNum,SORT_ASC,$listSpuInfo);   
+    array_multisort($sortIsRed,SORT_DESC,$sortSourceCodeNum,SORT_DESC,$sortSourceId,SORT_DESC,$listSpuInfo);   
 }
 $rowNum     = 0;
 $sourceCode = '';
