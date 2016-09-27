@@ -94,17 +94,19 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
 foreach ($listCartData as $cartData) {
 
+    
     $spuListField           = json_decode($cartData['spu_list'], true);
     foreach ($spuListField as $spuCost) {
-
+        
         $isRed = '0';
         foreach ($spuCost['mapColorCost'] as $colorValueId => $colorCost) {
             
-            if($mapColorInfo[$spuId][$colorId] > $cost){
+            if($mapColorInfo[$spuId][$colorId] > $colorCost){
             
-            $isRed = 1;
+                $isRed = 1;
+            }   
         }
-        }
+
         foreach ($spuCost['mapColorCost'] as $colorValueId => $colorCost) {
             
             $salesQuotationSpuData = array(
