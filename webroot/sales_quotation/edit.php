@@ -289,8 +289,19 @@ if(!empty($listSpuInfo)){
  
     array_multisort($sortIsRed,SORT_DESC,$sortSourceId,SORT_DESC,$sortSourceCodeNum,SORT_ASC,$listSpuInfo);   
 }
+$rowNum     = 0;
+$sourceCode = '';
+foreach($listSpuInfo as &$info){
+    
+    if($sourceCode != $info['source_id']){
+     
+        $sourceCode = $info['source_id'];
+    
+        $rowNum++;
+    }
+    $info['row_num']   = $rowNum;
+}
 $template       = Template::getInstance();
-
 $template->assign('listCustomer', $listCustomer);
 $template->assign('countSpu',$countSpu);
 $template->assign('plusPrice',$salesQuotationMarkupRule);
