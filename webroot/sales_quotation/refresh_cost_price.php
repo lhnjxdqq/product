@@ -99,6 +99,7 @@ if($plusPrice>0){
             'markup_rule'          => (float) $plusPrice,
             'run_status'           => Product_Export_RunStatus::STANDBY,
     );
+    
+    Sales_Quotation_Info::update($salesQuotation);
 }
-Sales_Quotation_Info::update($salesQuotation);
 Utility::redirect($_SERVER['HTTP_REFERER']);
