@@ -195,7 +195,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             $unifiedCost  = '';
         }else{
             
-            $unifiedCost  = current($costNumber);
+            $unifiedCost  = end($costNumber);
     }
     $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
     foreach($mapSpecColorId as $colorId=>$colorName){

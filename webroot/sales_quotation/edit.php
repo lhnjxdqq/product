@@ -280,14 +280,14 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             unset($costNumber[$colorId]);
         }
     }
-
     if(count($costNumber)>1){
 
         $unifiedCost  = '';
     }else{
         
-        $unifiedCost  = current($costNumber);
+        $unifiedCost  = end($costNumber);
     }
+    
     $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
 
     $listSpuInfo[$key]['source_id']     = $sourceId[$spuInfo['spu_id']];

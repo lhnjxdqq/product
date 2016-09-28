@@ -102,7 +102,7 @@
                                         <div class="input-group">
                                           <input type="text" style="width: 66px;" value='<{$spuDetail.unified_cost}>' name='cost' class="form-control input-cost">
                                           <span class="input-group-btn">
-                                            <button class="btn edit-cost <{if $spuDetail.unified_cost !=''}> btn-default disabled<{else}> btn-primary <{/if}>" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>" type="button"><i class='glyphicon glyphicon-ok'></i></button>
+                                            <button class="btn edit-cost sourcecode-<{$sourceDetail.source_code}>-<{$spuDetail.spu_id}> btn-default disabled" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>" type="button"><i class='glyphicon glyphicon-ok'></i></button>
                                           </span>
                                         </div>
                                     </td>
@@ -209,7 +209,9 @@
         var spuId           = parentTR.find('.del-spu-single').attr('spuid');
         var colorValueId    = $(this).attr('colorvalueid');
         var colorCost       = $(this).val();
-
+        $('.sourcecode-'+sourceCode+'-'+spuId).removeClass('disabled');
+        $('.sourcecode-'+sourceCode+'-'+spuId).removeClass('btn-default');
+        $('.sourcecode-'+sourceCode+'-'+spuId).addClass('btn-primary');
         $.ajax({
             url: '/sales_quotation/create_by_excel/change_color_cost.php',
             type: 'POST',
@@ -330,11 +332,14 @@
     $('.input-cost').change(function(){
         
         $button = $(this).siblings('.input-group-btn').find('.edit-cost');
-        if(!$button.hasClass('disabled')){
         
-            return false;
+        cost = $(this).val();
+        if(parseFloat(cost) <= 0 || isNaN(cost) || cost == ''){
+            
+                $button.removeClass('disabled');
+                $button.addClass('disabled');
+                return false;
         }
-
         $button.removeClass('btn-default');
         $button.addClass('btn-primary');
         $button.removeClass('disabled');

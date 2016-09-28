@@ -99,12 +99,12 @@
                                         <div class="input-group">
                                           <input type="text" style="width: 66px;" value='<{$item.unified_cost}>' name='cost' class="form-control input-cost">
                                           <span class="input-group-btn">
-                                            <button class="btn edit-cost <{if $item.unified_cost !=''}> btn-default disabled<{else}> btn-primary <{/if}>" spuid="<{$item.spu_id}>" type="button"><i class='glyphicon glyphicon-ok'></i></button>
+                                            <button class="btn edit-cost btn-default disabled spuid-<{$item.spu_id}>" spuid="<{$item.spu_id}>" type="button"><i class='glyphicon glyphicon-ok'></i></button>
                                           </span>
                                         </div>
                                     </td>
                                     <{foreach from = $item.color item=cost key=colorId}>
-                                        <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{if $cost eq '-'}>-"<{else}><{sprintf("%0.2f",$cost)}>" class='cost-<{$item.spu_id}>'<{/if}>></td>
+                                        <td><input type="text" style="width: 50px;" spu-id='<{$item.spu_id}>' name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{if $cost eq '-'}>-"<{else}><{sprintf("%0.2f",$cost)}>" class='spu-price cost-<{$item.spu_id}>'<{/if}>></td>
                                     <{/foreach}>
                                     <td><input type="text" name="<{$item.spu_id}>[spu_remark]" value="<{$item.spu_remark}>"></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
@@ -218,14 +218,24 @@ $(function(){
         return false;
     });
 
+    $('.spu-price').change(function(){
+        
+        spuId   = $(this).attr('spu-id');
+        $('.spuid-'+spuId).removeClass('disabled');
+        $('.spuid-'+spuId).addClass('btn-primary');
+    });
+
     $('.input-cost').change(function(){
         
         $button = $(this).siblings('.input-group-btn').find('.edit-cost');
-        if(!$button.hasClass('disabled')){
-        
-            return false;
+            
+        cost = $(this).val();
+        if(parseFloat(cost) <= 0 || isNaN(cost) || cost == ''){
+            
+                $button.removeClass('disabled');
+                $button.addClass('disabled');
+                return false;
         }
-
         $button.removeClass('btn-default');
         $button.addClass('btn-primary');
         $button.removeClass('disabled');
