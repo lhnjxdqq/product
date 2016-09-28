@@ -70,7 +70,8 @@
                                     <th rowspan="2">规格重量(g)</th>
                                     <th rowspan="2">规格尺寸</th>
                                     <th rowspan="2">主料材质</th>
-                                    <th colspan="<{count($mapColorSpecValueInfo)}>">出货</th>
+                                    <th rowspan="2">统一出货价</th>
+                                    <th colspan="<{count($mapColorSpecValueInfo)}>">出货工费</th>
                                     <th rowspan="2" width="100">备注</th>
                                     <th rowspan="2" width="60">操作</th>
                                 </tr>
@@ -97,10 +98,18 @@
                                     <td><{implode(',', $spuDetail.weight_value_data_list)}></td>
                                     <td><{implode(',', $spuDetail.size_value_data_list)}></td>
                                     <td><{implode(',', $spuDetail.material_value_data_list)}></td>
+                                    <td>
+                                        <div class="input-group">
+                                          <input type="text" style="width: 66px;" value='<{$spuDetail.unified_cost}>' name='cost' class="form-control input-cost">
+                                          <span class="input-group-btn">
+                                            <button class="btn edit-cost <{if $spuDetail.unified_cost !=''}> btn-default disabled<{else}> btn-primary <{/if}>" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>" type="button"><i class='glyphicon glyphicon-ok'></i></button>
+                                          </span>
+                                        </div>
+                                    </td>
                                     <{foreach from=$mapColorSpecValueInfo item=colorValueData key=colorValueId}>
                                     <td>
                                         <{assign var='colorCost' value=$sourceDetail.map_spu_list[$spuDetail.spu_id]['mapColorCost'][$colorValueId]}>
-                                        <input type="text" name="color-cost" colorvalueid="<{$colorValueId}>" class="form-control" style="width: 66px;" value="<{if $colorCost}><{sprintf('%.2f', $colorCost)}><{/if}>"<{if !$sourceDetail.map_color_cost[$colorValueId]}> disabled<{/if}>>
+                                        <input type="text" name="color-cost" colorvalueid="<{$colorValueId}>" class="form-control <{if !$sourceDetail.map_color_cost[$colorValueId]}> disabled<{else}> cost-<{$sourceDetail.source_code}>-<{$spuDetail.spu_id}><{/if}>" style="width: 66px;" value="<{if $colorCost}><{sprintf('%.2f', $colorCost)}><{/if}>">
                                     </td>
                                     <{/foreach}>
                                     <td>
@@ -317,7 +326,58 @@
             }
         });
     });
+    
+    $('.input-cost').change(function(){
+        
+        $button = $(this).siblings('.input-group-btn').find('.edit-cost');
+        if(!$button.hasClass('disabled')){
+        
+            return false;
+        }
 
+        $button.removeClass('btn-default');
+        $button.addClass('btn-primary');
+        $button.removeClass('disabled');
+    });
+    
+    $('.edit-cost').click(function(){
+    
+        if($(this).hasClass('disabled')){
+        
+            return false;
+        }
+        sourceCode  = $(this).attr('sourcecode');
+        spuId       = $(this).attr('spuid');
+        cost        = $(this).parent().siblings("input[name='cost']").val();
+
+        if(parseFloat(cost) <= 0 || isNaN(cost) || cost == ''){
+        
+            alert('出货价不能为空且只能为数字');
+            return false;
+        }
+
+        $.post('/sales_quotation/create_by_excel/edit_spu_cost.php', {
+            source_code  : sourceCode,
+            spu_id       : spuId,
+            cost         : cost,
+            '__output_format'   : 'JSON'
+        }, function (response) {
+
+            if (0 != response.code) {
+
+                showMessage('错误', response.message);
+
+                return  false;
+            }else{
+                $('.cost-'+sourceCode+'-'+spuId).val(cost);
+            }
+            
+        }, 'json');
+
+        $(this).removeClass('btn-primary');
+        $(this).addClass('btn-default');
+        $(this).addClass('disabled');        
+    });
     // 创建报价单
     var createFormSubmitting    = false;
     $('.do-create-btn').click(function () {

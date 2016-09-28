@@ -32,12 +32,25 @@ foreach ($listCartData as &$cartData) {
     $mapColorCost       = json_decode($cartData['color_cost'], true);
     $spuListField       = json_decode($cartData['spu_list'], true);
     $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
+    $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
+    $spuIdCostList      = ArrayUtility::indexByField($spuListField, 'spuId','mapColorCost');
 
+    foreach($spuIdCostList as $spuId =>$cost){
+        
+        $costNumber = array_unique($cost);
+        
+        if(count($costNumber)>1){
+            $unifiedCost[$spuId]  = '';
+        }else{
+            $unifiedCost[$spuId]  = current($costNumber);
+        }
+    }
     $listSpuInfo        = array();
     foreach ($spuIdList as $spuId) {
 
-        $spuInfo        = Common_Spu::getSpuDetailById($spuId);
-        $listSpuInfo[]  = $spuInfo;
+        $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+        $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+        $listSpuInfo[]    = $spuInfo;
     }
 
     $countColorCost     = count($mapColorCost);
@@ -52,6 +65,7 @@ foreach ($listCartData as &$cartData) {
     $cartData['map_spu_list']   = ArrayUtility::indexByField($spuListField, 'spuId');
     unset($cartData);
 }
+
 $listSpuInfo        = array();
 $mapCartInfo        = Sales_Quotation_Spu_Cart::getByUserId($_SESSION['user_id']);
 
