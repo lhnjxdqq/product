@@ -245,13 +245,13 @@ foreach ($listSpuInfo as $key => $spuInfo) {
  
     $listSpuInfo[$key]['color'] = array();
     $listSpuInfo[$key]['is_exist']  = 0; 
-    
+ 
     if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($salesQuotationMarkupRule))){
-        
+
         foreach($mapSpecColorId as $colorId=>$colorName){
                 
             if($indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
-                
+                                
                 $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
                 $listSpuInfo[$key]['spu_remark'] = $indexOldCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
                 $listSpuInfo[$key]['is_exist']  = 1;
@@ -273,11 +273,23 @@ foreach ($listSpuInfo as $key => $spuInfo) {
             }
         }
     }
+    $costNumber = array_unique($listSpuInfo[$key]['color']);
+
+    if(count($costNumber)>1){
+
+        $unifiedCost  = '';
+    }else{
+        
+        $unifiedCost  = current($costNumber);
+    }
+    $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
+
     $listSpuInfo[$key]['source_id']     = $sourceId[$spuInfo['spu_id']];
     $listSpuInfo[$key]['image_url']     = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
     $listSpuInfo[$key]['is_red']        = $indexSpuIdRed[$spuInfo['spu_id']];
     $listSpuInfo[$key]['source_code_num']   = $indexSpuIdSource[$spuInfo['spu_id']];
 }
+
 foreach($listSpuInfo as $key => $info){
     
     $sortIsRed[$key]          = $info['is_red'];

@@ -178,6 +178,24 @@ class   Sales_Quotation_Spu_Info {
 
         return      self::_getStore()->fetchAll($sql);
     }
+    
+    /**
+     * 根据一个报价单ID和一个spuId获取报价单信息
+     *
+     * @param   int     $salesQuotationId    报价单ID
+     * @param   int     $spuId           spuId
+     * @return array    商品信息
+     */
+    static public function getBySalesQuotationIdAndSpuId ($salesQuotationId,$spuId) {
+
+        if(empty($salesQuotationId)|| empty($spuId)){
+            
+            return array();
+        }
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id`='.$salesQuotationId.' AND `spu_id`='.$spuId;
+
+        return      self::_getStore()->fetchAll($sql);
+    }
         
     /**
      * 根据报价单ID删除报价单 
