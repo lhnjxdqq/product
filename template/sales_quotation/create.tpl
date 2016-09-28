@@ -73,6 +73,7 @@
                                     <th rowspan="2">规格重量(g)</th>
                                     <th rowspan="2" style="text-align:center">规格尺寸</th>
                                     <th rowspan="2" style="text-align:center">主料材质</th>
+                                    <th rowspan="2">统一出货价</th>
                                     <th colspan="<{$countColor}>" style="text-align:center">出货工费</th>
                                     <th rowspan="2">备注</th>
                                     <th rowspan="2">操作</th>
@@ -94,8 +95,16 @@
                                     <td><{$item.weight_value}></td>
                                     <td><{$item.size_name}></td>
                                     <td><{$item.material_name}></td>
+                                    <td>
+                                        <div class="input-group">
+                                          <input type="text" style="width: 66px;" value='<{$item.unified_cost}>' name='cost' class="form-control input-cost">
+                                          <span class="input-group-btn">
+                                            <button class="btn edit-cost <{if $item.unified_cost !=''}> btn-default disabled<{else}> btn-primary <{/if}>" spuid="<{$item.spu_id}>" type="button"><i class='glyphicon glyphicon-ok'></i></button>
+                                          </span>
+                                        </div>
+                                    </td>
                                     <{foreach from = $item.color item=cost key=colorId}>
-                                        <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{if $cost eq '-'}>-<{else}><{sprintf("%0.2f",$cost)}><{/if}>"></td>
+                                        <td><input type="text" style="width: 50px;" name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{if $cost eq '-'}>-"<{else}><{sprintf("%0.2f",$cost)}>" class='cost-<{$item.spu_id}>'<{/if}>></td>
                                     <{/foreach}>
                                     <td><input type="text" name="<{$item.spu_id}>[spu_remark]" value="<{$item.spu_remark}>"></td>
                                     <td><a href="/sales_quotation/cart_spu_delete.php?spu_id=<{$item.spu_id}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
@@ -207,6 +216,56 @@ $(function(){
         $("#quotation").submit();
         
         return false;
+    });
+
+    $('.input-cost').change(function(){
+        
+        $button = $(this).siblings('.input-group-btn').find('.edit-cost');
+        if(!$button.hasClass('disabled')){
+        
+            return false;
+        }
+
+        $button.removeClass('btn-default');
+        $button.addClass('btn-primary');
+        $button.removeClass('disabled');
+    });
+    
+    $('.edit-cost').click(function(){
+    
+        if($(this).hasClass('disabled')){
+        
+            return false;
+        }
+        spuId       = $(this).attr('spuid');
+        cost        = $(this).parent().siblings("input[name='cost']").val();
+
+        if(parseFloat(cost) <= 0 || isNaN(cost) || cost == ''){
+        
+            alert('出货价不能为空且只能为数字');
+            return false;
+        }
+
+        $.post('/sales_quotation/edit_spu_cost.php', {
+            spu_id       : spuId,
+            cost         : cost,
+            '__output_format'   : 'JSON'
+        }, function (response) {
+
+            if (0 != response.code) {
+
+                showMessage('错误', response.message);
+
+                return  false;
+            }else{
+                $('.cost-'+spuId).val(cost);
+            }
+            
+        }, 'json');
+
+        $(this).removeClass('btn-primary');
+        $(this).addClass('btn-default');
+        $(this).addClass('disabled');        
     });
     
     $('.act-zoom').popover({

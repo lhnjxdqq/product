@@ -59,6 +59,20 @@ class   Cart_Spu_Info {
         $sql    = 'SELECT '. self::FIELDS .' FROM `' . self::_tableName() . "` WHERE `user_id` = '" . (int) $userId . "'";
         
         return self::_getStore()->fetchAll($sql);
+     } 
+     
+    /**
+     * 获取购物车列表
+     *
+     * $param   int   $userId  用户ID
+     * $param   int   $spuId   spuID
+     * @return  array          数据
+     */
+     static  public function getByUserIdAndSpuId ($userId, $spuId) {
+
+        $sql    = 'SELECT '. self::FIELDS .' FROM `' . self::_tableName() . "` WHERE `user_id` = '" . (int) $userId . "' AND `spu_id` =".(int) $spuId;
+        
+        return self::_getStore()->fetchOne($sql);
      }
     
     /**

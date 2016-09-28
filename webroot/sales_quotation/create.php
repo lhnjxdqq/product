@@ -188,6 +188,16 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $listSpuInfo[$key]['color'] = array();
     $listSpuInfo[$key]['is_exist']  = 0; 
     
+    $costNumber = array_unique($mapSpuColorCost[$spuInfo['spu_id']]);
+        
+    if(count($costNumber)>1){
+        
+            $unifiedCost  = '';
+        }else{
+            
+            $unifiedCost  = current($costNumber);
+    }
+    $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
     foreach($mapSpecColorId as $colorId=>$colorName){
         
         if($indexCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
