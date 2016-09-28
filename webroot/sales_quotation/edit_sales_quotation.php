@@ -96,8 +96,10 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
     }
 }
 
+unset($data['cost']);
 foreach($data as $spuId => $colorCost){
     
+    unset($colorCost['cost']);
     $remark = $colorCost['spu_remark'];
     unset($colorCost['spu_remark']);
     

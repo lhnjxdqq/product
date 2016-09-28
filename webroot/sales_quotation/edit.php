@@ -274,6 +274,12 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         }
     }
     $costNumber = array_unique($listSpuInfo[$key]['color']);
+    foreach($costNumber as $colorId => $colorCost){
+        
+        if($colorCost == '-'){
+            unset($costNumber[$colorId]);
+        }
+    }
 
     if(count($costNumber)>1){
 
