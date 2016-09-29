@@ -19,7 +19,7 @@ class   Salesperson_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'salesperson_id,salesperson_name,create_time,delete_status,update_time';
+    const   FIELDS      = 'salesperson_id,salesperson_name,create_time,delete_status,update_time,telephone';
     /**
      * 新增
      *
@@ -32,6 +32,8 @@ class   Salesperson_Info {
             'filter'    => 'salesperson_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData['create_time'] = date('Y-m-d H:i:s');
+        $newData['update_time'] = date('Y-m-d H:i:s');
         self::_getStore()->insert(self::_tableName(), $newData);
     }
 
@@ -48,6 +50,38 @@ class   Salesperson_Info {
         );
         $condition  = "`salesperson_id` = '" . addslashes($data['salesperson_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+
+        if(empty($newData['delete_status'])){
+            
+            $newData['delete_status']   = DeleteStatus::NORMAL;
+        }
+        $newData['update_time'] = date('Y-m-d H:i:s');
         self::_getStore()->update(self::_tableName(), $newData, $condition);
+    }
+    
+    /**
+     * 根据名称获取数据
+     *
+     * @param   string  $salespersonName    销售员名
+     * @return  array                       数据
+     */
+    static  public  function getBySalespersonName ($salespersonName) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `salesperson_name` = '" . addslashes($salespersonName) . "'";
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+    
+    /**
+     * 根据ID获取数据
+     *
+     * @param   string  $salespersonId      销售ID
+     * @return  array                       数据
+     */
+    static  public  function getById ($salespersonId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `salesperson_id` = '" . addslashes($salespersonId) . "'";
+
+        return  self::_getStore()->fetchOne($sql);
     }
 }

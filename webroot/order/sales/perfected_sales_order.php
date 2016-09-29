@@ -58,7 +58,10 @@ if($salesOrderInfo['order_time'] == "0000-00-00"){
     
     $salesOrderInfo['order_time'] = date('Y-m-d',time());
 }
-$mapSalesperson = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');
+
+$listAllSalesperson   = ArrayUtility::searchBy(Salesperson_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
+
+$mapSalesperson = ArrayUtility::indexByField($listAllSalesperson,'salesperson_id');
 
 $orderTypeInfo = Sales_Order_Type::getOrderType();
 
