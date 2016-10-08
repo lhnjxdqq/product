@@ -13,4 +13,4 @@ $data['province_id']    = empty($data['province_id']) ? 0 : $data['province_id']
 $customerInfo           = Customer_Info::getByName($data['customer_name']);
 Customer_Info::update($data);
     
-Utility::notice('更新成功');
+Utility::notice('更新成功', '/system/customer/index.php');
