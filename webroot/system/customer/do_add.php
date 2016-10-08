@@ -15,12 +15,12 @@ if(!empty($customerInfo)){
     $data['customer_id']    = $customerInfo['customer_id'];
     $data['delete_status']  = Customer_DeleteStatus::NORMAL;
     Customer_Info::update($data);
-    Utility::notice('更新成功');
+    Utility::notice('更新成功', '/system/customer/index.php');
 }else{
     
     $customerId =   Customer_Info::create($data);
     if($customerId){
         
-        Utility::notice('添加成功');
+        Utility::notice('添加成功', '/system/customer/index.php');
     }
 }
