@@ -17,7 +17,7 @@ class Search_Spu {
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlGroup       = self::_group();
-        $sqlOrder       = self::_order($orderBy);
+        $sqlOrder       = self::_order($orderBy,$condition);
         $sqlLimit       = self::_limit($offset, $limit);
         $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
 
@@ -253,9 +253,31 @@ class Search_Spu {
      * @param $order
      * @return string
      */
-    static private function _order ($order) {
+    static private function _order ($order, array $condition) {
+        
+        $searchType         = trim($condition['search_type']);
+        $searchValueString  = trim($condition['search_value_list']);
 
-        return  ' ORDER BY `source_info`.`source_code` ASC,`spu_info`.`spu_id` DESC';
+        if (empty($searchType) || empty($searchValueString)) {
+
+            return  ' ORDER BY `source_info`.`source_code` ASC,`spu_info`.`spu_id` DESC';
+        }
+        $searchValueList    = explode(' ', $searchValueString);
+        $searchValueList    = array_map('addslashes', array_map('trim', array_unique(array_filter($searchValueList))));
+
+        $filed              = '';
+        switch ($searchType) {
+            case 'source_code' :
+                $filed      = '`source_info`.`source_code`';
+                break;
+            case 'goods_sn' :
+                $filed      = '`goods_info`.`goods_sn`';
+                break;
+            case 'spu_sn' :
+                $filed      = '`spu_info`.`spu_sn`';
+                break;
+        }
+        return  ' ORDER BY find_in_set('. $filed .', "' . implode(',', $searchValueList) . '")';
     }
 
 
