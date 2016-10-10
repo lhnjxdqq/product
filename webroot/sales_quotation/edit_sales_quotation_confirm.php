@@ -12,4 +12,7 @@ $slaesQuotation = array(
     );
     
 Sales_Quotation_Info::update($slaesQuotation);
+Sales_Quotation_Task::create(array(
+    'sales_quotation_id'    => $salesQuotationId,
+));
 Utility::notice("报价单状态修改成功","/sales_quotation/index.php");

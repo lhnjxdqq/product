@@ -908,4 +908,264 @@ class   Quotation {
             'relationship_product_id'   => $listProductId,
         ));
     }
+    
+    /**
+     * 生成销售报价单信息日志
+     */
+    static public function salesQuotationLogFile($salesQuotationId) {
+        
+        //获取报价单信息
+        $salesQuotationInfo = Sales_Quotation_Info::getBySalesQuotationId($salesQuotationId);
+
+        $indexCartColorId   = array();
+
+        //获取客户列表
+        $listCustomer       = Customer_Info::listAll();
+        $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
+
+        $orderBy                = array();
+        $perpage                = self::BUFFER_SIZE_EXCEL;
+        $condition['sales_quotation_id']   = $salesQuotationId;
+        $group              = 'spu_id'; 
+        $countSpu   = Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId);
+
+        $page           = new PageList(array(
+            PageList::OPT_TOTAL     => $countSpu,
+            PageList::OPT_URL       => '/sales_quotation/detail.php',
+            PageList::OPT_PERPAGE   => $perpage,
+        ));
+        $listQuotationSpuInfo    = Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
+        $listSpuId               = ArrayUtility::listField($listQuotationSpuInfo,'spu_id');
+
+        //获取颜色工费和备注
+        $indexCartColorId   = array();
+        $mapSalesQuotationSpuInfo   = Sales_Quotation_Spu_Info::getBySalesQuotationIdAndMuitlSpuId($salesQuotationId , $listSpuId);
+        $spuInfo                    = ArrayUtility::groupByField($mapSalesQuotationSpuInfo,'spu_id');
+
+        foreach($spuInfo as $spuId=>$info){
+            
+            $indexCartColorId[$spuId]['color'] = ArrayUtility::indexByField($info, 'color_id', 'cost');
+            $indexCartColorId[$spuId]['sales_quotation_remark'] = ArrayUtility::indexByField($info, 'spu_id', 'sales_quotation_remark');
+        }
+
+        $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
+        //获取SPU数量
+        $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+        $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
+        foreach ($mapSpuImages as $spuId => $spuImage) {
+
+            $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
+        }
+
+        //属性列表
+        $listSpecInfo       = Spec_Info::listAll();
+        $listSpecInfo       = ArrayUtility::searchBy($listSpecInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+        $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
+
+        //获取属性值
+        $listSpecValueInfo  = ArrayUtility::searchBy(Spec_Value_Info::listAll(), array('delete_status'=>Spec_DeleteStatus::NORMAL));
+        $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+
+        // 查询SPU下的商品
+        $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
+        $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
+        $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
+
+        // 查所当前所有SPU的商品 商品信息 规格和规格值
+        $allGoodsInfo           = ArrayUtility::searchBy(Goods_Info::getByMultiId($listAllGoodsId), array('online_status'=>Goods_OnlineStatus::ONLINE, 'delete_status'=>Goods_DeleteStatus::NORMAL));
+        $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
+        $allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listAllGoodsId);
+        $mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
+        
+        // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
+        $mapSpuGoods    = ArrayUtility::indexByField($listSpuGoods, 'spu_id', 'goods_id');
+        $listGoodsId    = array_values($mapSpuGoods);
+        $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
+        $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+
+        $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
+        $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+
+        // 根据商品查询品类
+        $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
+        $listCategory   = Category_Info::getByMultiId($listCategoryId);
+        $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+        $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+        $listSourceId   = ArrayUtility::listField($mapProductInfo,'source_id');
+        $mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
+        $indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
+        $groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
+        $groupProductIdSourceId = array();
+        foreach($groupSkuSourceId as $productId => $sourceIdInfo){
+            
+            $groupProductIdSourceId[$productId]    = array();
+            foreach($sourceIdInfo as $key=>$sourceId){
+
+                $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
+            }
+        }
+        // 根据商品查询规格重量
+        $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
+
+        //获取规格尺寸和主料材质的属性ID
+        $specMaterialInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'material')),'spec_alias','spec_id');
+        $specWeightInfo       = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'weight')),'spec_alias','spec_id');
+        $specSizeInfo         = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'size')),'spec_alias','spec_id');
+        $specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+        $specMaterialId       = $specMaterialInfo['material'];
+        $specSizeId           = $specSizeInfo['size'];
+        $specWeightId         = $specWeightInfo['weight'];
+        $specColorId          = $specColorInfo['color'];
+
+        $mapSpecValue   = array();
+        $mapMaterialValue = array();
+        $mapSizeValue = array();
+
+        $spuCost    = array();
+        $mapSpuSalerCostByColor = array();
+        $sourceId   = array();
+        foreach ($groupSpuGoods as $spuId => $spuGoods) {
+
+            $mapColor   = array();
+            foreach ($spuGoods as $goods) {
+
+                $goodsId        = $goods['goods_id'];
+                $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+                $listSourceId   = $groupProductIdSourceId[$goods['goods_id']];
+
+                foreach ($goodsSpecValue as $key => $val) {
+
+                    $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
+
+                    if($val['spec_id']  == $specMaterialId) {
+                        
+                        $mapGoodsValue[$val['goods_id']]['spec_material']  = $specValueData;
+                        $mapGoodsValueMaterialId[$val['goods_id']]         = $val['spec_value_id'];
+                    }
+                    if($val['spec_id']  == $specWeightId) {
+                        
+                        $mapGoodsValue[$val['goods_id']]['spec_weight']    = $specValueData;
+                        $mapGoodsValueWeightId[$val['goods_id']]           = $val['spec_value_id'];
+                    }
+                    if($val['spec_id']  == $specSizeId) {
+                        
+                        $mapGoodsValue[$val['goods_id']]['spec_size']  = $specValueData;
+                        $mapGoodsValueSizeId[$val['goods_id']]         = $val['spec_value_id'];
+                    }
+                    if($val['spec_id']  == $specColorId) {
+                        
+                        $mapGoodsValue[$val['goods_id']]['spec_color']          = $specValueData;
+                        $mapGoodsValueColorId[$val['goods_id']]['color_id']     = $val['spec_value_id'];
+                        $mapColor[$spuId][$val['spec_value_id']][]              = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+                    }
+                
+                }
+            }
+
+            foreach($mapColor as $spuIdKey => $colorInfo){
+
+                foreach($colorInfo as $colorId => $cost){
+                    
+                    rsort($cost);
+                    $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+                }
+            }
+        }
+        //获取颜色属性Id列表
+        $listSpecValueColotId   = array();
+
+        foreach($mapColorInfo as $spuId=>$colorCost){
+            
+            foreach($colorCost as $specColorId=>$cost){
+                
+                $listSpecValueColotId[$specColorId] = $specColorId;
+            }
+        }
+        $countColor         = count($listSpecValueColotId);
+        $mapColorValueInfo  = Spec_Value_Info::getByMulitId($listSpecValueColotId);
+        $mapSpecColorId     = ArrayUtility::indexByField($mapColorValueInfo,'spec_value_id', 'spec_value_data');
+
+        // 每个SPU下有哪些goodsId
+        $groupSpuGoodsId    = array();
+        foreach ($groupSpuGoods as $spuId => $spuGoodsList) {
+
+            $groupSpuGoodsId[$spuId] = ArrayUtility::listField($spuGoodsList, 'goods_id');
+        }
+        
+        // 整合数据, 方便前台输出
+        foreach ($listSpuInfo as $key => $spuInfo) {
+
+            // 品类名 && 规格重量
+     
+            $listSpuInfo[$key]['color'] = array();
+        
+            foreach($mapSpecColorId as $colorId=>$colorName){
+                
+                if($indexCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
+                    
+                    $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+                    $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
+                }else{
+                    $listSpuInfo[$key]['color'][$colorId] = "-";
+                }
+                        
+            }
+            $listSpuInfo[$key]['image_path'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
+            
+            $listSpuInfo[$key]['goods']     = array();
+
+            foreach($groupSpuGoods[$spuInfo['spu_id']] as $row => $info){
+
+                $goodsId                    = $info['goods_id'];
+                $listSpuInfo[$key]['goods'][$goodsId]['goods_id']       = $goodsId;
+                $listSpuInfo[$key]['goods'][$goodsId]['goods_sn']       = $mapAllGoodsInfo[$goodsId]['goods_sn'];
+                $listSpuInfo[$key]['goods'][$goodsId]['goods_name']     = $mapAllGoodsInfo[$goodsId]['goods_name'];
+                $listSpuInfo[$key]['goods'][$goodsId]['sale_cost']      = $listSpuInfo[$key]['color'][$mapGoodsValueColorId[$goodsId]['color_id']];
+                $listSpuInfo[$key]['goods'][$goodsId]['style_id']       = $mapAllGoodsInfo[$goodsId]['style_id'];
+                $listSpuInfo[$key]['goods'][$goodsId]['category_id']    = $mapAllGoodsInfo[$goodsId]['category_id'];
+                
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['material']['spec_value_id']     = $mapGoodsValueMaterialId[$goodsId];
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['material']['spec_value_data']   = $mapGoodsValue[$goodsId]['spec_material'];
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['size']['spec_value_id']         = $mapGoodsValueSizeId[$goodsId];
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['size']['spec_value_data']       = $mapGoodsValue[$goodsId]['spec_size'];
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['color']['spec_value_id']        = $mapGoodsValueColorId[$goodsId]['color_id'];
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['color']['spec_value_data']      = $mapGoodsValue[$goodsId]['spec_color'];;
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_id']       = $mapGoodsValueWeightId[$goodsId];
+                $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_data']     = $mapGoodsValue[$goodsId]['spec_weight'];
+                $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
+                $listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? AliyunOSS::getInstance('images-sku')->url($imageKey) : '';
+            }
+            unset($listSpuInfo[$key]['color']);
+            
+        }
+        $listSpuInfo['quotation']['customer_id']            = $salesQuotationInfo['customer_id'];
+        $listSpuInfo['quotation']['sales_quotation_id']     = $salesQuotationInfo['sales_quotation_id'];
+        $listSpuInfo['quotation']['sales_quotation_name']   = $salesQuotationInfo['sales_quotation_name'];
+
+        $path   = self::getFilePathBySalesQuotationId();
+        $stream                     = Config::get('path|PHP', 'sales_quotation_product').$path;
+
+        if (!is_dir($stream)) {
+            
+            mkdir($stream, 0766, true);
+        }
+        $filePath   = $stream.$salesQuotationInfo['sales_quotation_id'] . '.log';
+        if(file_put_contents($filePath,json_encode($listSpuInfo))){
+            
+            return $path.$salesQuotationInfo['sales_quotation_id'] . '.log';
+        }
+    }
+    
+    /**
+     * 获取文件储存位置
+     *
+     * @return  array   已存在的文件列表
+     */
+    static  public  function getFilePathBySalesQuotationId () {
+
+        $year       = date('Y',time());
+        $month      = date('m',time());
+        
+        return   $year .'/' . $month .'/';
+    }
 }
