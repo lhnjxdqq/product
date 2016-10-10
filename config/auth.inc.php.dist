@@ -13,6 +13,7 @@ return  array(
         'AuPrice.getNewPrice',
         'Customer.getAll',
         'SalesQuotation.getSalesQuotationFile',
+        'SalesQuotation.success',
         'Category.getAll',
         'Style.getAll',
         'Spec.getAll',
