@@ -64,7 +64,7 @@ class   Sales_Quotation_Task {
     static  public function getByRunStatus($runStatus = null){
         
         Validate::testNull($runStatus,'状态不能为空');
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `run_status` = ' . $runStatus;
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `run_status` = ' .(int) $runStatus;
 
         return self::_getStore()->fetchAll($sql);
     }
@@ -77,8 +77,21 @@ class   Sales_Quotation_Task {
      */
     static  public function getByIsPush($isPush){
         
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `is_push` = ' . $isPush;
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `is_push` = ' .(int) $isPush;
 
         return self::_getStore()->fetchAll($sql);
+    }
+    
+    /**
+     * 根据报价单ID获取数据
+     *
+     * @param  int  $salesQuotationId     报价单ID
+     * @return array                      数据
+     */
+    static  public function getBySalesQuotationId($salesQuotationId){
+        
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_quotation_id` = ' .(int) $salesQuotationId;
+
+        return self::_getStore()->fetchOne($sql);
     }
 }
