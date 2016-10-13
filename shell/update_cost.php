@@ -1,5 +1,6 @@
 <?php 
 
+//修改产品价格
 require dirname(__FILE__).'/../init.inc.php';
 
 $condition  = array(
