@@ -954,7 +954,8 @@ class   Quotation {
         $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
         foreach ($mapSpuImages as $spuId => $spuImage) {
 
-            $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
+            //$mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url(imagesSKU);
+            $mapSpuImages[$spuId]['image_url']  = $spuImage['image_key'] ? 'imagesSPU/'.$spuImage['image_key'].'.jpg' : '';
         }
 
         //属性列表
@@ -1133,7 +1134,8 @@ class   Quotation {
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_id']       = $mapGoodsValueWeightId[$goodsId];
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_data']     = $mapGoodsValue[$goodsId]['spec_weight'];
                 $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
-                $listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? AliyunOSS::getInstance('images-sku')->url($imageKey) : '';
+                //$listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? AliyunOSS::getInstance('images-sku')->url($imageKey) : '';
+                $listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? 'imagesSKU/'.$spuImage['image_key'].'.jpg' : '';
             }
             unset($listSpuInfo[$key]['color']);
             
