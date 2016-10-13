@@ -17,5 +17,7 @@ return  array(
         'Category.getAll',
         'Style.getAll',
         'Spec.getAll',
+        'Order.create',
+        'Order.getByIdList',
     ),
 );

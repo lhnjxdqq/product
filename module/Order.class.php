@@ -457,4 +457,65 @@ class   Order {
         }
     }
     
+    /**
+     * 通过API传输过来数据生成订单
+     */
+    static public function apiCreate(array $orderInfo) {
+
+        $customerId     = $orderInfo['customerId'];
+        $salespersonId  = $orderInfo['salemanId'];
+        $orderInfo      = $orderInfo['orderGoodsList'];
+        $mapGoodsId     = ArrayUtility::listField($orderInfo,'goodsId');
+        $listSalesQuotationId     = implode(",",array_unique(ArrayUtility::listField($orderInfo,'quotationId')));
+        $goodsInfo      = Goods_Info::getByMultiId($mapGoodsId);
+        $indexGoodsId   = ArrayUtility::indexByField($goodsInfo,'goods_id');
+        $auPrice        = Au_Price_Log::getNewsPrice();
+        
+        $salesOrderId    = Sales_Order_Info::create(array(
+            'sales_order_sn'        => Sales_Order_Info::createOrderSn(),
+            'sales_order_status'    => Sales_Order_Status::NEWS,
+            'sales_quotation_id'    => $listSalesQuotationId,
+            'create_user_id'        => '0',
+            'salesperson_id'        => $salespersonId,
+            'order_time'            => date('Y-m-d',time()),
+            'create_time'           => date('Y-m-d H:i:s',time()),
+            'update_time'           => date('Y-m-d H:i:s',time()),
+            'order_type_id'         => Sales_Order_Type::ORDERED,
+            'audit_person_id'       => 0,
+            'customer_id'           => $customerId,
+            'create_order_au_price' => $auPrice,
+        ));
+        $referenceAmount            = 0;
+        foreach($orderInfo as $key => $info) {
+             
+            $content    = array(
+                'sales_order_id'    => $salesOrderId,
+                'goods_id'          => $info['goodsId'],
+                'goods_quantity'    => (int)$info['quantity'],
+                'reference_weight'  => ((int) $info['quantity']) * $info['specWeight'],
+                'sales_quotation_id'=> $info['quotationId'],
+                'spu_id'            => $info['spuId'],
+                'cost'              => $info['cost'],
+                'remark'            => $info['goodsId']['goods_remark'],
+            );
+            
+            $referenceAmount+= ($auPrice+$info['cost']*((int) $info['quantity']) * $info['specWeight']);
+            Sales_Order_Goods_Info::create($content);
+           
+        }     
+                
+        $salesSkuInfo   = Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
+
+        Sales_Order_Info::update(array(
+                'sales_order_id'    => $salesOrderId,
+                'count_goods'       => count($salesSkuInfo),    
+                'quantity_total'    => array_sum(ArrayUtility::listField($salesSkuInfo,'goods_quantity')),
+                'update_time'       => date('Y-m-d H:i:s', time()),
+                'reference_weight'  => array_sum(ArrayUtility::listField($salesSkuInfo,'reference_weight')),
+                'reference_amount'  => $referenceAmount,
+            )
+        );
+        
+        return $salesOrderId;
+    }
 }   
