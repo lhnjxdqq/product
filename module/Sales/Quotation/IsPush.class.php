@@ -8,7 +8,7 @@ class   Sales_Quotation_IsPush extends SplEnum {
 
     const   YES     = 2;
 
-    const   FINISH  = 3;
+    const   RUNNING = 3;
     
-    const   RUNNING = 4;
+    const   FINISH  = 4;
 }

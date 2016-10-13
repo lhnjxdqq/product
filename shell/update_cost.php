@@ -25,8 +25,6 @@ foreach($mapUpdateCost as $key=>$info){
         
         $jsonData                 = json_decode($updateCostSourceInf['json_data'],true);
 
-        $newPrice   = array();
-        $newSize    = array();
         if(!empty($updateCostSourceInf['relationship_product_id'])){
             
             $mapProductId             = explode(',',$updateCostSourceInf['relationship_product_id']);
@@ -59,17 +57,19 @@ foreach($mapUpdateCost as $key=>$info){
                 $data[] = $jsonData;
                 continue;
             }
+
             foreach($productCost as $colorId=>$colorPrice){
                 
                 if(!empty($productSize)){
                 
-                    foreach($productSize as $sizeId){
+                    foreach($productSize as $key => $sizeId){
                         
                         $updateGoodsInfo  = ArrayUtility::searchBy($listGoodsInfo,array('size_value_id'=>$sizeId));
 
                         if(empty($updateGoodsInfo)){
                             
                             $size[] = $sizeId;
+                            unset($jsonData['size'][$key]);
                             
                         }else{    
                             
@@ -85,7 +85,7 @@ foreach($mapUpdateCost as $key=>$info){
                                         
                                         $cost[$colorId] = $colorPrice;
                                     }else{
-                                         
+
                                         Goods_Info::update(array(
                                             'goods_id'      => $id,
                                             'self_cost'     => $colorPrice+PLUS_COST,
@@ -105,7 +105,7 @@ foreach($mapUpdateCost as $key=>$info){
                                             'cost'              => sprintf('%.2f',$colorPrice),
                                             'handle_user_id'    => $info['auditor_user_id'],
                                             'update_means'      => Cost_Update_Log_UpdateMeans::BATCH,
-                                        )); 
+                                        ));
                                     }
                                 }
                             }else{
