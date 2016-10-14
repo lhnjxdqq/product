@@ -117,7 +117,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $listSpuInfo[$key]['list_cost'] = $kRedCost ? $kRedCost : $listCost;
     $imageInfo                      = $mapSpuImages[$spuId];
     $listSpuInfo[$key]['image_url'] = $imageInfo
-                                      ? AliyunOSS::getInstance('images-spu')->url($imageInfo['image_key'])
+                                      ? AliyunOSS::getInstance('thumb-images-spu')->url($imageInfo['image_key'])
                                       : '';
 }
 

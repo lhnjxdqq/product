@@ -45,14 +45,14 @@ foreach ($listProductInfo as &$productInfo) {
     $imageKey   = $mapProductImages[$productId]['image_key'];
     $productInfo['source_code']     = $mapSourceInfo[$sourceId]['source_code'];
     $productInfo['supplier_code']   = $mapSourceInfo[$sourceId]['supplier_code'];
-    $productInfo['image_url']       = $imageKey ? AliyunOSS::getInstance('images-product')->url($imageKey) : '';
+    $productInfo['image_url']       = $imageKey ? AliyunOSS::getInstance('thumb-images-product')->url($imageKey) : '';
 }
 
 $listGoodsImages            = Goods_Images_RelationShip::getByGoodsId($goodsId);
 foreach ($listGoodsImages as &$goodsImage) {
 
     $imageKey                   = $goodsImage['image_key'];
-    $goodsImage['image_url']    = AliyunOSS::getInstance('images-sku')->url($imageKey);
+    $goodsImage['image_url']    = AliyunOSS::getInstance('thumb-images-sku')->url($imageKey);
 }
 
 $goodsInfo['category_name'] = $categoryInfo['category_name'];

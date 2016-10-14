@@ -111,7 +111,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <{foreach from=$data.listImages item=item}>
                                     <span class="product-image-priview">
-                                        <img src="<{$item.image_url}>" class="img-responsive img-thumbnail">
+                                        <img src="<{$item.image_url}>@!detail" class="img-responsive img-thumbnail">
                                         <span class="close">X</span>
                                         <input type="hidden" name="product-image[]" value="<{$item.image_key}>">
                                     </span>

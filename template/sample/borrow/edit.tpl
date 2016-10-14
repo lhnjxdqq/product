@@ -60,7 +60,7 @@
                                     <td><input type="checkbox" name='goods_id[]' value='<{$item.goods_id}>' class="select" goodsid="<{$item.goods_id}>" spuparams="<{$item.category_id}><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>"></td>
                                     <td><{$item.source}></td>
                                     <td>
-                                        <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60"></a>
+                                        <a href="<{if $item.image_url}><{$item.image_url}>@!detail<{else}>/images/sku_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60"></a>
                                     </td>
                                     <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>
                                     <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>

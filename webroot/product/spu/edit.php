@@ -23,7 +23,7 @@ foreach ($spuImagesList as $spuImage) {
 
     $listSpuImages[]    = array(
         'image_key'     => $spuImage['image_key'],
-        'image_url'     => AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']),
+        'image_url'     => AliyunOSS::getInstance('thumb-images-spu')->url($spuImage['image_key']),
     );
 }
 

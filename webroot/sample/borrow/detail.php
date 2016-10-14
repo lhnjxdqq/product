@@ -120,7 +120,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsId    = $goodsInfo['goods_id'];
     $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
     $goodsInfo['image_url']     = $imageKey
-        ? AliyunOSS::getInstance('images-sku')->url($imageKey)
+        ? AliyunOSS::getInstance('thumb-images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
     $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);

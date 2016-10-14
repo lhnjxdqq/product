@@ -36,7 +36,7 @@ if ($listImages) {
 
     foreach ($listImages as $key => $item) {
 
-        $listImages[$key]['image_url']  = AliyunOSS::getInstance('images-product')->url($item['image_key']);
+        $listImages[$key]['image_url']  = AliyunOSS::getInstance('thumb-images-product')->url($item['image_key']);
     }
 }
 
