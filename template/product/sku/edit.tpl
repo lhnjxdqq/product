@@ -110,7 +110,7 @@
                                             <{foreach from=$data.listProductInfo item=item}>
                                             <tr>
                                                 <td><{$item.product_sn}></td>
-                                                <td><img src="<{$item.image_url}>" height="60"></td>
+                                                <td><img src="<{$item.image_url}>@!mini" height="60"></td>
                                                 <td><{$item.source_code}></td>
                                                 <td><{$item.supplier_code}></td>
                                                 <td><{$item.product_cost}></td>
@@ -141,7 +141,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <{foreach from=$data.listGoodsImages item=item}>
                                     <span class="product-image-priview">
-                                        <img src="<{$item.image_url}>" class="img-responsive img-thumbnail">
+                                        <img src="<{$item.image_url}>@!detail" class="img-responsive img-thumbnail">
                                         <span class="close">X</span>
                                         <input type="hidden" name="sku-image[]" value="<{$item.image_key}>">
                                     </span>

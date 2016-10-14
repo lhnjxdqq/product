@@ -110,7 +110,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <{foreach from=$data.listSpuImages item=item}>
                                     <span class="product-image-priview">
-                                        <img src="<{$item.image_url}>" height="300" alt="" class="img-responsive img-thumbnail">
+                                        <img src="<{$item.image_url}>@!detail" height="300" alt="" class="img-responsive img-thumbnail">
                                         <span class="close">X</span>
                                         <input type="hidden" name="spu-image[]" value="<{$item.image_key}>">
                                     </span>

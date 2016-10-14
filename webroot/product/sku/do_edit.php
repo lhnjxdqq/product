@@ -61,7 +61,7 @@ if (Goods_Info::update($data)) {
         Goods_Spec_Value_RelationShip::create($specValue);
     }
     // 更新图片关系
-    Goods_Images_RelationShip::deleteById($goodsId);
+    Goods_Images_RelationShip::deleteByGoodsId($goodsId);
     if ($imageIdList) {
         foreach ($imageIdList as $imageId) {
             Goods_Images_RelationShip::create(array(

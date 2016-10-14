@@ -163,7 +163,7 @@ foreach($mapUpdateCost as $key=>$info){
             'status_id'            => Update_Cost_Status::FINISHED,
         ));
     }else{
-        
+
         $mapEnumeration = array();
 
         $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
@@ -192,9 +192,10 @@ foreach($mapUpdateCost as $key=>$info){
             
            $goodsIds[] = Quotation::updateCostcreateQuotation($row,$mapEnumeration,1 ,$info['supplier_id']);
         }
+        
         Update_Cost_Info::update(array(
             'update_cost_id'       => $info['update_cost_id'],
             'status_id'            => Update_Cost_Status::FINISHED,
-        ));   
+        ));
     }
 }

@@ -57,7 +57,7 @@ $mapProductImage        = array();
 if ($listProductImages) {
     $indexProductImage      = ArrayUtility::indexByField($listProductImages, 'product_id', 'image_key');
     foreach ($indexProductImage as $productId => $imageKey) {
-        $mapProductImage[$productId] = AliyunOSS::getInstance('images-product')->url($imageKey);
+        $mapProductImage[$productId] = AliyunOSS::getInstance('thumb-images-product')->url($imageKey);
     }
 }
 
