@@ -136,7 +136,7 @@ foreach($mapUpdateCost as $key=>$info){
                 }
                 
             }
-            
+            $sizeOld    = $jsonData['size'];
             if(!empty($size)){
                 $jsonData['size']           = array_unique($size);
                 $jsonData['list_spu_id']    = $listSpuId;
@@ -146,6 +146,7 @@ foreach($mapUpdateCost as $key=>$info){
             }
             if(!empty($cost)){
                 $jsonData['cost']           = $cost;
+                $jsonData['size']           = $sizeOld;
                 $jsonData['list_spu_id']    = $listSpuId;
                 $data[] = $jsonData;
                 $cost   = array();
@@ -157,7 +158,7 @@ foreach($mapUpdateCost as $key=>$info){
     }
 
     if(empty($data)){
-                
+              
         Update_Cost_Info::update(array(
             'update_cost_id'       => $info['update_cost_id'],
             'status_id'            => Update_Cost_Status::FINISHED,
@@ -192,7 +193,7 @@ foreach($mapUpdateCost as $key=>$info){
             
            $goodsIds[] = Quotation::updateCostcreateQuotation($row,$mapEnumeration,1 ,$info['supplier_id']);
         }
-        
+
         Update_Cost_Info::update(array(
             'update_cost_id'       => $info['update_cost_id'],
             'status_id'            => Update_Cost_Status::FINISHED,
