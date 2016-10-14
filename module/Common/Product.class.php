@@ -219,7 +219,7 @@ SQL;
             $productThumb   = array_pop($productImagesList);
             $imageKey       = $productThumb['image_key'];
             $imageUrl       = $imageKey
-                              ? AliyunOSS::getInstance('images-product')->url($imageKey)
+                              ? AliyunOSS::getInstance('thumb-images-product')->url($imageKey)
                               : '';
             $productThumb['image_url']  = $imageUrl;
             $result[$productId]         = $productThumb;

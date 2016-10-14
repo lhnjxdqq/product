@@ -136,7 +136,7 @@
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail"<{if $item.online_status eq $data.onlineStatus.offline}> style="border:1px solid #e08e0b;"<{/if}>>
                                     <input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" />
-                                    <a href="<{if $item.image_url != ''}><{$item.image_url}>@!detail<{else}>/images/spu_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!thumb<{else}>/images/spu_default.png<{/if}>" alt="..."></a>
+                                    <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!thumb<{else}>/images/spu_default.png<{/if}>" alt="..."></a>
                                     <div class="caption">
                                         <p>三级分类: <{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}></p>
                                         <p>规格重量: <{$data.mapWeightSpecValueInfo[$item.weight_value_id]['spec_value_data']}></p>

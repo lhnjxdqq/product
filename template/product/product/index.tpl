@@ -174,7 +174,7 @@
                                     <td><{$data.mapGoodsInfo[$item.goods_id]['goods_sn']}></td>
                                     <td><{$item.product_name}></td>
                                     <td>
-                                        <a href="<{if $data.mapProductImage[$item.product_id] != ''}><{$data.mapProductImage[$item.product_id]}>@!detail<{else}>/images/product_default.png<{/if}>" target="_blank">
+                                        <a href="<{if $data.mapProductImage[$item.product_id] != ''}><{$data.mapProductImage[$item.product_id]}><{else}>/images/product_default.png<{/if}>" target="_blank">
                                         <img src="<{if $data.mapProductImage[$item.product_id] != ''}><{$data.mapProductImage[$item.product_id]}>@!mini<{else}>/images/product_default.png<{/if}>" height="60"></a>
                                     </td>
                                     <td><{$data.mapCategory[$data.mapGoodsInfo[$item.goods_id]['category_id']]}></td>
