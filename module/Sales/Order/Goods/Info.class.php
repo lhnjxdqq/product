@@ -19,7 +19,7 @@ class   Sales_Order_Goods_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_id,goods_id,goods_quantity,reference_weight,actual_weight,shipment,sales_quotation_id,transaction_price,remark,spu_id';
+    const   FIELDS      = 'sales_order_id,goods_id,goods_quantity,reference_weight,actual_weight,shipment,sales_quotation_id,transaction_price,remark,spu_id,cost';
 
     /**
      * 新增
