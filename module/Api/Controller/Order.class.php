@@ -45,6 +45,7 @@ class Api_Controller_Order {
                 'orderTotalPrice'   => $info['reference_amount'],
                 'orderTotalWeight'  => $info['reference_weight'],
                 'orderTotalQuantity'=> $info['quantity_total'],
+                'createOrderAuPrice'=> $info['create_order_au_price'],
             );
             $salesOrderProduct      = array();
             
