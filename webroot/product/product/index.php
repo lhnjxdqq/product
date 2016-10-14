@@ -22,7 +22,7 @@ $orderBy    = array(
 );
 
 // 分页
-$perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $countProduct   = isset($condition['category_id']) ? Search_Product::countByCondition($condition) : Product_Info::countByCondition($condition);
 
 $page           = new PageList(array(

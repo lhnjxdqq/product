@@ -19,7 +19,7 @@ $page                   = new PageList(array(
                                ? Search_Sku::countByCondition($condition)
                                : Goods_List::countByCondition($condition),
     PageList::OPT_URL       => '/product/sku/index.php',
-    PageList::OPT_PERPAGE   => 20,
+    PageList::OPT_PERPAGE   => 100,
 ));
 
 $listCategoryInfo           = Category_Info::listAll();
@@ -59,8 +59,8 @@ $listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecVal
 $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
 $listGoodsInfo              = array();
 $listGoodsInfo              = isset($condition['category_id'])
-                              ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 20)
-                              : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
+                              ? Search_Sku::listByCondition($condition, array(), $page->getOffset(), 100)
+                              : Goods_List::listByCondition($condition, array(), $page->getOffset(), 100);
 $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
 $mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
