@@ -80,7 +80,7 @@
                                             <{/foreach}>
                                         </td>
                                         <td>
-                                            <a href="<{$item.image_url|default:'/images/sku_default.png'}>" target="_blank"><img src="<{$item.image_url|default:'/images/sku_default.png'}>" height="60" alt=""></a>
+                                            <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60" alt=""></a>
                                         </td>
                                         <td><{$item.goods_name}></td>
                                         <td><{$item.category_name}></td>

@@ -179,7 +179,7 @@
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>
                                         <td>
-                                            <a href="<{if $item.image_url != ''}><{$item.image_url}>@!detail<{else}>/images/sku_default.png<{/if}>" target="_blank">
+                                            <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target="_blank">
                                             <img src="<{if $item.image_url != ''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60">
                                         </td>
                                         <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>

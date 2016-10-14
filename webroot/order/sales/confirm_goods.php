@@ -135,7 +135,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     }
     $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
     $goodsInfo['image_url']     = $imageKey
-        ? AliyunOSS::getInstance('images-sku')->url($imageKey)
+        ? AliyunOSS::getInstance('thumb-images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
     $goodsInfo['remark']        = $indexSales[$goodsId]['remark'];

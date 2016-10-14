@@ -68,7 +68,7 @@ $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
 foreach ($mapSpuImages as $spuId => $spuImage) {
 
-    $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
+    $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('thumb-images-spu')->url($spuImage['image_key']);
 }
 
 //属性列表

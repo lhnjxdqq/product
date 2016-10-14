@@ -69,7 +69,9 @@
                                     <td><{$item.sku_code}></td>
                                     <td><{$supplierInfo[$updateCostInfo.supplier_id]['supplier_code']}></td>
                                     <td><{$item.spu_sn}></td>
-                                    <td><img src="<{$item.image_url}>" class="width-100" alt="..."></td>
+                                    <td>                                    
+                                        <a href="<{if $item.image_url}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60"></a>
+                                    </td>
                                     <td><{$item.category_name}></td>
                                     <td><{$item.weight_value}></td>
                                     <td><{$item.size_name}></td>

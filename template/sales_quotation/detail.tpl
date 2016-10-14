@@ -70,7 +70,7 @@
                                 <tr class="<{if $item.is_exist eq 1}>bg-success<{/if}>">
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
-                                    <td><img src="<{$item.image_url|default:'/images/spu_default.png'}>" class='width-100' alt="..."></td>
+                                    <td><a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" target='_blank'><img src="<{if $item.image_url != ''}><{$item.image_url}>@!mini<{else}>/images/spu_default.png<{/if}>" class='width-100' alt="..."></a></td>
                                     <td><{$item.source_id}></td>
                                     <td><{$item.category_name}></td>
                                     <td><{$item.weight_value}></td>

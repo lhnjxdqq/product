@@ -89,7 +89,7 @@ foreach($indexSourceCode as $source_code => $info){
 
     foreach ($mapSpuImages[$source_code] as $spuId => $spuImage) {
 
-        $mapSpuImages[$source_code][$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
+        $mapSpuImages[$source_code][$spuId]['image_url']  = AliyunOSS::getInstance('thumb-images-spu')->url($spuImage['image_key']);
     }
 
     // 根据商品查询品类

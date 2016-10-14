@@ -110,7 +110,9 @@
                                             <{foreach from=$data.listProductInfo item=item}>
                                             <tr>
                                                 <td><{$item.product_sn}></td>
-                                                <td><img src="<{$item.image_url}>@!mini" height="60"></td>
+                                                <td>
+                                                    <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60" alt=""></a>
+                                                </td>
                                                 <td><{$item.source_code}></td>
                                                 <td><{$item.supplier_code}></td>
                                                 <td><{$item.product_cost}></td>

@@ -102,7 +102,7 @@
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
                                     <td><{$item.spu_sn}></td>
                                     <td><{$item.spu_name}></td>
-                                    <td><img  src="<{$item.image_url|default:'/images/spu_default.png'}>" class='width-100 act-zoom' alt="..."></td>
+                                    <td><img  src="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" class='width-100 act-zoom' alt="..."></td>
                                     <td><{$item.source_id}></td>
                                     <td><{$item.category_name}></td>
                                     <td><{$item.weight_value}></td>
