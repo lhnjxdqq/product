@@ -29,48 +29,57 @@ foreach ($csv as $line) {
 
     $sourceCode         = $line[0];
     echo    "source code: $sourceCode change status start\n";
-    $listProductInfo    = Product_Info::getByMultiSourceId(array($sourceCode));
-    echo    "count product: " . count($listProductInfo) . "\n";
 
-    if (empty($listProductInfo)) {
+    try {
 
-        echo    "skip empty product!\n";
+        $listProductInfo    = Product_Info::getByMultiSourceId(array($sourceCode));
+        echo    "count product: " . count($listProductInfo) . "\n";
 
-        continue;
+        if (empty($listProductInfo)) {
+
+            echo    "skip empty product!\n";
+
+            continue;
+        }
+
+        $listProductId      = ArrayUtility::listField($listProductInfo, 'product_id');
+        $resultProduct      = Product_Info::setOnlineStatusByMultiProductId($listProductId, $statusProduct);
+
+        if (!$resultProduct) {
+
+            echo    "product change status failure! skip...\n";
+
+            continue;
+        }
+
+        echo    "product change status successful\n";
+
+        $listGoodsId        = ArrayUtility::listField($listProductInfo, 'goods_id');
+        Goods_Info::setOnlineStatusByMultiGoodsId($listGoodsId, $statusGoods);
+
+        echo    "change status for " . count($listGoodsId) . "good(s)";
+
+        foreach ($listGoodsId as $goodsId) {
+
+            Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
+        }
+
+        $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
+        $listSpuId          = array_unique(ArrayUtility::listField($listSpuGoods, 'spu_id'));
+        Spu_Info::setOnlineStatusByMultiSpuId($listSpuId, $statusSpu);
+
+        echo    "change status for " . count($listSpuId) . "SPU(s)";
+
+        foreach ($listSpuId as $spuId) {
+
+            Spu_Push::changePushSpuDataStatus($spuId, 'offline');
+        }
+    } catch (Exception $e) {
+
+        echo    "exception whith message: " . $e->getMessage() . " skip...\n";
     }
 
-    $listProductId      = ArrayUtility::listField($listProductInfo, 'product_id');
-    $resultProduct      = Product_Info::setOnlineStatusByMultiProductId($listProductId, $statusProduct);
-
-    if (!$resultProduct) {
-
-        echo    "product change status failure! skip...\n";
-
-        continue;
-    }
-
-    echo    "product change status successful\n";
-
-    $listGoodsId        = ArrayUtility::listField($listProductInfo, 'goods_id');
-    Goods_Info::setOnlineStatusByMultiGoodsId($listGoodsId, $statusGoods);
-
-    echo    "change status for " . count($listGoodsId) . "good(s)";
-
-    foreach ($listGoodsId as $goodsId) {
-
-        Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
-    }
-
-    $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
-    $listSpuId          = array_unique(ArrayUtility::listField($listSpuGoods, 'spu_id'));
-    Spu_Info::setOnlineStatusByMultiSpuId($listSpuId, $statusSpu);
-
-    echo    "change status for " . count($listSpuId) . "SPU(s)";
-
-    foreach ($listSpuId as $spuId) {
-
-        Spu_Push::changePushSpuDataStatus($spuId, 'offline');
-    }
+    echo    "source code: $sourceCode change status end\n";
 }
 
 echo    "process completed\n";
