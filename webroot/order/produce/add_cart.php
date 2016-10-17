@@ -34,7 +34,7 @@ foreach ($listProduceProduct as $productInfo) {
         'supplier_id'           => $supplierId,
         'product_id'            => $productInfo['product_id'],
         'quantity'              => $mapSalesOrderGoods[$goodsId]['goods_quantity'],
-        'remark'                => $productInfo['product_remark'],
+        'remark'                => $mapSalesOrderGoods[$goodsId]['remark'],
     );
     Produce_Order_Cart::create($cartData);
 }
