@@ -67,18 +67,18 @@
                             <thead>
                                 <tr class="info">
                                     <th rowspan="2">选择</th>
+                                    <th rowspan="2">操作</th>
                                     <th rowspan="2">SPU编号</th>
-                                    <th rowspan="2">SPU名称</th>
-                                    <th rowspan="2">产品图片</th>
                                     <th rowspan="2">买款ID</th>
-                                    <th rowspan="2">三级分类</th>
+                                    <th rowspan="2">产品图片</th>
                                     <th rowspan="2">规格重量(g)</th>
-                                    <th rowspan="2" style="text-align:center">规格尺寸</th>
-                                    <th rowspan="2" style="text-align:center">主料材质</th>
                                     <th rowspan="2" style="text-align:center">统一出货价</th>
                                     <th colspan="<{$countColor}>" style="text-align:center">出货工费</th>
                                     <th rowspan="2">备注</th>
-                                    <th rowspan="2">操作</th>
+                                    <th rowspan="2">三级分类</th>
+                                    <th rowspan="2">SPU名称</th>
+                                    <th rowspan="2" style="text-align:center">规格尺寸</th>
+                                    <th rowspan="2" style="text-align:center">主料材质</th>
                                 </tr>
                                 <tr class="info">
                                     <{foreach from=$mapSpecColorId item=item}>
@@ -100,14 +100,11 @@
                                            <{/if}>
                                            <{/if}>">
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>
+                                    <td><a href="/sales_quotation/sales_quotation_spu_delete.php?spu_id=<{$item.spu_id}>&sales_quotation_id=<{$salesQuotationInfo['sales_quotation_id']}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>                               
                                     <td><{$item.spu_sn}></td>
-                                    <td><{$item.spu_name}></td>
-                                    <td><img  src="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" class='width-100 act-zoom' alt="..."></td>
                                     <td><{$item.source_id}></td>
-                                    <td><{$item.category_name}></td>
+                                    <td><img  src="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" class='width-100 act-zoom' alt="..."></td>
                                     <td><{$item.weight_value}></td>
-                                    <td><{$item.size_name}></td>
-                                    <td><{$item.material_name}></td>
                                     <td>
                                         <div class="input-group">
                                           <input type="text" style="width: 66px;" value='<{$item.unified_cost}>' name='cost' class="form-control input-cost">
@@ -120,7 +117,10 @@
                                         <td><input type="text" style="width: 50px;" class='cost-<{$item.spu_id}> spu-price' spu-id=<{$item.spu_id}> name="<{$item.spu_id}>[<{$colorId}>]" <{if $cost eq '-'}> disabled="disabled" <{/if}> value="<{if $cost eq '-'}>-<{else}><{sprintf("%0.2f",$cost)}><{/if}>"></td>
                                     <{/foreach}>
                                     <td><input type="text" name="<{$item.spu_id}>[spu_remark]" value="<{$item.spu_remark}>"></td>
-                                    <td><a href="/sales_quotation/sales_quotation_spu_delete.php?spu_id=<{$item.spu_id}>&sales_quotation_id=<{$salesQuotationInfo['sales_quotation_id']}>" class="delete-confirm"><i class="fa fa-trash-o"></i></a></td>
+                                    <td><{$item.category_name}></td>
+                                    <td><{$item.spu_name}></td>
+                                    <td><{$item.size_name}></td>
+                                    <td><{$item.material_name}></td>
                                 </tr>
 <{/foreach}>                     
                             </tbody>
@@ -364,10 +364,10 @@ $('.edit-cost').click(function(){
 });
 $(document).ready(function() { 
     
-    str =new Array(0,3);
+    str =new Array(0,1,4,6);
     for(row=1; row<=<{$countColor+2}>; row++){
         
-        num = row+8;
+        num = row+6;
         str.push(num); 
     }
 
