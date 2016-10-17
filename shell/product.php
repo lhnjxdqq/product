@@ -115,12 +115,12 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
 
     foreach ($mapColumnField as $offsetColumn => $fieldName) {
 
-        $data[$fieldName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+        $data[$fieldName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
     }
 
     foreach ($mapColumnColor as $offsetColumn => $colorName) {
 
-        $data['price'][$colorName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+        $data['price'][$colorName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
     }
 
     unset($data['cost']);

@@ -138,7 +138,10 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 foreach ($listGoodsInfo as &$goodsInfo) {
 
     $goodsId    = $goodsInfo['goods_id'];
-
+    if(!empty($goodsId)){
+        
+        continue;
+    }
     foreach($groupSkuSpu[$goodsId] as $key=>$sku){
 
         if(empty($groupSpuInfo[$sku])){
