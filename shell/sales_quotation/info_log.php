@@ -27,5 +27,4 @@ foreach ($standby as $info) {
         'log_file'              => $filePath,
         'finish_time'           => date('Y-m-d H:i:s'),
     ));
-
 }

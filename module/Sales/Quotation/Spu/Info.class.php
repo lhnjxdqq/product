@@ -209,6 +209,24 @@ class   Sales_Quotation_Spu_Info {
         $condition = " `sales_quotation_id` = " . (int)$salesQuotationId;
         
         self::_getStore()->delete(self::_tableName(), $condition);
+    }  
+    
+    /**
+     * 根据报价单ID,spuId,颜色ID,删除数据
+     *
+     * @param   int     $salesQuotationId  报价单ID
+     * @param   int     $spuId             SPUID
+     * @param   int     $colorId           颜色ID
+     */
+    static public function deleteByQuotationIdAndSpuIdAndColorId($salesQuotationId, $spuId , $colorId) {
+    
+        Validate::testNull($salesQuotationId,"报价单ID不能为空");
+        Validate::testNull($spuId,"spuID不能为空");
+        Validate::testNull($colorId,"颜色ID不能为空");
+        
+        $condition = " `sales_quotation_id` = " . (int)$salesQuotationId .' AND `spu_id`  = ' . (int) $spuId . ' AND `color_id` = ' . (int) $colorId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
     }
     
     /**

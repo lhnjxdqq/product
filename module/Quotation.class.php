@@ -1106,8 +1106,6 @@ class   Quotation {
                     
                     $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
                     $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
-                }else{
-                    $listSpuInfo[$key]['color'][$colorId] = "-";
                 }
                         
             }
@@ -1118,6 +1116,11 @@ class   Quotation {
             foreach($groupSpuGoods[$spuInfo['spu_id']] as $row => $info){
 
                 $goodsId                    = $info['goods_id'];
+                $colorCost                  = (float) $listSpuInfo[$key]['color'][$mapGoodsValueColorId[$goodsId]['color_id']];
+                if((empty($colorCost) || !is_numeric($colorCost)) && $colorCost == 0){
+                    
+                    continue;
+                }
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_id']       = $goodsId;
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_sn']       = $mapAllGoodsInfo[$goodsId]['goods_sn'];
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_name']     = $mapAllGoodsInfo[$goodsId]['goods_name'];

@@ -29,6 +29,7 @@ unset($data['sales_quotation_name']);
 unset($data['plue_price']);
 unset($data['check-all']);
 unset($data['spu_id']);
+unset($data['cost']);
 
 foreach($data as $spuId => $colorCost){
  
@@ -38,7 +39,7 @@ foreach($data as $spuId => $colorCost){
     Cart_Spu_Info::update(array(
         'user_id'               => $userId,
         'spu_id'                => $spuId,
-        'spu_color_cost_data'   => json_encode($colorCost),
+        'spu_color_cost_data'   => json_encode(array_filter($colorCost)),
         'remark'            => $remark,
     ));
 }

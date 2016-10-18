@@ -108,17 +108,20 @@ foreach ($listCartData as $cartData) {
         }
 
         foreach ($spuCost['mapColorCost'] as $colorValueId => $colorCost) {
-            
-            $salesQuotationSpuData = array(
-                'sales_quotation_id'            => $salesQuotationId,
-                'spu_id'                        => $spuCost['spuId'],
-                'cost'                          => $colorCost,
-                'color_id'                      => $colorValueId,
-                'sales_quotation_remark'        => $spuCost['remark'],
-                'is_red_bg'                     => $isRed,
-                'identical_source_code_spu_num' => $cartData['spu_quantity'],
-            );
-            Sales_Quotation_Spu_Info::create($salesQuotationSpuData);
+
+            if(($colorCost != 0) && !empty($colorCost) && is_numeric($colorCost)){
+                    
+                $salesQuotationSpuData = array(
+                    'sales_quotation_id'            => $salesQuotationId,
+                    'spu_id'                        => $spuCost['spuId'],
+                    'cost'                          => $colorCost,
+                    'color_id'                      => $colorValueId,
+                    'sales_quotation_remark'        => $spuCost['remark'],
+                    'is_red_bg'                     => $isRed,
+                    'identical_source_code_spu_num' => $cartData['spu_quantity'],
+                );
+                Sales_Quotation_Spu_Info::create($salesQuotationSpuData);                
+            }
         }
     }
 }

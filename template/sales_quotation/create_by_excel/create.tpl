@@ -108,7 +108,7 @@
                                     <{foreach from=$mapColorSpecValueInfo item=colorValueData key=colorValueId}>
                                     <td>
                                         <{assign var='colorCost' value=$sourceDetail.map_spu_list[$spuDetail.spu_id]['mapColorCost'][$colorValueId]}>
-                                        <input type="text" name="color-cost" colorvalueid="<{$colorValueId}>" class="form-control <{if !$sourceDetail.map_color_cost[$colorValueId]}> disabled<{else}> cost-<{$sourceDetail.source_code}>-<{$spuDetail.spu_id}><{/if}>" style="width: 66px;" value="<{if $colorCost}><{sprintf('%.2f', $colorCost)}><{/if}>">
+                                        <input type="text" name="color_cost" colorvalueid="<{$colorValueId}>" class="form-control <{if !$sourceDetail.map_color_cost[$colorValueId]}> disabled<{else}> cost-<{$sourceDetail.source_code}>-<{$spuDetail.spu_id}><{/if}>" style="width: 66px;" value="<{if $colorCost}><{sprintf('%.2f', $colorCost)}><{else}>-<{/if}>">
                                     </td>
                                     <{/foreach}>
                                     <td>
@@ -202,7 +202,7 @@
     });
 
     // 更改颜色价格
-    $('input[name="color-cost"]').blur(function () {
+    $('input[name="color_cost"]').blur(function () {
 
         var parentTR        = $(this).parents('tr.spu-single');
         var sourceCode      = parentTR.find('.del-spu-single').attr('sourcecode');

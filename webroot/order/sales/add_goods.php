@@ -14,6 +14,7 @@ Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
 //获取对应销售报价单中的所有SPU
 $salesQuotationId           = explode(',', $salesOrderInfo['sales_quotation_id']);
+
 $salesQuotationSpuInfo      = Sales_Quotation_Spu_Info::getBySalesQuotationId($salesQuotationId);
 $groupSpuInfo               = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
 $listSpuId                  = array_unique(ArrayUtility::listField($salesQuotationSpuInfo ,'spu_id'));
@@ -138,7 +139,7 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 foreach ($listGoodsInfo as &$goodsInfo) {
 
     $goodsId    = $goodsInfo['goods_id'];
-    if(!empty($goodsId)){
+    if(empty($goodsId)){
         
         continue;
     }

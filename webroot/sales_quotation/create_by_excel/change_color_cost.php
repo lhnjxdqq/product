@@ -41,7 +41,14 @@ foreach ($spuListField as &$spuCost) {
             ));
             exit;
         }
-        $spuCost['mapColorCost'][$colorValueId] = $colorCost;
+        
+        if(!empty($cost) && is_numeric($cost)){
+            
+            $spuCost['mapColorCost'][$colorValueId] = $colorCost;
+        }else{
+            unset($spuCost['mapColorCost'][$colorValueId]);
+        }
+             
     }
     unset($spuCost);
 }
