@@ -11,7 +11,7 @@ if(empty($standby)){
 }
 
 foreach ($standby as $info) {
-
+    
     Sales_Quotation_Task::update(array(
         'task_id'               => $info['task_id'],
         'run_status'            => Sales_Quotation_RunStatus::RUNNING,

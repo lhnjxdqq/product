@@ -136,25 +136,37 @@ $listSpecValueId            = array_unique(array_merge(
 $listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
 $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
 
-foreach ($listGoodsInfo as &$goodsInfo) {
+foreach ($listGoodsInfo as $offset => $goodsInfo) {
 
+    $costStatus = 1;
     $goodsId    = $goodsInfo['goods_id'];
     if(empty($goodsId)){
         
         continue;
     }
-    foreach($groupSkuSpu[$goodsId] as $key=>$sku){
+    foreach($groupSkuSpu[$goodsId] as $key=>$spuId){
 
-        if(empty($groupSpuInfo[$sku])){
+        if(empty($groupSpuInfo[$spuId])){
             
             continue;
         }
         
-        foreach($groupSpuInfo[$sku] as $spu=>$quotationSku){
-           
-           $goodsInfo['cost']   = $quotationSku['cost'];
-           continue;
+        foreach($groupSpuInfo[$spuId] as $row => $quotationSku){
+
+            if($goodsInfo['color_value_id'] == $quotationSku['color_id']){
+                
+                if($quotationSku['cost'] <= 0 || !isset($quotationSku['cost'])){
+
+                    $costStatus = 2;
+                }
+                $goodsInfo['cost']   = (float)$quotationSku['cost'];
+                continue;  
+            }
         }
+    }
+    if(empty($goodsInfo['cost'])){
+        
+        $costStatus = 2;
     }
     $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
     $goodsInfo['image_url']     = $imageKey
@@ -166,7 +178,11 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
     $goodsInfo['isset_order']   = isset($indexSales[$goodsId]) ? 1 : 0;
     $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
-
+    
+    if($costStatus == 1){
+     
+        $listSkuInfo[]  = $goodsInfo;   
+    }
 }
 
 $data['mapCategoryInfo']            = $mapCategoryInfo;
@@ -180,7 +196,7 @@ $data['mapColorSpecValueInfo']      = $mapColorSpecValueInfo;
 $data['mapMaterialSpecValueInfo']   = $mapMaterialSpecValueInfo;
 $data['searchType']                 = Search_Sku::getSearchType();
 $data['mapSpecValueInfo']           = $mapSpecValueInfo;
-$data['listGoodsInfo']              = $listGoodsInfo;
+$data['listGoodsInfo']              = $listSkuInfo;
 $data['pageViewData']               = $page->getViewData();
 $data['onlineStatus']               = array(
     'online'    => Goods_OnlineStatus::ONLINE,
