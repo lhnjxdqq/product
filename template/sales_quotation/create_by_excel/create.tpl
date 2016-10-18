@@ -62,18 +62,18 @@
                             <thead>
                                 <tr class="info">
                                     <th rowspan="2" style="width: 60px;">选择</th>
+                                    <th rowspan="2" width="60">操作</th>
                                     <th rowspan="2">SPU编号</th>
-                                    <th rowspan="2">SPU名称</th>
-                                    <th rowspan="2">产品图片</th>
                                     <th rowspan="2">买款ID</th>
-                                    <th rowspan="2">三级分类</th>
+                                    <th rowspan="2">产品图片</th>
                                     <th rowspan="2">规格重量(g)</th>
-                                    <th rowspan="2">规格尺寸</th>
-                                    <th rowspan="2">主料材质</th>
                                     <th rowspan="2">统一出货价</th>
                                     <th colspan="<{count($mapColorSpecValueInfo)}>">出货工费</th>
                                     <th rowspan="2" width="100">备注</th>
-                                    <th rowspan="2" width="60">操作</th>
+                                    <th rowspan="2">三级分类</th>
+                                    <th rowspan="2">SPU名称</th>
+                                    <th rowspan="2">规格尺寸</th>
+                                    <th rowspan="2">主料材质</th>
                                 </tr>
                                 <tr class="info">
                                     <{foreach from=$mapColorSpecValueInfo item=colorValueData}>
@@ -86,18 +86,17 @@
                                 <{foreach from=$sourceDetail.list_spu_info item=spuDetail}>
                                 <tr class="spu-single <{if ($smarty.foreach.sourceDetail.index % 2) == 0}>success<{else}>warning<{/if}><{if $sourceDetail.is_red_bg}> danger<{/if}>">
                                     <td><input type="checkbox" name="select" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"></td>
+                                        <td>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-single" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"><i class="fa fa-trash-o"></i></a>
+                                    </td>
                                     <td><{$spuDetail.spu_sn}></td>
-                                    <td><{$spuDetail.spu_name}></td>
+                                    <td><{$sourceDetail.source_code}></td>
                                     <td>
                                         <a href="<{$spuDetail.image_url|default:'/images/product_default.png'}>" target="_blank">
                                             <img src="<{$spuDetail.image_url|default:'/images/product_default.png'}>" class='act-zoom width-100'">
                                         </a>
                                     </td>
-                                    <td><{$sourceDetail.source_code}></td>
-                                    <td><{$spuDetail.category_name}></td>
                                     <td><{implode(',', $spuDetail.weight_value_data_list)}></td>
-                                    <td><{implode(',', $spuDetail.size_value_data_list)}></td>
-                                    <td><{implode(',', $spuDetail.material_value_data_list)}></td>
                                     <td>
                                         <div class="input-group">
                                           <input type="text" style="width: 66px;" value='<{$spuDetail.unified_cost}>' name='cost' class="form-control input-cost">
@@ -115,9 +114,10 @@
                                     <td>
                                         <input type="text" name="spu-remark" class="form-control" style="width: 100px;" value="<{$sourceDetail.map_spu_list[$spuDetail.spu_id]['remark']}>">
                                     </td>
-                                    <td>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-xs del-spu-single" sourcecode="<{$sourceDetail.source_code}>" spuid="<{$spuDetail.spu_id}>"><i class="fa fa-trash-o"></i></a>
-                                    </td>
+                                    <td><{$spuDetail.category_name}></td>
+                                    <td><{$spuDetail.spu_name}></td>
+                                    <td><{implode(',', $spuDetail.size_value_data_list)}></td>
+                                    <td><{implode(',', $spuDetail.material_value_data_list)}></td>
                                 </tr>
                                 <{/foreach}>
                             <{/foreach}>
