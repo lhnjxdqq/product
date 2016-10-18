@@ -26,7 +26,6 @@ if (empty($file)) {
 
     throw   new ApplicationException('无效文件');
 }
-
 $prefix = Config::get('path|PHP', $module);
 $path   = $prefix . $file;
 
@@ -35,10 +34,10 @@ if (!is_file($path)) {
     throw   new ApplicationException('文件不存在');
 }
 if(isset($_GET['file_name'])){
-    
-   $file = $_GET['file_name'].'.xlsx'; 
+ 
+    $file = $_GET['file_name'].'.xlsx'; 
 }
 
 header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename=' . basename($file));
+header('Content-Disposition: attachment; filename='.preg_replace('/^.+[\\\\\\/]/', '', $file));
 readfile($path);
