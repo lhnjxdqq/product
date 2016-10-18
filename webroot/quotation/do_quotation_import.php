@@ -196,4 +196,4 @@ Quotation_Info::create(array(
     'status_code'               => Quotation_StatusCode::NOTGERERATE,
 ));
 
-Utility::notice('上传报价单成功');
+Utility::notice('上传报价单成功','/quotation/index.php');
