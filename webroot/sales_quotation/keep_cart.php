@@ -39,7 +39,7 @@ foreach($data as $spuId => $colorCost){
     Cart_Spu_Info::update(array(
         'user_id'               => $userId,
         'spu_id'                => $spuId,
-        'spu_color_cost_data'   => json_encode(array_filter($colorCost)),
+        'spu_color_cost_data'   => json_encode($colorCost),
         'remark'            => $remark,
     ));
 }

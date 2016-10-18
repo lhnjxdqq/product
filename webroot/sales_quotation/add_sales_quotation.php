@@ -82,12 +82,8 @@ foreach($listCartInfo as $cartSpuId => $info){
         
         foreach($indexCartColorId[$info['spu_id']]['color'] as $colorId => $cost){
             
-            if(!is_numeric($cost)){
-
-                continue;
-            }
-            if(!empty($cost)){
-                 
+            if(isset($cost)){
+                
                 $content = array(
                     'sales_quotation_id'            => $salesQuotationId,
                     'spu_id'                        => $info['spu_id'],
@@ -103,12 +99,10 @@ foreach($listCartInfo as $cartSpuId => $info){
      
         foreach($mapSpuColorCost[$info['spu_id']] as $colorId => $cost){
             
-            if(!is_numeric($cost)){
-
-                continue;
-            }
-            if(!empty($cost)){
-                 
+                if($cost == '' || $cost == 0){
+                    $cost = "0";
+                }
+                
                 $content = array(
                     'sales_quotation_id'            => $salesQuotationId,
                     'spu_id'                        => $info['spu_id'],
@@ -117,8 +111,7 @@ foreach($listCartInfo as $cartSpuId => $info){
                     'sales_quotation_remark'        => $info['remark'],
                     'identical_source_code_spu_num' => $identicalSourceCodeSpuNum,
                 );
-                Sales_Quotation_Spu_Info::create($content);
-            }      
+                Sales_Quotation_Spu_Info::create($content);   
         }   
     }
 }

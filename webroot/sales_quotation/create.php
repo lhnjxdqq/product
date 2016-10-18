@@ -202,12 +202,12 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         
         if($indexCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
             
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+            $listSpuInfo[$key]['color'][$colorId] = isset($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $indexCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
             $listSpuInfo[$key]['spu_remark'] = $indexCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
             $listSpuInfo[$key]['is_exist']  = 1;
         } else {
         
-            $listSpuInfo[$key]['color'][$colorId] = !empty($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $mapSpuColorCost[$spuInfo['spu_id']][$colorId] : "-"; 
+            $listSpuInfo[$key]['color'][$colorId] = isset($mapSpuColorCost[$spuInfo['spu_id']][$colorId]) ? $mapSpuColorCost[$spuInfo['spu_id']][$colorId] : "-"; 
             $listSpuInfo[$key]['spu_remark']      = $mapSpuRemark[$spuInfo['spu_id']];
         }
         $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];

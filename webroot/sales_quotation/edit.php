@@ -252,12 +252,12 @@ foreach ($listSpuInfo as $key => $spuInfo) {
                 
             if($indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId]){
                                 
-                $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
+                $listSpuInfo[$key]['color'][$colorId] = isset($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $indexOldCartColorId[$spuInfo['spu_id']]['color'][$colorId] : "-";
                 $listSpuInfo[$key]['spu_remark'] = $indexOldCartColorId[$spuInfo['spu_id']]['sales_quotation_remark'][$spuInfo['spu_id']];
                 $listSpuInfo[$key]['is_exist']  = 1;
             } else {
             
-                $listSpuInfo[$key]['color'][$colorId] = !empty($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $salesQuotationMarkupRule : "-"; 
+                $listSpuInfo[$key]['color'][$colorId] = isset($mapColorInfo[$spuInfo['spu_id']][$colorId]) ? $mapColorInfo[$spuInfo['spu_id']][$colorId] + $salesQuotationMarkupRule : "-"; 
             }      
         }
     }else{
