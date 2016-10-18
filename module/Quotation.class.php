@@ -1146,7 +1146,7 @@ class   Quotation {
         $listSpuInfo['quotation']['customer_id']            = $salesQuotationInfo['customer_id'];
         $listSpuInfo['quotation']['sales_quotation_id']     = $salesQuotationInfo['sales_quotation_id'];
         $listSpuInfo['quotation']['sales_quotation_name']   = $salesQuotationInfo['sales_quotation_name'];
-var_dump($listSpuInfo);die;
+
         $path   = self::getFilePathBySalesQuotationId();
         $stream                     = Config::get('path|PHP', 'sales_quotation_product').$path;
 
