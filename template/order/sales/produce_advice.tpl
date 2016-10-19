@@ -31,36 +31,26 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-hover general-view">
+                    <table class="table table-hover general-view table-bordered">
                         <tr>
                             <th>下单数量</th>
                             <td><{$data.salesOrderInfo.quantity_total}></td>
-                        </tr>
-                        <tr>
                             <th>商品款数</th>
                             <td><{$data.salesOrderInfo.count_goods}></td>
-                        </tr>
-                        <tr>
                             <th>下单重量</th>
                             <td><{$data.salesOrderInfo.reference_weight}></td>
                         </tr>
                         <tr>
                             <th>已采购数量</th>
                             <td><{$data.salesOrderInfo.produce_quantity_total}></td>
-                        </tr>
-                        <tr>
                             <th>已采购款数</th>
                             <td><{$data.salesOrderInfo.produce_goods_count}></td>
-                        </tr>
-                        <tr>
                             <th>已采购重量</th>
                             <td><{$data.salesOrderInfo.produce_weight_count}></td>
                         </tr>
                         <tr>
                             <th>已采购次数</th>
                             <td><{$data.salesOrderInfo.produce_order_count}></td>
-                        </tr>
-                        <tr>
                             <th>相关生产订单</th>
                             <td>
                                 <{foreach from=$data.salesOrderInfo.produce_order_list item=item name=produceOrder}>
