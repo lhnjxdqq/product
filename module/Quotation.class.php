@@ -1075,6 +1075,10 @@ class   Quotation {
         //获取颜色属性Id列表
         $listSpecValueColotId   = array();
 
+        if(!empty($mapColorInfo)){
+            
+            continue;
+        }
         foreach($mapColorInfo as $spuId=>$colorCost){
             
             foreach($colorCost as $specColorId=>$cost){
