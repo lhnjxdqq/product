@@ -31,7 +31,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-hover general-view">
+                    <table class="table table-hover general-view table-bordered">
                         <tr>
                             <th>订单状态</th>
                             <td><{$mapOrderStatus[$salesOrderInfo.sales_order_status]['status_name']}></td>

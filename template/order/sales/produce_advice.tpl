@@ -31,7 +31,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-hover general-view">
+                    <table class="table table-hover general-view table-bordered">
                         <tr>
                             <th>下单数量</th>
                             <td><{$data.salesOrderInfo.quantity_total}></td>
