@@ -115,21 +115,18 @@ foreach($data as $spuId => $colorCost){
     foreach($colorCost as $colorId => $cost){
 
         if($cost == '' || $cost == 0){
-            $cost = "0";
+            $cost = 0;
         }
-        
-        if(!empty($cost) && is_numeric($cost)){
-             
-            $content = array(
-                'sales_quotation_id'    => $salesQuotationId,
-                'spu_id'                => $spuId,
-                'cost'                  => $cost,
-                'color_id'              => $colorId,
-                'sales_quotation_remark'=> $remark,
-                'is_red_bg'             => $isRed,
-            );       
-            Sales_Quotation_Spu_Info::update($content);
-        }
+    
+        $content = array(
+            'sales_quotation_id'    => $salesQuotationId,
+            'spu_id'                => $spuId,
+            'cost'                  => $cost,
+            'color_id'              => $colorId,
+            'sales_quotation_remark'=> $remark,
+            'is_red_bg'             => $isRed,
+        );       
+        Sales_Quotation_Spu_Info::update($content);
     }
 }
 Utility::notice('报价单修改成功', '/sales_quotation/index.php');
