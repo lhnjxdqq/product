@@ -78,41 +78,22 @@ foreach($listCartInfo as $cartSpuId => $info){
         }
     }
 
-    if(!empty($indexCartColorId[$info['spu_id']])){
-        
-        foreach($indexCartColorId[$info['spu_id']]['color'] as $colorId => $cost){
+    foreach($mapSpuColorCost[$info['spu_id']] as $colorId => $cost){
+    
+        if($cost == '' || $cost == 0){
             
-            if(isset($cost)){
-                
-                $content = array(
-                    'sales_quotation_id'            => $salesQuotationId,
-                    'spu_id'                        => $info['spu_id'],
-                    'cost'                          => $cost,
-                    'color_id'                      => $colorId,
-                    'sales_quotation_remark'        => $indexCartColorId[$info['spu_id']]['sales_quotation_remark'][$info['spu_id']],
-                    'identical_source_code_spu_num' => $identicalSourceCodeSpuNum,
-                );
-                Sales_Quotation_Spu_Info::create($content);
-            }      
+            $cost = "0";
         }
-    }else{
-     
-        foreach($mapSpuColorCost[$info['spu_id']] as $colorId => $cost){
-            
-                if($cost == '' || $cost == 0){
-                    $cost = "0";
-                }
-                
-                $content = array(
-                    'sales_quotation_id'            => $salesQuotationId,
-                    'spu_id'                        => $info['spu_id'],
-                    'cost'                          => $cost,
-                    'color_id'                      => $colorId,
-                    'sales_quotation_remark'        => $info['remark'],
-                    'identical_source_code_spu_num' => $identicalSourceCodeSpuNum,
-                );
-                Sales_Quotation_Spu_Info::create($content);   
-        }   
+        
+        $content = array(
+            'sales_quotation_id'            => $salesQuotationId,
+            'spu_id'                        => $info['spu_id'],
+            'cost'                          => $cost,
+            'color_id'                      => $colorId,
+            'sales_quotation_remark'        => $info['remark'],
+            'identical_source_code_spu_num' => $identicalSourceCodeSpuNum,
+        );
+        Sales_Quotation_Spu_Info::create($content);   
     }
 }
 Cart_Spu_Info::cleanByUserId($_SESSION['user_id']);
