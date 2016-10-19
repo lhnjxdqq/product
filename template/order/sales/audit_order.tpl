@@ -35,44 +35,30 @@
                         <tr>
                             <th>订单状态</th>
                             <td><{$mapOrderStatus[$salesOrderInfo.sales_order_status]['status_name']}></td>
-                        </tr>
-                        <tr>
                             <th>客户名称</th>
                             <td><{$mapCustomer[$salesOrderInfo.customer_id]['customer_name']}></td>
-                        </tr>
-                        <tr>
                             <th>下单数量</th>
                             <td><{$salesOrderInfo.quantity_total}></td>
                         </tr>
                         <tr>
                             <th>下单款数</th>
                             <td><{$salesOrderInfo.count_goods}></td>
-                        </tr>
-                        <tr>
                             <th>订单金额</th>
                             <td><{$salesOrderInfo.order_amount}></td>
-                        </tr>
-                        <tr>
                             <th>下单人员</th>
                             <td><{$mapUser[$salesOrderInfo.create_user_id]['username']}></td>
                         </tr>
                         <tr>
                             <th>销售员</th>
                             <td><{$mapSalesperson[$salesOrderInfo.salesperson_id]['salesperson_name']}></td>
-                        </tr>
-                        <tr>
                             <th>下单时间</th>
                             <td><{$salesOrderInfo.order_time}></td>
-                        </tr>
-                        <tr>
                             <th>预付金额</th>
                             <td><{$salesOrderInfo.prepaid_amount}></td>
                         </tr>
                         <tr>
                             <th>订单类型</th>
                             <td><{$mapOrderStyle[$salesOrderInfo.order_type_id]['order_type_name']}></td>
-                        </tr>
-                        <tr>
                             <th>订单备注</th>
                             <td><{$salesOrderInfo.order_remark}></td>
                         </tr>
