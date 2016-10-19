@@ -1119,7 +1119,7 @@ class   Quotation {
                 $colorCost                  = (float) $listSpuInfo[$key]['color'][$mapGoodsValueColorId[$goodsId]['color_id']];
                 if((empty($colorCost) || !is_numeric($colorCost)) && $colorCost == 0){
 
-                    continue;die;
+                    continue;
                 }
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_id']       = $goodsId;
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_sn']       = $mapAllGoodsInfo[$goodsId]['goods_sn'];
