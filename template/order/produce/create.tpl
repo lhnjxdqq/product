@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-2">预计到货时间</label>
                             <div class="col-md-10">
-                                <input type="text" readonly class="form-control" name="arrival-date" style="background: #fff;" value="<{date('Y-m-d')}>">
+                                <input type="text" readonly class="form-control" name="arrival-date" style="background: #fff;" value="<{date('Y-m-d', strtotime('+15 days'))}>">
                             </div>
                         </div>
                         <div class="form-group">
