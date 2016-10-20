@@ -177,7 +177,10 @@
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td><{$item.cost}></td>
+                                        <td>
+                                            <input type='hidden' name='goods_id<{$item.goods_id}>[cost]' value='<{$item.cost}>'>
+                                            <{$item.cost}>
+                                        </td>
                                         <td>
                                             <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
                                             <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>
@@ -323,11 +326,13 @@ $(function () {
 
         var inputQuantitly  = "input[name=\"goods_id"+goodsId+"[quantity]\"]",
         inputRemark         = "input[name=\"goods_id"+goodsId+"[goods_remark]\"]",
-        inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";        
+        inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";       
+        inputCost           = "input[name=\"goods_id"+goodsId+"[cost]\"]";       
         
-        var quantity =  parseInt($(inputQuantitly).val()),
+        var quantity  =  parseInt($(inputQuantitly).val()),
             remark    = $(inputRemark).val(),
             weight    = $(inputWeight).val();
+            cost      = $(inputCost).val();
         
         if(quantity<1){
            
@@ -342,6 +347,7 @@ $(function () {
             quantity            : quantity,
             remark              : remark,
             weight              : weight,
+            cost                : cost,
             '__output_format'   : 'JSON'
         }, function (response) {
 
