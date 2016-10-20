@@ -10,6 +10,7 @@ $content    = array(
     'goods_quantity'    => (int)$_POST['quantity'],
     'reference_weight'  => ((int) $_POST['quantity']) * $_POST['weight'],
     'remark'            => $_POST['remark'],
+    'cost'              => sprintf('%.2f', (float) trim($_POST['cost'])),
 );
 
 
