@@ -30,7 +30,7 @@ if (!$listExportTask) {
     exit('无导出任务,请稍候重试!' . "\n");
 }
 
-foreach ($listExportTask as $export) {
+foreach ($listExportTask as $exportTask) {
 
     // $exportTask     = current($listExportTask);
     $salesOrderId   = $exportTask['sales_order_id'];
