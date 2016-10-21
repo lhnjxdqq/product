@@ -10,7 +10,7 @@ $content    = array(
     'goods_quantity'    => (int)$_POST['quantity'],
     'reference_weight'  => ((int) $_POST['quantity']) * $_POST['weight'],
     'remark'            => $_POST['remark'],
-    'cost'              => $_POST['cost'],
+    'cost'              => sprintf('%.2f', (float) trim($_POST['cost'])),
 );
 
 $salesGoodsOrderInfo         = Sales_Order_Goods_Info::getBySalesOrderIdAndGooodsID($_POST['sales_order_id'],$_POST['goods_id']);
