@@ -70,6 +70,25 @@ class Sales_Order_Export_Adapter_Standard implements Sales_Order_Export_Adapter_
         return false;
     }
 
+    static public function testExport($salesOrderId) {
+
+        // 初始化
+        self::_initialize($salesOrderId);
+        // 设置表头
+        self::_setTableHead();
+        // 设置写的数据
+        self::_setSheetData();
+
+        // 保存
+        self::$_writer->save(self::$_savePath);
+
+        $pathConfig = Config::get('path|PHP', 'sales_order_export');
+        if (is_file(self::$_savePath)) {
+            return  str_replace($pathConfig, '', self::$_savePath);
+        }
+        return false;
+    }
+
     /**
      * 向sheet写入数据
      */
@@ -112,11 +131,10 @@ class Sales_Order_Export_Adapter_Standard implements Sales_Order_Export_Adapter_
     static private function _getSheetData () {
 
         $orderData          = self::_getOrderData();
-
-        foreach ($orderData as $spuId => $mapSpuOrderRelation) {
+        $result             = array();
+        $rowNumber          = 1;
             
-            $result             = array();
-            $rowNumber          = 1;
+        foreach ($orderData as $spuId => $mapSpuOrderRelation) {
 
             foreach ($mapSpuOrderRelation as $colorId => $mapColorRelation) {
 
@@ -170,6 +188,7 @@ class Sales_Order_Export_Adapter_Standard implements Sales_Order_Export_Adapter_
                 $rowNumber++;
             }
         }
+
         return          $result ? $result : array();
     }
 
