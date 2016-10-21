@@ -1,14 +1,12 @@
 <?php
 return  array(
-    'quotation_import'          => '/home/shuishou/project/product.kuandd.com/data/quotation/',
-    'sales_quotation_export'    => '/home/shuishou/project/product.kuandd.com/data/sales_quotation/',
-    'sales_order_import'        => '/home/shuishou/project/product.kuandd.com/data/sales_order/',
-    'goods_import'              => '/home/shuishou/project/product.kuandd.com/data/goods_import/',
-    'spu_import'                => '/home/shuishou/project/product.kuandd.com/data/spu_import/',
-    'produce_order_export'      => '/home/shuishou/project/product.kuandd.com/data/produce_order/',
-    'borrow_export'             => '/home/shuishou/project/product.kuandd.com/data/borrow/',
-    'storage_import'            => '/home/shuishou/project/product.kuandd.com/data/storage_import/',
-    'refund_export'             => '/home/shuishou/project/product.kuandd.com/data/refund_export/',
-    'shortages_export'          => '/home/shuishou/project/product.kuandd.com/data/shortages_export/',
-    'sales_quotation_product'   => '/home/shuishou/project/product.kuandd.com/data/sales_quotation/product/',
+    'quotation_import'          => '/home/dev/qa.product.kuandd.com/data/quotation/',
+    'sales_quotation_export'    => '/home/dev/qa.product.kuandd.com/data/sales_quotation/',
+    'sales_order_import'        => '/home/dev/qa.product.kuandd.com/data/sales_order/',
+    'goods_import'              => '/home/dev/qa.product.kuandd.com/data/goods_import/',
+    'spu_import'                => '/home/dev/qa.product.kuandd.com/data/spu_import/',
+    'produce_order_export'      => '/home/dev/qa.product.kuandd.com/data/produce_order/',
+    // 销售订单导出路径
+    'sales_order_export'        => '/home/dalei/project/dalei.product.kuandd.com/data/sales_order/',
+    'borrow_export'             => '/home/dev/qa.product.kuandd.com/data/borrow/',
 );
