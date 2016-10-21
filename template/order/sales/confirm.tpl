@@ -112,7 +112,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary pull-left">添加产品</a>
-                    <span class='pull-right'>共计<span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款,<span id='quantity'><{$salesOrderInfo.quantity_total}></span>件,重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
+                    <span class='pull-right'>共计<span><{$countRelationSpu}></span>个SPU, <span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款, <span id='quantity'><{$salesOrderInfo.quantity_total}></span>件, 重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
                 </div>
             </form>
             </div>

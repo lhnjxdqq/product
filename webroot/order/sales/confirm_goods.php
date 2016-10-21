@@ -24,7 +24,13 @@ if(empty($listGoods)){
     
     Utility::notice('销售订单中没有产品','/order/sales/add_goods.php?sales_order_id='.$salesOrderId);
 }
+
 $skuRelationShipSpuInfo = Spu_Goods_RelationShip::getByMultiGoodsId($listGoods);
+
+// 该销售订单中SKU相关的SPU数量
+$salesOrderSkuSpuRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoods);
+$listRelationSpuId          = array_unique(ArrayUtility::listField($salesOrderSkuSpuRelation, 'spu_id'));
+$countRelationSpu           = count($listRelationSpuId);
 
 //查出所有关联Spu的信息
 $listSpuInfo        = ArrayUtility::indexByField(Spu_Info::getByMultiId(ArrayUtility::listField($skuRelationShipSpuInfo,'spu_id')),'spu_id');
@@ -168,5 +174,6 @@ $template->assign('data', $data);
 $template->assign('indexSales', $indexSales);
 $template->assign('salesOrderId', $salesOrderId);
 $template->assign('salesOrderInfo', $salesOrderInfo);
+$template->assign('countRelationSpu', $countRelationSpu);
 $template->display('order/sales/confirm.tpl');
 
