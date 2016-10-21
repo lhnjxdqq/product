@@ -114,7 +114,7 @@
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td><{$item.cost}></td>
+                                        <td><{$indexSales[$item.goods_id]['cost']}></td>
                                         <td><{$item.remark}></td>
                                         <td><{$item.quantity}></td>
                                     </tr>
