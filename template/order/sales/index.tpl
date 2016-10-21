@@ -113,9 +113,6 @@
                                                     <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
                                                 <{/if}>
                                                 <a href='/order/sales/sales_order_detail.php?sales_order_id=<{$item.sales_order_id}>' target='_blank' class="btn btn-primary btn-xs" type='button'>查看清单</a>
-                                                <{if $item.sales_order_status == 100}>
-                                                    <a href='#' class="btn btn-primary btn-xs" type='button'>导出</a>
-                                                <{/if}>
                                                 <{if $item.sales_order_status eq 1}>
                                                     <a href='/order/sales/audit_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>审核订单</a>
                                                     <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
@@ -232,7 +229,16 @@ $(function(){
         }, 'json');  
         
     });
-});    
+});
+    // 重新导出订单
+    function reExport (salesOrderId) {
+
+        if (confirm('确定要重新导出该订单吗 ?')) {
+
+            var redirect    = '/order/sales/create_export_task.php?sales_order_id=' + salesOrderId;
+            location.href   = redirect;
+        }
+    }     
 </script>
 </body>
 </html>
