@@ -21,18 +21,7 @@
                 <li class="active">确定产品</li>
             </ol>
         </section>
-            <div class="box collapsed-box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">表格操作</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <div class="box-body" id="sku-list-vis">
-
-                </div>
-            </div>
-            <!-- /.box -->
+            
         <!-- Main content -->
         <section class="content">
             <div class="box">
