@@ -79,10 +79,10 @@ class   Produce_Order_Export_Task {
      * @param $produceOrderId   生产订单ID
      * @return array
      */
-    static public function getBySalesOrderId ($salesOrderId) {
+    static public function getByProduceOrderId ($produceOrderId) {
 
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $salesOrderId . '" ORDER BY `task_id` ASC';
-
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '" ORDER BY `task_id` ASC';
+        
         return  self::_getStore()->fetchOne($sql);
     }
 
