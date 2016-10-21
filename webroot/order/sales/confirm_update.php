@@ -33,7 +33,6 @@ $salesSkuInfo   = Sales_Order_Goods_Info::getBySalesOrderId($_POST['sales_order_
 $listGoodsId                = ArrayUtility::listField($salesSkuInfo,'goods_id');
 $salesOrderSkuSpuRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
 $listRelationSpuId          = array_unique(ArrayUtility::listField($salesOrderSkuSpuRelation, 'spu_id'));
-$countRelationSpu           = count($listRelationSpuId);
 
 Sales_Order_Info::update(array(
         'sales_order_id'    => $_POST['sales_order_id'],
@@ -47,7 +46,7 @@ echo    json_encode(array(
     'code'      => 0,
     'message'   => 'OK',
     'data'      => array(
-        'countRelationSpu'  => $countRelationSpu,
+        'countRelationSpu'  => count($listRelationSpuId),
         'count'             => count($salesSkuInfo),
         'reference_weight'  => array_sum(ArrayUtility::listField($salesSkuInfo,'reference_weight')),
         'quantity_total'    => array_sum(ArrayUtility::listField($salesSkuInfo,'goods_quantity')),
