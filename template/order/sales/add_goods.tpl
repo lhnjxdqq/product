@@ -373,6 +373,7 @@ $(function () {
                 return  ;
             }else{
 
+                // 更新SPU数量
                 $('#countRelationSpu').html(response.data.countRelationSpu);
                 $("#goodsQuantity").html(response.data.count);
                 $("#weight_total").html(response.data.reference_weight);
