@@ -26,7 +26,11 @@ foreach ($json as $key => $item) {
 }
 
 foreach($data as $goodsId=> $info){
-    
+
+    if (!array_key_exists('weight', (array) $info)) {
+
+        continue;
+    }
     $content    = array(
         'sales_order_id'    => $salesOrderId,
         'goods_id'          => $goodsId,

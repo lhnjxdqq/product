@@ -31,63 +31,44 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-hover general-view">
+                    <table class="table table-hover general-view table-bordered">
                         <tr>
                             <th>订单状态</th>
                             <td><{$mapOrderStatus[$salesOrderInfo.sales_order_status]['status_name']}></td>
-                        </tr>
-                        <tr>
                             <th>客户名称</th>
                             <td><{$mapCustomer[$salesOrderInfo.customer_id]['customer_name']}></td>
-                        </tr>
-                        <tr>
                             <th>下单数量</th>
                             <td><{$salesOrderInfo.quantity_total}></td>
                         </tr>
                         <tr>
                             <th>下单款数</th>
                             <td><{$salesOrderInfo.count_goods}></td>
-                        </tr>
-                        <tr>
                             <th>订单金额</th>
                             <td><{$salesOrderInfo.order_amount}></td>
-                        </tr>
-                        <tr>
                             <th>下单人员</th>
                             <td><{$mapUser[$salesOrderInfo.create_user_id]['username']}></td>
                         </tr>
                         <tr>
                             <th>销售员</th>
                             <td><{$mapSalesperson[$salesOrderInfo.salesperson_id]['salesperson_name']}></td>
-                        </tr>
-                        <tr>
                             <th>下单时间</th>
                             <td><{$salesOrderInfo.order_time}></td>
-                        </tr>
-                        <tr>
                             <th>发货数量</th>
                             <td><{$sumShipment}></td>
                         </tr>
                         <tr>
                             <th>发货重量</th>
                             <td><{$salesOrderInfo.reference_weight}>g</td>
-                        </tr>
-                        <tr>
                             <th>成交金额</th>
                             <td><{$salesOrderInfo.transaction_amount}></td>
-                        </tr>
-                        <tr>
                             <th>预付金额</th>
                             <td><{$salesOrderInfo.prepaid_amount}></td>
                         </tr>
                         <tr>
                             <th>订单类型</th>
                             <td><{$mapOrderStyle[$salesOrderInfo.order_type_id]['order_type_name']}></td>
-                        </tr>
                             <th>审核人</th>
                             <td><{$mapUser[$salesOrderInfo.audit_person_id]['username']}></td>
-                        </tr>
-                        <tr>
                             <th>订单备注</th>
                             <td><{$salesOrderInfo.order_remark}></td>
                         </tr>
@@ -145,7 +126,7 @@
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td><{$item.cost}></td>
+                                        <td><{$indexSales[$item.goods_id]['cost']}></td>
                                         <td><{$item.remark}></td>
                                         <td><{$item.quantity}></td>
                                         <td><{$indexSales[$item.goods_id]['shipment']}></td>

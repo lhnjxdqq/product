@@ -43,7 +43,7 @@
                         <a class="btn btn-primary btn-sm" style="margin-left: 10px;" id="delMultiProduct" href="javascript:void(0);"><i class="fa fa-trash"></i> 批量删除</a>
                     </div>
                     <div class="pull-right count-cart" style="margin-top: 5px;">
-                        共计<span class="count-goods"><{$data.countSupplierCart.count_goods}></span>款, <span class="count-quantity"><{$data.countSupplierCart.count_quantity}></span>件, 重量<span class="count-weight"><{$data.countSupplierCart.count_weight}></span>克
+                        共计<span><{$data.countSourceCode}></span>个买款ID, <span class="count-goods"><{$data.countSupplierCart.count_goods}></span>款, <span class="count-quantity"><{$data.countSupplierCart.count_quantity}></span>件, 重量<span class="count-weight"><{$data.countSupplierCart.count_weight}></span>克
                     </div>
                 </div>
                 <!-- /.box-header -->

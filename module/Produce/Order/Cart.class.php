@@ -98,6 +98,23 @@ class   Produce_Order_Cart {
     }
 
     /**
+     * 按条件统计买款ID
+     *
+     * @param array $condition
+     * @return int
+     */
+    static public function countSourceCode (array $condition) {
+
+        $sqlBase        = 'SELECT COUNT(1) AS `cnt` FROM ( SELECT `source_info`.`source_code` FROM `produce_order_cart` LEFT JOIN ';
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlCondition   = self::_condition($condition);
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . ' GROUP BY `source_info`.`source_code`) AS `alias`';
+        $row            = self::_getStore()->fetchOne($sql);
+
+        return          (int) $row['cnt'];
+    }
+
+    /**
      * 根据条件拼接WHERE子句
      *
      * @param array $condition  条件

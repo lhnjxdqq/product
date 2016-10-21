@@ -193,6 +193,7 @@ $data['onlineStatus']               = array(
 
 $template = Template::getInstance();
 $template->assign('data', $data);
+$template->assign('indexSales', $indexSales);
 $template->assign('salesOrderId', $salesOrderId);
 $template->assign('salesOrderInfo', $salesOrderInfo);
 $template->assign('mapUser', $mapUser);

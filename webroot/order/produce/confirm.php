@@ -55,6 +55,7 @@ $page                   = new PageList(array(
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
+$countSourceCode        = Produce_Order_Cart::countSourceCode($condition);
 $listProduceProduct     = Produce_Order_Cart::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
 foreach ($listProduceProduct as &$productInfo) {
@@ -77,6 +78,7 @@ foreach ($listProduceProduct as &$productInfo) {
 $data['supplierInfo']       = $supplierInfo;
 $data['listProduceProduct'] = $listProduceProduct;
 $data['countSupplierCart']  = $countSupplierCart;
+$data['countSourceCode']    = $countSourceCode;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
 

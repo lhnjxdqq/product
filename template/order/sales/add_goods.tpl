@@ -152,10 +152,10 @@
                                     <th>规格尺寸</th>
                                     <th>颜色</th>
                                     <th>主料材质</th>
-                                    <th>出货工费</th>
                                     <th>备注</th>
                                     <th>数量</th>
                                     <th>操作</th>
+                                    <th>出货工费</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,7 +177,6 @@
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td><{$item.cost}></td>
                                         <td>
                                             <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
                                             <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>
@@ -194,6 +193,18 @@
                                         </td>
                                         <td>
                                             <button class="order-goods-update goods-id-<{$item.goods_id}> btn btn-<{if $item.isset_order eq 0}>primary"<{else}>default" disabled="disabled"<{/if}> goods-id='<{$item.goods_id}>'><{if $item.isset_order eq 1}>已加入订单<{else}>点击添加<{/if}></button>
+                                        </td>
+                                        <td class="item-cost">
+                                            <{if array_key_exists($item.goods_id, $indexSales)}>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" value="<{$indexSales[$item.goods_id]['cost']}>" name="cost" style="width:66px;">
+                                                <span class="input-group-btn update-cost-btn">
+                                                    <button class="btn btn-default" disabled><i class="fa fa-check"></i></button>
+                                                </span>
+                                            </div>
+                                            <{else}>
+                                                <{$item.cost}>
+                                            <{/if}>
                                         </td>
                                     </tr>
                                 <{/foreach}>
@@ -321,10 +332,15 @@ $(function () {
         
         goodsId = $(this).attr('goods-id');
 
+        var self        = $(this);
+        var itemCostTD  = self.parents('td').siblings('td.item-cost');
+        var costValue   = itemCostTD.text();
+        costValue       = $.trim(costValue);
+
         var inputQuantitly  = "input[name=\"goods_id"+goodsId+"[quantity]\"]",
         inputRemark         = "input[name=\"goods_id"+goodsId+"[goods_remark]\"]",
-        inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";        
-        
+        inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";
+
         var quantity =  parseInt($(inputQuantitly).val()),
             remark    = $(inputRemark).val(),
             weight    = $(inputWeight).val();
@@ -342,6 +358,7 @@ $(function () {
             quantity            : quantity,
             remark              : remark,
             weight              : weight,
+            cost                : costValue,
             '__output_format'   : 'JSON'
         }, function (response) {
 
@@ -355,6 +372,8 @@ $(function () {
                 $("#goodsQuantity").html(response.data.count);
                 $("#weight_total").html(response.data.reference_weight);
                 $("#quantity").html(response.data.quantity_total);
+                var itemCostTdHtml  = '<div class="input-group"><input type="text" class="form-control" value="' + costValue + '" name="cost" style="width:66px;"><span class="input-group-btn update-cost-btn"><button class="btn btn-default" disabled><i class="fa fa-check"></i></button></span></div>';
+                itemCostTD.html(itemCostTdHtml);
             }
             
         }, 'json');
@@ -364,7 +383,63 @@ $(function () {
         $(this).attr("disabled",true);
         $(this).html('已加入订单');
     });
-    
+
+    var timer;
+    $(document).delegate('td.item-cost input[name="cost"]', 'focus', function () {
+
+        var self        = $(this);
+        var updateBtn   = self.siblings('span.update-cost-btn').find('button');
+        var oldCost     = self.val();
+        timer           = setInterval(function () {
+
+            var newCost = self.val();
+            if (newCost != oldCost) {
+
+                updateBtn.removeClass('btn-default').addClass('btn-info').removeAttr('disabled');
+            }
+        }, 100);
+    });
+
+    $(document).delegate('td.item-cost input[name="cost"]', 'blur', function () {
+
+        clearInterval(timer);
+    });
+
+    $(document).delegate('td.item-cost span.update-cost-btn', 'click', function () {
+
+        var self            = $(this);
+        var updateBtn       = self.find('button');
+        var costValue       = self.siblings('input[name="cost"]').val();
+        var salesOrderId    = <{$smarty.get.sales_order_id}>;
+        var goodsId         = self.parents('tr').find('button.order-goods-update').attr('goods-id');
+
+        if (typeof(updateBtn.attr('disabled')) != 'undefined') {
+
+            return;
+        }
+
+        $.ajax({
+            url         : '/order/sales/update_cost.php',
+            type        : 'POST',
+            dataType    : 'JSON',
+            data        : {
+                sales_order_id: salesOrderId,
+                goods_id: goodsId,
+                cost: costValue
+            },
+            success     : function (response) {
+
+                if (response.code != 0) {
+
+                    alert(response.message);
+                    return;
+                }
+                alert('更新工费成功');
+                updateBtn.removeClass('btn-info').addClass('btn-default').attr('disabled', true);
+            }
+        });
+    });
+
     tableColumn({
         selector    : '#sku-list',
         container   : '#sku-list-vis'
