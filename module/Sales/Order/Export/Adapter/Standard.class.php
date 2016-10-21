@@ -155,18 +155,18 @@ class Sales_Order_Export_Adapter_Standard implements Sales_Order_Export_Adapter_
                         $cost               = $info['cost'];
                     }
                     $weight[]               = $info['goods_quantity'] * $info['weight_value_data'];
-                    $remarkOfQuantity[]     = $info['size_value_data'] . '数量' . $info['goods_quantity'];
+                    $remark = '';
+                    $remark = $info['size_value_data'] . '数量' . $info['goods_quantity'];
+                    $remark .= $info['remark'] ? (',' . $info['remark']) : '';
+                    $remarkOfQuantity[]     = $remark;
                 }
 
                 $totalWeight                = 0;
                 $totalQuantity              = 0;
-                $remarkOfText               = array();
                 $remark                     = '';
                 $totalQuantity              = array_sum(ArrayUtility::listField($mapColorRelation, 'goods_quantity'));
                 $totalWeight                = array_sum($weight);
-                $remarkOfText               = array_map('trim', array_unique(ArrayUtility::listField($mapColorRelation, 'remark')));
-                $remark                     = implode(",\n", $remarkOfQuantity);
-                $remark                     .= empty(array_filter($remarkOfText)) ? '' : ("\n" . implode(",\n", $remarkOfText));
+                $remarkOfText               = implode(",\n", $remarkOfQuantity);
 
                 $result[]           = array(
                     'sequence_number'       => $rowNumber,
@@ -183,7 +183,7 @@ class Sales_Order_Export_Adapter_Standard implements Sales_Order_Export_Adapter_
                     'weight_total'          => $totalWeight,
                     'product_cost'          => $cost,
                     'product_cost_total'    => $cost * $totalWeight,
-                    'remark'                => $remark,
+                    'remark'                => $remarkOfText,
                 );
                 $rowNumber++;
             }
