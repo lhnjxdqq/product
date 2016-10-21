@@ -301,14 +301,6 @@
             if($(".goods-id-"+goodsId).html() == "点击添加") {
 
                 return false;
-            } else {
-                // 更新SPU数量
-                $('#countRelationSpu').html(response.data.countRelationSpu);
-                $("#goodsQuantity").html(response.data.count);
-                $("#weight_total").html(response.data.reference_weight);
-                $("#quantity").html(response.data.quantity_total);
-                var itemCostTdHtml  = '<div class="input-group"><input type="text" class="form-control" value="' + costValue + '" name="cost" style="width:66px;"><span class="input-group-btn update-cost-btn"><button class="btn btn-default" disabled><i class="fa fa-check"></i></button></span></div>';
-                itemCostTD.html(itemCostTdHtml);
             }
             $(".goods-id-"+goodsId).addClass('btn-success');
             $(".goods-id-"+goodsId).attr("disabled",false);
