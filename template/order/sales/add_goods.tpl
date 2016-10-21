@@ -217,7 +217,7 @@
                 <div class="box-footer">
                     <div class='box-footer row'>
                     <a href="/order/sales/index.php" type="button" class="btn btn-primary pull-left">上一步</a></td>
-                    <span class='pull-right'>共计<span><{$countRelationSpu}></span>个SPU, <span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款, <span id='quantity'><{$salesOrderInfo.quantity_total}></span>件, 预计重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right">下一步</a></td>
+                    <span class='pull-right'>共计<span id="countRelationSpu"><{$countRelationSpu}></span>个SPU, <span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款, <span id='quantity'><{$salesOrderInfo.quantity_total}></span>件, 预计重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right">下一步</a></td>
                     </div>
                     <div class='box-footer row'>
                         <{include file="section/pagelist.tpl" viewData=$data.pageViewData}>
@@ -372,7 +372,8 @@ $(function () {
 
                 return  ;
             }else{
-            
+
+                $('#countRelationSpu').html(response.data.countRelationSpu);
                 $("#goodsQuantity").html(response.data.count);
                 $("#weight_total").html(response.data.reference_weight);
                 $("#quantity").html(response.data.quantity_total);
