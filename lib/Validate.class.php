@@ -70,4 +70,19 @@ class   Validate {
              throw  new ApplicationException($message);
          }
      }
+
+     /**
+      * 验证是否是数组
+      *
+      * @param   mixed  $data       数据
+      * @param   string $message    异常信息
+      * $throw   ApplicationException 校验数据不是数组抛出异常      
+      */
+     static public  function testArray ($data, $message) {
+
+        if (!is_array($data)) {
+
+            throw   new ApplicationException($message);
+        }
+    }
 }
