@@ -27,6 +27,7 @@ $spuId  = Spu_Info::create(array(
 
 $files          = $_FILES['spu-image'];
 $imageKeyList   = array();
+
 // 复制sku图片到spu
 if ($_POST['sku-image']) {
 
@@ -49,11 +50,23 @@ foreach ($files['tmp_name'] as $stream) {
 if ($spuId) {
 
     Spu_Goods_RelationShip::createMultiSpuGoodsRelationship($multiGoods, $spuId);
+
+    $number = 0;
     foreach ($imageKeyList as $imageKey) {
 
+        $number++;
+        $isFirstPicture = 0;
+        
+        if($number == 1){
+        
+            $isFirstPicture = 1;    
+        }
         Spu_Images_RelationShip::create(array(
-            'spu_id'    => $spuId,
-            'image_key' => $imageKey,
+            'spu_id'          => $spuId,
+            'image_key'         => $imageKey,
+            'image_type'        => 'R',
+            'serial_number'     => $number,
+            'is_first_picture'  => $isFirstPicture,
         ));
     }
     // 推送新增SPU数据到选货工具

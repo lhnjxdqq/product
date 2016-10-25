@@ -73,7 +73,7 @@ $listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
 $mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
 
 $listSpuImages              = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
-$mapSpuImages               = ArrayUtility::indexByField($listSpuImages, 'spu_id');
+$groupSpuIdImages           = ArrayUtility::groupByField($listSpuImages, 'spu_id');
 
 // 获取当前用户的购物车spu列表
 $cartSpuInfo                = Cart_Spu_Info::getByUserId($userId);
@@ -115,10 +115,28 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $sourceCodeList                         = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
     $listSpuInfo[$key]['source_code_list']  = implode(',', $sourceCodeList);
     $listSpuInfo[$key]['list_cost'] = $kRedCost ? $kRedCost : $listCost;
-    $imageInfo                      = $mapSpuImages[$spuId];
-    $listSpuInfo[$key]['image_url'] = $imageInfo
-                                      ? AliyunOSS::getInstance('thumb-images-spu')->url($imageInfo['image_key'])
-                                      : '';
+    $imageInfo                      = $groupSpuIdImages[$spuId];
+    
+    $firstImageInfo = array();
+    if(!empty($imageInfo)){
+        
+        $firstImageInfo = ArrayUtility::searchBy($imageInfo,array('is_first_picture' => 1));
+    }
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info = current($firstImageInfo);
+        $listSpuInfo[$key]['image_url']  = !empty($info)
+            ? AliyunOSS::getInstance('images-spu')->url($info['image_key'])
+            : '';       
+    }else{
+
+        $info = Sort_Image::sortImage($imageInfo);
+
+        $listSpuInfo[$key]['image_url']  = !empty($info)
+            ? AliyunOSS::getInstance('images-spu')->url($info[0]['image_key'])
+            : '';     
+    }
+
 }
 
 $countCartSpu                       = Cart_Spu_Info::countByUser($userId);

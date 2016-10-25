@@ -56,11 +56,28 @@ foreach($listCartInfo as $key=>$info){
 
 $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
 //获取SPU数量
-$listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
-$mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
-foreach ($mapSpuImages as $spuId => $spuImage) {
+$listSpuImages      = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+$groupSpuIdImages   = ArrayUtility::groupByField($listSpuImages, 'spu_id');
+foreach ($groupSpuIdImages as $spuId => $spuImage) {
+   
+    $firstImageInfo = array();
+    if(!empty($spuImage)){
+        
+        $firstImageInfo = ArrayUtility::searchBy($spuImage,array('is_first_picture' => 1));
+    }
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info = current($firstImageInfo);
+        $keyImage   = $info['image_key'];
+    }else{
 
-    $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('thumb-images-spu')->url($spuImage['image_key']);
+        $info = Sort_Image::sortImage($spuImage);
+
+        $keyImage  = !empty($info)
+            ? $info[0]['image_key']
+            : '';     
+    }
+    $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($keyImage);
 }
 
 //属性列表

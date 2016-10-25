@@ -61,12 +61,24 @@ if (Goods_Info::update($data)) {
         Goods_Spec_Value_RelationShip::create($specValue);
     }
     // 更新图片关系
+    $number = 0;
     Goods_Images_RelationShip::deleteByGoodsId($goodsId);
     if ($imageIdList) {
         foreach ($imageIdList as $imageId) {
+
+            $number++;
+            $isFirstPicture = 0;
+            
+            if($number == 1){
+            
+                $isFirstPicture = 1;    
+            }
             Goods_Images_RelationShip::create(array(
-                'goods_id'  => $goodsId,
-                'image_key' => $imageId,
+                'goods_id'          => $goodsId,
+                'image_key'         => $imageId,
+                'image_type'        => 'R',
+                'serial_number'     => $number,
+                'is_first_picture'  => $isFirstPicture,
             ));
         }
     }

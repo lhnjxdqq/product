@@ -19,7 +19,7 @@ class   Spu_Images_RelationShip {
     /**
      * 字段
      */
-    const   FIELDS      = 'spu_id,image_key,create_time';
+    const   FIELDS      = 'spu_id,image_key,create_time,image_type,serial_number,is_first_picture';
     /**
      * 新增
      *
@@ -81,6 +81,21 @@ class   Spu_Images_RelationShip {
         return      self::_getStore()->fetchAll($sql);
     }
 
+    /**
+     * 根据SPUID ,图片类型,序号查询图片
+     *
+     * @param   int       $spuId                SPUID
+     * @param   string    $imageType            图片类型
+     * @param   int       $serialNumber         图片编号
+     * @return  array                           图片信息
+     */
+    static public function getBySpuIdAndImageTypeSerialNumber ($spuId , $imageType , $serialNumber) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '" AND `image_type`= "' . addslashes($imageType) . '" AND `serial_number`= "' .(int) $serialNumber .'"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+    
     /**
      * 根据SPUID 删出该SPU下图片
      *

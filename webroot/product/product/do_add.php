@@ -137,17 +137,43 @@ Goods_Info::update($goodsData);
 Goods_Push::updatePushGoodsData($goodsId);
 // 产品和图片关系 商品和图片关系
 if ($imageIdList['product']) {
+    
+    $number = 0;
     foreach ($imageIdList['product'] as $imageId) {
-        Product_Images_RelationShip::create(array(
-            'product_id'    => $productId,
-            'image_key'     => $imageId,
-        ));
+
+            $number++;
+            $isFirstPicture = 0;
+            
+            if($number == 1){
+            
+                $isFirstPicture = 1;    
+            }
+            Product_Images_RelationShip::create(array(
+                'product_id'        => $productId,
+                'image_key'         => $imageId,
+                'image_type'        => 'R',
+                'serial_number'     => $number,
+                'is_first_picture'  => $isFirstPicture,
+            ));
     }
+    
+    $number = 0;
     foreach ($imageIdList['goods'] as $imageId) {
-        Goods_Images_RelationShip::create(array(
-            'goods_id'      => $goodsId,
-            'image_key'     => $imageId,
-        ));
+
+            $number++;
+            $isFirstPicture = 0;
+            
+            if($number == 1){
+            
+                $isFirstPicture = 1;    
+            }
+            Product_Images_RelationShip::create(array(
+                'goods_id'          => $goodsId,
+                'image_key'         => $imageId,
+                'image_type'        => 'R',
+                'serial_number'     => $number,
+                'is_first_picture'  => $isFirstPicture,
+            ));
     }
 }
 Utility::notice('新增产品成功', '/product/product/index.php');
