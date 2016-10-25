@@ -87,9 +87,10 @@ class   Api_Controller_Spu {
         $listGoodsId        = ArrayUtility::listField($listProductInfo, 'goods_id');
         $listGoodsInfo      = self::_getGoodsInfoMulti($listGoodsId);
         $mapGoodsInfo       = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
-        $listSpuGoods       = Spu_Goods_Relationship::getByMultiGoodsId($listGoodsId);
+        $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
         $groupGoodsId       = ArrayUtility::groupByField($listSpuGoods, 'spu_id', 'goods_id');
         $listSpuId          = array_keys($groupGoodsId);
+        $listSpuInfo        = Spu_Info::getByMultiId($listSpuId);
         $listImageInfo      = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
         $groupImageInfo     = ArrayUtility::groupByField($listImageInfo, 'spu_id');
         $mapSourceByProduct = self::_mapSourceCodeByProductId($listProductInfo, $mapSourceInfo);
@@ -220,6 +221,8 @@ class   Api_Controller_Spu {
             }
         }
 
+        $spuInfo['categoryIdList']  = array_unique($spuInfo['categoryIdList']);
+
         return  $spuInfo;
     }
 
@@ -234,7 +237,7 @@ class   Api_Controller_Spu {
 
         $spuInfo['spuImageList']    = array();
 
-        if (!isset($grouopImageInfo[$spuInfo['spu_id']])) {
+        if (!isset($groupImageInfo[$spuInfo['spu_id']])) {
 
             return  $spuInfo;
         }
@@ -356,7 +359,7 @@ class   Api_Controller_Spu {
 
                 if (isset($groupSourceCodeByGoods[$goodsId])) {
 
-                    $result[$spuId] = $result[$spuId] + $groupSourceCodeByGoods[$goods];
+                    $result[$spuId] = $result[$spuId] + $groupSourceCodeByGoods[$goodsId];
                 }
             }
         }
