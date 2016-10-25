@@ -19,10 +19,10 @@ if (isset($_POST['cost'])) {
 $salesGoodsOrderInfo         = Sales_Order_Goods_Info::getBySalesOrderIdAndGooodsID($_POST['sales_order_id'],$_POST['goods_id']);
 
 if(!empty($salesGoodsOrderInfo)){
-    
+
     Sales_Order_Goods_Info::update($content);
 }else{
-    
+
     Sales_Order_Goods_Info::create($content);
 }
 
@@ -36,7 +36,7 @@ $listRelationSpuId          = array_unique(ArrayUtility::listField($salesOrderSk
 
 Sales_Order_Info::update(array(
         'sales_order_id'    => $_POST['sales_order_id'],
-        'count_goods'       => count($salesSkuInfo),    
+        'count_goods'       => count($salesSkuInfo),
         'quantity_total'    => array_sum(ArrayUtility::listField($salesSkuInfo,'goods_quantity')),
         'update_time'       => date('Y-m-d H:i:s', time()),
         'reference_weight'  => array_sum(ArrayUtility::listField($salesSkuInfo,'reference_weight')),

@@ -38,7 +38,7 @@
                                 <select name="category_id" class="form-control">
                                     <option value="0">请选择三级分类</option>
                                     <{foreach from=$data.mapCategoryInfoLv3 item=item}>
-                                <option value="<{$item.category_id}>"<{if $smarty.get.category_id eq $item.category_id}> selected<{/if}>><{$item.category_name}></option>
+                                    <option value="<{$item.category_id}>"<{if $smarty.get.category_id eq $item.category_id}> selected<{/if}>><{$item.category_name}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -56,7 +56,7 @@
                                 <select name="supplier_id" class="form-control">
                                     <option value="0">请选择供应商ID</option>
                                     <{foreach from=$data.mapSupplierInfo item=item}>
-                                <option value="<{$item.supplier_id}>"<{if $smarty.get.supplier_id eq $item.supplier_id}> selected<{/if}>><{$item.supplier_code}></option>
+                                    <option value="<{$item.supplier_id}>"<{if $smarty.get.supplier_id eq $item.supplier_id}> selected<{/if}>><{$item.supplier_code}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -75,7 +75,7 @@
                                 <select name="material_value_id" class="form-control">
                                     <option value="0">请选择材质</option>
                                     <{foreach from=$data.mapMaterialSpecValueInfo item=item}>
-                                <option value="<{$item.spec_value_id}>"<{if $smarty.get.material_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <option value="<{$item.spec_value_id}>"<{if $smarty.get.material_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -83,7 +83,7 @@
                                 <select name="size_value_id" class="form-control">
                                     <option value="0">请选择规格尺寸</option>
                                     <{foreach from=$data.mapSizeSpecValueInfo item=item}>
-                                <option value="<{$item.spec_value_id}>"<{if $smarty.get.size_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <option value="<{$item.spec_value_id}>"<{if $smarty.get.size_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -91,7 +91,7 @@
                                 <select name="color_value_id" class="form-control">
                                     <option value="0">请选择颜色</option>
                                     <{foreach from=$data.mapColorSpecValueInfo item=item}>
-                                <option value="<{$item.spec_value_id}>"<{if $smarty.get.color_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
+                                    <option value="<{$item.spec_value_id}>"<{if $smarty.get.color_value_id eq $item.spec_value_id}> selected<{/if}>><{$item.spec_value_data}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -102,7 +102,7 @@
                                 <select name="search_type" class="form-control">
                                     <option value="0">请选择搜索类型</option>
                                     <{foreach from=$data.searchType item=typeName key=typeId}>
-                                <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
+                                    <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -116,114 +116,114 @@
                     <!-- /.box-body -->
                 </form>
             </div>
-            
+
             <form action='/order/sales/contract_import.php' method="post" enctype="multipart/form-data" class="form-horizontal">
-            <div class="box collapsed-box">
-                <div class="box-header with-border">
-                    <div class="form-group">
-                        <label class='col-sm-2 control-label'>导入合同: </label>
-                        <div class='col-sm-3'>
-                            <input type="file" name="quotation" class="form-control"/>
-                            <input type="hidden" name='sales_order_id' class="form-control" value='<{$salesOrderId}>'>
-                        </div>
-                        <div class='col-sm-2'>
-                            <button type="submit" class='btn btn-primary'>导入</button>
+                <div class="box collapsed-box">
+                    <div class="box-header with-border">
+                        <div class="form-group">
+                            <label class='col-sm-2 control-label'>导入合同: </label>
+                            <div class='col-sm-3'>
+                                <input type="file" name="quotation" class="form-control"/>
+                                <input type="hidden" name='sales_order_id' class="form-control" value='<{$salesOrderId}>'>
+                            </div>
+                            <div class='col-sm-2'>
+                                <button type="submit" class='btn btn-primary'>导入</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-             </form>
+            </form>
             <!-- /.box -->
             <div class="box">
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="sku-list">
                             <thead>
-                                <tr>
-                                    <th>SKU编号</th>
-                                    <th>关联SPU</th>
-                                    <th>买款ID</th>
-                                    <th>产品图片</th>
-                                    <th>SKU名称</th>
-                                    <th>三级分类</th>
-                                    <th>款式</th>
-                                    <th>子款式</th>
-                                    <th>规格重量</th>
-                                    <th>规格尺寸</th>
-                                    <th>颜色</th>
-                                    <th>主料材质</th>
-                                    <th>备注</th>
-                                    <th>数量</th>
-                                    <th>操作</th>
-                                    <th>出货工费</th>
-                                </tr>
+                            <tr>
+                                <th>SKU编号</th>
+                                <th>关联SPU</th>
+                                <th>买款ID</th>
+                                <th>产品图片</th>
+                                <th>SKU名称</th>
+                                <th>三级分类</th>
+                                <th>款式</th>
+                                <th>子款式</th>
+                                <th>规格重量</th>
+                                <th>规格尺寸</th>
+                                <th>颜色</th>
+                                <th>主料材质</th>
+                                <th>备注</th>
+                                <th>数量</th>
+                                <th>操作</th>
+                                <th>出货工费</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <{foreach from=$data.listGoodsInfo item=item}>
-                                    <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
-                                        <td><{$item.goods_sn}></td>
-                                        <td><{$item.spu_sn_list}></td>
-                                        <td><{$item.source}></td>
-                                        <td>
-                                            <a href="<{if $item.image_url !=''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target='_blank'>
-                                                <img src="<{if $item.image_url !=''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60">
-                                            </a>
-                                        </td>
-                                        <td><{$item.goods_name}></td>
-                                        <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>                                            
-                                        <td><{$data.indexStyleId[$data.indexStyleId[$item.style_id]['parent_id']]['style_name']}></td>
-                                        <td><{$data.indexStyleId[$item.style_id]['style_name']}></td>
-                                        <td><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}></td>
-                                        <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
-                                        <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
-                                        <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td>
-                                            <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
-                                            <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>
-                                        <td>
-                                            <div class="input-group width-110 assign-number">
+                            <{foreach from=$data.listGoodsInfo item=item}>
+                            <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
+                            <td><{$item.goods_sn}></td>
+                            <td><{$item.spu_sn_list}></td>
+                            <td><{$item.source}></td>
+                            <td>
+                                <a href="<{if $item.image_url !=''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target='_blank'>
+                                    <img src="<{if $item.image_url !=''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60">
+                                </a>
+                            </td>
+                            <td><{$item.goods_name}></td>
+                            <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>
+                            <td><{$data.indexStyleId[$data.indexStyleId[$item.style_id]['parent_id']]['style_name']}></td>
+                            <td><{$data.indexStyleId[$item.style_id]['style_name']}></td>
+                            <td><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}></td>
+                            <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
+                            <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
+                            <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
+                            <td>
+                                <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
+                                <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>
+                            <td>
+                                <div class="input-group width-110 assign-number">
                                                 <span class="input-group-btn">
                                                     <button type='button' goods-id="<{$item.goods_id}>" class="btn btn-default reduce">-</button>
                                                 </span>
-                                                    <input type="text" class="form-control weight-quantity" weight=<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}> goods-id="<{$item.goods_id}>"  name="goods_id<{$item.goods_id}>[quantity]" value="<{if $item.quantity!='' }><{$item.quantity}><{else}>0<{/if}>"/>
-                                                <span class="input-group-btn">
+                                    <input type="text" class="form-control weight-quantity" weight=<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}> goods-id="<{$item.goods_id}>"  name="goods_id<{$item.goods_id}>[quantity]" value="<{if $item.quantity!='' }><{$item.quantity}><{else}>0<{/if}>"/>
+                                    <span class="input-group-btn">
                                                     <button type='button' goods-id="<{$item.goods_id}>" class="btn btn-default plus">+</button>
                                                 </span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="order-goods-update goods-id-<{$item.goods_id}> btn btn-<{if $item.isset_order eq 0}>primary"<{else}>default" disabled="disabled"<{/if}> goods-id='<{$item.goods_id}>'><{if $item.isset_order eq 1}>已加入订单<{else}>点击添加<{/if}></button>
-                                        </td>
-                                        <td class="item-cost">
-                                            <{if array_key_exists($item.goods_id, $indexSales)}>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" value="<{$indexSales[$item.goods_id]['cost']}>" name="cost" style="width:66px;">
-                                                <span class="input-group-btn update-cost-btn">
+                                </div>
+                            </td>
+                            <td>
+                                <button class="order-goods-update goods-id-<{$item.goods_id}> btn btn-<{if $item.isset_order eq 0}>primary"<{else}>default" disabled="disabled"<{/if}> goods-id='<{$item.goods_id}>'><{if $item.isset_order eq 1}>已加入订单<{else}>点击添加<{/if}></button>
+                            </td>
+                            <td class="item-cost">
+                                <{if array_key_exists($item.goods_id, $indexSales)}>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="<{$indexSales[$item.goods_id]['cost']}>" name="cost" style="width:66px;">
+                                    <span class="input-group-btn update-cost-btn">
                                                     <button class="btn btn-default" disabled><i class="fa fa-check"></i></button>
                                                 </span>
-                                            </div>
-                                            <{else}>
-                                                <{$item.cost}>
-                                            <{/if}>
-                                        </td>
-                                    </tr>
-                                <{/foreach}>
+                                </div>
+                                <{else}>
+                                <{$item.cost}>
+                                <{/if}>
+                            </td>
+                            </tr>
+                            <{/foreach}>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                
+
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <div class='box-footer row'>
-                    <a href="/order/sales/index.php" type="button" class="btn btn-primary pull-left">上一步</a></td>
-                    <span class='pull-right'>共计<span id="countRelationSpu"><{$countRelationSpu}></span>个SPU, <span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款, <span id='quantity'><{$salesOrderInfo.quantity_total}></span>件, 预计重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right">下一步</a></td>
+                        <a href="/order/sales/index.php" type="button" class="btn btn-primary pull-left">上一步</a></td>
+                        <span class='pull-right'>共计<span id="countRelationSpu"><{$countRelationSpu}></span>个SPU, <span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款, <span id='quantity'><{$salesOrderInfo.quantity_total}></span>件, 预计重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/order/sales/confirm_goods.php?sales_order_id=<{$salesOrderId}>" class="btn btn-primary pull-right">下一步</a></td>
                     </div>
                     <div class='box-footer row'>
                         <{include file="section/pagelist.tpl" viewData=$data.pageViewData}>
                     </div>
                 </div>
-                
+
             </div>
             <!-- /.box -->
         </section>
@@ -253,248 +253,248 @@
 <{include file="section/foot.tpl"}>
 <script>
 
-$(function () {
+    $(function () {
 
-    $('.assign-number .reduce').bind('click', function () {
-        var $input  = $(this).parents('.assign-number').children('input'),
-            value   = parseInt($input.val());
-        
-        if(value<=1) {
-            
-            $input.val(1);
-        }
-        
-        if (value > 1) {
+        $('.assign-number .reduce').bind('click', function () {
+            var $input  = $(this).parents('.assign-number').children('input'),
+                    value   = parseInt($input.val());
 
-            $input.val(value - 1);
-        }
-        
-        goodsId = $(this).attr('goods-id');
+            if(value<=1) {
 
-        if($(".goods-id-"+goodsId).html() == "点击添加"){
-        
-            return false;
-        }
-        $(".goods-id-"+goodsId).addClass('btn-success');
-        $(".goods-id-"+goodsId).attr("disabled",false);
-        $(".goods-id-"+goodsId).html('更新数据');
-    });
-    
-    $('.weight-quantity').blur(function(){
- 
-        goodsId = $(this).attr('goods-id');
+                $input.val(1);
+            }
 
-        if($(".goods-id-"+goodsId).html() == "点击添加"){
-        
-            return false;
-        }
-        $(".goods-id-"+goodsId).addClass('btn-success');
-        $(".goods-id-"+goodsId).attr("disabled",false);
-        $(".goods-id-"+goodsId).html('更新数据');    
+            if (value > 1) {
 
-    });
-    
-    $('.goods-remark').blur(function(){
-    
-        goodsId = $(this).attr('goods-id');
+                $input.val(value - 1);
+            }
 
-        if($(".goods-id-"+goodsId).html() == "点击添加"){
-        
-            return false;
-        }
-        $(".goods-id-"+goodsId).addClass('btn-success');
-        $(".goods-id-"+goodsId).attr("disabled",false);
-        $(".goods-id-"+goodsId).html('更新数据');
+            goodsId = $(this).attr('goods-id');
 
-    });
-    
-    $('.assign-number .plus').bind('click', function () {
-        var $input      = $(this).parents('.assign-number').children('input'),
-            value       = parseInt($input.val()),
-            quantity    = parseInt($input.attr('quantity'));
+            if($(".goods-id-"+goodsId).html() == "点击添加"){
 
-        $input.val(parseInt($input.val()) + 1);
+                return false;
+            }
+            $(".goods-id-"+goodsId).addClass('btn-success');
+            $(".goods-id-"+goodsId).attr("disabled",false);
+            $(".goods-id-"+goodsId).html('更新数据');
+        });
 
-        goodsId = $(this).attr('goods-id');
-        
-        goodsId = $(this).attr('goods-id');
+        $('.weight-quantity').blur(function(){
 
-        if($(".goods-id-"+goodsId).html() == "点击添加"){
-        
-            return false;
-        }
-        $(".goods-id-"+goodsId).addClass('btn-success');
-        $(".goods-id-"+goodsId).attr("disabled",false);
-        $(".goods-id-"+goodsId).html('更新数据');
-    });
-    
-    $('.order-goods-update').click(function(){
-        
-        goodsId = $(this).attr('goods-id');
+            goodsId = $(this).attr('goods-id');
 
-        var self        = $(this);
-        var itemCostTD  = self.parents('td').siblings('td.item-cost');
-        var costValue   = itemCostTD.text();
-        costValue       = $.trim(costValue);
-        if (costValue == '') {
+            if($(".goods-id-"+goodsId).html() == "点击添加"){
 
-            costValue   = itemCostTD.find('input[name="cost"]').val();
-        }
+                return false;
+            }
+            $(".goods-id-"+goodsId).addClass('btn-success');
+            $(".goods-id-"+goodsId).attr("disabled",false);
+            $(".goods-id-"+goodsId).html('更新数据');
 
-        var inputQuantitly  = "input[name=\"goods_id"+goodsId+"[quantity]\"]",
-        inputRemark         = "input[name=\"goods_id"+goodsId+"[goods_remark]\"]",
-        inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";
+        });
 
-        var quantity =  parseInt($(inputQuantitly).val()),
-            remark    = $(inputRemark).val(),
-            weight    = $(inputWeight).val();
-        
-        if(quantity<1){
-           
-           alert('请填写产品数量,必须大于零');
+        $('.goods-remark').blur(function(){
 
-           return false;
-        }
+            goodsId = $(this).attr('goods-id');
 
-        $.post('/order/sales/confirm_update.php', {
-            sales_order_id      : <{$salesOrderId}>,
-            goods_id            : goodsId,
-            quantity            : quantity,
-            remark              : remark,
-            weight              : weight,
-            cost                : costValue,
-            '__output_format'   : 'JSON'
+            if($(".goods-id-"+goodsId).html() == "点击添加") {
+
+                return false;
+            }
+            $(".goods-id-"+goodsId).addClass('btn-success');
+            $(".goods-id-"+goodsId).attr("disabled",false);
+            $(".goods-id-"+goodsId).html('更新数据');
+
+        });
+
+        $('.assign-number .plus').bind('click', function () {
+            var $input      = $(this).parents('.assign-number').children('input'),
+                    value       = parseInt($input.val()),
+                    quantity    = parseInt($input.attr('quantity'));
+
+            $input.val(parseInt($input.val()) + 1);
+
+            goodsId = $(this).attr('goods-id');
+
+            goodsId = $(this).attr('goods-id');
+
+            if($(".goods-id-"+goodsId).html() == "点击添加"){
+
+                return false;
+            }
+            $(".goods-id-"+goodsId).addClass('btn-success');
+            $(".goods-id-"+goodsId).attr("disabled",false);
+            $(".goods-id-"+goodsId).html('更新数据');
+        });
+
+        $('.order-goods-update').click(function(){
+
+            goodsId = $(this).attr('goods-id');
+
+            var self        = $(this);
+            var itemCostTD  = self.parents('td').siblings('td.item-cost');
+            var costValue   = itemCostTD.text();
+            costValue       = $.trim(costValue);
+            if (costValue == '') {
+
+                costValue   = itemCostTD.find('input[name="cost"]').val();
+            }
+
+            var inputQuantitly  = "input[name=\"goods_id"+goodsId+"[quantity]\"]",
+                    inputRemark         = "input[name=\"goods_id"+goodsId+"[goods_remark]\"]",
+                    inputWeight         = "input[name=\"goods_id"+goodsId+"[weight]\"]";
+
+            var quantity =  parseInt($(inputQuantitly).val()),
+                    remark    = $(inputRemark).val(),
+                    weight    = $(inputWeight).val();
+
+            if(quantity<1){
+
+                alert('请填写产品数量,必须大于零');
+
+                return false;
+            }
+
+            $.post('/order/sales/confirm_update.php', {
+                        sales_order_id      : <{$salesOrderId}>,
+                    goods_id            : goodsId,
+                    quantity            : quantity,
+                    remark              : remark,
+                    weight              : weight,
+                    cost                : costValue,
+                    '__output_format'   : 'JSON'
         }, function (response) {
 
-            if (0 != response.code) {
+                if (0 != response.code) {
 
-                showMessage('错误', response.message);
+                    showMessage('错误', response.message);
 
-                return  ;
-            }else{
+                    return  ;
+                }else{
 
-                // 更新SPU数量
-                $('#countRelationSpu').html(response.data.countRelationSpu);
-                $("#goodsQuantity").html(response.data.count);
-                $("#weight_total").html(response.data.reference_weight);
-                $("#quantity").html(response.data.quantity_total);
-                var itemCostTdHtml  = '<div class="input-group"><input type="text" class="form-control" value="' + costValue + '" name="cost" style="width:66px;"><span class="input-group-btn update-cost-btn"><button class="btn btn-default" disabled><i class="fa fa-check"></i></button></span></div>';
-                itemCostTD.html(itemCostTdHtml);
-            }
-            
-        }, 'json');
-        $(this).removeClass('btn-primary');
-        $(this).removeClass('btn-success');
-        $(this).addClass('btn-default');
-        $(this).attr("disabled",true);
-        $(this).html('已加入订单');
-    });
-
-    var timer;
-    $(document).delegate('td.item-cost input[name="cost"]', 'focus', function () {
-
-        var self        = $(this);
-        var updateBtn   = self.siblings('span.update-cost-btn').find('button');
-        var oldCost     = self.val();
-        timer           = setInterval(function () {
-
-            var newCost = self.val();
-            if (newCost != oldCost) {
-
-                updateBtn.removeClass('btn-default').addClass('btn-info').removeAttr('disabled');
-            }
-        }, 100);
-    });
-
-    $(document).delegate('td.item-cost input[name="cost"]', 'blur', function () {
-
-        clearInterval(timer);
-    });
-
-    $(document).delegate('td.item-cost span.update-cost-btn', 'click', function () {
-
-        var self            = $(this);
-        var updateBtn       = self.find('button');
-        var costValue       = self.siblings('input[name="cost"]').val();
-        var salesOrderId    = <{$smarty.get.sales_order_id}>;
-        var goodsId         = self.parents('tr').find('button.order-goods-update').attr('goods-id');
-
-        if (typeof(updateBtn.attr('disabled')) != 'undefined') {
-
-            return;
-        }
-
-        $.ajax({
-            url         : '/order/sales/update_cost.php',
-            type        : 'POST',
-            dataType    : 'JSON',
-            data        : {
-                sales_order_id: salesOrderId,
-                goods_id: goodsId,
-                cost: costValue
-            },
-            success     : function (response) {
-
-                if (response.code != 0) {
-
-                    alert(response.message);
-                    return;
+                    // 更新SPU数量
+                    $('#countRelationSpu').html(response.data.countRelationSpu);
+                    $("#goodsQuantity").html(response.data.count);
+                    $("#weight_total").html(response.data.reference_weight);
+                    $("#quantity").html(response.data.quantity_total);
+                    var itemCostTdHtml  = '<div class="input-group"><input type="text" class="form-control" value="' + costValue + '" name="cost" style="width:66px;"><span class="input-group-btn update-cost-btn"><button class="btn btn-default" disabled><i class="fa fa-check"></i></button></span></div>';
+                    itemCostTD.html(itemCostTdHtml);
                 }
-                alert('更新工费成功');
-                updateBtn.removeClass('btn-info').addClass('btn-default').attr('disabled', true);
+
+            }, 'json');
+            $(this).removeClass('btn-primary');
+            $(this).removeClass('btn-success');
+            $(this).addClass('btn-default');
+            $(this).attr("disabled",true);
+            $(this).html('已加入订单');
+        });
+
+        var timer;
+        $(document).delegate('td.item-cost input[name="cost"]', 'focus', function () {
+
+            var self        = $(this);
+            var updateBtn   = self.siblings('span.update-cost-btn').find('button');
+            var oldCost     = self.val();
+            timer           = setInterval(function () {
+
+                var newCost = self.val();
+                if (newCost != oldCost) {
+
+                    updateBtn.removeClass('btn-default').addClass('btn-info').removeAttr('disabled');
+                }
+            }, 100);
+        });
+
+        $(document).delegate('td.item-cost input[name="cost"]', 'blur', function () {
+
+            clearInterval(timer);
+        });
+
+        $(document).delegate('td.item-cost span.update-cost-btn', 'click', function () {
+
+            var self            = $(this);
+            var updateBtn       = self.find('button');
+            var costValue       = self.siblings('input[name="cost"]').val();
+            var salesOrderId    = <{$smarty.get.sales_order_id}>;
+            var goodsId         = self.parents('tr').find('button.order-goods-update').attr('goods-id');
+
+            if (typeof(updateBtn.attr('disabled')) != 'undefined') {
+
+                return;
             }
-        });
-    });
 
-    tableColumn({
-        selector    : '#sku-list',
-        container   : '#sku-list-vis'
-    });
-    
+            $.ajax({
+                url         : '/order/sales/update_cost.php',
+                type        : 'POST',
+                dataType    : 'JSON',
+                data        : {
+                    sales_order_id: salesOrderId,
+                    goods_id: goodsId,
+                    cost: costValue
+                },
+                success     : function (response) {
+
+                    if (response.code != 0) {
+
+                        alert(response.message);
+                        return;
+                    }
+                    alert('更新工费成功');
+                    updateBtn.removeClass('btn-info').addClass('btn-default').attr('disabled', true);
+                }
+            });
+        });
+
+        tableColumn({
+            selector    : '#sku-list',
+            container   : '#sku-list-vis'
+        });
+
         <{if $data.groupStyleInfo}>
-    var styleList   = {};
-    var styleIdLv1  = <{$smarty.get.style_id_lv1|default:0}>;
-    var styleIdLv2  = <{$smarty.get.style_id_lv2|default:0}>;
-    <{foreach from=$data.groupStyleInfo item=listStyleInfo key=parentId}>
-    styleList[<{$parentId}>] = {};
-    <{foreach from=$listStyleInfo item=item}>
-    styleList[<{$parentId}>][<{$item.style_id}>] = '<{$item.style_name}>';
-    <{/foreach}>
-    <{/foreach}>
-    var styleLv1String = '';
-    $.each(styleList[0], function(styleId, styleName) {
-        var selected    = styleId == styleIdLv1 ? ' selected' : '';
-        styleLv1String += '<option value="' + styleId + '"' + selected + '>' + styleName + '</option>';
-    });
-    $('select[name="style_id_lv1"] option').after(styleLv1String);
-    $(document).delegate('select[name="style_id_lv1"]', 'change', function () {
-        initStyleLv2();
-    });
-    function initStyleLv2() {
-        var parentId    = $('select[name="style_id_lv1"]').val();
-        if (parentId == 0) return;
-        var childStyle  = styleList[parentId];
-        var styleLv2String  = '<option value="0">请选择子款式</option>';
-        $.each(childStyle, function (styleId, styleName) {
-            var selected    = styleId == styleIdLv2 ? ' selected' : '';
-            styleLv2String  += '<option value="' + styleId + '"' + selected + '>' + styleName + '</option>';
+        var styleList   = {};
+        var styleIdLv1  = <{$smarty.get.style_id_lv1|default:0}>;
+        var styleIdLv2  = <{$smarty.get.style_id_lv2|default:0}>;
+        <{foreach from=$data.groupStyleInfo item=listStyleInfo key=parentId}>
+        styleList[<{$parentId}>] = {};
+        <{foreach from=$listStyleInfo item=item}>
+        styleList[<{$parentId}>][<{$item.style_id}>] = '<{$item.style_name}>';
+        <{/foreach}>
+        <{/foreach}>
+        var styleLv1String = '';
+        $.each(styleList[0], function(styleId, styleName) {
+            var selected    = styleId == styleIdLv1 ? ' selected' : '';
+            styleLv1String += '<option value="' + styleId + '"' + selected + '>' + styleName + '</option>';
         });
-        $('select[name="style_id_lv2"]').empty().append(styleLv2String);
-    }
-    initStyleLv2();
-    <{/if}>
-});
-$(document).ready(function() { 
-
-    $('#sku-list').dataTable({
-        
-        "bFilter": false, //过滤功能
-        "bInfo"  : false,//页脚信息
-        "bPaginate": false, //翻页功能
-        "aaSorting": [ [1,'asc'] ],
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3,13,14,15 ] }]
+        $('select[name="style_id_lv1"] option').after(styleLv1String);
+        $(document).delegate('select[name="style_id_lv1"]', 'change', function () {
+            initStyleLv2();
+        });
+        function initStyleLv2() {
+            var parentId    = $('select[name="style_id_lv1"]').val();
+            if (parentId == 0) return;
+            var childStyle  = styleList[parentId];
+            var styleLv2String  = '<option value="0">请选择子款式</option>';
+            $.each(childStyle, function (styleId, styleName) {
+                var selected    = styleId == styleIdLv2 ? ' selected' : '';
+                styleLv2String  += '<option value="' + styleId + '"' + selected + '>' + styleName + '</option>';
+            });
+            $('select[name="style_id_lv2"]').empty().append(styleLv2String);
+        }
+        initStyleLv2();
+        <{/if}>
     });
-});
+    $(document).ready(function() {
+
+        $('#sku-list').dataTable({
+
+            "bFilter": false, //过滤功能
+            "bInfo"  : false,//页脚信息
+            "bPaginate": false, //翻页功能
+            "aaSorting": [ [1,'asc'] ],
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3,13,14,15 ] }]
+        });
+    });
 </script>
 </body>
 </html>
