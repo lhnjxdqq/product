@@ -57,6 +57,7 @@ class Api_Controller_Order {
                     'quotationId'   => $goodsInfo['sales_quotation_id'],
                     'quantity'      => $goodsInfo['goods_quantity'],
                     'cost'          => $goodsInfo['cost'],
+                    'remark'        => $goodsInfo['remark'],
                 );
             }
             $salesOrderInfo['orderGoodsList'] = $salesOrderProduct;
