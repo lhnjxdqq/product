@@ -14,12 +14,14 @@ if (!$rawParams) {
 }
 
 $apiWhiteList   = Config::get('auth|PHP', 'white_list_api');
+$hostWhiteList  = Config::get('auth|PHP', 'white_list_host');
+$ip             = $_SERVER['REMOTE_ADDR'];
 $data           = array();
 // print_r( $rawParams );
 foreach ($rawParams as $func => $paramsList) {
 
     // 非api白名单方法
-    if (!in_array($func, $apiWhiteList) ) {
+    if (!in_array($func, $apiWhiteList) || !in_array($ip, $hostWhiteList) ) {
 
         Api_Base_App::responseJSON(
             ErrorCode::get('application.auth_validate_failure'),

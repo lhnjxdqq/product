@@ -78,7 +78,14 @@
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
-                                        <td><{$item.cost}></td>
+                                        <td class="item-cost">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" value="<{$indexSales[$item.goods_id]['cost']}>" name="cost" style="width:66px;" goodsid="<{$item.goods_id}>">
+                                                <span class="input-group-btn update-cost-btn">
+                                                    <button type="button" class="btn btn-default" disabled><i class="fa fa-check"></i></button>
+                                                </span>
+                                            </div>
+                                        </td>
                                         <td>
                                             <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
                                             <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>
@@ -105,7 +112,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary pull-left">添加产品</a>
-                    <span class='pull-right'>共计<span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款,<span id='quantity'><{$salesOrderInfo.quantity_total}></span>件,重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
+                    <span class='pull-right'>共计<span><{$countRelationSpu}></span>个SPU, <span id="goodsQuantity"><{$salesOrderInfo.count_goods}></span>款, <span id='quantity'><{$salesOrderInfo.quantity_total}></span>件, 重量<span id="weight_total"><{$salesOrderInfo.reference_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='submit' class="btn btn-primary pull-right"> 下一步</button></span>
                 </div>
             </form>
             </div>
@@ -138,6 +145,62 @@
 <script>
     
 $(function () {
+
+    var timer;
+    $(document).delegate('td.item-cost input[name="cost"]', 'focus', function () {
+
+        var self        = $(this);
+        var updateBtn   = self.siblings('span.update-cost-btn').find('button');
+        var oldCost     = self.val();
+        timer           = setInterval(function () {
+
+            var newCost = self.val();
+            if (newCost != oldCost) {
+
+                updateBtn.removeClass('btn-default').addClass('btn-info').removeAttr('disabled');
+            }
+        }, 100);
+    });
+
+    $(document).delegate('td.item-cost input[name="cost"]', 'blur', function () {
+
+        clearInterval(timer);
+    });
+
+    $(document).delegate('td.item-cost span.update-cost-btn', 'click', function () {
+
+        var self            = $(this);
+        var updateBtn       = self.find('button');
+        var costValue       = self.siblings('input[name="cost"]').val();
+        var salesOrderId    = <{$smarty.get.sales_order_id}>;
+        var goodsId         = self.siblings('input[name="cost"]').attr('goodsid');
+
+        if (typeof(updateBtn.attr('disabled')) != 'undefined') {
+
+            return;
+        }
+
+        $.ajax({
+            url         : '/order/sales/update_cost.php',
+            type        : 'POST',
+            dataType    : 'JSON',
+            data        : {
+                sales_order_id: salesOrderId,
+                goods_id: goodsId,
+                cost: costValue
+            },
+            success     : function (response) {
+
+                if (response.code != 0) {
+
+                    alert(response.message);
+                    return;
+                }
+                alert('更新工费成功');
+                updateBtn.removeClass('btn-info').addClass('btn-default').attr('disabled', true);
+            }
+        });
+    });
 
     $('.assign-number .reduce').bind('click', function () {
         var $input  = $(this).parents('.assign-number').children('input'),

@@ -166,4 +166,39 @@ class   Utility {
         exit;
     }
 
+    static  public  function hump ($text, $ucfirst = true) {
+
+        $clips  = array_map('strtolower', explode('_', $text));
+
+        if (count($clips) == 1) {
+
+            return  $text;
+        }
+
+        if ($ucfirst) {
+
+            return  implode('', array_map('ucfirst', $clips));
+        }
+
+        $head   = array_shift($clips);
+
+        return  $head . implode('', array_map('ucfirst', $clips));
+    }
+
+    static  public  function humpKeyRecursive ($data) {
+
+        if (!is_array($data)) {
+
+            return  $data;
+        }
+
+        $result = array();
+
+        foreach ($data as $key => $value) {
+
+            $result[self::hump($key)]   = self::humpKeyRecursive($value);
+        }
+
+        return  $result;
+    }
 }

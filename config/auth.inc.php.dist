@@ -3,21 +3,21 @@
  * 授权
  */
 return  array(
-    'white_list'    => array(
+    'white_list'        => array(
         '/login.php',
         '/do_login.php',
         '/logout.php',
     ),
-    'white_list_api'=> array(
+    'white_list_api'    => array(
+        // '/api/index.php',
         'SaleMan.getAll',
         'AuPrice.getNewPrice',
         'Customer.getAll',
-        'SalesQuotation.getSalesQuotationFile',
-        'SalesQuotation.success',
         'Category.getAll',
         'Style.getAll',
         'Spec.getAll',
-        'Order.create',
-        'Order.getByIdList',
+    ),
+    'white_list_host'   => array(
+        '127.0.0.1',
     ),
 );

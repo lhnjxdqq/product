@@ -29,6 +29,7 @@ class   Sales_Order_Import {
             '规格重量'            => 'weight_name',
             '规格尺寸'            => 'size_name',
             '数量'                => 'quantity',
+            '出货工费'            => 'cost',
             '备注'                => 'remark',
         );
 
@@ -140,6 +141,7 @@ class   Sales_Order_Import {
                 'actual_weight'     => 0,
                 'transaction_price' => 0,
                 'remark'            => !empty($row['remark']) ? $row['remark'] : $indexSpuIdRemark[$row['spu_id']],
+                'cost'              => $row['cost'],
             );
             
             

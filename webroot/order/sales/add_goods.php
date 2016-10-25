@@ -32,6 +32,11 @@ $indexSales                 = ArrayUtility::indexByField($salesGoodsInfo,'goods_
 
 $skuRelationShipSpuInfo     = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
 
+// 该销售订单中SKU相关的SPU数量
+$salesOrderSkuSpuRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoods);
+$listRelationSpuId          = array_unique(ArrayUtility::listField($salesOrderSkuSpuRelation, 'spu_id'));
+$countRelationSpu           = count($listRelationSpuId);
+
 //查出所有关联Spu的信息
 $listSpuInfo                = ArrayUtility::indexByField(Spu_Info::getByMultiId(ArrayUtility::listField($skuRelationShipSpuInfo,'spu_id')),'spu_id');
 
@@ -220,7 +225,9 @@ $data['onlineStatus']               = array(
 $template           = Template::getInstance();
 
 $template->assign('data', $data);
+$template->assign('indexSales', $indexSales);
 $template->assign('salesOrderId', $salesOrderId);
 $template->assign('salesOrderInfo', $salesOrderInfo);
+$template->assign('countRelationSpu', $countRelationSpu);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('order/sales/add_goods.tpl');

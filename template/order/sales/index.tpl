@@ -121,6 +121,33 @@
                                                 <{else}>
                                                 订单合同中的产品正在生成中,请稍等...
                                             <{/if}>
+                                            <{if $item.sales_order_status >= 3}>
+                                                <!-- 销售订单审核后才可导出 -->
+                                            <div class="btn-group">
+                                                <{if !$item.export_status}>
+                                                    <a href="/order/sales/create_export_task.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出</a>
+                                                <{/if}>
+                                                <{if $item.export_status == 1}>
+                                                    <a href="javascript:alert('等待导出中, 请稍等几分钟...');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 等待导出</a>
+                                                <{/if}>
+                                                <{if $item.export_status == 2}>
+                                                    <a href="javascript:alert('正在导出中, 请稍等几分钟...');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 正在导出</a>
+                                                <{/if}>
+                                                <{if $item.export_status == 3}>
+                                                    <a href="/order/sales/export_file_download.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 下载</a>
+                                                <{/if}>
+                                                <{if $item.export_status == 4}>
+                                                    <a href="javascript:alert('导出失败');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出失败</a>
+                                                <{/if}>
+                                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="caret"></span>
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:reExport(<{$item.sales_order_id}>);">重新导出</a></li>
+                                                </ul>
+                                            </div>
+                                            <{/if}>
                                         </td>
                                     </tr>
 <{/foreach}>
@@ -202,7 +229,16 @@ $(function(){
         }, 'json');  
         
     });
-});    
+});
+    // 重新导出订单
+    function reExport (salesOrderId) {
+
+        if (confirm('确定要重新导出该订单吗 ?')) {
+
+            var redirect    = '/order/sales/create_export_task.php?sales_order_id=' + salesOrderId;
+            location.href   = redirect;
+        }
+    }     
 </script>
 </body>
 </html>

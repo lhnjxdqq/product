@@ -82,7 +82,7 @@ class   Produce_Order_Export_Task {
     static public function getByProduceOrderId ($produceOrderId) {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `produce_order_id` = "' . (int) $produceOrderId . '" ORDER BY `task_id` ASC';
-
+        
         return  self::_getStore()->fetchOne($sql);
     }
 
