@@ -50,6 +50,11 @@ class   TagApi {
      */
     public  function call () {
 
+        if (!is_file(CONF . '/tagapi.inc.php')) {
+
+            return  ;
+        }
+
         $service    = Config::get('tagapi|PHP', 'service');
         $curlOption = array(
             CURLOPT_POST    => true,
