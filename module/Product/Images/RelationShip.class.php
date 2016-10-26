@@ -93,7 +93,7 @@ class   Product_Images_RelationShip {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `product_id` = "' . (int) $id . '" AND `image_type`= "' . addslashes($imageType) . '" AND `serial_number`= "' .(int) $serialNumber .'"';
 
-        return  self::_getStore()->fetchOne($sql);
+        return  self::_getStore()->fetchAll($sql);
     }
 
     /**
