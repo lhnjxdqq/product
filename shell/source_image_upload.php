@@ -3,7 +3,7 @@
  * 上传图片
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
-/*
+
 // php 锁文件路径
 define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
 
@@ -13,7 +13,7 @@ if (is_file(LOCK_FILE)) {
 }
 
 file_put_contents(LOCK_FILE, 'file.lock');
-*/
+
 /**
  * 递归删除文件、文件所属的目录路径
  * @param string $path 要递归删除文件或目录的

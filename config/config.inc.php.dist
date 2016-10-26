@@ -18,5 +18,8 @@ define('CODE_SYSTEM_ERROR_DATABASE', 202000000);
 define('CODE_SYSTEM_ERROR_LOGIC', 205000000);
 define('PLUS_COST',2);
 
+
+define('SOURCE_IMAGE_UNZIP_PATH' , '/home/shuishou/product_image/SOURCE');
+define('SOURCE_IMAGE_TMP' , '/home/shuishou/product_image/image_tmp/');
 define('UPLOAD_IMAGE_UNZIP_PATH' , '/home/dalei/tmp/');
 define('DOWNLOAD_IMAGE_TMP' , '/home/dalei/tmp/image_tmp/');
