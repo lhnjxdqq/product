@@ -65,7 +65,7 @@ class   Api_Controller_Spu {
         }
 
         return  array(
-            'listSpuInfo'   => Utility::humpKeyRecursive($listSpuInfo),
+            'listSpuInfo'   => Utility::humpKeyRecursive($listSpuInfo, false),
         );
     }
 
@@ -105,7 +105,7 @@ class   Api_Controller_Spu {
         }
 
         return  array(
-            'listSpuInfo'   => Utility::humpKeyRecursive($listSpuInfo),
+            'listSpuInfo'   => Utility::humpKeyRecursive($listSpuInfo, false),
         );
     }
 

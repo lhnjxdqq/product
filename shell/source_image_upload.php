@@ -64,7 +64,7 @@ function getByDirFile($path,&$files){
 /**
 * 检测图片在spu里面是否存在,如不存在,则添加
 */
-function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $serialNumber) {
+function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $serialNumber, $skuImageKey) {
     echo 'spu标记' . "\n";
 
 	$listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuIdAndImageTypeSerialNumber($spuId , $imageType , $serialNumber);
@@ -80,10 +80,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
             $spuflag++;
         }
         echo 'spu产品图片' . $imageKey . "\n";
-        if (!$spuImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
-            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
-            $spuflag++;
-        }
+        
         try {
 
             $data = $spuImageInstance->downLoadFile($imageKey);
@@ -102,11 +99,17 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
     if ($spuflag) {
 
         unset($spuflag);
-        return false;
+        return $imageKey;
 
+    }else{
+        if($imageKey){
+         
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);   
+        }
     }
+    $skuImageInstance = AliyunOSS::getInstance('images-sku');
+    $spuImageKey    = AliyunOSS::getInstance('images-spu')->copyCreate($skuImageInstance, $skuImageKey, null, true);
 
-    $spuImageKey			 = $spuImageInstance->create($fileSavePath , null , true);
     $data = array(
     	'spu_id'        => $spuId,
     	'image_key'     => $spuImageKey,
@@ -147,13 +150,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
 
 			$productflag++;
         }
-        echo 'product产品图片' . $imageKey . "\n";
-        if (!$productImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
-            echo 'product产品图片删除' . $imageKey . "\n";
 
-            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
-			$productflag++;
-        }
         try {
 
             $data = $productImageInstance->downLoadFile($imageKey);
@@ -172,12 +169,19 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
 
 	if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
 		unset($productflag);
-		return false;
-	}
+		return $imageKey;
+	}else{
+    
+        if($imageKey){
+         
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
+    
+        }
+    }
     
 	// 上传开始了
     $prodImageKey               = $productImageInstance->create($fileSavePath, null, true);
-
+    
     //写入数据库
     $data = array(
     	'product_id'    => $productId,
@@ -203,7 +207,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
 * 检测图片在goods里面是否存在,如不存在,则添加
 */
 
-function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber) {
+function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey) {
     echo 'sku标记' . "\n";
 
     $listGoodsImageRelationship = Goods_Images_RelationShip::getByGoodsIdAndImageTypeSerialNumber($goodsId , $imageType , $serialNumber);
@@ -214,14 +218,10 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
         
         $imageKey = $listGoodsImageRelationship['image_key'];
         // 如数据库文件不存在,则跳过
-        if (!$goodsImageRelationship['image_key']) {
+        if (!$imageKey) {
             $goodsflag++;
         }
-        echo 'sku产品图片' . $imageKey . "\n";
-        if (!$goodsImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
-            Goods_Images_RelationShip::deleteByIdAndKey($goodsId , $imageKey);
-            $goodsflag++;
-        }
+        
         try {
 
             $data = $goodsImageInstance->downLoadFile($imageKey);
@@ -239,10 +239,16 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
 
     if ($goodsflag) {
         unset($goodsflag);
-        return false;
+        return $imageKey;
+    }else{
+        if(!empty($imageKey)){
+         
+            Goods_Images_RelationShip::deleteByIdAndKey($goodsId , $imageKey);   
+        }
     }
+    $skuImageInstance = AliyunOSS::getInstance('images-product');
+    $goodsImageKey    = AliyunOSS::getInstance('images-sku')->copyCreate($skuImageInstance, $productImageKey, null, true);
 
-    $goodsImageKey      				 = $goodsImageInstance->create($fileSavePath , null , true);
     $data = array(
     	'goods_id'      => $goodsId,
     	'image_key'     => $goodsImageKey,
@@ -324,7 +330,7 @@ if( !empty($files) && is_array($files) ){
 
     				$imageMd5       = md5_file($fileSavePath);
                     try {
-    				    addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
+    				    $productImageKey = addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
                     } catch (Exception $e) {
                         echo $e->getMessage();
                     }
@@ -332,7 +338,7 @@ if( !empty($files) && is_array($files) ){
     				//查询 goods 图片是否有
     		        $goodsId = $productInfo['goods_id'];
                     try {
-    		            $imageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
+    		            $goodsImageKey = addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey);
                     } catch (Exception $e) {
                         echo $e->getMessage();
                     }
@@ -345,7 +351,7 @@ if( !empty($files) && is_array($files) ){
     			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
     			        	if ($spuInfo) {
                                 try {
-    			        		    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
+    			        		    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $goodsImageKey);
                                 } catch (Exception $e) {
                                     echo $e->getMessage();
                                 }
