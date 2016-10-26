@@ -166,6 +166,13 @@ class   Utility {
         exit;
     }
 
+    /**
+     * 驼峰转换
+     *
+     * @param   string  $text       字符串
+     * @param   bool    $ucfirst    是否转换首字母
+     * @return  string              转换后的字符串
+     */
     static  public  function hump ($text, $ucfirst = true) {
 
         $clips  = array_map('strtolower', explode('_', $text));
@@ -185,7 +192,14 @@ class   Utility {
         return  $head . implode('', array_map('ucfirst', $clips));
     }
 
-    static  public  function humpKeyRecursive ($data) {
+    /**
+     * 键名驼峰转换
+     *
+     * @param   mixed   $data       待转换数据
+     * @param   bool    $ucfirst    是否转换首字母
+     * @return  mixed               转换后的数据
+     */
+    static  public  function humpKeyRecursive ($data, $ucfirst = true) {
 
         if (!is_array($data)) {
 
@@ -196,7 +210,7 @@ class   Utility {
 
         foreach ($data as $key => $value) {
 
-            $result[self::hump($key)]   = self::humpKeyRecursive($value);
+            $result[self::hump($key, $ucfirst)]   = self::humpKeyRecursive($value, $ucfirst);
         }
 
         return  $result;
