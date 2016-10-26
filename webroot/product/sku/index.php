@@ -63,7 +63,7 @@ $listGoodsInfo              = isset($condition['category_id'])
                               : Goods_List::listByCondition($condition, array(), $page->getOffset(), 100);
 $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
-$mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+$groupGoodsIdImages         = ArrayUtility::groupByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
 $groupGoodsProductInfo      = array();
 $groupGoodsProductInfo      = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
@@ -96,10 +96,26 @@ $listSampleGoodsId          = ArrayUtility::listField(ArrayUtility::searchBy(Sam
 foreach ($listGoodsInfo as &$goodsInfo) {
 
     $goodsId    = $goodsInfo['goods_id'];
-    $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
-    $goodsInfo['image_url']     = $imageKey
-        ? AliyunOSS::getInstance('thumb-images-sku')->url($imageKey)
-        : '';
+
+    if(!empty($groupGoodsIdImages[$goodsId])){
+        
+        $firstImageInfo = ArrayUtility::searchBy($groupGoodsIdImages[$goodsId],array('is_first_picture' => 1));
+    }
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info = current($firstImageInfo);
+        $goodsInfo['image_url']     = !empty($info)
+            ? AliyunOSS::getInstance('images-sku')->url($info['image_key'])
+            : '';       
+    }else{
+
+        $info = Sort_Image::sortImage($groupGoodsIdImages[$goodsId]);
+
+        $goodsInfo['image_url']     = !empty($info)
+            ? AliyunOSS::getInstance('images-sku')->url($info[0]['image_key'])
+            : '';     
+    }
+
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
     if(in_array($goodsId,$listCartGoodsId)){
         

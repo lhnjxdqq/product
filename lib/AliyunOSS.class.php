@@ -91,7 +91,7 @@ class   AliyunOSS {
         $this->_suffix      = $suffix;
         $this->_domain      = $domain;
         $this->_protocol    = $hostProtocol;
-        $this->_endpoint    = $endpoint;
+        $this->_endpoint    = $thumbEndpoint;
         $this->_endpointInternal    = $endpointInternal;
     }
 

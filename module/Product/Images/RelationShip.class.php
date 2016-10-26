@@ -19,7 +19,7 @@ class   Product_Images_RelationShip {
     /**
      * 字段
      */
-    const   FIELDS      = 'product_id,image_key,create_time';
+    const   FIELDS      = 'product_id,image_key,create_time,image_type,serial_number,is_first_picture';
     /**
      * 新增
      *
@@ -79,6 +79,21 @@ class   Product_Images_RelationShip {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `product_id` = "' . (int) $id . '"';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据产品ID ,图片类型,序号查询图片
+     *
+     * @param   int       $id                   产品ID
+     * @param   string    $imageType            图片类型
+     * @param   int       $serialNumber         图片编号
+     * @return  array                          图片信息
+     */
+    static public function getByIdAndImageTypeSerialNumber ($id , $imageType , $serialNumber) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `product_id` = "' . (int) $id . '" AND `image_type`= "' . addslashes($imageType) . '" AND `serial_number`= "' .(int) $serialNumber .'"';
+
+        return  self::_getStore()->fetchOne($sql);
     }
 
     /**

@@ -117,7 +117,7 @@ foreach($groupSkuSourceId as $productId => $sourceIdInfo){
 }
 
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
-$mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+$groupGoodsIdImages         = ArrayUtility::groupByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
 $groupGoodsProductInfo      = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
 $mapGoodsProductMinCost     = array();
@@ -173,9 +173,23 @@ foreach ($listGoodsInfo as $offset => $goodsInfo) {
         
         $costStatus = 2;
     }
-    $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
+
+    if(!empty($groupGoodsIdImages[$goodsId])){
+        
+        $firstImageInfo = ArrayUtility::searchBy($groupGoodsIdImages[$goodsId],array('is_first_picture' => 1));
+    }
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info       = current($firstImageInfo);
+        $imageKey   = $info['image_key'];
+    }else{
+
+        $info       = Sort_Image::sortImage($groupGoodsIdImages[$goodsId]);
+        $imageKey   = $info[0]['image_key'];
+    }
+
     $goodsInfo['image_url']     = $imageKey
-        ? AliyunOSS::getInstance('thumb-images-sku')->url($imageKey)
+        ? AliyunOSS::getInstance('images-sku')->url($imageKey)
         : '';
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
     $goodsInfo['remark']        = isset($indexSales[$goodsId]['remark']) ? $indexSales[$goodsId]['remark'] : $goodsInfo['goods_remark'];

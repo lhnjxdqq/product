@@ -75,12 +75,24 @@ if (Product_Info::update($data)) {
     $goodsData  = array_merge(array('goods_id'=>$goodsId), $goodsCost);
     Goods_Info::update($goodsData);
     // 更新图片关系
+    $number = 0;
     Product_Images_RelationShip::deleteById($productId);
     if ($imageIdList) {
         foreach ($imageIdList as $imageId) {
+
+            $number++;
+            $isFirstPicture = 0;
+            
+            if($number == 1){
+            
+                $isFirstPicture = 1;    
+            }
             Product_Images_RelationShip::create(array(
-                'product_id' => $productId,
-                'image_key' => $imageId,
+                'product_id'        => $productId,
+                'image_key'         => $imageId,
+                'image_type'        => 'R',
+                'serial_number'     => $number,
+                'is_first_picture'  => $isFirstPicture,
             ));
         }
     }

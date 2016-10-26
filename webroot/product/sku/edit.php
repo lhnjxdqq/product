@@ -32,27 +32,46 @@ $listSupplierId     = ArrayUtility::listField($listSourceInfo, 'supplier_id');
 $listSupplierInfo   = Supplier_Info::getByMultiId($listSupplierId);
 $mapSupplierInfo    = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
 $listProductImages  = Product_Images_RelationShip::getByMultiId($listProductId);
-$mapProductImages   = ArrayUtility::indexByField($listProductImages, 'product_id');
+$groupProductIdImages  = ArrayUtility::groupByField($listProductImages,'product_id');
+
 foreach ($mapSourceInfo as &$sourceInfo) {
 
     $supplierId = $sourceInfo['supplier_id'];
     $sourceInfo['supplier_code']    = $mapSupplierInfo[$supplierId]['supplier_code'];
 }
+
 foreach ($listProductInfo as &$productInfo) {
 
     $sourceId   = $productInfo['source_id'];
     $productId  = $productInfo['product_id'];
-    $imageKey   = $mapProductImages[$productId]['image_key'];
+
+    if(!empty($groupProductIdImages[$productId])){
+     
+        $firstImageInfo = ArrayUtility::searchBy($groupProductIdImages[$productId],array('is_first_picture' => 1));   
+    }
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info = current($firstImageInfo);
+        $productInfo['image_url'] = AliyunOSS::getInstance('images-product')->url($info['image_key']);     
+    }else{
+     
+        $info = Sort_Image::sortImage($groupProductIdImages[$productId]);
+        $productInfo['image_url']   = $info[0]['image_key'] ? AliyunOSS::getInstance('images-product')->url($info[0]['image_key']) : '';
+    }
     $productInfo['source_code']     = $mapSourceInfo[$sourceId]['source_code'];
     $productInfo['supplier_code']   = $mapSourceInfo[$sourceId]['supplier_code'];
-    $productInfo['image_url']       = $imageKey ? AliyunOSS::getInstance('thumb-images-product')->url($imageKey) : '';
 }
 
 $listGoodsImages            = Goods_Images_RelationShip::getByGoodsId($goodsId);
-foreach ($listGoodsImages as &$goodsImage) {
+$sortListGoodsImages        = Sort_Image::sortImage($listGoodsImages);
 
-    $imageKey                   = $goodsImage['image_key'];
-    $goodsImage['image_url']    = AliyunOSS::getInstance('thumb-images-sku')->url($imageKey);
+if(!empty($sortListGoodsImages)){
+ 
+    foreach ($sortListGoodsImages as &$goodsImage) {
+
+        $imageKey                   = $goodsImage['image_key'];
+        $goodsImage['image_url']    = AliyunOSS::getInstance('images-sku')->url($imageKey);
+    }   
 }
 
 $goodsInfo['category_name'] = $categoryInfo['category_name'];
@@ -65,7 +84,7 @@ $data['mapTypeSpecValue']   = $mapTypeSpecValue;
 $data['mapGoodsSpecValue']  = $mapGoodsSpecValue;
 $data['goodsInfo']          = $goodsInfo;
 $data['listProductInfo']    = $listProductInfo;
-$data['listGoodsImages']    = $listGoodsImages;
+$data['listGoodsImages']    = $sortListGoodsImages;
 $data['mainMenu']           = Menu_Info::getMainMenu();
 
 $template = Template::getInstance();

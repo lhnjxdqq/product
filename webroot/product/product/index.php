@@ -53,12 +53,27 @@ $mapGoodsInfo           = ArrayUtility::indexByField($listGoodsInfo, 'goods_id')
 
 $listProductId          = ArrayUtility::listField($listProduct, 'product_id');
 $listProductImages      = Product_Images_RelationShip::getByMultiId($listProductId);
+
 $mapProductImage        = array();
 if ($listProductImages) {
-    $indexProductImage      = ArrayUtility::indexByField($listProductImages, 'product_id', 'image_key');
-    foreach ($indexProductImage as $productId => $imageKey) {
-        $mapProductImage[$productId] = AliyunOSS::getInstance('thumb-images-product')->url($imageKey);
+  
+    $listProductImages      = ArrayUtility::groupByField($listProductImages,'product_id');
+
+    foreach ($listProductImages as $productId => $imageInfo) {
+    
+        $firstImageInfo = ArrayUtility::searchBy($imageInfo,array('is_first_picture' => 1));
+        if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+            
+            $info = current($firstImageInfo);
+            $mapProductImage[$info['product_id']] = AliyunOSS::getInstance('images-product')->url($info['image_key']);     
+        }else{
+         
+            $info = Sort_Image::sortImage($imageInfo);
+            
+            $mapProductImage[$info[0]['product_id']] = AliyunOSS::getInstance('images-product')->url($info[0]['image_key']);   
+        }
     }
+
 }
 
 $listSourceId           = ArrayUtility::listField($listProduct, 'source_id');
@@ -140,8 +155,6 @@ $data['onlineStatus']       = array(
 
 //导出
 if ( $condition['export'] == 1 ) {
-
-
 
     $listSpuGoodsRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
     $mapSpuGoodsRelation    = ArrayUtility::indexByField($listSpuGoodsRelation , 'goods_id');

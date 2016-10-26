@@ -216,10 +216,22 @@ SQL;
         $result             = array();
         foreach ($groupProductImages as $productId => $productImagesList) {
 
-            $productThumb   = array_pop($productImagesList);
-            $imageKey       = $productThumb['image_key'];
+        if(!empty($productImagesList)){
+            
+            $firstImageInfo = ArrayUtility::searchBy($productImagesList,array('is_first_picture' => 1));
+        }
+        if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+            
+            $info       = current($firstImageInfo);
+            $imageKey   = $info['image_key'];
+        }else{
+
+            $info       = Sort_Image::sortImage($productImagesList);
+            $imageKey   = $info[0]['image_key'];
+        }
+        
             $imageUrl       = $imageKey
-                              ? AliyunOSS::getInstance('thumb-images-product')->url($imageKey)
+                              ? AliyunOSS::getInstance('images-product')->url($imageKey)
                               : '';
             $productThumb['image_url']  = $imageUrl;
             $result[$productId]         = $productThumb;

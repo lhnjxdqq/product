@@ -32,11 +32,14 @@ $mapSupplier    = ArrayUtility::indexByField($listSupplier, 'supplier_id');
 
 // 图片
 $listImages     = Product_Images_RelationShip::getById($productId);
+
 if ($listImages) {
 
-    foreach ($listImages as $key => $item) {
+    $info = Sort_Image::sortImage($listImages);
 
-        $listImages[$key]['image_url']  = AliyunOSS::getInstance('thumb-images-product')->url($item['image_key']);
+    foreach ($info as $key => $item) {
+
+        $listImages[$key]['image_url']  = AliyunOSS::getInstance('images-product')->url($item['image_key']);
     }
 }
 

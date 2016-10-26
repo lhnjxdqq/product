@@ -18,12 +18,14 @@ $listGoodsSpecValue     = Goods_Spec_Value_RelationShip::getByMultiGoodsId($list
 $groupGoodsSpecValue    = ArrayUtility::groupByField($listGoodsSpecValue, 'goods_id');
 
 $spuImagesList          = Spu_Images_RelationShip::getBySpuId($spuId);
+$sortListSpuImages      = Sort_Image::sortImage($spuImagesList);
 $listSpuImages          = array();
-foreach ($spuImagesList as $spuImage) {
+
+foreach ($sortListSpuImages as $spuImage) {
 
     $listSpuImages[]    = array(
         'image_key'     => $spuImage['image_key'],
-        'image_url'     => AliyunOSS::getInstance('thumb-images-spu')->url($spuImage['image_key']),
+        'image_url'     => AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']),
     );
 }
 

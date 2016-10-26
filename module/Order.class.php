@@ -496,7 +496,7 @@ class   Order {
                 'sales_quotation_id'=> $info['quotationId'],
                 'spu_id'            => $info['spuId'],
                 'cost'              => $info['cost'],
-                'remark'            => $indexGoodsId[$info['goodsId']]['goods_remark'],
+                'remark'            => $info['remark'],
             );
             
             $referenceAmount+= ($auPrice+$info['cost']*((int) $info['quantity']) * $info['specWeight']);

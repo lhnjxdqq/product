@@ -40,11 +40,23 @@ if ($update) {
 
     Spu_Images_RelationShip::delBySpuId($spuId);
     if ($imageKeyList) {
+
+        $number = 0;
         foreach ($imageKeyList as $imageKey) {
 
+            $number++;
+            $isFirstPicture = 0;
+            
+            if($number == 1){
+            
+                $isFirstPicture = 1;    
+            }
             Spu_Images_RelationShip::create(array(
-                'spu_id' => $spuId,
-                'image_key' => $imageKey,
+                'spu_id'          => $spuId,
+                'image_key'         => $imageKey,
+                'image_type'        => 'R',
+                'serial_number'     => $number,
+                'is_first_picture'  => $isFirstPicture,
             ));
         }
     }
