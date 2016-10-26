@@ -178,6 +178,10 @@ class   Quotation {
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
+            $paramsTagApi       = array(
+                'spuList'   => array($spu['spu_sn']),
+            );
+            TagApi::getInstance()->Spu_addSpuData($paramsTagApi)->call();
         }
         foreach($spuGoodsInfo as $mapSpuGoods=>$spuInfo) {
             
@@ -249,6 +253,10 @@ class   Quotation {
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
+            $paramsTagApi       = array(
+                'spuList'   => array($spu['spu_sn']),
+            );
+            TagApi::getInstance()->Spu_addSpuData($paramsTagApi)->call();
         }
         foreach($spuGoodsInfo as $mapSpuGoods=>$spuInfo) {
             
