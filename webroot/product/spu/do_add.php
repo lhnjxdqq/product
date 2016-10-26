@@ -24,6 +24,10 @@ $spuId  = Spu_Info::create(array(
     'spu_name'      => $spuName,
     'spu_remark'    => $spuRemark,
 ));
+$paramsTagApi   = array(
+    'spuList'   => array($spuSn),
+);
+TagApi::getInstance()->Spu_addSpuData($paramsTagApi)->call();
 
 $files          = $_FILES['spu-image'];
 $imageKeyList   = array();
