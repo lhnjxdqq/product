@@ -45,7 +45,7 @@ class   Api_Controller_Spu {
 
         foreach ($groupGoodsId as $listGoodsIdBySpu) {
 
-            $listGoodsId    = $listGoodsId + $listGoodsIdBySpu;
+            $listGoodsId    = array_merge($listGoodsId, $listGoodsIdBySpu);
         }
 
         $listProductInfo    = Product_Info::getByMultiGoodsId($listGoodsId);
@@ -128,7 +128,7 @@ class   Api_Controller_Spu {
 
         foreach ($groupGoodsId as $listGoodsIdBySpu) {
 
-            $listGoodsId    = $listGoodsId + $listGoodsIdBySpu;
+            $listGoodsId    = array_merge($listGoodsId, $listGoodsIdBySpu);
         }
 
         $listGoodsInfo  = ArrayUtility::searchBy(self::_getGoodsInfoMulti($listGoodsId), array('delete_status'=>Goods_DeleteStatus::NORMAL));
@@ -189,7 +189,7 @@ class   Api_Controller_Spu {
 
         foreach ($groupGoodsId as $listGoodsIdBySpu) {
 
-            $listGoodsId    = $listGoodsId + $listGoodsIdBySpu;
+            $listGoodsId    = array_merge($listGoodsId, $listGoodsIdBySpu);
         }
 
         $listGoodsInfo  = ArrayUtility::searchBy(self::_getGoodsInfoMulti($listGoodsId), array('delete_status'=>Goods_DeleteStatus::NORMAL));
@@ -359,7 +359,7 @@ class   Api_Controller_Spu {
 
                 if (isset($groupSourceCodeByGoods[$goodsId])) {
 
-                    $result[$spuId] = $result[$spuId] + $groupSourceCodeByGoods[$goodsId];
+                    $result[$spuId] = array_merge($result[$spuId], $groupSourceCodeByGoods[$goodsId]);
                 }
             }
         }
