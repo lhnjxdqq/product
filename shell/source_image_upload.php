@@ -3,7 +3,7 @@
  * 上传图片
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
-
+/*
 // php 锁文件路径
 define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
 
@@ -13,7 +13,7 @@ if (is_file(LOCK_FILE)) {
 }
 
 file_put_contents(LOCK_FILE, 'file.lock');
-
+*/
 /**
  * 递归删除文件、文件所属的目录路径
  * @param string $path 要递归删除文件或目录的
@@ -71,16 +71,18 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
     $spuImageInstance 	       = AliyunOSS::getInstance('images-spu');
     $spuflag = 0;
     
-    if(!empty($listSpuImagesRelationship)) {
-        
-        $imageKey = $listSpuImagesRelationship['image_key'];
+    foreach ($listSpuImagesRelationship as $spuImagesRelationship) {
+
+        $imageKey = $spuImagesRelationship['image_key'];
         // 如果数据库字段为空 , 则跳过
         if (!$imageKey) {
-
-            $spuflag++;
+            continue;
         }
-        echo 'spu产品图片' . $imageKey . "\n";
-        
+        echo '产品图片' . $imageKey . "\n";
+        if (!$spuImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            Spu_Images_RelationShip::deleteByIdAndKey($spuId , $imageKey);
+            continue;
+        }
         try {
 
             $data = $spuImageInstance->downLoadFile($imageKey);
@@ -92,21 +94,21 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         }
 
         if ( md5_file($path . $imageKey) == $imageMd5 ) {
+            
             $spuflag++;
+        }else{
+            
+            Spu_Images_RelationShip::deleteByIdAndKey($spuId , $imageKey);
         }
-
     }
+    
     if ($spuflag) {
 
         unset($spuflag);
         return $imageKey;
 
-    }else{
-        if($imageKey){
-         
-            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);   
-        }
     }
+    
     $skuImageInstance = AliyunOSS::getInstance('images-sku');
     $spuImageKey    = AliyunOSS::getInstance('images-spu')->copyCreate($skuImageInstance, $skuImageKey, null, true);
 
@@ -139,18 +141,22 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
     echo 'product标记' . "\n";
     echo 'productID标记' . $productId . "\n";
 
-	$listProductImageRelationShip       = Product_Images_RelationShip::getByIdAndImageTypeSerialNumber($productId , $imageType , $serialNumber);
+	$listProductImagesRelationship      = Product_Images_RelationShip::getByIdAndImageTypeSerialNumber($productId , $imageType , $serialNumber);
     $productImageInstance               = AliyunOSS::getInstance('images-product');
 	$productflag = 0;
     
-    if(!empty($listProductImageRelationShip)){
-        
-		$imageKey = $listProductImageRelationShip['image_key'];
-        if (!$imageKey) { // 如果数据库数据不存在,直接跳过
+    foreach ($listProductImagesRelationship as $productImagesRelationship) {
 
-			$productflag++;
+        $imageKey = $productImagesRelationship['image_key'];
+        // 如果数据库字段为空 , 则跳过
+        if (!$imageKey) {
+            continue;
         }
-
+        echo '产品图片' . $imageKey . "\n";
+        if (!$productImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
+            continue;
+        }
         try {
 
             $data = $productImageInstance->downLoadFile($imageKey);
@@ -161,23 +167,19 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
             echo $e->getMessage();
         }
 
-		if ( md5_file($path . $imageKey) == $imageMd5 ) {
-			$productflag++;
-		}
-
-	}
+        if ( md5_file($path . $imageKey) == $imageMd5 ) {
+            
+            $productflag++;
+        }else{
+            
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
+        }
+    }
 
 	if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
 		unset($productflag);
 		return $imageKey;
-	}else{
-    
-        if($imageKey){
-         
-            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
-    
-        }
-    }
+	}
     
 	// 上传开始了
     $prodImageKey               = $productImageInstance->create($fileSavePath, null, true);
@@ -210,41 +212,44 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
 function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey) {
     echo 'sku标记' . "\n";
 
-    $listGoodsImageRelationship = Goods_Images_RelationShip::getByGoodsIdAndImageTypeSerialNumber($goodsId , $imageType , $serialNumber);
+    $listGoodsImagesRelationship = Goods_Images_RelationShip::getByGoodsIdAndImageTypeSerialNumber($goodsId , $imageType , $serialNumber);
     $goodsImageInstance 					 = AliyunOSS::getInstance('images-sku');
     $goodsflag = 0;
     
-    if(!empty($listGoodsImageRelationship)){
-        
-        $imageKey = $listGoodsImageRelationship['image_key'];
-        // 如数据库文件不存在,则跳过
+    foreach ($listGoodsImagesRelationship as $goodsImagesRelationship) {
+
+        $imageKey = $goodsImagesRelationship['image_key'];
+        // 如果数据库字段为空 , 则跳过
         if (!$imageKey) {
-            $goodsflag++;
+            continue;
         }
-        
+        echo '产品图片' . $imageKey . "\n";
+        if (!$goodsImageInstance->isExist($imageKey)) { // 如果数据库数据存在 , 但远程数据不存在,删除
+            Product_Images_RelationShip::deleteByIdAndKey($productId , $imageKey);
+            continue;
+        }
         try {
 
             $data = $goodsImageInstance->downLoadFile($imageKey);
             $path = SOURCE_IMAGE_TMP . 'goods/';
             is_dir($path) || mkdir($path , 0777 , true);
-            file_put_contents($path.$imageKey, $data);
+            file_put_contents($path . $imageKey, $data);
         } catch (Exception $e){
             echo $e->getMessage();
         }
-        echo $path . $imageKey . "\n";
+
         if ( md5_file($path . $imageKey) == $imageMd5 ) {
+            
             $goodsflag++;
+        }else{
+            
+            Goods_Images_RelationShip::deleteByIdAndKey($goodsId , $imageKey);
         }
     }
 
     if ($goodsflag) {
         unset($goodsflag);
         return $imageKey;
-    }else{
-        if(!empty($imageKey)){
-         
-            Goods_Images_RelationShip::deleteByIdAndKey($goodsId , $imageKey);   
-        }
     }
     $skuImageInstance = AliyunOSS::getInstance('images-product');
     $goodsImageKey    = AliyunOSS::getInstance('images-sku')->copyCreate($skuImageInstance, $productImageKey, null, true);
