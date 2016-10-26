@@ -93,7 +93,7 @@ class   Spu_Images_RelationShip {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spu_id` = "' . (int) $spuId . '" AND `image_type`= "' . addslashes($imageType) . '" AND `serial_number`= "' .(int) $serialNumber .'"';
 
-        return  self::_getStore()->fetchOne($sql);
+        return  self::_getStore()->fetchAll($sql);
     }
     
     /**
@@ -110,7 +110,7 @@ class   Spu_Images_RelationShip {
     }
 
     /**
-     * 根据SPUID 删出该SPU下图片
+     * 根据SPUID 删除该SPU下图片
      *
      * @param $spuId    SPUID
      * @return int
