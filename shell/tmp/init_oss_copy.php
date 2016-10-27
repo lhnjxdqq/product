@@ -18,8 +18,14 @@ foreach($goodsInfo as $key => $info){
         Goods_Images_RelationShip::deleteByIdAndKey($info['goods_id'] , $imageKey);
         continue;
     }
-    $goodsImageKey      = $productImageInstance->copyCreate($goodsImageInstance, $imageKey, $imageKey, true);
+
+    try {
+        $productImageInstance->copyCreate($goodsImageInstance, $imageKey, $imageKey, true);
+    } catch (Exception $e){
+        echo $e->getMessage()."\n";
+    }
     echo '正在复制skuId为' . $info['goods_id'] .',位置为'. $info['image_type'] . $info['serial_number']. '的图片'."\n";
+
 }
 
 $spuSelect   = 'SELECT * FROM `spu_images_relationship`';
@@ -33,7 +39,13 @@ foreach($spuInfo as $key => $info){
         Spu_Images_RelationShip::deleteByIdAndKey($info['spu_id'] , $imageKey);
         continue;
     }
-    $goodsImageKey      = $productImageInstance->copyCreate($spuImageInstance, $imageKey, $imageKey, true);
+    
+    try {
+        $productImageInstance->copyCreate($spuImageInstance, $imageKey, $imageKey, true);
+    } catch (Exception $e){
+        echo $e->getMessage();
+    }
+
     echo '正在复制spuId为' . $info['spu_id'] .' ,位置为' . $info['image_type'] . $info['serial_number']. '的图片';
 }
 echo '完成';
