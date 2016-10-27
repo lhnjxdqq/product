@@ -9,7 +9,7 @@ $productImageInstance 					 = AliyunOSS::getInstance('images-product');
 $spuImageInstance 					     = AliyunOSS::getInstance('images-spu');
 $goodsSelect   = 'SELECT * FROM `goods_images_relationship`';
 $goodsInfo     = DB::instance('product')->fetchAll($goodsSelect);
-
+/*
 foreach($goodsInfo as $key => $info){
 
     $imageKey           = $info['image_key'];
@@ -27,7 +27,7 @@ foreach($goodsInfo as $key => $info){
     echo '正在复制skuId为' . $info['goods_id'] .',位置为'. $info['image_type'] . $info['serial_number']. '的图片'."\n";
 
 }
-
+*/
 $spuSelect   = 'SELECT * FROM `spu_images_relationship`';
 $spuInfo     = DB::instance('product')->fetchAll($spuSelect);
 
@@ -46,6 +46,6 @@ foreach($spuInfo as $key => $info){
         echo $e->getMessage();
     }
 
-    echo '正在复制spuId为' . $info['spu_id'] .' ,位置为' . $info['image_type'] . $info['serial_number']. '的图片';
+    echo '正在复制spuId为' . $info['spu_id'] .' ,位置为' . $info['image_type'] . $info['serial_number']. '的图片'."\n";
 }
 echo '完成';

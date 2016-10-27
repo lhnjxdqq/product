@@ -3,7 +3,7 @@
  * 上传图片
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
-
+/*
 // php 锁文件路径
 define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
 
@@ -13,7 +13,7 @@ if (is_file(LOCK_FILE)) {
 }
 
 file_put_contents(LOCK_FILE, 'file.lock');
-
+*/
 /**
  * 递归删除文件、文件所属的目录路径
  * @param string $path 要递归删除文件或目录的
@@ -64,7 +64,7 @@ function getByDirFile($path,&$files){
 /**
 * 检测图片在spu里面是否存在,如不存在,则添加
 */
-function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $serialNumber, $productImageKey) {
+function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $serialNumber) {
     echo 'spu标记' . "\n";
 
 	$listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuIdAndImageTypeSerialNumber($spuId , $imageType , $serialNumber);
@@ -86,7 +86,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         try {
 
             $data = $spuImageInstance->downLoadFile($imageKey);
-            $path = SOURCE_IMAGE_TMP . 'spu/';
+            $path = SPU_IMAGE_TMP . 'spu/';
             is_dir($path) || mkdir($path , 0777 , true);
             file_put_contents($path . $imageKey, $data);
         } catch (Exception $e){
@@ -96,6 +96,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         if ( md5_file($path . $imageKey) == $imageMd5 ) {
             
             $spuflag++;
+            break;
         }else{
             
             Spu_Images_RelationShip::deleteByIdAndKey($spuId , $imageKey);
@@ -108,10 +109,12 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         return $imageKey;
 
     }
-
+    // 上传开始了
+    $spuImageKey               = $spuImageInstance->create($fileSavePath, null, true);
+    
     $data = array(
     	'spu_id'        => $spuId,
-    	'image_key'     => $productImageKey,
+    	'image_key'     => $spuImageKey,
         'image_type'    => $imageType,
         'serial_number' => $serialNumber,
     	);
@@ -128,13 +131,14 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         'image_key'         => $sortImage[0]['image_key'],
         'is_first_picture'  => 1,
     ));
+    return $spuImageKey;
 }
 
 /**
 * 检测图片在product里面是否存在,如不存在,则添加
 */
 
-function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType , $serialNumber) {
+function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType , $serialNumber , $spuImageKey) {
     echo 'product标记' . "\n";
     echo 'productID标记' . $productId . "\n";
 
@@ -157,7 +161,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
         try {
 
             $data = $productImageInstance->downLoadFile($imageKey);
-            $path = SOURCE_IMAGE_TMP . 'product/';
+            $path = SPU_IMAGE_TMP . 'product/';
             is_dir($path) || mkdir($path , 0777 , true);
             file_put_contents($path . $imageKey, $data);
         } catch (Exception $e){
@@ -178,13 +182,10 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
 		return $imageKey;
 	}
     
-	// 上传开始了
-    $prodImageKey               = $productImageInstance->create($fileSavePath, null, true);
-    
     //写入数据库
     $data = array(
     	'product_id'    => $productId,
-    	'image_key'     => $prodImageKey,
+    	'image_key'     => $spuImageKey,
         'image_type'    => $imageType,
         'serial_number' => $serialNumber,
     	);
@@ -198,7 +199,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
         'image_key'         => $sortImage[0]['image_key'],
         'is_first_picture'  => 1,
     ));
-    return $prodImageKey;
+    return $spuImageKey;
 
 }
 
@@ -206,7 +207,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
 * 检测图片在goods里面是否存在,如不存在,则添加
 */
 
-function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey) {
+function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$spuImageKey) {
     echo 'sku标记' . "\n";
 
     $listGoodsImagesRelationship = Goods_Images_RelationShip::getByGoodsIdAndImageTypeSerialNumber($goodsId , $imageType , $serialNumber);
@@ -228,7 +229,7 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
         try {
 
             $data = $goodsImageInstance->downLoadFile($imageKey);
-            $path = SOURCE_IMAGE_TMP . 'goods/';
+            $path = SPU_IMAGE_TMP . 'goods/';
             is_dir($path) || mkdir($path , 0777 , true);
             file_put_contents($path . $imageKey, $data);
         } catch (Exception $e){
@@ -251,7 +252,7 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
 
     $data = array(
     	'goods_id'      => $goodsId,
-    	'image_key'     => $productImageKey,
+    	'image_key'     => $spuImageKey,
         'image_type'    => $imageType,
         'serial_number' => $serialNumber,
     	);
@@ -269,11 +270,11 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
         'image_key'         => $sortImage[0]['image_key'],
         'is_first_picture'  => 1,
     ));
-    return $productImageKey;
+    return $spuImageKey;
 }
 
 //获取要递归处理的文件目录路径
-$rootPath = rtrim(SOURCE_IMAGE_UNZIP_PATH,DIRECTORY_SEPARATOR);
+$rootPath = rtrim(SPU_IMAGE_UNZIP_PATH,DIRECTORY_SEPARATOR);
 //存储获取的文件路径
 $files = array();
 
@@ -304,63 +305,55 @@ if( !empty($files) && is_array($files) ){
         //图片类型
         $imageType      = substr($imageName,strlen($imageName)-3,1);
         //买款ID
-        $sourceSn       = substr($imageName,0,strlen($imageName)-3);
+        $spuSn          = substr($imageName,0,strlen($imageName)-3);
         //判断是否有图片类型
         if(!in_array($imageType, $typeList)){
             
             continue;
         }
-        $sourceInfo = Source_Info::getBySourceCode($sourceSn);
-		$sourceInfo = ArrayUtility::searchBy($sourceInfo , array('delete_status'=>0));
-
+        $spuInfo = Spu_Info::getBySpuSn($spuSn);
+                                
 		//若存在，修改产品对应的图片路径；若不存在，则删除该文件
-		if( !empty($sourceInfo) && !empty($imageType) && !empty($serialNumber)){
-            foreach ($sourceInfo as $source) {
+		if( !empty($spuInfo) && !empty($imageType) && !empty($serialNumber)){
 
-    			$listProductInfo = Product_Info::getByMultiSourceId(array($source['source_id']));
-        
-    			$listProductInfo = array_values(ArrayUtility::searchBy($listProductInfo , array('delete_status'=>0 , 'online_status'=>1)));
-
-    			if (!$listProductInfo) {
-    				// 东西不存在,跳过
-    				continue;
-    			}
-                
-    			foreach ($listProductInfo as $productInfo) {
-
-    				$imageMd5       = md5_file($fileSavePath);
-                    try {
-    				    $productImageKey = addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
-                    } catch (Exception $e) {
-                        echo $e->getMessage();
-                    }
-
-    				//查询 goods 图片是否有
-    		        $goodsId = $productInfo['goods_id'];
-                    try {
-    		            addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey);
-                    } catch (Exception $e) {
-                        echo $e->getMessage();
-                    }
-
-    		        // 通过goods_id查询spu_id
-    		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
-    				if ($listSpuGoodsRelationship) {
-
-    			        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
-    			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
-    			        	if ($spuInfo) {
-                                try {
-    			        		    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $productImageKey);
-                                } catch (Exception $e) {
-                                    echo $e->getMessage();
-                                }
-    			        	}
-    			        }
-    				}		        
-    			}
+            $imageMd5       = md5_file($fileSavePath);
+            try {
+                $imageKey   = addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
+            } catch (Exception $e) {
+                echo $e->getMessage();
             }
+            
+            // 通过spu_id查询goods_id
+            $listSpuGoodsRelationship = Spu_Goods_RelationShip::getBySpuId($spuInfo['spu_id']);
+            
+            if ($listSpuGoodsRelationship) {
 
+                foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
+                    if ($spuInfo) {
+                        try {
+                            addImageForGoods($spuGoodsRelationship['goods_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $imageKey);
+                        } catch (Exception $e) {
+                            echo $e->getMessage();
+                        }
+                    }
+                }
+            }  
+            $listGoodsId    = array_unique(ArrayUtility::listField($listSpuGoodsRelationship,'goods_id'));
+            $productInfo    = Product_Info::getByMultiGoodsId($listGoodsId);
+            
+            if ($productInfo) {
+
+                foreach ($productInfo as $info ) {
+                    if ($info) {
+                        try {
+                            addImageForProduct($info['product_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $imageKey);
+                        } catch (Exception $e) {
+                            echo $e->getMessage();
+                        }
+                    }
+                }
+            }
+            
 		}else{
 			
 			//没有找到产品信息的错误文件输出
@@ -375,7 +368,7 @@ if( !empty($files) && is_array($files) ){
 
 //递归删除 未处理完的文件、目录，有可能这些文件没有匹配到数据，则不需要保留
 deleteByDirFile($rootPath,$rootPath);
-deleteByDirFile(SOURCE_IMAGE_TMP,SOURCE_IMAGE_TMP);
+deleteByDirFile(SPU_IMAGE_TMP,SPU_IMAGE_TMP);
 @unlink(LOCK_FILE);
 
 echo "\r\n\r\n";
