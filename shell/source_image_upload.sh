@@ -27,6 +27,8 @@ configPath="${projectPath}${configFile}"
 . $configPath
 
 [ ! -d ${rootPath} ] && `mkdir -p ${rootPath}`
+[ ! -d ${spuPath} ] && `mkdir -p ${spuPath}`
+[ ! -d ${spuSavePath} ] && `mkdir -p ${savePath}`
 [ ! -d ${savePath} ] && `mkdir -p ${savePath}`
 [ ! -d ${errorPath} ] && `mkdir -p ${errorPath}`
 
@@ -59,12 +61,32 @@ do
 	fi
 done
 
+for i in `find ${spuPath} -name "*.${suffixName}"` 
+do
+	nowDate=`date +'%Y-%m-%d-%H-%M-%S'`
+	fileName=$(basename ${i} .${suffixName})
+	fileExt=${i##*.}
+	
+	#解压获取到的zip包到指定的存储目录
+	`unzip -qo ${i} -d ${spuSavePath}/${fileName}_${nowDate}/`
+	#如果解压zip包成功，则删除解压成功的zip包;解压zip包失败，输出错误信息，剪切存储解压失败的zip包	
+	if [ $? -eq 0  ]; then
+		`rm -f ${i}`
+		echo "${i}:unzip success"
+	else
+		mvToPath="${errorPath}/${fileName}_${nowDate}.${fileExt}"
+		`mv ${i} ${mvToPath}`
+		echo "${i}:unzip error...is mv to:${mvToPath}"
+	fi
+done
+
 echo 'upload_image_unzip sh action end!'
 
 
 
 #执行php脚本处理zip包内容
-#${phpBin} ${projectPath}shell/source_image_upload.php
+${phpBin} ${projectPath}shell/source_image_upload.php
+${phpBin} ${projectPath}shell/spu_image_upload.php
 
 
 

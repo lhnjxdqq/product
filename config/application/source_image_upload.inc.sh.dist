@@ -1,8 +1,10 @@
 #!/bin/bash
 #要解压zip包的目录根路径
 rootPath='/home/shuishou/product_image/tmp/SOURCE'
+spuPath='/home/shuishou/product_image/tmp/SPU'
 #解压zip包完毕后，zip包内容的临时存储路径
 savePath='/home/shuishou/product_image/SOURCE'
+spuSavePath='/home/shuishou/product_image/SPU'
 #解压zip包失败后，将解压失败的zip包存储到临时存储路径
 errorPath='/home/error/error.zip'
 #后缀名称
