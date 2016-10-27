@@ -14,7 +14,7 @@ return  array(
         //域名访问协议
         'hostProtocol'      => 'http://',
         'domain'            => '',
-        'prefix'            => 'imagesSPU',
+        'prefix'            => 'imagesProduct',
         'suffix'            => '.jpg',
     ),
     'images-sku'    => array(
@@ -31,7 +31,7 @@ return  array(
         //域名访问协议
         'hostProtocol'      => 'http://',
         'domain'            => '',
-        'prefix'            => 'imagesSKU',
+        'prefix'            => 'imagesProduct',
         'suffix'            => '.jpg',
     ),
 
