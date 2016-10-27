@@ -64,7 +64,7 @@ echo 'upload_image_unzip sh action end!'
 
 
 #执行php脚本处理zip包内容
-${phpBin} ${projectPath}shell/source_image_upload.php
+#${phpBin} ${projectPath}shell/source_image_upload.php
 
 
 
