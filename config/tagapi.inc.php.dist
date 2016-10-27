@@ -1,0 +1,4 @@
+<?php
+return  array(
+    'service'   => 'http://dev.tags.kuandd.com/api/v1/index.php',
+);
