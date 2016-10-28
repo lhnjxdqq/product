@@ -959,11 +959,10 @@ class   Quotation {
         $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
         //获取SPU数量
         $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
-        $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
-        foreach ($mapSpuImages as $spuId => $spuImage) {
+        $groupSpuImages   = ArrayUtility::groupByField($listSpuImages, 'spu_id');
+        foreach ($groupSpuImages as $spuId => $spuImage) {
 
-            //$mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url(imagesSKU);
-            $mapSpuImages[$spuId]['image_url']  = $spuImage['image_key'] ? 'imagesSPU/'.$spuImage['image_key'].'.jpg' : '';
+            $mapSpuImages[$spuId]  = Sort_Image::sortImage($spuImage);
         }
 
         //属性列表
@@ -1117,8 +1116,8 @@ class   Quotation {
                 }
                         
             }
-            $listSpuInfo[$key]['image_path'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];
-            
+            $listSpuInfo[$key]['image_path'] = $mapSpuImages[$spuInfo['spu_id']];
+
             $listSpuInfo[$key]['goods']     = array();
 
             foreach($groupSpuGoods[$spuInfo['spu_id']] as $row => $info){
@@ -1146,7 +1145,7 @@ class   Quotation {
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_id']       = $mapGoodsValueWeightId[$goodsId];
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_data']     = $mapGoodsValue[$goodsId]['spec_weight'];
                 $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
-                $listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? 'imagesSKU/'.$spuImage['image_key'].'.jpg' : '';
+                //$listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? 'imagesSKU/'.$spuImage['image_key'].'.jpg' : '';
             }
             unset($listSpuInfo[$key]['color']);
             

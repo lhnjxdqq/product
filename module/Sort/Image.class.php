@@ -39,7 +39,7 @@ class Sort_Image {
      */
     static public function sortImageType(){
         
-        return array('M','D','R','P','F');
+        return array('R','M','D','P','F');
     }
     
     /**
