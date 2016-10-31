@@ -1145,7 +1145,6 @@ class   Quotation {
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_id']       = $mapGoodsValueWeightId[$goodsId];
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['weight']['spec_value_data']     = $mapGoodsValue[$goodsId]['spec_weight'];
                 $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
-                //$listSpuInfo[$key]['goods'][$goodsId]['image_path']     = $imageKey ? 'imagesSKU/'.$spuImage['image_key'].'.jpg' : '';
             }
             unset($listSpuInfo[$key]['color']);
             

@@ -149,6 +149,37 @@ class Spu_Push {
     }
      
     /**
+     * 推送listSpuSn
+     *
+     *  @param array $listSpuId
+     */
+    static public function pushTagsListSpuSn(array $listSpuSn,array $param){
+
+        if(empty($listSpuSn) || empty($param)){
+            
+            return false;
+        }
+
+        $config     = self::_getPushSpuApiConfig();
+
+        $postData   = array();
+        
+        foreach($param as $key=>$val){
+            
+            $data[$key] = $val;
+        }
+        
+        foreach($listSpuSn as $key => $val){
+            
+            $data['spuSn']                  = $val;
+            $postData['spuDataList'][]      = $data;
+        }
+        
+        TagApi::getInstance()->Spu_updateSpuData($postData)->call();
+
+    }
+     
+    /**
      * 获取推送的SPU数据
      *
      * @param $spuId

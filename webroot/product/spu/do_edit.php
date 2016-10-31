@@ -61,6 +61,11 @@ if ($update) {
                 'is_first_picture'  => $isFirstPicture,
             ));
         }
+        
+        Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('imageExists'=>1));
+    }else{
+    
+        Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('imageExists'=>0)); 
     }
     // 推送SPU更新数据到选货工具
     Spu_Push::updatePushSpuData($spuId);
