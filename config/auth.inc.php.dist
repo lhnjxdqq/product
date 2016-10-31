@@ -9,13 +9,17 @@ return  array(
         '/logout.php',
     ),
     'white_list_api'    => array(
-        // '/api/index.php',
         'SaleMan.getAll',
         'AuPrice.getNewPrice',
         'Customer.getAll',
         'Category.getAll',
         'Style.getAll',
         'Spec.getAll',
+        'Order.create',
+        'Order.getByIdList',
+        'SalesQuotation.getSalesQuotationFile',
+        'SalesQuotation.success',
+        'Spu.getByMultiSn',
     ),
     'white_list_host'   => array(
         '127.0.0.1',
