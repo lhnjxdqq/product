@@ -30,6 +30,8 @@ foreach ($files['tmp_name'] as $stream) {
     }
 }
 
+$spuInfo = Spu_Info::getById($spuId);
+
 $update = Spu_Info::update(array(
     'spu_id'        => $spuId,
     'spu_name'      => $spuName,
@@ -62,6 +64,7 @@ if ($update) {
     }
     // 推送SPU更新数据到选货工具
     Spu_Push::updatePushSpuData($spuId);
+    Spu_Push::pushListSpuSn(array($spuInfo['spu_sn']));
 
     Utility::notice('编辑SPU成功', '/product/spu/index.php');
 }

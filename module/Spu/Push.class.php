@@ -124,6 +124,31 @@ class Spu_Push {
     }
 
     /**
+     * 推送listSpuSn
+     *
+     *  @param array $listSpuId
+     */
+    static public function pushListSpuSn(array $listSpuSn,$operation ='update'){
+
+        if(empty($listSpuSn)){
+            
+            return false;
+        }
+
+        $config     = self::_getPushSpuApiConfig();
+        $apiUrl     = $config['apiConfig']['spu_update'];
+
+        $postData   = array();
+        foreach($listSpuSn as $key => $val){
+            $data['spuSn']     = $val;
+            $data['operation']  = $operation;
+            $postData[]         = $data;
+        }
+
+        $res        = HttpRequest::getInstance($apiUrl)->post($postData);
+    }
+     
+    /**
      * 获取推送的SPU数据
      *
      * @param $spuId

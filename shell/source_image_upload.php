@@ -286,6 +286,7 @@ $productIdList = array();
 //图片类型
 $typeList       = array_flip(Sort_Image::getImageTypeList());
 
+$listSpuSn      = array();    
 //处理所有的文件
 if( !empty($files) && is_array($files) ){
 	foreach($files as $fileSavePath){
@@ -351,6 +352,7 @@ if( !empty($files) && is_array($files) ){
     			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
     			        	if ($spuInfo) {
                                 try {
+                                    $listSpuSn[] = $spuInfo['spu_sn'];
     			        		    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $productImageKey);
                                 } catch (Exception $e) {
                                     echo $e->getMessage();
@@ -372,7 +374,11 @@ if( !empty($files) && is_array($files) ){
 	}
 }
 
+if(!empty($listSpuSn)){
 
+    Spu_Push::pushListSpuSn($listSpuSn);
+    
+}
 //递归删除 未处理完的文件、目录，有可能这些文件没有匹配到数据，则不需要保留
 deleteByDirFile($rootPath,$rootPath);
 deleteByDirFile(SOURCE_IMAGE_TMP,SOURCE_IMAGE_TMP);
