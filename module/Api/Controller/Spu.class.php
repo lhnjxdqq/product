@@ -244,7 +244,7 @@ class   Api_Controller_Spu {
 
         foreach ($groupImageInfo[$spuInfo['spu_id']] as $imageInfo) {
 
-            $spuInfo['spuImageList'][]  = AliyunOSS::getInstance('images-spu')->url($imageInfo['image_key']);
+            $spuInfo['spuImageList'][]  = $imageInfo;
         }
 
         return  $spuInfo;
