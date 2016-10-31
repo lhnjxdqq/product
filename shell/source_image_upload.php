@@ -377,6 +377,7 @@ if( !empty($files) && is_array($files) ){
 if(!empty($listSpuSn)){
 
     Spu_Push::pushListSpuSn($listSpuSn);
+    Spu_Push::pushTagsListSpuSn($listSpuSn, array('imageExists'=>1));
     
 }
 //递归删除 未处理完的文件、目录，有可能这些文件没有匹配到数据，则不需要保留

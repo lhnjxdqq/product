@@ -38,8 +38,11 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
             if (!empty($listOffLineSpuId)) {
 
                 Spu_Info::setOnlineStatusByMultiSpuId($listOffLineSpuId, Spu_OnlineStatus::OFFLINE);
+                
                 foreach ($listOffLineSpuId as $spuId) {
 
+                    $spuInfo = Spu_Info::getById($spuId);
+                    Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>1));
                     Spu_Push::changePushSpuDataStatus($spuId, 'offline');
                 }
             }
