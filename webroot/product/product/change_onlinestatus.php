@@ -42,7 +42,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
                 foreach ($listOffLineSpuId as $spuId) {
 
                     $spuInfo = Spu_Info::getById($spuId);
-                    Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>1));
+                    Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>Spu_OnlineStatus::OFFLINE));
                     Spu_Push::changePushSpuDataStatus($spuId, 'offline');
                 }
             }
@@ -75,6 +75,8 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
                 Spu_Info::setOnlineStatusByMultiSpuId($listOnlineSpuId, Spu_OnlineStatus::ONLINE);
                 foreach ($listOnlineSpuId as $spuId) {
 
+                    $spuInfo = Spu_Info::getById($spuId);
+                    Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>Spu_OnlineStatus::ONLINE));
                     Spu_Push::changePushSpuDataStatus($spuId, 'online');
                 }
             }

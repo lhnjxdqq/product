@@ -162,7 +162,7 @@ class Spu_Push {
 
         $config     = self::_getPushSpuApiConfig();
 
-        $postData   = array();
+        $paramsTagApi   = array();
         
         foreach($param as $key=>$val){
             
@@ -172,10 +172,10 @@ class Spu_Push {
         foreach($listSpuSn as $key => $val){
             
             $data['spuSn']                  = $val;
-            $postData['spuDataList'][]      = $data;
+            $paramsTagApi['spuDataList'][]      = $data;
         }
-        
-        TagApi::getInstance()->Spu_updateSpuData($postData)->call();
+
+        TagApi::getInstance()->Spu_updateSpuData($paramsTagApi)->call();
 
     }
      
