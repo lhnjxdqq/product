@@ -38,6 +38,11 @@ $update = Spu_Info::update(array(
     'spu_remark'    => $spuRemark,
 ));
 
+$spuUrl     = '/product/spu/index.php';
+if(!empty($_SESSION['page_product_spu'])){
+    
+    $spuUrl     = $_SESSION['page_product_spu'];
+}
 if ($update) {
 
     Spu_Images_RelationShip::delBySpuId($spuId);
@@ -71,5 +76,5 @@ if ($update) {
     Spu_Push::updatePushSpuData($spuId);
     Spu_Push::pushListSpuSn(array($spuInfo['spu_sn']));
 
-    Utility::notice('编辑SPU成功', '/product/spu/index.php');
+    Utility::notice('编辑SPU成功', $spuUrl);
 }
