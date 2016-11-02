@@ -1123,6 +1123,10 @@ class   Quotation {
             foreach($groupSpuGoods[$spuInfo['spu_id']] as $row => $info){
 
                 $goodsId                    = $info['goods_id'];
+                if(empty($mapAllGoodsInfo[$goodsId])){
+                
+                    continue;
+                }
                 $colorCost                  = (float) $listSpuInfo[$key]['color'][$mapGoodsValueColorId[$goodsId]['color_id']];
                 if((empty($colorCost) || !is_numeric($colorCost)) && $colorCost == 0){
 
