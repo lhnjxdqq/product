@@ -1,0 +1,13 @@
+<?php
+/**
+ * 数据同步日志文件
+ */
+return  array(
+    'sync_dir_path' => '/home/vagrant/Code/local.prod.kuandd.com/data/sync/',
+    'log_file_path' => array(
+        'category_info' => '/home/vagrant/Code/local.prod.kuandd.com/data/sync/category_info.log',
+        'style_info'    => '/home/vagrant/Code/local.prod.kuandd.com/data/sync/style_info.log',
+        'spu_info'      => '/home/vagrant/Code/local.prod.kuandd.com/data/sync/spu_info.log',
+        'sku_info'      => '/home/vagrant/Code/local.prod.kuandd.com/data/sync/sku_info.log',
+    ),
+);
