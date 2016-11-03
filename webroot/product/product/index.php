@@ -158,7 +158,7 @@ $data['onlineStatus']       = array(
 if ( $condition['export'] == 1 ) {
 
     $listSpuGoodsRelation   = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
-    $mapSpuGoodsRelation    = ArrayUtility::indexByField($listSpuGoodsRelation , 'goods_id');
+    $mapSpuGoodsRelation    = ArrayUtility::groupByField($listSpuGoodsRelation , 'goods_id');
     $listSpuId              = ArrayUtility::listField($listSpuGoodsRelation , 'spu_id');
     $listSpuInfo            = Spu_Info::getByMultiId($listSpuId);
     $mapSpuInfo             = ArrayUtility::indexByField($listSpuInfo , 'spu_id');
@@ -166,15 +166,14 @@ if ( $condition['export'] == 1 ) {
     $export = array();
     foreach ($listProduct as $product) {
 
-        $tmpSpuId                       = $mapSpuGoodsRelation[$product['goods_id']]['spu_id'];
-        if ( is_array($tmpSpuId) ) {
+        $tmpSpuId                       = $mapSpuGoodsRelation[$product['goods_id']];
+
+        if ( !empty(tmpSpuId) ) {
             $tmpSpuSnList               = array();
-            foreach ($tmpSpuId as $spuId) {
-                $tmpSpuSnList           = $mapSpuInfo[$spuId]['spu_sn'];
+            foreach ($tmpSpuId as $goodsSpuInfo) {
+                $tmpSpuSnList[]         = $mapSpuInfo[$goodsSpuInfo['spu_id']]['spu_sn'];
             }
             $spuSn                      = implode(',', $tmpSpuSnList);
-        } else {
-            $spuSn                      = $mapSpuInfo[$tmpSpuId]['spu_sn'];
         }
 
         $export['product_sn']           = $product['product_sn'];
