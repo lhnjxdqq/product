@@ -168,7 +168,7 @@ if ( $condition['export'] == 1 ) {
 
         $tmpSpuId                       = $mapSpuGoodsRelation[$product['goods_id']];
 
-        if ( !empty(tmpSpuId) ) {
+        if ( !empty($tmpSpuId) ) {
             $tmpSpuSnList               = array();
             foreach ($tmpSpuId as $goodsSpuInfo) {
                 $tmpSpuSnList[]         = $mapSpuInfo[$goodsSpuInfo['spu_id']]['spu_sn'];
