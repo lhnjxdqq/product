@@ -69,7 +69,20 @@ class   Au_Price_Log {
     }
     
     /**
-     * 根据条件获取数量
+     *  获取倒数第二个价位
+     *
+     *  @return  float 价格
+     */
+    static  public function getLastPrice() {
+        
+        $sql    = "SELECT " . self::FIELDS . " FROM " . self::_tableName() . " ORDER BY create_time DESC LIMIT 1,1";
+        $row    = self::_getStore()->fetchOne($sql);
+
+        return  (float) $row['au_price'];
+    }
+    
+    /**
+     * 根据条件获取数据
      *
      * @param   array   $condition  条件数据
      * @return  int                 数量

@@ -3,7 +3,8 @@
  * 上传图片
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
-/*
+ignore_user_abort();
+
 // php 锁文件路径
 define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
 
@@ -13,7 +14,7 @@ if (is_file(LOCK_FILE)) {
 }
 
 file_put_contents(LOCK_FILE, 'file.lock');
-*/
+
 /**
  * 递归删除文件、文件所属的目录路径
  * @param string $path 要递归删除文件或目录的
@@ -124,7 +125,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
     }
     $listImages     = Spu_Images_RelationShip::getBySpuId($spuId);
     $sortImage      = Sort_Image::sortImage($listImages);
-    $updateSql      = 'UPDATE `spu_image_relationship` set `is_first_picture` = 1 WHERE `spu_id`='.$spuId;
+    $updateSql      = 'UPDATE `spu_images_relationship` set `is_first_picture` = 0 WHERE `spu_id`='.$spuId;
     DB::instance('product')->execute($updateSql);
     Spu_Images_RelationShip::update(array(
         'spu_id'            => $spuId,
@@ -192,7 +193,7 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
     Product_Images_RelationShip::create($data);
     $listImages     = Product_Images_RelationShip::getById($productId);
     $sortImage      = Sort_Image::sortImage($listImages);
-    $updateSql      = 'UPDATE `product_image_relationship` set `is_first_picture` = 1 WHERE `product_id`='.$productId;
+    $updateSql      = 'UPDATE `product_images_relationship` set `is_first_picture` = 0 WHERE `product_id`='.$productId;
     DB::instance('product')->execute($updateSql);
     Product_Images_RelationShip::update(array(
         'product_id'        => $productId,
@@ -263,7 +264,7 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
     
     $listImages     = Goods_Images_RelationShip::getByGoodsId($goodsId);
     $sortImage      = Sort_Image::sortImage($listImages);
-    $updateSql      = 'UPDATE `goods_image_relationship` set `is_first_picture` = 1 WHERE `goods_id`='.$goodsId;
+    $updateSql      = 'UPDATE `goods_images_relationship` set `is_first_picture` = 0 WHERE `goods_id`='.$goodsId;
     DB::instance('product')->execute($updateSql);
     Goods_Images_RelationShip::update(array(
         'goods_id'          => $goodsId,
