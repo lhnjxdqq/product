@@ -91,6 +91,7 @@ $mapCategory            = ArrayUtility::indexByField($listCategory, 'category_id
 $listStyleInfo          = Style_Info::listAll();
 $listStyleInfo          = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
 $groupStyleInfo         = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
+$indexStyleIdInfo       = ArrayUtility::indexByField($listStyleInfo,'style_id');
 
 $listSpecSizeInfo       = Spec_Info::getByName('规格尺寸');
 $listSpecValueSize      = Goods_Type_Spec_Value_Relationship::getByMultiSpecId(ArrayUtility::listField($listSpecSizeInfo, 'spec_id'));
@@ -184,8 +185,8 @@ if ( $condition['export'] == 1 ) {
         $export['weight']               = $mapGoodsSpecValue[$product['goods_id']]['规格重量']['spec_value_data'];
         $export['size']                 = $mapGoodsSpecValue[$product['goods_id']]['规格尺寸']['spec_value_data'];
         $export['color']                = $mapGoodsSpecValue[$product['goods_id']]['颜色']['spec_value_data'];
-        $export['style']                = !empty($mapGoodsInfo[$product['goods_id']]['style_id']) ? $listStyleInfo[$listStyleInfo[$mapGoodsInfo[$product['goods_id']]['style_id']]['parent_id']]['style_name'] : '';
-        $export['sub_style']            = !empty($mapGoodsInfo[$product['goods_id']]['style_id']) ? $listStyleInfo[$mapGoodsInfo[$product['goods_id']]['style_id']]['style_name'] : '';
+        $export['style']                = !empty($mapGoodsInfo[$product['goods_id']]['style_id']) ? $indexStyleIdInfo[$indexStyleIdInfo[$mapGoodsInfo[$product['goods_id']]['style_id']]['parent_id']]['style_name'] : '';
+        $export['sub_style']            = !empty($mapGoodsInfo[$product['goods_id']]['style_id']) ? $indexStyleIdInfo[$mapGoodsInfo[$product['goods_id']]['style_id']]['style_name'] : '';
         $export['supplier_id']          = $mapSupplierInfo[$mapSourceInfo[$product['source_id']]['supplier_id']]['supplier_code'];
         $export['source_code']          = $mapSourceInfo[$product['source_id']]['source_code'];
         $export['product_cost']         = $product['product_cost'];
