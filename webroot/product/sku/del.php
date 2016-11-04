@@ -41,6 +41,7 @@ if (Goods_Info::update($data)) {
     // 删除此SKU和SPU的关系
     Spu_Goods_RelationShip::deleteRelationShipByMultiGoodsId((array) $goodsId);
 
+    Sync::queueSkuData($goodsId);
     Utility::notice('删除成功', '/product/sku/index.php');
 } else {
 

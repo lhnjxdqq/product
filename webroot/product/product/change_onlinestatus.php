@@ -27,6 +27,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
             Goods_Info::setOnlineStatusByMultiGoodsId($listOffLineGoodsId, Goods_OnlineStatus::OFFLINE);
             foreach ($listOffLineGoodsId as $goodsId) {
 
+                Sync::queueSkuData($goodsId);
                 Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
             }
 
@@ -41,6 +42,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
                 
                 foreach ($listOffLineSpuId as $spuId) {
 
+                    Sync::queueSpuData($spuId);
                     $spuInfo = Spu_Info::getById($spuId);
                     Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>Spu_OnlineStatus::OFFLINE));
                     Spu_Push::changePushSpuDataStatus($spuId, 'offline');
@@ -60,6 +62,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
             Goods_Info::setOnlineStatusByMultiGoodsId($listOnlineGoodsId, Goods_OnlineStatus::ONLINE);
             foreach ($listOnlineGoodsId as $goodsId) {
 
+                Sync::queueSkuData($goodsId);
                 Goods_Push::changePushGoodsDataStatus($goodsId, 'online');
             }
 
@@ -75,6 +78,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
                 Spu_Info::setOnlineStatusByMultiSpuId($listOnlineSpuId, Spu_OnlineStatus::ONLINE);
                 foreach ($listOnlineSpuId as $spuId) {
 
+                    Sync::queueSpuData($spuId);
                     $spuInfo = Spu_Info::getById($spuId);
                     Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>Spu_OnlineStatus::ONLINE));
                     Spu_Push::changePushSpuDataStatus($spuId, 'online');

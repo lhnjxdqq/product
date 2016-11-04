@@ -83,6 +83,9 @@ if (Goods_Info::update($data)) {
         }
     }
 
+    // 推送SKU数据到redis队列
+    Sync::queueSkuData($goodsId);
+
     // 推送更新SKU数据到生产工具
     Goods_Push::updatePushGoodsData($goodsId);
     Utility::notice('编辑成功', '/product/sku/index.php');
