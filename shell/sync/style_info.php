@@ -12,7 +12,12 @@ $listStyleInfo      = Style_Info::listAll();
 $logFilePathList    = Config::get('sync|PHP', 'log_file_path');
 $styleLogFile       = $logFilePathList['style_info'];
 $styleLogFileTmp    = $styleLogFile . '.tmp';
+$styleLogFileMd5    = $styleLogFile . '.md5';
 
+if (is_file($styleLogFileTmp)) {
+
+    unlink($styleLogFileTmp);
+}
 foreach ($listStyleInfo as $styleInfo) {
 
     file_put_contents($styleLogFileTmp, json_encode($styleInfo) . "\n", FILE_APPEND);
@@ -24,6 +29,7 @@ if (is_file($styleLogFileTmp)) {
         unlink($styleLogFile);
     }
     rename($styleLogFileTmp, $styleLogFile);
+    file_put_contents($styleLogFileMd5, md5_file($styleLogFile));
 }
 
 echo "done\n";

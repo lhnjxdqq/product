@@ -12,7 +12,12 @@ $listCategoryInfo   = Category_Info::listAll();
 $logFilePathList    = Config::get('sync|PHP', 'log_file_path');
 $categoryLogFile    = $logFilePathList['category_info'];
 $categoryLogFileTmp = $categoryLogFile . '.tmp';
+$categoryLogFileMd5 = $categoryLogFile . '.md5';
 
+if (is_file($categoryLogFileTmp)) {
+
+    unlink($categoryLogFileTmp);
+}
 foreach ($listCategoryInfo as $categoryInfo) {
 
     file_put_contents($categoryLogFileTmp, json_encode($categoryInfo) . "\n", FILE_APPEND);
@@ -24,6 +29,7 @@ if (is_file($categoryLogFileTmp)) {
         unlink($categoryLogFile);
     }
     rename($categoryLogFileTmp, $categoryLogFile);
+    file_put_contents($categoryLogFileMd5, md5_file($categoryLogFile));
 }
 
 echo "done\n";
