@@ -14,6 +14,7 @@ $totalSpu           = Spu_Info::countByCondition(array());
 $logFilePathList    = Config::get('sync|PHP', 'log_file_path');
 $spuLogFile         = $logFilePathList['spu_info'];
 $spuLogFileTmp      = $spuLogFile . '.tmp';
+$spuLogFileMd5      = $spuLogFile . '.md5';
 $db                 = DB::instance('product');
 
 echo "共{$totalSpu}条SPU信息\n";
@@ -30,9 +31,13 @@ for ($offset = 0; $offset <= $totalSpu; $offset += $size) {
     $mapSpuImage    = ArrayUtility::indexByField($listSpuImages, 'spu_id', 'image_key');
     foreach ($listSpuInfo as $spuInfo) {
 
-        $spuId                  = $spuInfo['spu_id'];
-        $spuInfo['image_key']   = $mapSpuImage[$spuId]  ? $mapSpuImage[$spuId]  : '';
-        file_put_contents($spuLogFileTmp, json_encode($spuInfo) . "\n", FILE_APPEND);
+        $spuId  = $spuInfo['spu_id'];
+        file_put_contents($spuLogFileTmp, json_encode(array(
+            'spu_id'    => $spuInfo['spu_id'],
+            'spu_sn'    => $spuInfo['spu_sn'],
+            'spu_name'  => $spuInfo['spu_name'],
+            'image_key' => $mapSpuImage[$spuId]  ? $mapSpuImage[$spuId]  : '',
+        )) . "\n", FILE_APPEND);
     }
 
 }
@@ -44,6 +49,7 @@ if (is_file($spuLogFileTmp)) {
         unlink($spuLogFile);
     }
     rename($spuLogFileTmp, $spuLogFile);
+    file_put_contents($spuLogFileMd5, md5_file($spuLogFile));
 }
 
 echo "done\n";
