@@ -91,7 +91,7 @@
                             <thead>
                                 <tr>
                                     <th>SKU编号</th>
-                                    <th>关键SPU</th>
+                                    <th>关联SPU</th>
                                     <th>买款ID</th>
                                     <th>产品图片</th>
                                     <th>SKU名称</th>
