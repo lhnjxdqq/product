@@ -1,0 +1,8 @@
+<?php
+/**
+ * Redis服务配置
+ */
+return  array(
+    'test'  => array(
+    ),
+);
