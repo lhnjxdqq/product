@@ -14,6 +14,10 @@ $categoryLogFile    = $logFilePathList['category_info'];
 $categoryLogFileTmp = $categoryLogFile . '.tmp';
 $categoryLogFileMd5 = $categoryLogFile . '.md5';
 
+if (is_file($categoryLogFileTmp)) {
+
+    unlink($categoryLogFileTmp);
+}
 foreach ($listCategoryInfo as $categoryInfo) {
 
     file_put_contents($categoryLogFileTmp, json_encode($categoryInfo) . "\n", FILE_APPEND);

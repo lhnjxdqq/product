@@ -14,6 +14,10 @@ $styleLogFile       = $logFilePathList['style_info'];
 $styleLogFileTmp    = $styleLogFile . '.tmp';
 $styleLogFileMd5    = $styleLogFile . '.md5';
 
+if (is_file($styleLogFileTmp)) {
+
+    unlink($styleLogFileTmp);
+}
 foreach ($listStyleInfo as $styleInfo) {
 
     file_put_contents($styleLogFileTmp, json_encode($styleInfo) . "\n", FILE_APPEND);

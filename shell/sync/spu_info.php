@@ -17,7 +17,10 @@ $spuLogFileTmp      = $spuLogFile . '.tmp';
 $spuLogFileMd5      = $spuLogFile . '.md5';
 $db                 = DB::instance('product');
 
-echo "共{$totalSpu}条SPU信息\n";
+if (is_file($spuLogFileTmp)) {
+
+    unlink($spuLogFileTmp);
+}
 for ($offset = 0; $offset <= $totalSpu; $offset += $size) {
 
     $listSpuInfo    = Spu_Info::listByCondition(array(), array(
