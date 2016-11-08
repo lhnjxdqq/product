@@ -72,6 +72,10 @@ if ($update) {
     
         Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('imageExists'=>0)); 
     }
+
+    // 推送SPU数据到redis队列
+    Sync::queueSpuData($spuId);
+
     // 推送SPU更新数据到选货工具
     Spu_Push::updatePushSpuData($spuId);
     Spu_Push::pushListSpuSn(array($spuInfo['spu_sn']));
