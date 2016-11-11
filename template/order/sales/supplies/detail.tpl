@@ -59,14 +59,23 @@
                             <td>出货时间</td>
                             <td><{$salesOrderInfo.update_time}></td>
                             <td>出货方式</td>
-                            <td><{$suppliesInfo.supplies_way}></td>
+                            <td><{$wayInfo[$suppliesInfo.supplies_way]}></td>
                             <td>快递单号</td>
                             <td><{$suppliesInfo.courier_number}></td>
                         </tr>
+                        
+                        <{if $suppliesInfo.remark != ''}>
                         <tr>
                             <td>备注</td>
                             <td colspan='3'><{$suppliesInfo.remark}></td>
                         </tr>
+                        <{/if}>
+                        <{if $suppliesInfo.supplies_status ==2}>
+                        <tr>
+                            <td>审核未通过原因:</td>
+                            <td colspan='3'><{$suppliesInfo.review_explain}></td>
+                        </tr>
+                        <{/if}>
                     </table>
                 </div>
                 <!-- /.box-body -->

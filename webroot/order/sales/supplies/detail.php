@@ -80,6 +80,7 @@ foreach ($listSuppliesInfo as &$detail) {
     $detail['image_url']            = $mapProductImage[$productId]['image_url'];
 }
 
+$wayInfo            = Sales_Supplies_WayStyle::getSuppliesWay();
 $data['listSuppliesInfo']    = $listSuppliesInfo;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
@@ -88,5 +89,6 @@ $data['mapOrderType']       = Produce_Order_Type::getOrderType();
 $template = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('suppliesInfo', $suppliesInfo);
+$template->assign('wayInfo', $wayInfo);
 $template->assign('suppliesProductInfo', $suppliesProductInfo);
 $template->display('order/sales/supplies/detail.tpl');

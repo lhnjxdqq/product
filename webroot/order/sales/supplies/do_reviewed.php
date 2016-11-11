@@ -37,12 +37,23 @@ if($data['result'] == 'OK'){
             'is_supplies_operation'     => 1,
         ));
     }
+    
+    Sales_Supplies_Info::update($content);
+    
+    $salesSuppliesInfo          = Sales_Supplies_Info::getById($data['supplies_id']);
+    $salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesSuppliesInfo['sales_order_id']),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
+    $totalPrice                 = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'total_price'));
 
+    Sales_Order_Info::update(array(
+        'sales_order_id'    => $salesSuppliesInfo['sales_order_id'],
+        'transaction_amount'=> $totalPrice,
+    ));
 }else{
     
     $content['supplies_status'] = Sales_Supplies_Status::NO_REVIEWED;
     $content['review_explain']  = $_POST['explain'];
+    
+    Sales_Supplies_Info::update($content);
 }
-Sales_Supplies_Info::update($content);
 
 Utility::notice('审核成功','/order/sales/supplies/index.php?sales_order_id='.$salesSuppliesInfo['sales_order_id']);
