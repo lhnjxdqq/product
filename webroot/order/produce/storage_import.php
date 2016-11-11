@@ -176,6 +176,8 @@ foreach($datas as $info){
         'weight'                    => $info['weight'],
         'storage_weight'            => $info['weight'],
         'storage_quantity'          => $info['quantity'],
-    ));   
+        'stock_quantity'            => $info['quantity'],
+        'stock_weight'              => $info['weight'],
+    ));
 }
 Utility::notice('导入成功');
