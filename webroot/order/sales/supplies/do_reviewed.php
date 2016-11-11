@@ -43,10 +43,11 @@ if($data['result'] == 'OK'){
     $salesSuppliesInfo          = Sales_Supplies_Info::getById($data['supplies_id']);
     $salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesSuppliesInfo['sales_order_id']),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
     $totalPrice                 = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'total_price'));
-
     Sales_Order_Info::update(array(
         'sales_order_id'    => $salesSuppliesInfo['sales_order_id'],
         'transaction_amount'=> $totalPrice,
+        'order_amount'      => $totalPrice,
+        ''
     ));
 }else{
     

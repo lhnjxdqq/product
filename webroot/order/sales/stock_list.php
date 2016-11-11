@@ -127,22 +127,33 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 
 foreach ($listGoodsInfo as &$goodsInfo) {
 
+    $goodsInfo['isPer']  = 1;
     $goodsId    = $goodsInfo['goods_id'];
     $productId  = $indexGoodsId[$goodsId]['product_id'];
     
-    $goodsInfo['weight'] = $indexSales[$goodsId]['reference_weight'];
-    $goodsInfo['quantity'] = $indexSales[$goodsId]['goods_quantity'];
+    $goodsInfo['weight']    = $indexSales[$goodsId]['reference_weight'];
+    $goodsInfo['quantity']  = $indexSales[$goodsId]['goods_quantity'];
     if($productId){
         
-        $goodsInfo['supplies_weight']       =   array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_weight')); 
-        $goodsInfo['supplies_quantity']     =   array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_quantity')); 
+        $goodsInfo['supplies_weight']       = array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_weight')); 
+        $goodsInfo['supplies_quantity']     = array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_quantity')); 
         $goodsInfo['supplies_stock_quantity']   = $goodsInfo['quantity']-$goodsInfo['supplies_quantity'];
+        
+        if($goodsInfo['supplies_quantity'] > $goodsInfo['quantity']){
+            
+            $goodsInfo['isPer']  = 0;
+        }
         if($goodsInfo['supplies_quantity']!=0){
             
             $goodsInfo['stock_per'] =  $goodsInfo['supplies_stock_quantity']/$goodsInfo['quantity'];
         }else{
             $goodsInfo['stock_per'] = 1;
         }
+    }else{
+        $goodsInfo['supplies_weight']           = 0; 
+        $goodsInfo['supplies_quantity']         = 0;
+        $goodsInfo['supplies_stock_quantity']   = $goodsInfo['quantity']-$goodsInfo['supplies_quantity']; 
+        $goodsInfo['stock_per']                 = 1;
     }
     
     foreach($groupSkuSpu[$goodsId] as $key=>$sku){
@@ -183,7 +194,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
 
 }
-
+$listGoodsInfo  = ArrayUtility::searchBy($listGoodsInfo,array('isPer'=>1));
 $statusList = Sales_Order_Status::getOrderStatus();
 
 foreach($statusList as $statusId=>$statusName){

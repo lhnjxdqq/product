@@ -20,6 +20,7 @@ $salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getByS
 
 //获取出货单
 $salesSuppliesId            = ArrayUtility::listField($salesSupplesProductInfo,'supplies_id');
+$sumShipment  = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'supplies_quantity_total'));
 
 //获取出货单商品详情
 $listSuppliesProductInfo    = Sales_Supplies_Product_Info::getByMultiSuppliesId($salesSuppliesId);
@@ -233,7 +234,7 @@ $template->assign('mapSalesperson', $mapSalesperson);
 $template->assign('mapOrderStyle', $mapOrderStyle);
 $template->assign('mapCustomer', $mapCustomer);
 $template->assign('indexSales', $indexSales);
-$template->assign('sumShipment', array_sum(ArrayUtility::listField($salesGoodsInfo,'shipment')));
+$template->assign('sumShipment', $sumShipment);
 
 $template->assign('mapOrderStatus', $mapOrderStatus);
 $template->display('order/sales/sales_order_detail.tpl');

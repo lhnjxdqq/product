@@ -55,9 +55,9 @@
                         </tr>
                         <tr>    
                             <td>出货金额</td>
-                            <td><{$salesOrderInfo.reference_weight}></td>
+                            <td><{$suppliesInfo.total_price}></td>
                             <td>出货时间</td>
-                            <td><{$salesOrderInfo.update_time}></td>
+                            <td><{$suppliesInfo.update_time}></td>
                             <td>出货方式</td>
                             <td><{$wayInfo[$suppliesInfo.supplies_way]}></td>
                             <td>快递单号</td>
