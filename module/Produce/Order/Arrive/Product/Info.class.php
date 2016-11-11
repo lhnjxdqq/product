@@ -4,7 +4,6 @@
  */
 class   Produce_Order_Arrive_Product_Info {
 
-
     use Base_Model;
 
     /**
@@ -20,7 +19,7 @@ class   Produce_Order_Arrive_Product_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'product_id,produce_order_arrive_id,quantity,weight,is_isset_produce_order,storage_quantity,storage_weight';
+    const   FIELDS      = 'product_id,produce_order_arrive_id,quantity,weight,is_isset_produce_order,storage_quantity,storage_weight,stock_quantity,stock_weight,is_whole_supplies';
     /**
      * 新增
      *
@@ -65,6 +64,26 @@ class   Produce_Order_Arrive_Product_Info {
             return array();
         }
         $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_arrive_id`=' . addslashes($produceOrderArriveId);
+
+        return self::_getStore()->fetchAll($sql);
+    }
+    
+    /**
+     * 根据一批到货单ID获取数据
+     *
+     * @param  array    $multiProduceOrderArriveId      到货单ID
+     * @return array                                    数据
+     */
+    static  public function getByMultiProduceOrderArriveId($multiProduceOrderArriveId){
+        
+        if(empty($multiProduceOrderArriveId)){
+            
+            return array();
+        }
+        
+        $mapProduceOrderArriveId    = array_map('addslashes', array_unique(array_filter($multiProduceOrderArriveId)));
+                                
+        $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_arrive_id` IN ("' . implode('","', $mapProduceOrderArriveId) . '")';
 
         return self::_getStore()->fetchAll($sql);
     }

@@ -1,8 +1,8 @@
 <?php
 /**
- * 模型 到货
+ * 模型 出货单详情
  */
-class   Produce_Order_Arrive_Info {
+class   Sales_Supplies_Product_Info {
 
     use Base_Model;
 
@@ -14,12 +14,12 @@ class   Produce_Order_Arrive_Info {
     /**
      * 表名
      */
-    const   TABLE_NAME  = 'produce_order_arrive_info';
+    const   TABLE_NAME  = 'sales_supplies_product_info';
 
     /**
      * 字段
      */
-    const   FIELDS      = 'is_supplies_operation,is_whole_supplies,produce_order_arrive_id,produce_order_id,count_product,weight_total,quantity_total,storage_quantity_total,storage_weight,transaction_amount,file_path,is_storage,arrive_time,au_price,storage_time,storage_user_id,storage_count_product,refund_file_status,refund_file_path';
+    const   FIELDS      = 'product_id,supplies_id,product_order_arrive_id,supplies_quantity,max_supplies_quantity,supplies_weight,max_supplies_weight';
     /**
      * 新增
      *
@@ -29,12 +29,10 @@ class   Produce_Order_Arrive_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'produce_order_arrive_id',
+            'filter'    => '',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->insert(self::_tableName(), $newData);
-        
-        return self::_getStore()->lastInsertId();
     }
 
     /**
@@ -46,67 +44,30 @@ class   Produce_Order_Arrive_Info {
 
         $options    = array(
             'fields'    => self::FIELDS,
-            'filter'    => 'produce_order_arrive_id',
+            'filter'    => 'product_id,supplies_id',
         );
-        $condition  = "`produce_order_arrive_id` = '" . addslashes($data['produce_order_arrive_id']) . "'";
+        $condition  = "`product_id` = '" . addslashes($data['product_id']) . "' AND `supplies_id` = '" . addslashes($data['supplies_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
     
     /**
-     * 根据生产订单Id获取数据
+     * 根据出货单ID获取数据
      *
-     * @param  int      $produceOrderId   订单编号
-     * @return array                      数据
+     * @param  int      $suppliesId   出货单ID
+     * @return array                  数据
      */
-    static  public function getByProduceOrderId($produceOrderId){
+    static  public function getBySuppliesId($suppliesId){
         
-        if(empty($produceOrderId)){
+        if(empty($suppliesId)){
             
             return array();
         }
-        $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_id`=' . addslashes($produceOrderId);
+        $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `supplies_id`=' . addslashes($suppliesId);
 
         return self::_getStore()->fetchAll($sql);
     }
-    
-    /**
-     * 根据一组生产订单ID获取数据
-     *
-     * @param  array    $listProduceOrderId     订单ID
-     * @return array                            数据
-     */
-    static  public function getByMultiProduceOrderId($listProduceOrderId){
         
-        if(empty($listProduceOrderId)){
-            
-            return array();
-        }
-        
-        $mapOrderProduceId    = array_map('addslashes', array_unique(array_filter($listProduceOrderId)));
-                                
-        $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_id` IN ("' . implode('","', $mapOrderProduceId) . '")';
-
-        return self::_getStore()->fetchAll($sql);
-    }
-    
-    /**
-     * 根据到货单ID获取数据
-     *
-     * @param  int      $produceOrderId   到货单ID
-     * @return array                      数据
-     */
-    static  public function getById($produceOrderArriveId){
-        
-        if(empty($produceOrderArriveId)){
-            
-            return array();
-        }
-        $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_arrive_id`=' . addslashes($produceOrderArriveId);
-
-        return self::_getStore()->fetchOne($sql);
-    }
-    
     /**
      * 根据条件获取数据列表
      *
@@ -152,34 +113,23 @@ class   Produce_Order_Arrive_Info {
     static  private function _condition (array $condition) {
 
         $sql        = array();
-        $sql[]      = self::_conditionRefundFileStatus($condition);
-        $sql[]      = self::_conditionIsStorage($condition);
+        $sql[]      = self::_conditionSuppliesId($condition);
 
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
     }
     
-    static  private function _conditionRefundFileStatus (array $condition) {
+    static  private function _conditionSuppliesId (array $condition) {
 
-        if (empty($condition['refund_file_status'])) {
+        if (empty($condition['supplies_id'])) {
 
             return  '';
         }
 
-        return  "`refund_file_status` = '" . addslashes($condition['refund_file_status']) . "'";
+        return  "`supplies_id` = '" . addslashes($condition['supplies_id']) . "'";
     }
     
-    static  private function _conditionIsStorage (array $condition) {
-
-        if (empty($condition['is_storage'])) {
-
-            return  '';
-        }
-
-        return  "`is_storage` = '" . addslashes($condition['is_storage']) . "'";
-    }
-
     /**
      * 获取排序子句
      *
@@ -200,6 +150,22 @@ class   Produce_Order_Arrive_Info {
     }
 
     /**
+     * 根据销售订单ID删除产品
+     *
+     * @param   string $productId   产品ID
+     * @param   string $suppliesId  出货单ID
+     */
+    static public function delete($productId, $suppliesId) {
+    
+        Validate::testNull($productId,"产品ID");
+        Validate::testNull($suppliesId,"出货单ID");
+        
+        $condition = " `product_id` = " . $productId . " AND `supplies_id` = " . $suppliesId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
+    
+    /**
      * 获取排序方向
      *
      * @param   string  $sequence   排序方向
@@ -209,5 +175,5 @@ class   Produce_Order_Arrive_Info {
 
         return  $sequence == 'ASC'  ? $sequence : 'DESC';
     }
-    
+
 }
