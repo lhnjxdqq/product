@@ -1,8 +1,13 @@
 <?php
 /**
- * Redis服务配置
+ * redis配置项
  */
 return  array(
-    'test'  => array(
+    'test' => array(
+        'host'      => '127.0.0.1',
+        'port'      => 6379,
+        'timeout'   => 1,
+        'password'  => '',
+        'dbIndex'   => 0,
     ),
 );

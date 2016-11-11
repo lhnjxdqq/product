@@ -11,6 +11,7 @@ $spuInfo    = Spu_Info::getById($_GET['spu_id']);
 
 if (Spu_Info::update($data)) {
 
+    Sync::queueSpuData($spuInfo['spu_id']);
     // 推送删除SPU数据到生产工具
     Spu_Push::changePushSpuDataStatus((int) $_GET['spu_id'], 'delete');
     Spu_Push::pushListSpuSn(array($spuInfo['spu_sn']),'delete');
