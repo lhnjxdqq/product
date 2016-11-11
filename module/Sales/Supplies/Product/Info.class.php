@@ -69,6 +69,26 @@ class   Sales_Supplies_Product_Info {
     }
         
     /**
+     * 根据一组出货单ID获取数据
+     *
+     * @param  int      $multiSuppliesId   出货单ID
+     * @return array                       数据
+     */
+    static  public function getByMultiSuppliesId($multiSuppliesId){
+        
+        if(empty($multiSuppliesId)){
+            
+            return array();
+        }
+
+        $multiSuppliesId  = array_map('intval', $multiSuppliesId);
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplies_id` IN ("' . implode('","', $multiSuppliesId) . '")';
+
+        return self::_getStore()->fetchAll($sql);
+    }
+        
+    /**
      * 根据条件获取数据列表
      *
      * @param   array   $condition  条件

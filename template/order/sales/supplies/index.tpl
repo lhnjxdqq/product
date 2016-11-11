@@ -76,6 +76,9 @@
                                 <a href="/order/sales/supplies/storage_list.php?sales_order_id=<{$salesOrderInfo.sales_order_id}>" class='btn btn-xs btn-primary'>出货</a>
                             <{/if}>
                             </td>
+                            <td>
+                                <a href="/order/sales/stock_list.php?sales_order_id=<{$smarty.get.sales_order_id}>" class='btn btn-xs btn-primary pull-right'>查看缺货清单</a>
+                            </td>
                             <{if $salesOrderInfo.sales_order_status != 6}>
                             <td>
                                 <a href="/order/sales/end_order.php?sales_order_id=<{$smarty.get.sales_order_id}>" class='btn btn-xs btn-primary'>结束订单</a>

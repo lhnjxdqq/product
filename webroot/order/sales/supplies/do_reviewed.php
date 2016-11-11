@@ -15,6 +15,29 @@ $content    = array('supplies_id' => $data['supplies_id']);
 if($data['result'] == 'OK'){
     
     $content['supplies_status'] = Sales_Supplies_Status::DELIVREED;
+
+    //获取出货单商品详情
+    $listSuppliesProductInfo    = Sales_Supplies_Product_Info::getBySuppliesId($data['supplies_id']);
+
+    $listProductOrderArriveId   = array_unique(ArrayUtility::listField($listSuppliesProductInfo,'product_order_arrive_id'));
+    
+    foreach($listProductOrderArriveId as $key => $val){
+        
+        $orderArriveIdList  = explode(",",$val);
+        
+        foreach($orderArriveIdList as $val){
+            
+            $orderArriveId[]    = $val;
+        }
+    }
+    foreach($orderArriveId as $id){
+        
+        Produce_Order_Arrive_Info::update(array(
+            'produce_order_arrive_id'   => $id,
+            'is_supplies_operation'     => 1,
+        ));
+    }
+
 }else{
     
     $content['supplies_status'] = Sales_Supplies_Status::NO_REVIEWED;

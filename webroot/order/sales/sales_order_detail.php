@@ -7,11 +7,6 @@ Validate::testNull($salesOrderId,'销售订单ID不能为空');
 $salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
 Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
-//获取对应销售报价单中的所有SPU
-$salesQuotationSpuInfo = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesOrderInfo['sales_quotation_id']));
-$groupSpuInfo       = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
-$groupSalesQuotationSpuId   = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
-
 //获取所有订单详情中的所有sku
 $salesGoodsInfo     =  Sales_Order_Goods_Info::getBySalesOrderId($salesOrderId);
 
