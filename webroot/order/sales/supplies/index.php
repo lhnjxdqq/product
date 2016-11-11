@@ -7,8 +7,13 @@ if (!isset($_GET['sales_order_id'])) {
 }
 
 // 生产订单
-$salesOrderId       = (int) $_GET['sales_order_id'];
-$salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
+$salesOrderId               = (int) $_GET['sales_order_id'];
+$salesOrderInfo             = Sales_Order_Info::getById($salesOrderId);
+$salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesOrderId),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
+
+$totalQuantity  = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'supplies_quantity_total'));
+$totalWeight    = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'supplies_weight'));
+$totalPrice     = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'total_price'));
 
 if (!$salesOrderInfo) {
 
@@ -53,6 +58,9 @@ $template->assign('salesOrderInfo',$salesOrderInfo);
 $template->assign('mapCustomer',$mapCustomer);
 $template->assign('mapUser',$mapUser);
 $template->assign('mapOrderStatus',$mapOrderStatus);
+$template->assign('totalQuantity',$totalQuantity);
+$template->assign('totalWeight',$totalWeight);
+$template->assign('totalPrice',$totalPrice);
 $template->assign('mapOrderStyle',$mapOrderStyle);
 $template->assign('mapSalesperson',$mapSalesperson);
 $template->assign('suppliesInfo',$suppliesInfo);

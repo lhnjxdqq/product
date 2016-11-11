@@ -17,9 +17,11 @@ foreach($wayInfo as $key=> $val){
     );
 }
 $mainMenu = Menu_Info::getMainMenu();
+$auPrice    = Au_Price_Log::getNewsPrice();
 
 $template = Template::getInstance();
 $template->assign('salesSuppliesInfo', $salesSuppliesInfo);
 $template->assign('listWayInfo', $listWayInfo);
 $template->assign('mainMenu', $mainMenu);
+$template->assign('auPrice', $auPrice);
 $template->display('order/sales/supplies/perfect_supplies.tpl');

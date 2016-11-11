@@ -53,11 +53,11 @@
                             <th>下单时间</th>
                             <td><{$salesOrderInfo.order_time}></td>
                             <th>出货数量</th>
-                            <td></td>
+                            <td><{$totalQuantity}></td>
                             <th>出货重量</th>
-                            <td></td>                        
+                            <td><{$totalWeight}></td>                        
                             <th>出货金额</th>
-                            <td></td>
+                            <td><{$totalPrice}></td>
                         </tr>
                         <tr>    
                             <th>预付金额</th>

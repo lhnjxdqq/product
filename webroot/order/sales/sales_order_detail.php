@@ -16,6 +16,22 @@ $listGoods          = ArrayUtility::listField($salesGoodsInfo,'goods_id');
 //销售订单中的备注
 $indexSales   = ArrayUtility::indexByField($salesGoodsInfo,'goods_id');
 
+$salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesOrderId),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
+
+//获取出货单
+$salesSuppliesId            = ArrayUtility::listField($salesSupplesProductInfo,'supplies_id');
+
+//获取出货单商品详情
+$listSuppliesProductInfo    = Sales_Supplies_Product_Info::getByMultiSuppliesId($salesSuppliesId);
+
+$groupProductIdSupplies     = ArrayUtility::groupByField($listSuppliesProductInfo,'product_id');
+
+$listProductId              = array_keys($groupProductIdSupplies);
+$listProductInfo            = Product_Info::getByMultiId($listProductId); 
+$indexGoodsId               = ArrayUtility::indexByField($listProductInfo,'goods_id');
+
+
+
 if(empty($listGoods)){
     
     Utility::notice('销售订单中没有产品','/order/sales/index.php');
@@ -115,7 +131,14 @@ $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'sp
 foreach ($listGoodsInfo as &$goodsInfo) {
 
     $goodsId    = $goodsInfo['goods_id'];
+    $productId  = $indexGoodsId[$goodsId]['product_id'];
     
+    if($productId){
+        
+        $goodsInfo['supplies_weight']       =   array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_weight')); 
+        $goodsInfo['supplies_quantity']     =   array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_quantity')); 
+    }
+
     foreach($groupSkuSpu[$goodsId] as $key=>$sku){
 
         if(empty($groupSpuInfo[$sku])){

@@ -33,7 +33,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">出货金价: </label>
                                     <div class="col-sm-3">
-                                        <input type="text" name="supplies_au_price" value="<{$salesSuppliesInfo.supplies_au_price}>"  class="form-control"/>
+                                        <input type="text" name="supplies_au_price" value="<{if $salesSuppliesInfo.supplies_au_price != 0}><{$salesSuppliesInfo.supplies_au_price}><{else}><{$auPrice}><{/if}>"  class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="form-group">

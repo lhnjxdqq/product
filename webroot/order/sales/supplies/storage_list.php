@@ -25,7 +25,7 @@ $listProduceOrderId = ArrayUtility::listField($produceOrderInfo,'produce_order_i
 $indexProduceOrderId    = ArrayUtility::indexByField($produceOrderInfo,'produce_order_id');
 
 //获取入库记录
-$mapProduceOrderArriveInfo = ArrayUtility::searchBy(Produce_Order_Arrive_Info::getByMultiProduceOrderId($listProduceOrderId),array('is_supplies_operation'=>1));
+$mapProduceOrderArriveInfo = ArrayUtility::searchBy(Produce_Order_Arrive_Info::getByMultiProduceOrderId($listProduceOrderId),array('is_supplies_operation'=>1,'is_storage'=>1));
 
 if(empty($mapProduceOrderArriveInfo)){
     

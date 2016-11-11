@@ -129,8 +129,8 @@
                                         <td><{$indexSales[$item.goods_id]['cost']}></td>
                                         <td><{$item.remark}></td>
                                         <td><{$item.quantity}></td>
-                                        <td><{$indexSales[$item.goods_id]['shipment']}></td>
-                                        <td><{$indexSales[$item.goods_id]['actual_weight']}>g</td>
+                                        <td><{$item.supplies_quantity}></td>
+                                        <td><{$item.supplies_weight}>g</td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
