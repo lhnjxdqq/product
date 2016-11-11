@@ -139,7 +139,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
         $goodsInfo['supplies_quantity']     = array_sum(ArrayUtility::listField($groupProductIdSupplies[$productId],'supplies_quantity')); 
         $goodsInfo['supplies_stock_quantity']   = $goodsInfo['quantity']-$goodsInfo['supplies_quantity'];
         
-        if($goodsInfo['supplies_quantity'] > $goodsInfo['quantity']){
+        if($goodsInfo['supplies_quantity'] >= $goodsInfo['quantity']){
             
             $goodsInfo['isPer']  = 0;
         }
