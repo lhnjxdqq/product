@@ -4,22 +4,22 @@ require dirname(__FILE__).'/../../../init.inc.php';
 
 $arriveId                   = $_GET['arrive_id'];
 $auPrice                    = $_GET['au_price'];
-Validate::testNull($arriveId,'µ½»õ±íID²»ÄÜÎª¿Õ');
-Validate::testNull($auPrice,'½ð¼Û²»ÄÜÎª¿Õ');
-//µ½»õµ¥ÐÅÏ¢
+Validate::testNull($arriveId,'åˆ°è´§è¡¨IDä¸èƒ½ä¸ºç©º');
+Validate::testNull($auPrice,'é‡‘ä»·ä¸èƒ½ä¸ºç©º');
+//åˆ°è´§å•ä¿¡æ¯
 $produceOrderArriveInfo     = Produce_Order_Arrive_Info::getById($arriveId);
-Validate::testNull($produceOrderArriveInfo,'²»´æÔÚµÄµ½»õµ¥');
+Validate::testNull($produceOrderArriveInfo,'ä¸å­˜åœ¨çš„åˆ°è´§å•');
 $produceOrderId             = $produceOrderArriveInfo['produce_order_id'];
-//µ½»õµ¥ÖÐµÄ²úÆ·
+//åˆ°è´§å•ä¸­çš„äº§å“
 $arriveProductInfo          = Produce_Order_Arrive_Product_Info::getByProduceOrderArriveId($arriveId);
 $indexProductId             = ArrayUtility::indexByField($arriveProductInfo,'product_id');
 
 $produceOrderInfo   = Produce_Order_Info::getById($produceOrderId);
 if (!$produceOrderInfo) {
 
-    Utility::notice('Éú²ú¶©µ¥²»´æÔÚ');
+    Utility::notice('ç”Ÿäº§è®¢å•ä¸å­˜åœ¨');
 }
-// Éú²ú¶©µ¥ÏêÇé
+// ç”Ÿäº§è®¢å•è¯¦æƒ…
 $listOrderProduct   = Produce_Order_List::getDetailByMultiProduceOrderId((array) $produceOrderId);
 $listProductId      = ArrayUtility::listField($listOrderProduct, 'product_id');
 $mapProductImage    = Common_Product::getProductThumbnail($listProductId);
@@ -39,29 +39,29 @@ foreach ($listOrderProduct as $orderProduct) {
     $produceOrderInfo['count_quantity'] += $quantity;
     $produceOrderInfo['count_weight']   += $quantity * $weightValueData;
 }
-// ¹©Ó¦ÉÌÐÅÏ¢
+// ä¾›åº”å•†ä¿¡æ¯
 $supplierId         = $produceOrderInfo['supplier_id'];
 $supplierInfo       = Supplier_Info::getById($supplierId);
-// ÏúÊÛ¶©µ¥ÐÅÏ¢
+// é”€å”®è®¢å•ä¿¡æ¯
 $salesOrderId       = $produceOrderInfo['sales_order_id'];
 $salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
-// ¿Í»§ÐÅÏ¢
+// å®¢æˆ·ä¿¡æ¯
 $customerId         = $salesOrderInfo['customer_id'];
 $customerInfo       = Customer_Info::getById($customerId);
-// ÓÃ»§ÐÅÏ¢
+// ç”¨æˆ·ä¿¡æ¯
 $listUserInfo       = User_Info::listAll();
 $mapUserInfo        = ArrayUtility::indexByField($listUserInfo, 'user_id', 'username');
-// ·ÖÀàÐÅÏ¢
+// åˆ†ç±»ä¿¡æ¯
 $listCategoryInfo   = Category_Info::listAll();
 $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
-// ¿îÊ½ÐÅÏ¢
+// æ¬¾å¼ä¿¡æ¯
 $listStyleInfo      = Style_Info::listAll();
 $mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 
 $condition['produce_order_id']  = $produceOrderId;
 $condition['delete_status']     = Produce_Order_DeleteStatus::NORMAL;
 $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
-// ·ÖÒ³
+// åˆ†é¡µ
 $page               = new PageList(array(
     PageList::OPT_TOTAL     => Produce_Order_Product_List::countByCondition($condition),
     PageList::OPT_URL       => '/order/produce/storage.php',
@@ -114,9 +114,9 @@ $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
 $data['mapOrderType']       = Produce_Order_Type::getOrderType();
 $data['listOrderType']      = array(
-    'new_built'     => Produce_Order_StatusCode::NEWLY_BUILT,   // ÐÂ½¨
-    'confirmed'     => Produce_Order_StatusCode::CONFIRMED,     // ÒÑÈ·ÈÏ
-    'stocking'      => Produce_Order_StatusCode::STOCKING,      // ²É¹ºÖÐ
+    'new_built'     => Produce_Order_StatusCode::NEWLY_BUILT,   // æ–°å»º
+    'confirmed'     => Produce_Order_StatusCode::CONFIRMED,     // å·²ç¡®è®¤
+    'stocking'      => Produce_Order_StatusCode::STOCKING,      // é‡‡è´­ä¸­
 );
 
 $template = Template::getInstance();

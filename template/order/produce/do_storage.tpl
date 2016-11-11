@@ -288,6 +288,7 @@
             produce_order_arrive_id         : <{$produceOrderArriveInfo.produce_order_arrive_id}>,
             product_id                      : productId,
             storage_quantity                : quantity,
+            stock_quantity                  : quantity,
             '__output_format'   : 'JSON'
         }, function (response) {
 
@@ -392,6 +393,7 @@
             produce_order_arrive_id         : arriveId,
             product_id                      : productId,
             storage_weight                  : weight,
+            stock_weight                    : weight,
             '__output_format'   : 'JSON'
         }, function (response) {
 
