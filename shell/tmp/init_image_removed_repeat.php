@@ -6,17 +6,20 @@ ignore_user_abort();
  * 图片顺序初始化默认
  */
 //spu修改
-$sql = 'SELECT count(*) as cnt, spu_id FROM `spu_images_relationship` GROUP BY `spu_id`';
+$sql = 'select  count(1) as cnt FROM 
+ (SELECT count(spu_id) as count_spu,spu_id  FROM `spu_images_relationship` GROUP BY `spu_id` having count_spu > 5) 
+  as tmp_image';
 
-$spuGroupInfo = DB::instance('product')->fetchAll($sql);
+$spuGroupInfo = DB::instance('product')->fetchOne($sql);
 
 $row = 0;
 $spuImageInstance 	       = AliyunOSS::getInstance('images-spu');
-for($row=0; $row<=count($spuGroupInfo); $row+= 100 ){
+for($row=0; $row<=$spuGroupInfo['cnt']; $row+= 100 ){
     
-    $sql            = 'SELECT `spu_id` FROM `spu_images_relationship` GROUP BY `spu_id` limit ' . $row . ',100';
-    $listspuId      = DB::instance('product')->fetchAll($sql);
-    $sql            = 'SELECT * FROM `spu_images_relationship` WHERE `spu_id` in(' . implode(',',ArrayUtility::listField($listspuId,'spu_id')) . ')';
+    $sql                = 'SELECT count(spu_id) as count_spu,`spu_id` FROM `spu_images_relationship` GROUP BY `spu_id` having count_spu > 5 limit ' . $row . ', 100';
+    $listSpuCountInfo   = DB::instance('product')->fetchAll($sql);
+    
+    $sql            = 'SELECT * FROM `spu_images_relationship` WHERE `spu_id` in(' . implode(',',ArrayUtility::listField($listSpuCountInfo,'spu_id')) . ')';
     $spuInfo        = DB::instance('product')->fetchAll($sql);
 
     $groupSpuInfo = ArrayUtility::groupByField($spuInfo,'spu_id');
@@ -25,10 +28,7 @@ for($row=0; $row<=count($spuGroupInfo); $row+= 100 ){
         
         echo '正在检测SPUID为'.$spuId.'的图片是否重复'."\n";
         $mapSpuImages   = array();
-        if(count($info)<6){
-            
-            continue;
-        }
+
         $info      = Sort_Image::sortImage($info);
         foreach($info as $spuImageInfo){
 
@@ -45,12 +45,14 @@ for($row=0; $row<=count($spuGroupInfo); $row+= 100 ){
             
             foreach($repearArr as $imageKey => $imageMd5){
                 
+                echo '修改SPUID为'.$spuId.'的图片内容'."\n";       
                 Spu_Images_RelationShip::deleteByIdAndKey($spuId , $imageKey);
                 $spuImageInstance->delete($imageKey);
             }
         }
-        echo '修改SPUID为'.$spuId.'的图片内容'."\n";
     }
+    
+    echo '修改SPUID为'.$spuId.'的图片内容修改成功'."\n"; 
 }
 
 echo "SPU修改成功,时间-". date('Y-m-d H:i:s') ."\n";
