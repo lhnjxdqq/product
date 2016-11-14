@@ -22,8 +22,8 @@ for($row=0; $row<=$spuGroupInfo['cnt']; $row+= 100 ){
     
     $sql            = 'SELECT * FROM `spu_images_relationship` WHERE `spu_id` in(' . implode(',' , $listSpuId) . ')';
     $spuInfo        = DB::instance('product')->fetchAll($sql);
-    $spuInfo        = Spu_Info::getByMultiId($listSpuId);
-    $listSpuSn      = ArrayUtility::listField($spuInfo,'spu_sn');
+    $maSpuInfo        = Spu_Info::getByMultiId($listSpuId);
+    $listSpuSn      = ArrayUtility::listField($maSpuInfo,'spu_sn');
 
     $groupSpuInfo = ArrayUtility::groupByField($spuInfo,'spu_id');
 
@@ -43,7 +43,7 @@ for($row=0; $row<=$spuGroupInfo['cnt']; $row+= 100 ){
         }
         $uniqueArr  = array_unique($mapSpuImages);
         $repearArr  = array_diff_assoc($mapSpuImages,$uniqueArr);
-        
+
         if(!empty($repearArr)){
             
             foreach($repearArr as $imageKey => $imageMd5){
