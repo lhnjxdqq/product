@@ -18,9 +18,12 @@ for($row=0; $row<=$spuGroupInfo['cnt']; $row+= 100 ){
     
     $sql                = 'SELECT count(spu_id) as count_spu,`spu_id` FROM `spu_images_relationship` GROUP BY `spu_id` having count_spu > 5 limit ' . $row . ', 100';
     $listSpuCountInfo   = DB::instance('product')->fetchAll($sql);
+    $listSpuId          = ArrayUtility::listField($listSpuCountInfo,'spu_id');
     
-    $sql            = 'SELECT * FROM `spu_images_relationship` WHERE `spu_id` in(' . implode(',',ArrayUtility::listField($listSpuCountInfo,'spu_id')) . ')';
+    $sql            = 'SELECT * FROM `spu_images_relationship` WHERE `spu_id` in(' . implode(',' , $listSpuId) . ')';
     $spuInfo        = DB::instance('product')->fetchAll($sql);
+    $spuInfo        = Spu_Info::getByMultiId($listSpuId);
+    $listSpuSn      = ArrayUtility::listField($spuInfo,'spu_sn');
 
     $groupSpuInfo = ArrayUtility::groupByField($spuInfo,'spu_id');
 
@@ -49,10 +52,17 @@ for($row=0; $row<=$spuGroupInfo['cnt']; $row+= 100 ){
                 Spu_Images_RelationShip::deleteByIdAndKey($spuId , $imageKey);
                 $spuImageInstance->delete($imageKey);
             }
-        }
+        }    
+        
+        echo '修改SPUID为'.$spuId.'的图片内容修改成功'."\n";
     }
     
-    echo '修改SPUID为'.$spuId.'的图片内容修改成功'."\n"; 
+    if(!empty($listSpuSn)){
+
+        Spu_Push::pushListSpuSn($listSpuSn);
+        Spu_Push::pushTagsListSpuSn($listSpuSn, array('imageExists'=>1));
+        
+    }
 }
 
 echo "SPU修改成功,时间-". date('Y-m-d H:i:s') ."\n";
