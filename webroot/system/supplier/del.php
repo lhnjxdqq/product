@@ -11,7 +11,7 @@ $countProd  = Common_Product::countProductBySupplierId($supplierId);
 
 if ($countProd) {
 
-    Utility::notice('该供应商已有产品数据, 不允许删除');
+    Utility::notice('存在供应商相关的产品，请清空后再操作');
 }
 
 $data       = array(
