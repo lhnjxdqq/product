@@ -200,7 +200,7 @@ foreach($orderTypeInfo as $orderTypeId=>$orderName){
         'order_type_name'        => $orderName,
     );
 }
-$mapCustomer        = ArrayUtility::indexByField(Customer_Info::listAll(),'customer_id');
+$mapCustomer        = ArrayUtility::indexByField(ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL)),'customer_id');
 
 $mapUser            = ArrayUtility::indexByField(User_Info::listAll(),'user_id');
 

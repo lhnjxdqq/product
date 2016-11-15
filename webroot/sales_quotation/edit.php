@@ -34,7 +34,7 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($sa
 }
 
 //获取客户列表
-$listCustomer       = Customer_Info::listAll();
+$listCustomer       = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
 $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
 
 $orderBy                = array(

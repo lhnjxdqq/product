@@ -2,7 +2,7 @@
 
 require_once    dirname(__FILE__) . '/../../../init.inc.php';
 
-$customerInfo       = Customer_Info::listAll();
+$customerInfo       = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
 $salespersonInfo    = Salesperson_Info::listAll();
 $mainMenu           = Menu_Info::getMainMenu();
 

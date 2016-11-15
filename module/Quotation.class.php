@@ -928,7 +928,7 @@ class   Quotation {
         $indexCartColorId   = array();
 
         //获取客户列表
-        $listCustomer       = Customer_Info::listAll();
+        $listCustomer       = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
         $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
 
         $orderBy                = array();

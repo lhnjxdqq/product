@@ -29,7 +29,7 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
 }
 
 $userId          = $_SESSION['user_id'];
-$listCustomer    = Customer_Info::listAll();
+$listCustomer    = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
 
 $orderBy                = array();
 $perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;

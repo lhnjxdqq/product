@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
-$listCustomerInfo   = Customer_Info::listAll();
+$listCustomerInfo   = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
 $listCustomerInfo   = ArrayUtility::searchBy($listCustomerInfo, array('delete_status'=>Customer_DeleteStatus::NORMAL));
 
 $conditionCart  = array(

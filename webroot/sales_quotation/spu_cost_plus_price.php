@@ -8,7 +8,7 @@ if(is_numeric($_GET['plue_price']) && $_GET['plue_price']>0){
 }
 
 $userId          = $_SESSION['user_id'];
-$listCustomer    = Customer_Info::listAll();
+$listCustomer    = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
 $listCartInfo    = Cart_Spu_Info::getByUserId($userId);
 //获取sqlID的组合
 $listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");

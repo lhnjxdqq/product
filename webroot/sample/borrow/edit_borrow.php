@@ -16,7 +16,7 @@ if($borrowInfo['status_id'] != Borrow_Status::NEW_BORROW){
     throw   new ApplicationException('该借版记录不是新建状态,无法编辑');
 }
 
-$customerInfo       = Customer_Info::listAll();
+$customerInfo       = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
 $salespersonInfo    = Salesperson_Info::listAll();
 $mainMenu           = Menu_Info::getMainMenu();
 

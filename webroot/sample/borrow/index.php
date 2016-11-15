@@ -12,7 +12,7 @@ foreach($borrowBorrow as $statusId => $statusName){
     $borrowStatusInfo[$statusId]['status_id']       = $statusId;
     $borrowStatusInfo[$statusId]['status_name']     = $statusName;
 }
-$customerInfo       = ArrayUtility::indexByField(Customer_Info::listAll(),'customer_id');
+$customerInfo       = ArrayUtility::indexByField(ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL)),'customer_id');
 $salespersonInfo    = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');
 
 $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;

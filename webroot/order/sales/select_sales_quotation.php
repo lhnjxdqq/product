@@ -7,7 +7,7 @@ $condition  = empty($_GET) ? array() : $_GET ;
 $orderBy    = array(
     'sales_quotation_date' => 'DESC',
 );
-$mapCustomer= ArrayUtility::indexByField(Customer_Info::listAll(),'customer_id');
+$mapCustomer= ArrayUtility::indexByField(ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL)),'customer_id');
 $mapUser    = ArrayUtility::indexByField(User_Info::listAll(),'user_id');
 
 $condition['date_start']    = isset($_GET['date_start']) ? $_GET['date_start'] : date('Y-m-d', strtotime('-30 day'));
