@@ -28,7 +28,7 @@ if (isset($_GET['is_ok']) && trim($_GET['is_ok']) == 'ok') {
     $changeStatus       = Produce_Order_Info::changeStatus($produceOrderId, Produce_Order_StatusCode::STOCKING);
     if ($updateBatchCode && $changeStatus) {
 
-        Utility::notice('确认成功');
+        Utility::notice('确认成功','/order/produce/index.php');
     } else {
 
         Utility::notice('确认失败');
