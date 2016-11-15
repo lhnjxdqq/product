@@ -132,6 +132,13 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         'image_key'         => $sortImage[0]['image_key'],
         'is_first_picture'  => 1,
     ));
+
+    $spuCountImage  = count($listImages);
+    Spu_Info::update(array(
+        'spu_id'        => $spuId,
+        'image_total'   => $spuCountImage,
+    ));
+        
     return $spuImageKey;
 }
 

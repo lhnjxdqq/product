@@ -71,7 +71,7 @@
                         </div>
                         <!-- /.row -->
                         <div class="row spu-filter">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select name="material_value_id" class="form-control">
                                     <option value="0">请选择材质</option>
                                     <{foreach from=$data.mapMaterialSpecValueInfo item=item}>
@@ -79,7 +79,7 @@
                                     <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <select name="size_value_id" class="form-control">
                                     <option value="0">请选择规格尺寸</option>
                                     <{foreach from=$data.mapSizeSpecValueInfo item=item}>
@@ -96,9 +96,24 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/SPU编号" value="<{$smarty.get.search_value_list}>">
+                                <select name="online_status" class="form-control">
+                                    <option value="1" <{if $smarty.get.online_status ==1 }>selected<{/if}>>上架</option>
+                                    <option value="2" <{if $smarty.get.online_status ==2 }>selected<{/if}>>下架</option>
+                                </select>
                             </div>
                             <div class="col-md-2">
+                                <select name="image_status" class="form-control">
+                                    <option value="0">请选择图片状态</option>
+                                    <option value="1" <{if $smarty.get.image_status == 1 }>selected<{/if}>>有图</option>
+                                    <option value="2" <{if $smarty.get.image_status == 2 }>selected<{/if}>>无图</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row spu-filter">
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/SPU编号" value="<{$smarty.get.search_value_list}>">
+                            </div>
+                            <div class="col-md-3">
                                 <select name="search_type" class="form-control">
                                     <option value="0">请选择搜索类型</option>
                                     <{foreach from=$data.searchType item=typeName key=typeId}>
@@ -106,13 +121,7 @@
                                     <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-1">
-                                <select name="online_status" class="form-control">
-                                    <option value="1">上架</option>
-                                    <option value="2">下架</option>
-                                </select>
-                            </div>
-                            <div class="col-md-1">
+                            <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
                             </div>
                         </div>

@@ -61,6 +61,7 @@ class Search_Spu {
         $sql[]      = self::_conditionBySearchType($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sql[]      = self::_conditionByOnlineStatus($condition);
+        $sql[]      = self::_conditionByImageStatus($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
@@ -235,6 +236,27 @@ class Search_Spu {
             return ;
         }
         return  '`spu_info`.`online_status` = "' . (int) $condition['online_status'] . '"';
+    }
+
+    /**
+     * 按SPU有无图片状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByImageStatus (array $condition) {
+
+        if(empty($condition['image_status'])){
+            
+            return ;
+        }
+        if( $condition['image_status'] == 1 ){
+            
+            return ' `spu_info`.`image_total` > 0 ';
+        }else{
+
+            return  '`spu_info`.`image_total` = 0 ';  
+        }
     }
 
     /**

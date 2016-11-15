@@ -66,12 +66,19 @@ if ($spuId) {
             $isFirstPicture = 1;    
         }
         Spu_Images_RelationShip::create(array(
-            'spu_id'          => $spuId,
+            'spu_id'            => $spuId,
             'image_key'         => $imageKey,
             'image_type'        => 'R',
             'serial_number'     => $number,
             'is_first_picture'  => $isFirstPicture,
         ));
+        $spuImageInfo   = Spu_Images_RelationShip::getBySpuId($spuId);
+        $spuCountImage  = count($spuImageInfo);
+        Spu_Info::update(array(
+            'spu_id'        => $spuId,
+            'image_total'   => $spuCountImage,
+        ));
+        
     }
     // 推送新增SPU数据到选货工具
     Spu_Push::addPushSpuData($spuId);

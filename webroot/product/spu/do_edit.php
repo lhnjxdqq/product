@@ -59,13 +59,19 @@ if ($update) {
                 $isFirstPicture = 1;    
             }
             Spu_Images_RelationShip::create(array(
-                'spu_id'          => $spuId,
+                'spu_id'            => $spuId,
                 'image_key'         => $imageKey,
                 'image_type'        => 'R',
                 'serial_number'     => $number,
                 'is_first_picture'  => $isFirstPicture,
             ));
         }
+        $spuImageInfo   = Spu_Images_RelationShip::getBySpuId($spuId);
+        $spuCountImage  = count($spuImageInfo);
+        Spu_Info::update(array(
+            'spu_id'        => $spuId,
+            'image_total'   => $spuCountImage,
+        ));
         
         Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('imageExists'=>1));
     }else{
