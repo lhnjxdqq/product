@@ -57,7 +57,7 @@
                     <input type="checkbox" name="check-all"> 全选
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
                     <a href="/product/spu/index.php" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加商品</a>
-                    <a href="/product/spu/clear_cart.php" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 清空购物车</a>
+                    <a href="jacascript:void(0);" class="btn btn-primary btn-sm" id="clear-cart"><i class="fa fa-bitbucket-square"></i> 清空购物车</a>
                     共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品
            
                 </div>
@@ -175,6 +175,26 @@ $(function(){
 
         $.post('/sales_quotation/ajax_cart_spu_delete.php', {
             spu_id              : chk_value,
+            '__output_format'   : 'JSON'
+        }, function (response) {
+
+            if (0 != response.code) {
+
+                showMessage('错误', response.message);
+
+                return  ;
+            }else{
+            
+                location.href='/sales_quotation/create.php';
+            }
+            
+        }, 'json');  
+    })
+
+    $('#clear-cart').click(function(){
+
+        $.post('/product/spu/clear_cart.php', {
+
             '__output_format'   : 'JSON'
         }, function (response) {
 

@@ -118,7 +118,7 @@
                                                 <a href='/order/sales/sales_order_detail.php?sales_order_id=<{$item.sales_order_id}>' target='_blank' class="btn btn-primary btn-xs" type='button'>查看清单</a>
                                                 <{if $item.sales_order_status eq 1}>
                                                     <a href='/order/sales/audit_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>审核订单</a>
-                                                    <a href='/order/sales/add_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
+                                                    <a href='/order/sales/confirm_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
                                                     <a href='/order/sales/delete_sales_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs delete-confirm" type='button'>删除</a>
                                                 <{/if}>
                                                 <{else}>
