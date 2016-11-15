@@ -64,7 +64,7 @@ if ($produceOrderId) {
     }
     // 清空购物车
     Produce_Order_Cart::deleteBySalesOrderAndSupplier($salesOrderId, $supplierId);
-    Utility::notice('成功创建生产订单', '/order/produce/index.php');
+    Utility::notice('成功创建生产订单', '/order/sales/produce_advice.php?sales_order_id='.$salesOrderId);
 } else {
 
     Utility::notice('创建失败');
