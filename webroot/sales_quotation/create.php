@@ -47,6 +47,7 @@ $listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");
 
 $mapSpuRemark    = ArrayUtility::indexByField($listCartInfo,'spu_id','remark');    
 
+$mapSpuColorCost    = array();
 foreach($listCartInfo as $key=>$info){
     
     $costInfo   = json_decode($info['spu_color_cost_data'],true);
