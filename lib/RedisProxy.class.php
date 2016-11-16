@@ -83,12 +83,13 @@ class   RedisProxy {
         $this->_config  = $config;
         $this->_redis   = new Redis();
         $this->_getStore()->connect($host, $port, $timeout);
-        $this->select($dbIndexDefault);
 
         if ('' !== $password) {
 
             $this->_getStore()->auth($password);
         }
+
+        $this->select($dbIndexDefault);
     }
 
     /**
