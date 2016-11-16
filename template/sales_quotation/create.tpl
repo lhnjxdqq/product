@@ -25,6 +25,12 @@
         <!-- Main content -->
         <section class="content">
             <!-- Default box -->
+            <form class="form-inline" action="/sales_quotation/add_sales_quotation.php" method="post" id="add_sales_quotation">
+                <input type='hidden' value="[]" name="add_quotation_data" id="add_quotation_data">
+                <input type='hidden' value="" name="quotation_name" id="quotation_name">
+                <input type='hidden' value="" name="add_customer_id" id="add_customer_id">
+                <input type='hidden' value="" name="plus_price" id="plus_price">
+            </form>
             <form class="form-inline" action="/sales_quotation/keep_cart.php" method="post" id="quotation">
                 <input type='hidden' value="[]" name="quotation_data" id="quotation_data">
             </form>
@@ -116,7 +122,7 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom:20px;height:30px;">
                         <td colspan="2"><button type="submit" class="btn btn-primary pull-left"><i class="fa fa-save"></i> 保存修改</button></td>
-                        <td colspan="<{$countColor+8}>"><button type="button" class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 提交报价单</button></td>
+                        <td><button type="button" class="btn btn-primary pull-right quotation-submit"><i class="fa fa-save"></i> 提交报价单</button></td>
                     </div>
                     <div class="box-footer clearfix">
                         <{include file="section/pagelist.tpl" viewData=$pageViewData}>
@@ -316,7 +322,7 @@ $(function(){
     $(".quotation-submit").click(function(){
         
         quotationName       = $("[name=sales_quotation_name]").val();
-        customerId          = $("[name=customer_id]").val();
+        customerId          = $("[name = customer_id]").val();
         plusPrice           = $("#plue_price").val();
 
         if(quotationName.length<1){
@@ -324,7 +330,19 @@ $(function(){
             alert('报价单名称不能为空');
             return false;
         }
-        location.href='/sales_quotation/add_sales_quotation.php?quotation_name='+quotationName+'&customer_id='+customerId+'&plus_price='+plusPrice;
+        
+        var json = {},
+        formSerialize   = $("#form-quotation").serializeArray();
+        for (var offset = 0; offset < formSerialize.length; offset ++) {
+        
+            json[formSerialize[offset].name] = formSerialize[offset].value;
+        }
+
+        $("#add_quotation_data").val(JSON.stringify(json));
+        $("#quotation_name").val(quotationName);
+        $("#add_customer_id").val(customerId);
+        $("#plus_price").val(plusPrice);
+        $("#add_sales_quotation").submit();
     });
     
 })

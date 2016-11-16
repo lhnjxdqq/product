@@ -4,10 +4,50 @@
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
-$quotationData              = $_GET;
+$quotationData              = $_POST;
+
+//保存购物车数据
+$json                       = json_decode($quotationData['add_quotation_data'], true);
+$data                       = array();
+foreach ($json as $key => $item) {
+
+    if (0 < $pos = strpos($key, '[')) {
+        $attr           = substr($key, 0, $pos);
+        $data[$attr]    = isset($data[$attr])   ? $data[$attr]  : array();
+        $subAttr        = substr($key, $pos + 1, strlen($key) - $pos - 2);
+        $data[$attr][$subAttr]  = $item;
+    } else {
+        $data[$key] = $item;
+    }
+}
 
 $userId             = $_SESSION['user_id'];
-$customerId         = !empty($quotationData['customer_id']) ? $quotationData['customer_id'] : "0";
+$customerId         = !empty($data['customer_id']) ? $data['customer_id'] : "0";
+$salesQuotationName = $data['sales_quotation_name'];
+$markupRule         = !empty($data['plue_price']) ? $data['plue_price'] : "0.00";
+unset($data['customer_id']);
+unset($data['sales_quotation_name']);
+unset($data['plue_price']);
+unset($data['check-all']);
+unset($data['spu_id']);
+unset($data['cost']);
+
+foreach($data as $spuId => $colorCost){
+ 
+    $remark = $colorCost['spu_remark'];
+    unset($colorCost['spu_remark']);
+
+    Cart_Spu_Info::update(array(
+        'user_id'               => $userId,
+        'spu_id'                => $spuId,
+        'spu_color_cost_data'   => json_encode($colorCost),
+        'remark'            => $remark,
+    ));
+}
+
+//开始添加
+$userId             = $_SESSION['user_id'];
+$customerId         = !empty($quotationData['add_customer_id']) ? $quotationData['add_customer_id'] : "0";
 $salesQuotationName = $quotationData['quotation_name'];
 $markupRule         = !empty($quotationData['plus_price']) ? $quotationData['plus_price'] : "0.00";
 Validate::testNull($salesQuotationName,"报价单名称不能为空");
