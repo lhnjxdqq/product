@@ -10,8 +10,10 @@ class Api_Controller_Customer {
       foreach ($listCustomerInfo as $customerInfo) {
 
         $CustomerList[] = array(
-          'customerId' => $customerInfo['customer_id'],
-          'customerName' => $customerInfo['customer_name'],
+          'customerId'          => $customerInfo['customer_id'],
+          'customerName'        => $customerInfo['customer_name'],
+          'serviceNumber'       => $customerInfo['service_number'],
+          'qrCodeImageKey'      => $customerInfo['qr_code_image_key'],
         );
 
       }
