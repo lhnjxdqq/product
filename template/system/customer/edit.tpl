@@ -76,6 +76,32 @@
                         </div>
                         <div class="form-group">
                             <div class='row'>
+                                <label for="service_number" class="col-sm-2 control-label">客服电话</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" value="<{$customerInfo.service_number}>" id="service_number" name='service_number' placeholder="请输入客服电话">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <label for="qr_code_image" class="col-sm-2 control-label">二维码</label>
+                                <div class="col-sm-4">
+                                    <input type="file" class="form-control" id="qr_code_image" name='qr_code_image'>
+                                </div>
+                            </div>
+                        </div>
+                        <{if $customerInfo.image_url != ''}>
+                            <div class="form-group">
+                                <div class='row'>
+                                    <label  class="col-sm-2 control-label">二维码图片</label>
+                                    <div class="col-sm-4">
+                                        <img src="<{$customerInfo.image_url}>@!mini" height="100">
+                                    </div>
+                                </div>
+                            </div>
+                        <{/if}>
+                        <div class="form-group">
+                            <div class='row'>
                                 <label for="trading_area" class="col-sm-2 control-label">商业圈</label>
                                 <div class="col-sm-4">
                                     <input type="text" class="form-control" value="<{$customerInfo.trading_area}>" id="trading_area" name='trading_area' placeholder="请输入商业圈">

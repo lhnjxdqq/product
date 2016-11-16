@@ -6,6 +6,14 @@ $data   = $_POST;
 Validate::testNull($data['customer_name'], '客户名称不能为空');
 Validate::testNull($data['customer_id'], '客户Id不能为空');
 
+$stream = $_FILES['qr_code_image']['tmp_name'];
+
+if($stream){
+
+    $imageKey                   = AliyunOSS::getInstance('images-spu')->create($stream, null, true);  
+    $data['qr_code_image_key']  = $imageKey;
+}
+
 $data['plus_price']     = empty($data['plus_price']) ? 0 : $data['plus_price'] ;
 $data['district_id']    = empty($data['district_id']) ? 0 : $data['district_id'] ;
 $data['city_id']        = empty($data['city_id']) ? 0 : $data['city_id'] ;

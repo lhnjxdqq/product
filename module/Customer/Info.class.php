@@ -19,7 +19,7 @@ class   Customer_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'customer_id,customer_name,customer_code,province_id,city_id,district_id,address,contact,telephone,create_time,delete_status,plus_price,trading_area';
+    const   FIELDS      = 'customer_id,customer_name,customer_code,province_id,city_id,district_id,address,contact,telephone,create_time,delete_status,plus_price,trading_area,service_number,qr_code_image_key';
     /**
      * 新增
      *

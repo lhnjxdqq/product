@@ -145,7 +145,7 @@ class Spu_Push {
             $postData[]         = $data;
         }
 
-        $res        = HttpRequest::getInstance($apiUrl)->post($postData);
+        $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData);
     }
      
     /**

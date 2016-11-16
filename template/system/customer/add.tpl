@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <form action="/system/customer/do_add.php" method="post">                             
+                    <form action="/system/customer/do_add.php" method="post" enctype='multipart/form-data'>
                         <div class="form-group">
                             <div class='row'>                       
                             <label for="customer_id" class="col-sm-2 control-label">客户名称</label>
@@ -71,6 +71,22 @@
                                 <label for="telephone" class="col-sm-2 control-label">联系电话</label>
                                 <div class="col-sm-4">
                                     <input type="text" class="form-control" id="telephone" name='telephone' placeholder="请输入联系电话">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <label for="service_number" class="col-sm-2 control-label">客服电话</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="service_number" name='service_number' placeholder="请输入客服电话">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class='row'>
+                                <label for="qr_code_image" class="col-sm-2 control-label">二维码</label>
+                                <div class="col-sm-4">
+                                    <input type="file" class="form-control" id="qr_code_image" name='qr_code_image'>
                                 </div>
                             </div>
                         </div>
