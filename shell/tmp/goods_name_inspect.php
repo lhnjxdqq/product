@@ -49,6 +49,9 @@ for($row=0; $row<=$countGoods['cnt']; $row+= 100 ){
                 'goods_id'      => $goodsId,
                 'goods_name'    => $goodsName,
             ));
+                    
+            // 推送更新SKU数据到生产工具
+            Goods_Push::updatePushGoodsData($goodsId);
         }
     }
 }
