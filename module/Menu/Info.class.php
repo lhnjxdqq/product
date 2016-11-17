@@ -19,7 +19,7 @@ class   Menu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'menu_id,menu_name,menu_desc,menu_related,menu_icon,menu_level,menu_url,parent_id,create_time,update_time,delete_status';
+    const   FIELDS      = 'menu_id,menu_name,menu_desc,menu_related,menu_icon,menu_level,menu_url,parent_id,create_time,update_time,delete_status,sort';
     /**
      * 新增
      *
@@ -65,30 +65,41 @@ class   Menu_Info {
 
             return;
         }
-        $menus      = array();
-        foreach ($menuData as $menu) {
-            if ($menu['menu_level'] == 1) {
-                $menus[$menu['menu_id']]['top'] = array(
-                    'name'      => $menu['menu_name'],
-                    'url'       => $menu['menu_url'],
-                    'icon'      => $menu['menu_icon'],
-                    'related'   => $menu['menu_related'],
-                );
-                $menus[$menu['menu_id']]['child'] = array();
-            }
-            if ($menu['menu_level'] == 2) {
-                if (!in_array($menu['menu_url'], $_SESSION['user_auth'])) {
-
-                    continue;
-                }
-                $menus[$menu['parent_id']]['child'][] = array(
-                    'name'      => $menu['menu_name'],
-                    'url'       => $menu['menu_url'],
-                    'icon'      => $menu['menu_icon'],
-                    'related'   => $menu['menu_related'],
-                );
-            }
+        $sortInfo   = array();
+        foreach($menuData as $key => $info){
+            
+            $sortInfo[$key] = $info['sort'];
         }
+        array_multisort($sortInfo,SORT_ASC,$menuData);
+
+        $menus      = array();
+        $oneLevel   = ArrayUtility::searchBy($menuData,array('menu_level'=>1));
+        $twoLevel   = ArrayUtility::searchBy($menuData,array('menu_level'=>2));
+        foreach ($oneLevel as $menu) {
+
+            $menus[$menu['menu_id']]['top'] = array(
+                'name'      => $menu['menu_name'],
+                'url'       => $menu['menu_url'],
+                'icon'      => $menu['menu_icon'],
+                'related'   => $menu['menu_related'],
+            );
+            $menus[$menu['menu_id']]['child'] = array();
+        }
+        
+        foreach ($twoLevel as $menu){
+
+            if (!in_array($menu['menu_url'], $_SESSION['user_auth'])) {
+
+                continue;
+            }
+            $menus[$menu['parent_id']]['child'][] = array(
+                'name'      => $menu['menu_name'],
+                'url'       => $menu['menu_url'],
+                'icon'      => $menu['menu_icon'],
+                'related'   => $menu['menu_related'],
+            );
+        }
+
         $scriptName = $_SERVER['SCRIPT_NAME'];
         foreach ($menus as &$menu) {
             if ($menu['top']['url'] == $scriptName || in_array($scriptName, explode('|', $menu['related']))) {
