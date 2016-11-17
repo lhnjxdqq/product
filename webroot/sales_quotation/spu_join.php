@@ -226,6 +226,7 @@ foreach($listSpuInfo as $key => $spuInfo){
             'cost'                      => $cost,
             'color_id'                  => $colorId,
             'sales_quotation_remark'    => $spuInfo['remark'],
+            'is_cart_join'              => 1,
         );
         Sales_Quotation_Spu_Info::create($content);
     }

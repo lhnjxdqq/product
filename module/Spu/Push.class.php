@@ -139,6 +139,7 @@ class Spu_Push {
         $apiUrl     = $config['apiConfig']['spu_update'];
 
         $postData   = array();
+        $listSpuSn  = array_unique($listSpuSn);
         foreach($listSpuSn as $key => $val){
             $data['spuSn']     = $val;
             $data['operation']  = $operation;
@@ -169,6 +170,7 @@ class Spu_Push {
             $data[$key] = $val;
         }
         
+        $listSpuSn  = array_unique($listSpuSn);
         foreach($listSpuSn as $key => $val){
             
             $data['spuSn']                  = $val;

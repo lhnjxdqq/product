@@ -88,7 +88,9 @@
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                               
-                                <tr class="<{if $item.is_red eq 1}>danger
+                                <tr class="<{if $item.is_cart_join eq 1}>warning
+                                            <{else}>
+                                            <{if $item.is_red eq 1}>danger
                                             <{else}>
                                                 <{if $item.is_exist eq 1}>bg-success
                                            <{else}>
@@ -97,6 +99,7 @@
                                                 <{if ($item.source_code_num > 1) && ($item.row_num % 2) == 1}>warning
                                                 <{/if}>
                                                 <{/if}>
+                                           <{/if}>
                                            <{/if}>
                                            <{/if}>">
                                     <td><input type="checkbox" name="spu_id[]" value="<{$item.spu_id}>" /></td>

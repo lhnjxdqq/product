@@ -125,6 +125,7 @@ foreach($data as $spuId => $colorCost){
             'color_id'              => $colorId,
             'sales_quotation_remark'=> $remark,
             'is_red_bg'             => $isRed,
+            'is_cart_join'          => 0,
         );       
         Sales_Quotation_Spu_Info::update($content);
     }
