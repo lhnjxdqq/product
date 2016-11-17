@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <form action="/system/customer/do_edit.php" method="post">                             
+                    <form action="/system/customer/do_edit.php" method="post"  enctype='multipart/form-data'>                             
                         <div class="form-group">
                             <div class='row'>                       
                             <label for="customer_id" class="col-sm-2 control-label">客户名称</label>
