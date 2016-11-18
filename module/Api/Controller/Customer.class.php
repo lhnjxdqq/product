@@ -18,7 +18,7 @@ class Api_Controller_Customer {
           'customerId'          => $customerInfo['customer_id'],
           'customerName'        => $customerInfo['customer_name'],
           'serviceNumber'       => $customerInfo['service_number'],
-          'qrCodeImageKey'      => $customerInfo['qr_code_image_key'],
+          'qrCodeImageKey'      => $imageUrl,
         );
 
       }
