@@ -96,6 +96,21 @@ class   Sales_Order_Goods_Info {
     }
         
     /**
+     * 根据订单ID查出每个订单下面的一条SPUID
+     *
+     * @param   array $multiSalesOrderId     销售订单Id
+     */
+    static public function getByGroupMultiId($multiSalesOrderId) {
+
+
+        $multiSalesOrderId  = array_map('intval', $multiSalesOrderId);
+
+        $sql                = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` IN ("' . implode('","', $multiSalesOrderId) . '") GROUP BY `sales_order_id`';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+        
+    /**
      * 根据报价单ID SpuID删除报价单中的SPU 
      *
      * @param   string $salesOrderId  报价单ID

@@ -89,7 +89,7 @@ $mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueI
 
 $listGoodsInfo              = $countGoods <= 0 ? array() : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
-$mapGoodsImages             = ArrayUtility::indexByField($listGoodsImages, 'goods_id');
+$mapGoodsImages             = ArrayUtility::groupByField($listGoodsImages, 'goods_id');
 $listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
 $groupGoodsProductInfo      = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
 $mapGoodsProductMinCost     = array();
@@ -119,9 +119,25 @@ foreach ($listGoodsInfo as &$goodsInfo) {
 
     $goodsId    = $goodsInfo['goods_id'];
     $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
-    $goodsInfo['image_url']     = $imageKey
-        ? AliyunOSS::getInstance('thumb-images-sku')->url($imageKey)
-        : '';
+    
+    if(!empty($mapGoodsImages[$goodsId])){
+        
+        $firstImageInfo = ArrayUtility::searchBy($mapGoodsImages[$goodsId],array('is_first_picture' => 1));
+    }
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info = current($firstImageInfo);
+        $goodsInfo['image_url']     = !empty($info)
+            ? AliyunOSS::getInstance('images-sku')->url($info['image_key'])
+            : '';       
+    }else{
+
+        $info = Sort_Image::sortImage($mapGoodsImages[$goodsId]);
+
+        $goodsInfo['image_url']     = !empty($info)
+            ? AliyunOSS::getInstance('images-sku')->url($info[0]['image_key'])
+            : '';     
+    }
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
     $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
     $goodsInfo['sample_type']   = $indexGoodsIdType[$goodsId];

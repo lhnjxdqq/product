@@ -85,11 +85,29 @@ foreach($indexSourceCode as $source_code => $info){
     //获取SPU数量
 
     $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId(array_unique($mapSpuId[$source_code]));
-    $mapSpuImages[$source_code]   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
+    $mapSpuImages[$source_code]   = ArrayUtility::groupByField($listSpuImages, 'spu_id');
 
     foreach ($mapSpuImages[$source_code] as $spuId => $spuImage) {
 
-        $mapSpuImages[$source_code][$spuId]['image_url']  = AliyunOSS::getInstance('thumb-images-spu')->url($spuImage['image_key']);
+    
+        if(!empty($spuImage)){
+            
+            $firstImageInfo = ArrayUtility::searchBy($spuImage,array('is_first_picture' => 1));
+        }
+        if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+            
+            $info = current($firstImageInfo);
+            $mapSpuImages[$source_code][$spuId]['image_url']  = !empty($info)
+                ? AliyunOSS::getInstance('images-spu')->url($info['image_key'])
+                : '';       
+        }else{
+
+            $info = Sort_Image::sortImage($spuImage);
+
+            $mapSpuImages[$source_code][$spuId]['image_url']  = !empty($info)
+                ? AliyunOSS::getInstance('images-spu')->url($info[0]['image_key'])
+                : '';     
+        }
     }
 
     // 根据商品查询品类
