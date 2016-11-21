@@ -140,19 +140,28 @@ class Spu_Push {
 
         $postData   = array();
         $listSpuSn  = array_unique($listSpuSn);
+        
         foreach($listSpuSn as $key => $val){
+           
             $data['spuSn']     = $val;
             $data['operation']  = $operation;
             $postData[]         = $data;
+            
+            if(($key%300) == 0 && $key != 0){
+
+                $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData));
+                $postData   = array();
+            }
         }
 
         $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData));
     }
      
     /**
-     * 推送listSpuSn
+     * 推送listSpuSn 
      *
-     *  @param array $listSpuId
+     *  @param array $listSpuSn  SPU编号
+     *  @param array $param      操作代码
      */
     static public function pushTagsListSpuSn(array $listSpuSn,array $param){
 
@@ -175,6 +184,12 @@ class Spu_Push {
             
             $data['spuSn']                  = $val;
             $paramsTagApi['spuDataList'][]      = $data;
+            
+            if(($key%300) == 0 && $key != 0){
+
+                TagApi::getInstance()->Spu_updateSpuData($paramsTagApi)->call();
+                $paramsTagApi   = array();
+            }
         }
 
         TagApi::getInstance()->Spu_updateSpuData($paramsTagApi)->call();
