@@ -3,6 +3,13 @@
 //订单
 class Api_Controller_Order {
 
+    // 订单产品
+    const salesOrderGoods       = 'sales_goods_info_';
+    
+    // 订单
+    const salesOrder            = 'sales_order_';
+
+
     static public function create (array $orderInfo) {
        
         if(empty($orderInfo)){
@@ -34,7 +41,7 @@ class Api_Controller_Order {
         }
         $listOrder  = Sales_Order_Info::getByMultiId($listOrder);
         $orderInfo  = array();
-        $redis  = RedisProxy::getInstance('test');
+        $redis  = RedisProxy::getInstance('product');
                 
         foreach($listOrder as $key => $info){
             
@@ -49,7 +56,7 @@ class Api_Controller_Order {
             );
             
             $salesOrderProduct          = array();
-            $redisSalesOrderGoodsInfo   = $redis->get('sales_goods_info_'.$info['sales_order_id']);
+            $redisSalesOrderGoodsInfo   = $redis->get(self::salesOrderGoods.$info['sales_order_id']);
             
             if(!empty($redisSalesOrderGoodsInfo)){
              
@@ -71,7 +78,7 @@ class Api_Controller_Order {
                     'remark'        => $goodsInfo['remark'],
                 );
             }
-            $redisSalesOrderGoodsInfo           = $redis->set('sales_goods_info_'.$info['sales_order_id'],json_encode($salesOrderProduct));
+            $redisSalesOrderGoodsInfo           = $redis->set(self::salesOrderGoods.$info['sales_order_id'],json_encode($salesOrderProduct));
             $salesOrderInfo['orderGoodsList']   = $salesOrderProduct;
             $orderInfo[]                        = $salesOrderInfo;
         }
@@ -91,11 +98,11 @@ class Api_Controller_Order {
         }
         
         $orderInfo  = array();
-        $redis  = RedisProxy::getInstance('test');
+        $redis  = RedisProxy::getInstance('product');
         
         foreach($listOrderId as $key => $orderId){
         
-            $res = $redis->get('sales_order'.$orderId);
+            $res = $redis->get(self::salesOrder.$orderId);
             if(!empty($res)){
         
                 $orderInfo[$orderId]    = json_decode($res,true);
@@ -125,7 +132,7 @@ class Api_Controller_Order {
                 'completeGold'      => $info['create_order_au_price'],
             );
             
-            $redis->set('sales_order'.$info['sales_order_id'],json_encode($orderInfo[$info['sales_order_id']]));
+            $redis->set(self::salesOrder.$info['sales_order_id'],json_encode($orderInfo[$info['sales_order_id']]));
         }
         return array('salesOrderListInfo'=>$orderInfo);
     }
