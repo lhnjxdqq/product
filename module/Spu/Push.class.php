@@ -136,7 +136,8 @@ class Spu_Push {
         }
 
         $config     = self::_getPushSpuApiConfig();
-        $apiUrl     = $config['apiConfig']['spu_update'];
+        $apiUrl         = $config['apiConfig']['spu_update'];
+        $plApiUrl       = $config['apiConfig']['pl_spu_update'];
 
         $postData   = array();
         $listSpuSn  = array_unique($listSpuSn);
@@ -150,11 +151,13 @@ class Spu_Push {
             if(($key%300) == 0 && $key != 0){
 
                 $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData));
+                $res        = HttpRequest::getInstance($plApiUrl)->post(array('spuList'=>$postData));
                 $postData   = array();
             }
         }
 
         $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData));
+        $res        = HttpRequest::getInstance($plApiUrl)->post(array('spuList'=>$postData));
     }
      
     /**
