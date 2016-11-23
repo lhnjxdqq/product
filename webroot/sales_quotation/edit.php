@@ -38,6 +38,7 @@ $listCustomer       = ArrayUtility::searchBy(Customer_Info::listAll(),array('del
 $indexCustomerId    = ArrayUtility::indexByField($listCustomer,'customer_id');
 
 $orderBy                = array(
+    'is_cart_join'                       => 'DESC',
     'is_red_bg'                          => 'DESC',
     'identical_source_code_spu_num'      => 'DESC',
 );
