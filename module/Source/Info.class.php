@@ -269,4 +269,25 @@ class   Source_Info {
 
         return          self::_getStore()->fetchAll($sql);
     }
+    
+    /**
+     * 根据厂商获取信息
+     *
+     *  @param  array    $mulitSupplierId       厂商Id
+     *
+     *  @return array                           数据
+     */
+    static public function getByMulitSupplierId($mulitSupplierId){
+         
+        if(empty($mulitSupplierId)){
+             
+            return array();
+        }
+         
+        $multiId  = array_map('trim', array_map('addslashes', array_unique(array_filter($mulitSupplierId))));
+
+        $sql   = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_id` IN ("' . implode('","', $multiId) . '") AND `delete_status` = 0';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
 }

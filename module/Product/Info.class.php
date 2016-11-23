@@ -247,6 +247,24 @@ class   Product_Info {
     }
 
     /**
+     * 根据商品来款ID 查询产品
+     *
+     * @param $sourceId     买款ID
+     * @return array        产品
+     */
+    static public function getBySourceId ($sourceId) {
+
+        if(empty($sourceId)){
+            
+            return array();
+        }
+        
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `source_id`='.$sourceId;
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据商品ID 查询产品
      *
      * @param $goodsId  商品ID
