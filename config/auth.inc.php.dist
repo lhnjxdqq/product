@@ -17,7 +17,6 @@ return  array(
         'Spec.getAll',
         'Order.create',
         'Order.getByIdList',
-        'Order.getByOrderId',
         'Order.getByMultiOrderId',
         'SalesQuotation.getSalesQuotationFile',
         'SalesQuotation.success',
