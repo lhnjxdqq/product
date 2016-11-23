@@ -58,7 +58,7 @@ $sourceInfo         = Source_Info::getByMulitSupplierId($listSupplierId);
 foreach($sourceInfo as $key => $info){
     
     $plusPrice      = $indexSupplierId[$info['supplier_id']]['plus_price'];
-echo $plusPrice;
+
     $condition      = array();
     $sourceId       = $info['source_id'];
     
