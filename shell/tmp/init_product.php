@@ -24,14 +24,23 @@ $supplierInfo       = DB::instance('product')->fetchAll($supplierInfoSql);
 foreach($supplierInfo as &$info){
     
     switch($info['supplier_code']){
-        case "0006" : $info['plus_price'] = 2;
-        case "0097" : $info['plus_price'] = 1;
-        case "0131" : $info['plus_price'] = 1;
-        case "0267" : $info['plus_price'] = 1;
-        case "0266" : $info['plus_price'] = 0.5;
+        case "0006" :
+            $info['plus_price'] = 2;
+            break;
+        case "0097" :
+            $info['plus_price'] = 1;
+            break;
+        case "0131" : 
+            $info['plus_price'] = 1;
+            break;
+        case "0267" :
+            $info['plus_price'] = 1;
+            break;
+        case "0266" :
+            $info['plus_price'] = 0.5;
+            break;
     }
 }
-
 $indexSupplierId    = ArrayUtility::indexByField($supplierInfo,'supplier_id');
 $listSupplierId     = ArrayUtility::listField($supplierInfo,'supplier_id');
 
@@ -49,7 +58,7 @@ $sourceInfo         = Source_Info::getByMulitSupplierId($listSupplierId);
 foreach($sourceInfo as $key => $info){
     
     $plusPrice      = $indexSupplierId[$info['supplier_id']]['plus_price'];
-
+echo $plusPrice;
     $condition      = array();
     $sourceId       = $info['source_id'];
     
