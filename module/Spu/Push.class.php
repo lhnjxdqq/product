@@ -151,13 +151,21 @@ class Spu_Push {
             if(($key%300) == 0 && $key != 0){
 
                 $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData));
-                $res        = HttpRequest::getInstance($plApiUrl)->post(array('spuList'=>$postData));
-                $postData   = array();
+               
+                if($plApiUrl){
+                
+                    $res    = HttpRequest::getInstance($plApiUrl)->post(array('spuList'=>$postData));
+                }
+                $postData  = array();
             }
         }
 
         $res        = HttpRequest::getInstance($apiUrl)->post(array('spuList'=>$postData));
-        $res        = HttpRequest::getInstance($plApiUrl)->post(array('spuList'=>$postData));
+
+        if($plApiUrl){
+        
+            $res    = HttpRequest::getInstance($plApiUrl)->post(array('spuList'=>$postData));
+        }
     }
      
     /**

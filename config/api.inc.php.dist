@@ -20,7 +20,7 @@ return  array(
             'spu'           => 'http://sansan.xuanhuo.com/api/production_tools/spu.php',
             'spu_goods'     => 'http://sansan.xuanhuo.com/api/production_tools/spu_goods.php',
             'spu_update'    => 'http://dalei.wholesale.select.kuandd.com/api/product/spu_status.php',
-            'pl_spu_update' => 'http://dalei.piling.kuandd.com/api/spu.php',
+           // 'pl_spu_update' => 'http://dalei.piling.kuandd.com/api/spu.php',
         ),
     ),
 );
