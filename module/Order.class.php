@@ -499,7 +499,7 @@ class   Order {
                 'remark'            => $info['remark'],
             );
             
-            $referenceAmount+= ($auPrice+$info['cost']*((int) $info['quantity']) * $info['specWeight']);
+            $referenceAmount+= ($auPrice+$info['cost'])*((int) $info['quantity']) * $info['specWeight'];
             Sales_Order_Goods_Info::create($content);
            
         }     
