@@ -125,6 +125,7 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 'kWhite'        => 0,
                 'kYellow'       => 0,
                 'kRed'          => 0,
+                'kGold'         => 0,
                 'subTotal'      => 0,
             );
             $cost               = array(
@@ -135,6 +136,7 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 'kWhite'        => array(),
                 'kYellow'       => array(),
                 'kRed'          => array(),
+                'kGold'         => array(),
             );
             // 备注
             $remarkList         = array_filter(ArrayUtility::listField($detailList, 'remark'));
@@ -175,6 +177,10 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                         $quantity['kRed']           += $detail['quantity'];
                         $cost['kRed'][]             = $detail['product_cost'];
                         break;
+                    case    '黄金黄' :
+                        $quantity['kGold']           += $detail['quantity'];
+                        $cost['kGold'][]            = $detail['product_cost'];
+                        break;
                 }
                 // 备注
                 $remark         = empty(trim($tempRemarkString)) ? $detail['remark'] : '';
@@ -186,7 +192,8 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                                                               $quantity['redYellow'] +
                                                               $quantity['kWhite'] +
                                                               $quantity['kYellow'] +
-                                                              $quantity['kRed'];
+                                                              $quantity['kRed'] +
+                                                              $quantity['kGold'];
             // 数量
             $result[$groupBy]['quantity_three_color']       = $quantity['threeColor'] ? $quantity['threeColor'] : '';
             $result[$groupBy]['quantity_red_white']         = $quantity['redWhite'] ?  $quantity['redWhite'] : '';
@@ -195,6 +202,7 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             $result[$groupBy]['quantity_k_white']           = $quantity['kWhite'] ? $quantity['kWhite'] : '';
             $result[$groupBy]['quantity_k_yellow']          = $quantity['kYellow'] ? $quantity['kYellow'] : '';
             $result[$groupBy]['quantity_k_red']             = $quantity['kRed'] ? $quantity['kRed'] : '';
+            $result[$groupBy]['quantity_k_gold']            = $quantity['kGold'] ? $quantity['kGold'] : '';
             $result[$groupBy]['quantity_sub_total']         = $quantity['subTotal'];
             // 金重
             $result[$groupBy]['weight_value_data']          = $detail['weight_value_data'];
@@ -236,6 +244,11 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             empty($cost['kRed'])                && $costKRed        = '';
             (count($cost['kRed']) == 1)         && $costKRed        = current($cost['kRed']);
             $result[$groupBy]['cost_k_red']                         = $costKRed;
+            // 黄金黄
+            $costGold                                               = 'ERROR';
+            empty($cost['kGold'])                && $costGold       = '';
+            (count($cost['kGold']) == 1)         && $costGold       = current($cost['kGold']);
+            $result[$groupBy]['cost_k_gold']                         = $costGold;
 
             // 备注
             $result[$groupBy]['remark']                             = $remarkString;
@@ -306,13 +319,13 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
             $rowNumber++;
         }
 
-        self::$_sheet->mergeCellsByColumnAndRow(3, 1, 10, 1);
-        self::$_sheet->mergeCellsByColumnAndRow(11, 1, 12, 1);
-        self::$_sheet->mergeCellsByColumnAndRow(13, 1, 19, 1);
+        self::$_sheet->mergeCellsByColumnAndRow(3, 1, 11, 1);
+        self::$_sheet->mergeCellsByColumnAndRow(12, 1, 13, 1);
+        self::$_sheet->mergeCellsByColumnAndRow(14, 1, 21, 1);
         self::$_sheet->mergeCellsByColumnAndRow(0, 1, 0, 2);
         self::$_sheet->mergeCellsByColumnAndRow(1, 1, 1, 2);
         self::$_sheet->mergeCellsByColumnAndRow(2, 1, 2, 2);
-        self::$_sheet->mergeCellsByColumnAndRow(20, 1, 20, 2);
+        self::$_sheet->mergeCellsByColumnAndRow(22, 1, 22, 2);
     }
 
     /**
@@ -340,15 +353,15 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 'value'     => '数量',
             ),
             'gold_weight'       => array(
-                'offset'    => '11',
+                'offset'    => '12',
                 'value'     => '金重',
             ),
             'product_cost'      => array(
-                'offset'    => '13',
+                'offset'    => '14',
                 'value'     => '工费(元/克)',
             ),
             'remark'            => array(
-                'offset'    => '20',
+                'offset'    => '22',
                 'value'     => '备注'
             ),
         );
@@ -393,48 +406,56 @@ class Produce_Order_Export_Adapter_MultiHead implements Produce_Order_Export_Ada
                 'offset'    => '9',
                 'value'     => 'K红',
             ),
-            'quantity_sub_total'    => array(
+            'quantity_k_gold'        => array(
                 'offset'    => '10',
+                'value'     => '黄金黄',
+            ),
+            'quantity_sub_total'    => array(
+                'offset'    => '11',
                 'value'     => '小计',
             ),
             'weight_value_data'     => array(
-                'offset'    => '11',
+                'offset'    => '12',
                 'value'     => '克/件',
             ),
             'weight_sub_total'      => array(
-                'offset'    => '12',
+                'offset'    => '13',
                 'value'     => '小计',
             ),
             'cost_three_color'      => array(
-                'offset'    => '13',
+                'offset'    => '14',
                 'value'     => '三色',
             ),
             'cost_red_white'        => array(
-                'offset'    => '14',
+                'offset'    => '15',
                 'value'     => '红白',
             ),
             'cost_yellow_white'     => array(
-                'offset'    => '15',
+                'offset'    => '16',
                 'value'     => '黄白',
             ),
             'cost_red_yellow'       => array(
-                'offset'    => '16',
+                'offset'    => '17',
                 'value'     => '红黄',
             ),
             'cost_k_white'          => array(
-                'offset'    => '17',
+                'offset'    => '18',
                 'value'     => 'K白',
             ),
             'cost_k_yellow'         => array(
-                'offset'    => '18',
+                'offset'    => '19',
                 'value'     => 'K黄',
             ),
             'cost_k_red'            => array(
-                'offset'    => '19',
+                'offset'    => '20',
                 'value'     => 'K红',
             ),
+            'cost_k_gold'            => array(
+                'offset'    => '21',
+                'value'     => '黄金黄',
+            ),
             'remark'            => array(
-                'offset'    => '20',
+                'offset'    => '22',
                 'value'     => '备注'
             ),
         );
