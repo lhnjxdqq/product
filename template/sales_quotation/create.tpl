@@ -60,12 +60,20 @@
             </div>
             <div class="box">
                 <div class="box-header with-border">
-                    <input type="checkbox" name="check-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
-                    <a href="/product/spu/index.php" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加商品</a>
-                    <a href="jacascript:void(0);" class="btn btn-primary btn-sm" id="clear-cart"><i class="fa fa-bitbucket-square"></i> 清空购物车</a>
-                    共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品
-           
+                    <div class="col-md-7">
+
+                        <input type="checkbox" name="check-all"> 全选
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
+                        <a href="/product/spu/index.php" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> 添加商品</a>
+                        <a href="jacascript:void(0);" class="btn btn-primary btn-sm" id="clear-cart"><i class="fa fa-bitbucket-square"></i> 清空购物车</a>
+                        共计<{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}>款商品
+                    </div>
+                    <div class='col-md-3'>
+                        <input type="text" class="form-control pull-right" id='search-input'  placeholder="请输入SPU编号/买款ID" value="<{$smarty.get.search_value_list}>">
+                    </div>
+                    <div class='col-md-2'>
+                        <button type="button" class="btn btn-primary pull-left btn-block search-button"><i class="fa fa-search"></i> 查询</button>
+                    </div>  
                 </div>
                 <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
                     <div class="table-responsive col-xls-12">
@@ -319,6 +327,19 @@ $(function(){
         }
     });
     
+    $(".search-button").click(function(){
+
+        searchInput  = $("#search-input").val();
+        if(searchInput.length <= 0 ){
+            
+            alert('搜索内容不能为空');
+            
+            return false;
+        }
+        location.href='/sales_quotation/create.php?search_value_list='+searchInput;
+
+    });
+
     $(".quotation-submit").click(function(){
         
         quotationName       = $("[name=sales_quotation_name]").val();

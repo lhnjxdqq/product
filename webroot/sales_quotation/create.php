@@ -30,17 +30,20 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'])){
 
 $userId          = $_SESSION['user_id'];
 $listCustomer    = ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL));
+$condition['search_value_list']      = $_GET['search_value_list']; 
 
 $orderBy                = array();
 $perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $condition['user_id']   = $userId;
-$countSpu   = Cart_Spu_Info::countByCondition($condition);
+$countSpu       = !empty($condition['search_value_list']) ? Search_CartSpu::countByCondition($condition) : Cart_Spu_Info::countByCondition($condition);
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countSpu,
     PageList::OPT_URL       => '/sales_quotation/create.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
-$listCartInfo    = Cart_Spu_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
+
+$listCartInfo    = !empty($condition['search_value_list']) ? Search_CartSpu::listByCondition($condition, $orderBy, $page->getOffset(), $perpage)
+                   : Cart_Spu_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
 
 //获取sqlID的组合
 $listSpuId       = ArrayUtility::listField($listCartInfo,"spu_id");

@@ -1,58 +1,58 @@
 <?php
-class Search_SalesQuotationSpu {
+class Search_CartSpu {
 
     /**
-     * æ ¹æ®æ¡ä»¶èŽ·å–æ•°æ®
+     * ¸ù¾ÝÌõ¼þ»ñÈ¡Êý¾Ý
      *
-     * @param array $condition  æ¡ä»¶
-     * @param array $orderBy    æŽ’åº
-     * @param null $offset      ä½ç½®
-     * @param null $limit       æ•°é‡
-     * @return array            æ•°æ®
+     * @param array $condition  Ìõ¼þ
+     * @param array $orderBy    ÅÅÐò
+     * @param null $offset      Î»ÖÃ
+     * @param null $limit       ÊýÁ¿
+     * @return array            Êý¾Ý
      */
     static public function listByCondition (array $condition, $orderBy = array(), $offset, $limit) {
 
         $fields         = implode(',', self::_getQueryFields());
-        $sqlBase        = 'SELECT ' . $fields . ' FROM `sales_quotation_spu_info` AS `sq_spu_info` LEFT JOIN ';
+        $sqlBase        = 'SELECT ' . $fields . ' FROM `cart_spu_info` AS `cart_spu_info` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = self::_order($orderBy,$condition);
         $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
-        $sqlGroup       = ' GROUP BY `sq_spu_info`.`spu_id` ';
+        $sqlGroup       = ' GROUP BY `cart_spu_info`.`spu_id` ';
         $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
 
-        return          Sales_Quotation_Spu_Info::query($sql);
+        return          Cart_Spu_Info::query($sql);
     }
 
     /**
-     * æ ¹æ®æ¡ä»¶èŽ·å–æ•°æ®æ•°é‡
+     * ¸ù¾ÝÌõ¼þ»ñÈ¡Êý¾ÝÊýÁ¿
      *
-     * @param array $condition  æ¡ä»¶
-     * @return mixed            æ•°é‡
+     * @param array $condition  Ìõ¼þ
+     * @return mixed            ÊýÁ¿
      */
     static public function countByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT COUNT(DISTINCT(`sq_spu_info`.`spu_id`)) AS `cnt` FROM `sales_quotation_spu_info` AS `sq_spu_info` LEFT JOIN ';
+        $sqlBase        = 'SELECT COUNT(DISTINCT(`cart_spu_info`.`spu_id`)) AS `cnt` FROM `sales_quotation_spu_info` AS `cart_spu_info` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sql            = $sqlBase . $sqlJoin . $sqlCondition;
-        $data           = Sales_Quotation_Spu_Info::query($sql);
+        $data           = Cart_Spu_Info::query($sql);
         $row            = current($data);
 
         return          $row['cnt'];
     }
 
     /**
-     * æ ¹æ®æ¡ä»¶æ‹¼æŽ¥WHEREè¯­å¥
+     * ¸ù¾ÝÌõ¼þÆ´½ÓWHEREÓï¾ä
      *
-     * @param array $condition  æ¡ä»¶
+     * @param array $condition  Ìõ¼þ
      * @return string
      */
     static private function _condition (array $condition) {
 
         $sql        = array();
 
-        $sql[]      = self::_conditionSalesQuotationId($condition);
+        $sql[]      = self::_conditionUserId($condition);
         $sql[]      = self::_conditionBySearchType($condition);
         $sqlFilter  = array_filter($sql);
 
@@ -60,26 +60,26 @@ class Search_SalesQuotationSpu {
     }
 
     /**
-     * æ ¹æ®æŠ¥ä»·å•IDæ¡ä»¶æ‹¼æŽ¥WHEREå­å¥
+     * ¸ù¾Ý±¨¼Ûµ¥IDÌõ¼þÆ´½ÓWHERE×Ó¾ä
      *
-     * @param array $condition  æ¡ä»¶
+     * @param array $condition  Ìõ¼þ
      * @return string
      */
 
-    static  private function _conditionSalesQuotationId (array $condition) {
+    static  private function _conditionUserId (array $condition) {
 
-        if (empty($condition['sales_quotation_id'])) {
+        if (empty($condition['user_id'])) {
 
             return  '';
         }
 
-        return  "`sq_spu_info`.`sales_quotation_id` = '" . addslashes($condition['sales_quotation_id']) . "'";
+        return  "`cart_spu_info`.`user_id` = '" . addslashes($condition['user_id']) . "'";
     }
 
      /**
-     * æ ¹æ®æœç´¢ç±»åž‹æ‹¼æŽ¥WHEREå­å¥
+     * ¸ù¾ÝËÑË÷ÀàÐÍÆ´½ÓWHERE×Ó¾ä
      *
-     * @param array $condition  æ¡ä»¶
+     * @param array $condition  Ìõ¼þ
      * @return string
      */
     static private function _conditionBySearchType (array $condition) {
@@ -96,10 +96,10 @@ class Search_SalesQuotationSpu {
 
 
     /**
-     * èŽ·å–æŽ’åºå­å¥
+     * »ñÈ¡ÅÅÐò×Ó¾ä
      *
-     * @param   array   $order  æŽ’åºä¾æ®
-     * @return  string          SQLæŽ’åºå­å¥
+     * @param   array   $order  ÅÅÐòÒÀ¾Ý
+     * @return  string          SQLÅÅÐò×Ó¾ä
      */
     static  private function _order (array $order) {
 
@@ -108,14 +108,14 @@ class Search_SalesQuotationSpu {
         foreach ($order as $fieldName => $sequence) {
 
             $fieldName  = str_replace('`', '', $fieldName);
-            $sql[]      = '`sq_spu_info`.`' . addslashes($fieldName) . '` ' . $sequence;
+            $sql[]      = '`cart_spu_info`.`' . addslashes($fieldName) . '` ' . $sequence;
         }
 
         return  empty($sql) ? ''    : ' ORDER BY ' . implode(',', $sql);
     }
 
     /**
-     * æŸ¥è¯¢è¡¨
+     * ²éÑ¯±í
      *
      * @return array
      */
@@ -125,7 +125,7 @@ class Search_SalesQuotationSpu {
         $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
         return  array(
-            '`spu_info` AS `spu_info` ON `sq_spu_info`.`spu_id`=`spu_info`.`spu_id`',
+            '`spu_info` AS `spu_info` ON `cart_spu_info`.`spu_id`=`spu_info`.`spu_id`',
             '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
             '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
             '`product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`',
@@ -134,21 +134,17 @@ class Search_SalesQuotationSpu {
     }
 
     /**
-     * æŸ¥è¯¢å­—æ®µ
+     * ²éÑ¯×Ö¶Î
      *
      * @return array
      */
     static private function _getQueryFields () {
 
         return  array(
-            '`sq_spu_info`.`sales_quotation_id`',
-            '`sq_spu_info`.`spu_id`',
-            '`sq_spu_info`.`cost`',
-            '`sq_spu_info`.`color_id`',
-            '`sq_spu_info`.`sales_quotation_remark`',
-            '`sq_spu_info`.`is_red_bg`',
-            '`sq_spu_info`.`identical_source_code_spu_num`',
-            '`sq_spu_info`.`is_cart_join`',
+            '`cart_spu_info`.`user_id`',
+            '`cart_spu_info`.`spu_id`',
+            '`cart_spu_info`.`spu_color_cost_data`',
+            '`cart_spu_info`.`remark`',
         );
     }
 }

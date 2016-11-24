@@ -220,4 +220,9 @@ class   Cart_Spu_Info {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+    
+    static public function query ($sql) {
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 }
