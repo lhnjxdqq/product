@@ -21,6 +21,7 @@ return  array(
         'SalesQuotation.getSalesQuotationFile',
         'SalesQuotation.success',
         'Spu.getByMultiSn',
+        'Spu.getByMultiSourceCode',
     ),
     'white_list_host'   => array(
         '127.0.0.1',
