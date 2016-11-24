@@ -10,6 +10,7 @@ if(empty($standby)){
     return ;
 }
 $apiUrl       = $config['apiConfig']['sales_quotation_log_file'];
+$plApiUrl     = $config['apiConfig']['pl_sales_quotation_log_file'];
 
 foreach ($standby as $info) {
     
@@ -22,6 +23,7 @@ foreach ($standby as $info) {
     $filePath   = Quotation::salesQuotationLogFile($info['sales_quotation_id']);
 
     HttpRequest::getInstance($apiUrl)->post(array('filePath'=>$filePath));
+    HttpRequest::getInstance($plApiUrl)->post(array('filePath'=>$filePath));
     
     Sales_Quotation_Task::update(array(
         'task_id'               => $info['task_id'],
