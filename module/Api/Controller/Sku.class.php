@@ -4,6 +4,12 @@
  */
 class Api_Controller_Sku {
 
+    /**
+     * 按多个SKU编号查询SKU数据
+     * 
+     * @param  array  $params [description]
+     * @return [type]         [description]
+     */
     static public function getByMultiSn (array $params) {
 
         if (empty($params['listSkuSn']) || !is_array($params['listSkuSn'])) {
