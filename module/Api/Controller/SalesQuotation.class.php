@@ -13,11 +13,12 @@ class Api_Controller_SalesQuotation {
         $stream     = Config::get('path|PHP', 'sales_quotation_product');
 
         foreach($taskInfo as $info){
-
+/*
             Sales_Quotation_Task::update(array(
                 'task_id'   => $info['task_id'],
                 'is_push'   => Sales_Quotation_IsPush::RUNNING,
             ));
+*/
             $filePath[]     = $stream.$info['log_file'];
         }
         return $filePath;
@@ -26,10 +27,12 @@ class Api_Controller_SalesQuotation {
     static public function success($salesQuotationId) {
     
         $taskInfo   = Sales_Quotation_Task::getBySalesQuotationId($salesQuotationId);
+        /*
         Sales_Quotation_Task::update(array(
                 'task_id'   => $taskInfo['task_id'],
                 'is_push'   => Sales_Quotation_IsPush::FINISH,
         ));
+        */
     }
 
 }

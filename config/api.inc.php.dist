@@ -16,11 +16,12 @@ return  array(
     ),
     'api_list'          => array(
         'select'    => array(
-            'sku'           => 'http://sansan.xuanhuo.com/api/production_tools/goods.php',
-            'spu'           => 'http://sansan.xuanhuo.com/api/production_tools/spu.php',
-            'spu_goods'     => 'http://sansan.xuanhuo.com/api/production_tools/spu_goods.php',
-            'spu_update'    => 'http://dalei.wholesale.select.kuandd.com/api/product/spu_status.php',
-           // 'pl_spu_update' => 'http://dalei.piling.kuandd.com/api/spu.php',
+            'sku'                       => 'http://sansan.xuanhuo.com/api/production_tools/goods.php',
+            'spu'                       => 'http://sansan.xuanhuo.com/api/production_tools/spu.php',
+            'spu_goods'                 => 'http://sansan.xuanhuo.com/api/production_tools/spu_goods.php',
+            'spu_update'                => 'http://dalei.wholesale.select.kuandd.com/api/product/spu_status.php',
+            'pl_spu_update'             => 'http://dalei.piling.kuandd.com/api/spu.php',
+            'sales_quotation_log_file'  => 'http://dalei.piling.kuandd.com/api/quotation.php',
         ),
     ),
 );

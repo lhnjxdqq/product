@@ -9,6 +9,7 @@ $standby = Sales_Quotation_Task::getByRunStatus(Sales_Quotation_RunStatus::STAND
 if(empty($standby)){
     return ;
 }
+$apiUrl       = $config['apiConfig']['sales_quotation_log_file'];
 
 foreach ($standby as $info) {
     
@@ -20,6 +21,8 @@ foreach ($standby as $info) {
 
     $filePath   = Quotation::salesQuotationLogFile($info['sales_quotation_id']);
 
+    HttpRequest::getInstance($apiUrl)->post(array('filePath'=>$filePath));
+    
     Sales_Quotation_Task::update(array(
         'task_id'               => $info['task_id'],
         'run_status'            => Sales_Quotation_RunStatus::FINISH,
