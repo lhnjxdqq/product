@@ -55,11 +55,24 @@
             </div>
             <div class="box">
                 <div class="box-header with-border">
-                    <input type="checkbox" name="check-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
-                     <a href="javascript:void(0);" class="btn btn-primary btn-sm spu-join"><i class="fa fa-plus"></i> 合并购物车中商品</a>
-                    共计<span id="spu_count"><{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}></span>款商品
-           
+
+                    <div class="row spu-filter">
+                        <div class="col-md-7">
+                            <input type="checkbox" name="check-all"> 全选
+
+                            <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="delMulti" style="margin-left: 10px;"><i class="fa fa-trash-o"></i> 批量删除</a>
+
+                            <a href="javascript:void(0);" class="btn btn-primary btn-sm spu-join"><i class="fa fa-plus"></i> 合并购物车中商品</a>
+
+                            共计<span id="spu_count"><{if $countSpu!=""}><{$countSpu}><{else}>0<{/if}></span>款商品
+                        </div>
+                        <div class='col-md-3'>
+                            <input type="text" class="form-control pull-right" id='search-input'  placeholder="请输入SPU编号/买款ID" value="<{$smarty.get.search_value_list}>">
+                        </div>
+                        <div class='col-md-2'>
+                            <button type="button" class="btn btn-primary pull-left btn-block search-button"><i class="fa fa-search"></i> 查询</button>
+                        </div>  
+                    </div>
                 </div>
                 <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
                     <div class="table-responsive col-xls-12">
@@ -364,6 +377,19 @@ $('.edit-cost').click(function(){
     $(this).removeClass('btn-primary');
     $(this).addClass('btn-default');
     $(this).addClass('disabled');        
+});
+
+$(".search-button").click(function(){
+
+    searchInput  = $("#search-input").val();
+    if(searchInput.length <= 0 ){
+        
+        alert('搜索内容不能为空');
+        
+        return false;
+    }
+    location.href='/sales_quotation/edit.php?sales_quotation_id='+<{$salesQuotationInfo['sales_quotation_id']}>+'&search_value_list='+searchInput;
+
 });
 $(document).ready(function() { 
     

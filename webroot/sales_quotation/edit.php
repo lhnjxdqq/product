@@ -42,17 +42,24 @@ $orderBy                = array(
     'is_red_bg'                          => 'DESC',
     'identical_source_code_spu_num'      => 'DESC',
 );
-$perpage                = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
+$condition['search_value_list']      = $_GET['search_value_list']; 
+ 
+$perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 $condition['sales_quotation_id']   = $salesQuotationId;
 $group              = 'spu_id'; 
-$countSpu   = Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId);
+$countSpu   = !empty($condition['search_value_list']) ? Search_SalesQuotationSpu::countByCondition($condition)
+                : Sales_Quotation_Spu_Info::countBySalesQuotationId($salesQuotationId);
+
 
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countSpu,
     PageList::OPT_URL       => '/sales_quotation/edit.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
-$listQuotationSpuInfo       = Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
+
+$listQuotationSpuInfo       = !empty($condition['search_value_list']) ? Search_SalesQuotationSpu::listByCondition($condition, $orderBy, $page->getOffset(), $perpage) : 
+                              Sales_Quotation_Spu_Info::listByCondition($condition, $orderBy, $group, $page->getOffset(), $perpage);
+                              
 $listSpuId                  = ArrayUtility::listField($listQuotationSpuInfo,'spu_id');
 $indexSpuIdRed              = ArrayUtility::indexByField($listQuotationSpuInfo,'spu_id','is_red_bg');
 $indexSpuIdIsCartJoin       = ArrayUtility::indexByField($listQuotationSpuInfo,'spu_id','is_cart_join');
