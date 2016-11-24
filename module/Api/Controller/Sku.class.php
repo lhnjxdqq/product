@@ -64,10 +64,13 @@ class Api_Controller_Sku {
                 'categoryId'    => $skuInfo['category_id'],
                 'styleId'       => $skuInfo['style_id'],
                 'spuSn'         => $mapSkuSpuSn[$skuId],
+                'selfCost'      => $skuInfo['self_cost'],
                 'material'      => $mapSkuSpecValue[$skuId]['material_value_data'],
                 'size'          => $mapSkuSpecValue[$skuId]['size_value_data'],
                 'weight'        => $mapSkuSpecValue[$skuId]['weight_value_data'],
                 'color'         => $mapSkuSpecValue[$skuId]['color_value_data'],
+                'onlineStatus'  => $skuInfo['online_status'],
+                'deleteStatus'  => $skuInfo['deleteStatus'],
             );
         }
 
