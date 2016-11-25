@@ -13,7 +13,7 @@ $sortBy         = array(
 );
 $conditionCart['search_value_list'] = $_GET['search_value_list'];
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : '100';
-$countCartData  = !empty($conditionCart['search_value_list'])? Search_SalesQuotationSpuCart::countByCondition($conditionCart)
+$countCartData  = !empty($conditionCart['search_value_list'])? Search_SalesQuotationSpuCart::countListByCondition($conditionCart)
                     :Sales_Quotation_Spu_Cart::countByCondition($conditionCart);
                     
 $page           = new PageList(array(
