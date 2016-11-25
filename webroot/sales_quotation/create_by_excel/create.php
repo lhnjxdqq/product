@@ -28,7 +28,7 @@ if (empty($listCartData) && empty($conditionCart['search_value_list'])) {
 
     Utility::notice('请上传excel文件', '/sales_quotation/create_by_excel/upload.php');
 }
-$listSearchList     = explode(" ",$_GET['search_value_list']);
+$listSearchList     = explode(" ",trim($_GET['search_value_list']));
 
 $maxCountColorList  = 0;
 if(!empty($listCartData)){
@@ -40,7 +40,6 @@ if(!empty($listCartData)){
         $sourceCode         = $cartData['source_code'];
         $mapColorCost       = json_decode($cartData['color_cost'], true);
         $spuListField       = json_decode($cartData['spu_list'], true);
-        $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
         $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
         $spuIdCostList      = ArrayUtility::indexByField($spuListField, 'spuId','mapColorCost');
 
@@ -57,12 +56,18 @@ if(!empty($listCartData)){
         $listSpuInfo        = array();
         foreach ($spuIdList as $spuId) {
             
-            if(in_array($cartData['source_code'],$listSearchList)){
-                 
+            if(in_array($cartData['source_code'],$listSearchList) && !empty($conditionCart['search_value_list'])){
+
                 $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
                 $spuInfo['unified_cost']        = $unifiedCost[$spuId];
                 $listSpuInfo[]    = $spuInfo;   
+            }else if(empty($conditionCart['search_value_list'])){
+
+                $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+                $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+                $listSpuInfo[]    = $spuInfo;  
             }else{
+
                 if($spuId == $cartData['spu_id']){
                         
                     $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
