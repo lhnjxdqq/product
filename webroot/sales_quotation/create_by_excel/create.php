@@ -24,49 +24,66 @@ $page           = new PageList(array(
 
 $listCartData       = !empty($conditionCart['search_value_list'])? Search_SalesQuotationSpuCart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage)
                         :Sales_Quotation_Spu_Cart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage);
-if (empty($listCartData)) {
+if (empty($listCartData) && empty($conditionCart['search_value_list'])) {
 
     Utility::notice('请上传excel文件', '/sales_quotation/create_by_excel/upload.php');
 }
+$listSearchList     = explode(" ",$_GET['search_value_list']);
+
 $maxCountColorList  = 0;
-foreach ($listCartData as &$cartData) {
+if(!empty($listCartData)){
+    
+    $listSourceCode = ArrayUtility::listField($listCartData,'source_code');
+    
+    foreach ($listCartData as &$cartData) {
 
-    $sourceCode         = $cartData['source_code'];
-    $mapColorCost       = json_decode($cartData['color_cost'], true);
-    $spuListField       = json_decode($cartData['spu_list'], true);
-    $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
-    $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
-    $spuIdCostList      = ArrayUtility::indexByField($spuListField, 'spuId','mapColorCost');
+        $sourceCode         = $cartData['source_code'];
+        $mapColorCost       = json_decode($cartData['color_cost'], true);
+        $spuListField       = json_decode($cartData['spu_list'], true);
+        $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
+        $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
+        $spuIdCostList      = ArrayUtility::indexByField($spuListField, 'spuId','mapColorCost');
 
-    foreach($spuIdCostList as $spuId =>$cost){
-        
-        $costNumber = array_unique($cost);
-        
-        if(count($costNumber)>1){
-            $unifiedCost[$spuId]  = '';
-        }else{
-            $unifiedCost[$spuId]  = current($costNumber);
+        foreach($spuIdCostList as $spuId =>$cost){
+            
+            $costNumber = array_unique($cost);
+            
+            if(count($costNumber)>1){
+                $unifiedCost[$spuId]  = '';
+            }else{
+                $unifiedCost[$spuId]  = current($costNumber);
+            }
         }
-    }
-    $listSpuInfo        = array();
-    foreach ($spuIdList as $spuId) {
+        $listSpuInfo        = array();
+        foreach ($spuIdList as $spuId) {
+            
+            if(in_array($cartData['source_code'],$listSearchList)){
+                 
+                $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+                $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+                $listSpuInfo[]    = $spuInfo;   
+            }else{
+                if($spuId == $cartData['spu_id']){
+                        
+                    $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+                    $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+                    $listSpuInfo[]    = $spuInfo;
+                }
+            }
+        }
 
-        $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
-        $spuInfo['unified_cost']        = $unifiedCost[$spuId];
-        $listSpuInfo[]    = $spuInfo;
-    }
-
-    $countColorCost     = count($mapColorCost);
-    $listColorValueId   = array_keys($mapColorCost);
-    if ($countColorCost >= $maxCountColorList) {
-
-        $maxCountColorList  = $countColorCost;
+        $countColorCost     = count($mapColorCost);
         $listColorValueId   = array_keys($mapColorCost);
+        if ($countColorCost >= $maxCountColorList) {
+
+            $maxCountColorList  = $countColorCost;
+            $listColorValueId   = array_keys($mapColorCost);
+        }
+        $cartData['map_color_cost'] = $mapColorCost;
+        $cartData['list_spu_info']  = $listSpuInfo;
+        $cartData['map_spu_list']   = ArrayUtility::indexByField($spuListField, 'spuId');
+        unset($cartData);
     }
-    $cartData['map_color_cost'] = $mapColorCost;
-    $cartData['list_spu_info']  = $listSpuInfo;
-    $cartData['map_spu_list']   = ArrayUtility::indexByField($spuListField, 'spuId');
-    unset($cartData);
 }
 
 $listSpuInfo        = array();
@@ -74,9 +91,12 @@ $mapCartInfo        = Sales_Quotation_Spu_Cart::getByUserId($_SESSION['user_id']
 
 $spuCount           = array_sum(ArrayUtility::listField($mapCartInfo,'spu_quantity'));
 
-$listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorValueId);
-$mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo, 'spec_value_id', 'spec_value_data');
+if(!empty($listColorValueId)){
+ 
+    $listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorValueId);
+    $mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo, 'spec_value_id', 'spec_value_data');
 
+}
 $pageViewData               = $page->getViewData();
 $pageViewData['total']      = $spuCount;
 $template = Template::getInstance();

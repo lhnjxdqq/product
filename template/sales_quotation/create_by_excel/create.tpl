@@ -356,12 +356,7 @@
     $(".search-button").click(function(){
 
         searchInput  = $("#search-input").val();
-        if(searchInput.length <= 0 ){
-            
-            alert('搜索内容不能为空');
-            
-            return false;
-        }
+
         location.href='/sales_quotation/create_by_excel/create.php?search_value_list='+searchInput;
 
     });

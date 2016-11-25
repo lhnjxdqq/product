@@ -382,12 +382,7 @@ $('.edit-cost').click(function(){
 $(".search-button").click(function(){
 
     searchInput  = $("#search-input").val();
-    if(searchInput.length <= 0 ){
-        
-        alert('搜索内容不能为空');
-        
-        return false;
-    }
+
     location.href='/sales_quotation/edit.php?sales_quotation_id='+<{$salesQuotationInfo['sales_quotation_id']}>+'&search_value_list='+searchInput;
 
 });

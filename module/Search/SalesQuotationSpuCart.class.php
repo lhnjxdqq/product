@@ -17,7 +17,7 @@ class Search_SalesQuotationSpuCart {
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = self::_order($orderBy,$condition);
-        $sqlGroup       = 'group by `source_code`';
+        $sqlGroup       = 'group by `sq_spu_cart`.`source_code`';
         $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
         $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
 
@@ -147,6 +147,7 @@ class Search_SalesQuotationSpuCart {
             '`sq_spu_cart`.`spu_list`',
             '`sq_spu_cart`.`is_red_bg`',
             '`sq_spu_cart`.`spu_quantity`',
+            '`spu_info`.`spu_id`',
         );
     }
 }
