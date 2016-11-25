@@ -92,7 +92,7 @@
                                     <th>销售员</th>
                                     <th>订单状态</th>
                                     <th>创建时间</th>
-                                    <th style="text-align:center" width="300px">操作</th>
+                                    <th style="text-align:center" width="330px">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
