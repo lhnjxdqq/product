@@ -26,8 +26,14 @@ foreach ($standby as $info) {
 
     $filePath   = Quotation::salesQuotationLogFile($info['sales_quotation_id']);
 
-    HttpRequest::getInstance($apiUrl)->post(array('filePath'=>$path.$filePath));
-    HttpRequest::getInstance($plApiUrl)->post(array('filePath'=>$path.$filePath));
+    if(!empty($apiUrl)){
+     
+        HttpRequest::getInstance($apiUrl)->post(array('filePath'=>$path.$filePath));
+    }
+    if(!empty($plApiUrl)){
+     
+        HttpRequest::getInstance($plApiUrl)->post(array('filePath'=>$path.$filePath));
+    }
     
     Sales_Quotation_Task::update(array(
         'task_id'               => $info['task_id'],
