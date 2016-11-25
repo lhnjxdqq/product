@@ -23,6 +23,73 @@ class Search_SalesQuotationSpuCart {
 
         return          Cart_Spu_Info::query($sql);
     }
+    
+    /**
+     * 根据条件获取数据
+     *
+     * @param array $condition  条件
+     * @param array $orderBy    排序
+     * @param null $offset      位置
+     * @param null $limit       数量
+     * @return array            数据
+     */
+    static public function countListByCondition (array $condition) {
+
+        $fields         = implode(',', self::_getQueryFields());
+        $sqlBase        = 'SELECT ' . $fields . ' FROM `sales_quotation_spu_cart` AS `sq_spu_cart` LEFT JOIN ';
+        $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
+        $sqlCondition   = self::_condition($condition);
+        $sqlGroup       = 'group by `sq_spu_cart`.`source_code`';
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup;
+
+        $cartInfo       = Cart_Spu_Info::query($sql);
+        $row            = 0;
+        $listSearchList     = explode(" ",trim($condition['search_value_list']));
+
+        if(!empty($cartInfo)){
+            
+            foreach ($cartInfo as &$cartData) {
+
+                $sourceCode         = $cartData['source_code'];
+                $mapColorCost       = json_decode($cartData['color_cost'], true);
+                $spuListField       = json_decode($cartData['spu_list'], true);
+                $spuIdList          = ArrayUtility::listField($spuListField, 'spuId');
+                $spuIdCostList      = ArrayUtility::indexByField($spuListField, 'spuId','mapColorCost');
+
+                $listSpuInfo        = array();
+
+                foreach ($spuIdList as $spuId) {
+                    
+                    if(in_array($cartData['source_code'],$listSearchList) && !empty($condition['search_value_list'])){
+
+                        $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+                        $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+                        $listSpuInfo[]    = $spuInfo; 
+                        $row++;
+                    }else if(empty($condition['search_value_list'])){
+
+                        $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+                        $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+                        $listSpuInfo[]                  = $spuInfo; 
+                        $row++;                        
+                    }else{
+
+                        if($spuId == $cartData['spu_id']){
+                                
+                            $spuInfo                        = Common_Spu::getSpuDetailById($spuId);
+                            $spuInfo['unified_cost']        = $unifiedCost[$spuId];
+                            $listSpuInfo[]    = $spuInfo;
+                            $row++;
+                        }
+                    }
+                }
+            }
+            return $row;
+        }else{
+            
+            return 0;
+        }
+    }
 
     /**
      * 根据条件获取数据数量

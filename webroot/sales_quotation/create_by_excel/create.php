@@ -92,10 +92,15 @@ if(!empty($listCartData)){
 }
 
 $listSpuInfo        = array();
+
 $mapCartInfo        = Sales_Quotation_Spu_Cart::getByUserId($_SESSION['user_id']);
 
 $spuCount           = array_sum(ArrayUtility::listField($mapCartInfo,'spu_quantity'));
 
+if(!empty($conditionCart['search_value_list'])){
+
+    $spuCount       = Search_SalesQuotationSpuCart::countListByCondition($conditionCart);
+}
 if(!empty($listColorValueId)){
  
     $listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorValueId);
