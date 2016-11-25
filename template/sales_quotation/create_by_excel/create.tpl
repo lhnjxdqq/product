@@ -52,9 +52,17 @@
             <!-- /.box -->
             <div class="box">
                 <div class="box-header">
-                    <input type="checkbox" name="select-all"> 全选
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="del-spu-multi"><i class="fa fa-trash-o"></i> 批量删除</a>
-                    <a href="javascript:void(0);" class="btn btn-default btn-sm">共计<span class="text text-success"><{$spuCount}></span>款产品</a>
+                    <div class="col-md-6">
+                        <input type="checkbox" name="select-all"> 全选
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="del-spu-multi"><i class="fa fa-trash-o"></i> 批量删除</a>
+                        <a href="javascript:void(0);" class="btn btn-default btn-sm">共计<span class="text text-success"><{$spuCount}></span>款产品</a>
+                    </div>
+                    <div class='col-md-4'>
+                        <input type="text" class="form-control pull-right" id='search-input'  placeholder="请输入SPU编号/买款ID" value="<{$smarty.get.search_value_list}>">
+                    </div>
+                    <div class='col-md-2'>
+                        <button type="button" class="btn btn-primary pull-left btn-block search-button"><i class="fa fa-search"></i> 查询</button>
+                    </div>  
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -344,7 +352,20 @@
         $button.addClass('btn-primary');
         $button.removeClass('disabled');
     });
-    
+        
+    $(".search-button").click(function(){
+
+        searchInput  = $("#search-input").val();
+        if(searchInput.length <= 0 ){
+            
+            alert('搜索内容不能为空');
+            
+            return false;
+        }
+        location.href='/sales_quotation/create_by_excel/create.php?search_value_list='+searchInput;
+
+    });
+
     $('.edit-cost').click(function(){
     
         if($(this).hasClass('disabled')){

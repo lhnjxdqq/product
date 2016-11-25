@@ -11,16 +11,19 @@ $sortBy         = array(
     'is_red_bg'         => 'DESC',
     'spu_quantity'      => 'DESC',
 );
-
+$conditionCart['search_value_list'] = $_GET['search_value_list'];
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : '100';
-$countCartData  = Sales_Quotation_Spu_Cart::countByCondition($conditionCart);
+$countCartData  = !empty($conditionCart['search_value_list'])? Search_SalesQuotationSpuCart::countByCondition($conditionCart)
+                    :Sales_Quotation_Spu_Cart::countByCondition($conditionCart);
+                    
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countCartData,
     PageList::OPT_URL       => '/sales_quotation/create_by_excel/create.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
-$listCartData       = Sales_Quotation_Spu_Cart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage);
+$listCartData       = !empty($conditionCart['search_value_list'])? Search_SalesQuotationSpuCart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage)
+                        :Sales_Quotation_Spu_Cart::listByCondition($conditionCart, $sortBy, $page->getOffset(), $perpage);
 if (empty($listCartData)) {
 
     Utility::notice('请上传excel文件', '/sales_quotation/create_by_excel/upload.php');

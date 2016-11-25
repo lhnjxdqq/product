@@ -1,5 +1,5 @@
 <?php
-class Search_CartSpu {
+class Search_SalesQuotationSpuCart {
 
     /**
      * 根据条件获取数据
@@ -13,12 +13,12 @@ class Search_CartSpu {
     static public function listByCondition (array $condition, $orderBy = array(), $offset, $limit) {
 
         $fields         = implode(',', self::_getQueryFields());
-        $sqlBase        = 'SELECT ' . $fields . ' FROM `cart_spu_info` AS `cart_spu_info` LEFT JOIN ';
+        $sqlBase        = 'SELECT ' . $fields . ' FROM `sales_quotation_spu_cart` AS `sq_spu_cart` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlOrder       = self::_order($orderBy,$condition);
+        $sqlGroup       = 'group by `source_code`';
         $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
-        $sqlGroup       = ' GROUP BY `cart_spu_info`.`spu_id` ';
         $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
 
         return          Cart_Spu_Info::query($sql);
@@ -32,7 +32,7 @@ class Search_CartSpu {
      */
     static public function countByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT COUNT(DISTINCT(`cart_spu_info`.`spu_id`)) AS `cnt` FROM `sales_quotation_spu_info` AS `cart_spu_info` LEFT JOIN ';
+        $sqlBase        = 'SELECT COUNT(*) `cnt` FROM `sales_quotation_spu_cart` AS `sq_spu_cart` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sql            = $sqlBase . $sqlJoin . $sqlCondition;
@@ -73,7 +73,7 @@ class Search_CartSpu {
             return  '';
         }
 
-        return  "`cart_spu_info`.`user_id` = '" . addslashes($condition['user_id']) . "'";
+        return  "`sq_spu_cart`.`user_id` = '" . addslashes($condition['user_id']) . "'";
     }
 
      /**
@@ -108,7 +108,7 @@ class Search_CartSpu {
         foreach ($order as $fieldName => $sequence) {
 
             $fieldName  = str_replace('`', '', $fieldName);
-            $sql[]      = '`cart_spu_info`.`' . addslashes($fieldName) . '` ' . $sequence;
+            $sql[]      = '`sq_spu_cart`.`' . addslashes($fieldName) . '` ' . $sequence;
         }
 
         return  empty($sql) ? ''    : ' ORDER BY ' . implode(',', $sql);
@@ -125,11 +125,11 @@ class Search_CartSpu {
         $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
         return  array(
-            '`spu_info` AS `spu_info` ON `cart_spu_info`.`spu_id`=`spu_info`.`spu_id`',
-            '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
-            '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
-            '`product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`',
-            '`source_info` AS `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`',
+            '`source_info` AS `source_info` ON `sq_spu_cart`.`source_code`=`source_info`.`source_code`',
+            '`product_info` AS `product_info` ON `product_info`.`source_id`=`source_info`.`source_id`',
+            '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`',
+            '`spu_goods_relationship` AS `sgr` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
+            '`spu_info` AS `spu_info` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
         );
     }
 
@@ -141,10 +141,12 @@ class Search_CartSpu {
     static private function _getQueryFields () {
 
         return  array(
-            '`cart_spu_info`.`user_id`',
-            '`cart_spu_info`.`spu_id`',
-            '`cart_spu_info`.`spu_color_cost_data`',
-            '`cart_spu_info`.`remark`',
+            '`sq_spu_cart`.`user_id`',
+            '`sq_spu_cart`.`source_code`',
+            '`sq_spu_cart`.`color_cost`',
+            '`sq_spu_cart`.`spu_list`',
+            '`sq_spu_cart`.`is_red_bg`',
+            '`sq_spu_cart`.`spu_quantity`',
         );
     }
 }
