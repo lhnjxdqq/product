@@ -196,7 +196,7 @@ SQL;
     }
 
     /**
-     * 取一组SPU的缩略图 (最后一张)
+     * 取一组SPU的缩略图 (主图)
      *
      * @param array $multiSpuId
      * @return array|void
@@ -212,10 +212,24 @@ SQL;
         $result         = array();
         foreach ($groupSpuImages as $spuId => $spuImagesList) {
 
-            $spuThumb   = array_pop($spuImagesList);
-            $imageKey   = $spuThumb['image_key'];
-            $imageUrl   = $imageKey ? AliyunOSS::getInstance('images-spu')->url($imageKey) : '';
-            $spuThumb['image_url']  = $imageUrl;
+            if(!empty($spuImagesList)){
+                
+                $spuThumb = ArrayUtility::searchBy($spuImagesList,array('is_first_picture' => 1));
+            }
+            if(!empty($spuThumb) && count($spuThumb) ==1){
+                
+                $info = current($spuThumb);
+                $spuThumb['image_url']  = !empty($spuThumb)
+                    ? AliyunOSS::getInstance('images-spu')->url($info['image_key'])
+                    : '';       
+            }else{
+
+                $spuThumb = Sort_Image::sortImage($spuImagesList);
+
+                $spuThumb['image_url']  = !empty($spuThumb)
+                    ? AliyunOSS::getInstance('images-spu')->url($spuThumb[0]['image_key'])
+                    : '';     
+            }
             $result[$spuId]         = $spuThumb;
         }
         return  $result;

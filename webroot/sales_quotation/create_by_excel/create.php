@@ -99,7 +99,7 @@ $spuCount           = array_sum(ArrayUtility::listField($mapCartInfo,'spu_quanti
 
 if(!empty($conditionCart['search_value_list'])){
 
-    $spuCount       = Search_SalesQuotationSpuCart::countListByCondition($conditionCart);
+    $spuCount       = $countCartData;
 }
 if(!empty($listColorValueId)){
  

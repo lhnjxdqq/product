@@ -92,7 +92,7 @@
                                     <th>销售员</th>
                                     <th>订单状态</th>
                                     <th>创建时间</th>
-                                    <th style="text-align:center" width="250px">操作</th>
+                                    <th style="text-align:center" width="3000px">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,7 +124,6 @@
                                                 <{else}>
                                                 订单合同中的产品正在生成中,请稍等...
                                             <{/if}>
-                                            <{if $item.sales_order_status >= 3}>
                                                 <!-- 销售订单审核后才可导出 -->
                                             <div class="btn-group">
                                                 <{if !$item.export_status}>
@@ -150,7 +149,6 @@
                                                     <li><a href="javascript:reExport(<{$item.sales_order_id}>);">重新导出</a></li>
                                                 </ul>
                                             </div>
-                                            <{/if}>
                                         </td>
                                     </tr>
 <{/foreach}>
