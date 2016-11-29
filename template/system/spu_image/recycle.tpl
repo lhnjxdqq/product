@@ -32,7 +32,7 @@
                     <button class="btn btn-primary btn-sm" id="addImageMultiImage" style="margin-left: 10px;">批量恢复</button>
                     <button class="btn btn-primary btn-sm" id="deleteMultiImage" style="margin-left: 10px;">批量清除</button>
                     已选择<span id="imageTotal">0</span>张图片
-                    <a href="/system/spu_image/clear_recycle.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-trash">全部清除</i></a>
+                    <a href="/system/spu_image/clear_recycle.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-trash"> 全部清除</i></a>
                 </div>
                 <div class="box-body">
                     <div class="row" id="spu-list">

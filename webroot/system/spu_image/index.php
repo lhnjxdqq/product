@@ -22,13 +22,11 @@ $countRecycle				= Spu_Images_RelationShip::countRecycle();
 $groupSpuIdImage			= ArrayUtility::groupByField($spuImagesInfo,'spu_id');
 $countSpuImage				= Spu_Images_RelationShip::countByCondition($condition);
 $countStartSpuImage			= Spu_Images_RelationShip::countGtSpuId($listSpuId[0]);
-//echo $countEndSpuImage;
-//echo $countStartSpuImage;die;
+
 $pageViewData				= $page->getViewData();
 $pageViewData['total']		= $countSpuImage;
 $pageViewData['offset']		= $countStartSpuImage;
 $pageViewData['perpage']	= count($spuImagesInfo);
-//Utility::dump($page->getViewData());die;
 
 foreach($groupSpuIdImage as $spuId	=> $info){
 	
