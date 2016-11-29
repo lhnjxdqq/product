@@ -106,11 +106,29 @@ class   Spu_Info {
 
         $sql            = array();
         $sql[]          = self::_conditionByDeleteStatus($condition);
+        $sql[]          = self::_conditionByImageStatus($condition);
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
     }
+	
+    /**
+     * 根据是否有图片条件拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
+    static private function _conditionByImageStatus (array $condition) {
 
+        return  !isset($condition['image_status']) ? '' : '`image_total` > 0';
+    }
+	
+    /**
+     * 根据删除条件拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
     static private function _conditionByDeleteStatus (array $condition) {
 
         return  !isset($condition['delete_status']) ? '' : '`delete_status` = "' . (int) $condition['delete_status'] . '"';

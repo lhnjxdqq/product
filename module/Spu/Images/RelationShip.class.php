@@ -19,7 +19,7 @@ class   Spu_Images_RelationShip {
     /**
      * 字段
      */
-    const   FIELDS      = 'spu_id,image_key,create_time,image_type,serial_number,is_first_picture';
+    const   FIELDS      = 'spu_id,image_key,create_time,image_type,serial_number,is_first_picture,recycle_status';
     /**
      * 新增
      *
@@ -82,6 +82,32 @@ class   Spu_Images_RelationShip {
     }
 
     /**
+     * 查询符合条件的图片数量
+     *
+     * @return int 数量
+     */
+    static public function countRecycle () {
+			
+		$sql = "SELECT count(1) as cnt FROM `" . self::_tableName() . "` WHERE recycle_status = ".Spu_Images_RecycleStatus::YES;
+
+		$res = self::_getStore()->fetchOne($sql);
+
+		return $res['cnt'];
+	}
+	
+    /**
+     * 查询回收车中的图片
+     *
+     * @return array 图片信息
+     */
+    static public function geyRecycle () {
+			
+		$sql = "SELECT * FROM `" . self::_tableName() . "` WHERE recycle_status = ".Spu_Images_RecycleStatus::YES;
+
+		return  self::_getStore()->fetchAll($sql);
+	}
+	
+    /**
      * 根据SPUID ,图片类型,序号查询图片
      *
      * @param   int       $spuId                SPUID
@@ -97,7 +123,7 @@ class   Spu_Images_RelationShip {
     }
     
     /**
-     * 根据SPUID 删出该SPU下图片
+     * 根据SPUID 删除该SPU下图片
      *
      * @param $spuId    SPUID
      * @return int
@@ -108,7 +134,111 @@ class   Spu_Images_RelationShip {
 
         return  self::_getStore()->execute($sql);
     }
+    
+    /**
+     * 清空回收车中的所有图片
+     */
+    static public function cleanByRecycle () {
 
+        $sql    = 'DELETE FROM `' . self::_tableName() . '` WHERE `recycle_status` = '.Spu_Images_RecycleStatus::YES;
+
+        return  self::_getStore()->execute($sql);
+    }
+
+	/**
+     * 根据条件获取数据列表
+     *
+     * @param   array   $condition  条件
+     * @param   array   $order      排序依据
+     * @param   int     $offset     位置
+     * @param   int     $limit      数量
+     * @return  array               列表
+     */
+    static  public  function listByCondition (array $condition, array $order, $offset, $limit) {
+
+        $sqlBase        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sqlOrder       = self::_order($order);
+        $sqlLimit       = ' LIMIT ' . (int) $offset . ', ' . (int) $limit;
+        $sql            = $sqlBase . $sqlCondition . $sqlOrder . $sqlLimit;
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据条件获取数据总数
+     *
+     * @param   array   $condition  条件
+     * @return  int                 总数
+     */
+    static  public  function countByCondition (array $condition) {
+
+        $sqlBase        = 'SELECT COUNT(1) AS `total` FROM `' . self::_tableName() . '`';
+        $sqlCondition   = self::_condition($condition);
+        $sql            = $sqlBase . $sqlCondition;
+        $row            = self::_getStore()->fetchOne($sql);
+
+        return          $row['total'];
+    }
+
+    /**
+     * 根据条件获取SQL子句
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句
+     */
+    static  private function _condition (array $condition) {
+
+        $sql        = array();
+        $sql[]      = self::_conditionByRecycleStatus($condition);
+        $sqlFilterd = array_filter($sql);
+
+        return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
+    }
+    
+    /**
+     * 根据删除状态拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByRecycleStatus (array $condition) {
+
+        return  isset($condition['recycle_status'])
+                ? '`recycle_status` = "' . (int) $condition['recycle_status'] . '"'
+                : '';
+    }
+
+    /**
+     * 获取排序子句
+     *
+     * @param   array   $order  排序依据
+     * @return  string          SQL排序子句
+     */
+    static  private function _order (array $order) {
+
+        $sql    = array();
+
+        foreach ($order as $fieldName => $sequence) {
+
+            $fieldName  = str_replace('`', '', $fieldName);
+            $sql[]      = '`' . addslashes($fieldName) . '` ' . self::_sequence($sequence);
+        }
+
+        return  empty($sql) ? ''    : ' ORDER BY ' . implode(',', $sql);
+    }
+
+    /**
+     * 获取排序方向
+     *
+     * @param   string  $sequence   排序方向
+     * @return  string              排序方向
+     */
+    static  private function _sequence ($sequence) {
+
+        return  $sequence == 'ASC'  ? $sequence : 'DESC';
+    }
+    
     /**
      * 根据SPUID 删除该SPU下图片
      *
@@ -135,5 +265,10 @@ class   Spu_Images_RelationShip {
         $sql        = 'DELETE FROM `' . self::_tableName() . '` WHERE `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
 
         return      self::_getStore()->execute($sql);
+    }
+	
+    static public function query ($sql) {
+
+        return  self::_getStore()->fetchAll($sql);
     }
 }
