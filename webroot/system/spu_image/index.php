@@ -20,6 +20,15 @@ $imageType 					= Sort_Image::getImageTypeList();
 $spuImagesInfo 				= ArrayUtility::searchBy(Spu_Images_RelationShip::getByMultiSpuId($listSpuId),array('recycle_status'=>Spu_Images_RecycleStatus::NOT));
 $countRecycle				= Spu_Images_RelationShip::countRecycle();
 $groupSpuIdImage			= ArrayUtility::groupByField($spuImagesInfo,'spu_id');
+$countSpuImage				= Spu_Images_RelationShip::countByCondition($condition);
+$countStartSpuImage			= Spu_Images_RelationShip::countGtSpuId($listSpuId[0]);
+//echo $countEndSpuImage;
+//echo $countStartSpuImage;die;
+$pageViewData				= $page->getViewData();
+$pageViewData['total']		= $countSpuImage;
+$pageViewData['offset']		= $countStartSpuImage;
+$pageViewData['perpage']	= count($spuImagesInfo);
+//Utility::dump($page->getViewData());die;
 
 foreach($groupSpuIdImage as $spuId	=> $info){
 	
@@ -39,6 +48,6 @@ $template->assign('groupSpuIdImage', $groupSpuIdImage);
 $template->assign('spuImagesInfo', $spuImagesInfo);
 $template->assign('imageType', $imageType);
 $template->assign('countRecycle', $countRecycle);
-$template->assign('pageViewData', $page->getViewData());
+$template->assign('pageViewData', $pageViewData);
 $template->assign('mainMenu', $mainMenu);
 $template->display('system/spu_image/index.tpl');

@@ -42,7 +42,7 @@
 									<div class="thumbnail"<{if $item.online_status eq $data.onlineStatus.offline}> style="border:1px solid #e08e0b;"<{/if}>>
 										<input type="checkbox" name="spu_image[]" class="check-image" style="position:absolute;top:5px;left:25px" value="<{$spuImage.spu_id}>-<{$spuImage.image_key}>" />
 										<a href="<{$spuImage.image_url}>" target="_blank"><image class='width-120' src="<{$spuImage.image_url}>@!thumb"></a>
-										<p><{$item.spu_sn}><{$spuImage.image_type}><{$spuImage.serial_number}><{$spuImage.recycle_status}><button class="btn btn-success btn-xs pull-right delImage" spuId="<{$spuImage.spu_id}>" imageKey="<{$spuImage.image_key}>">恢复</button></p>
+										<p><{$item.spu_sn}><{$spuImage.image_type}><{sprintf("%02s",$spuImage.serial_number)}><button class="btn btn-success btn-xs pull-right delImage" spuId="<{$spuImage.spu_id}>" imageKey="<{$spuImage.image_key}>">恢复</button></p>
 									</div>
 								</div>
 							<{/foreach}>

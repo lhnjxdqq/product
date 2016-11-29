@@ -108,6 +108,20 @@ class   Spu_Images_RelationShip {
 	}
 	
     /**
+     * 查询大于当前SPU且未加入回收车图片个数
+     *
+     * @return int 个数
+     */
+    static public function countGtSpuId ($spuId) {
+			
+		$sql = "SELECT count(1) as `cnt` FROM `" . self::_tableName() . "` WHERE recycle_status = " . Spu_Images_RecycleStatus::NOT ." AND `spu_id` >" . $spuId;
+
+        $row            = self::_getStore()->fetchOne($sql);
+
+        return          $row['cnt'];
+	}
+	
+    /**
      * 根据SPUID ,图片类型,序号查询图片
      *
      * @param   int       $spuId                SPUID
