@@ -133,6 +133,7 @@ class   Sales_Order_Info {
     static  private function _condition (array $condition) {
 
         $sql        = array();
+        $sql[]      = self::_conditionLastOrderId($condition);
         $sql[]      = self::_conditionKeywords($condition);
         $sql[]      = self::_conditionCustomerId($condition);
         $sql[]      = self::_conditionOrderTypeId($condition);  //订单类型
@@ -207,6 +208,16 @@ class   Sales_Order_Info {
         }
 
         return  "`salesperson_id` = " . (int) $condition['salesperson_id'];
+    }
+	
+    static  private function _conditionLastOrderId (array $condition) {
+
+        if (empty($condition['last_order_id'])) {
+
+            return  '';
+        }
+
+        return  "`sales_order_id` < " . (int) $condition['last_order_id'];
     }
     
     static  private function _conditionCustomerId (array $condition) {

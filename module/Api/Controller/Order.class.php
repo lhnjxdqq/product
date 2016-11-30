@@ -136,4 +136,37 @@ class Api_Controller_Order {
         }
         return array('salesOrderListInfo'=>$orderInfo);
     }
+	
+	/**
+	 *	根据条件获取订单
+	 */
+    static public function listOrderByCondition($condition){
+		
+		$orderBy    = array(
+			'create_time' => 'DESC',
+		);
+		$conditionOrder['customer_id']			= $condition['customerId'];
+		$conditionOrder['sales_order_status']	= $condition['salesOrderStatus'];
+		$conditionOrder['last_order_id']		= $condition['lastOrderId'];
+		$listOrderInfo          				= Sales_Order_Info::listByCondition($conditionOrder, $orderBy, 0, $condition['number']);
+		$listOrderId							= ArrayUtility::listField($listOrderInfo,'sales_order_id');
+		$listGroupSalesGoodsInfo    = Sales_Order_Goods_Info::getByGroupMultiId($listOrderId);
+        $indexSpuId                 = ArrayUtility::indexByField($listGroupSalesGoodsInfo,'sales_order_id');
+        
+        foreach($listOrderInfo as $key => $info){
+            
+            $orderInfo[$info['sales_order_id']]  = array(
+                'orderId'           => $info['sales_order_id'],
+                'orderSn'           => $info['sales_order_sn'],
+                'orderDate'         => $info['create_time'],
+                'spuId'             => $indexSpuId[$info['sales_order_id']]['spu_id'],
+                'estimatePrice'     => $info['reference_amount'],
+                'estimateWeight'    => $info['reference_weight'],
+                'estimateQuantity'  => $info['quantity_total'],
+                'completeGold'      => $info['create_order_au_price'],
+				'orderSalesStatus'	=> $info['sales_order_status'],
+            );
+        }
+        return array('salesOrderListInfo'=>$orderInfo);
+	}
 }
