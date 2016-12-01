@@ -4,13 +4,13 @@
 require dirname(__FILE__).'/../init.inc.php';
 
 $condition  = array(
-    'status_id'    => Update_Cost_Status::UPDATE,
+    'status_id'    => Update_Cost_Status::WAIT_UPDATE,
 );
 $order      = array(
     'create_time'   => 'DESC',
 );
 
-$mapUpdateCost = Update_Cost_Info::listByCondition($condition, $order,0,100);
+$mapUpdateCost = Update_Cost_Info::listByCondition($condition, $order,0,1);
 
 if(empty($mapUpdateCost)){
     
@@ -19,6 +19,10 @@ if(empty($mapUpdateCost)){
 
 foreach($mapUpdateCost as $key=>$info){
     
+	Update_Cost_Info::update(array(
+		'update_cost_id'       => $info['update_cost_id'],
+		'status_id'            => Update_Cost_Status::UPDATE,
+	));
     $mapUpdateCostSourceInfo    = Update_Cost_Source_Info::getByUpdateCostId($info['update_cost_id']);
     $data                       = array();
     foreach($mapUpdateCostSourceInfo as $updateCostSourceInf){
