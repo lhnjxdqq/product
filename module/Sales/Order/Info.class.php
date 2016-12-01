@@ -134,6 +134,7 @@ class   Sales_Order_Info {
 
         $sql        = array();
         $sql[]      = self::_conditionLastOrderId($condition);
+        $sql[]      = self::_conditionInSearchOrderId($condition);
         $sql[]      = self::_conditionKeywords($condition);
         $sql[]      = self::_conditionCustomerId($condition);
         $sql[]      = self::_conditionOrderTypeId($condition);  //订单类型
@@ -171,6 +172,12 @@ class   Sales_Order_Info {
         return  "`" . $fieldCondition . "` BETWEEN '" . addslashes($condition[$paramA]) . "' AND '" . addslashes($condition[$paramB]) . "'";
     }
 
+    /**
+     * 按照订单类型获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	
     static  private function _conditionOrderTypeId (array $condition) {
 
         if (empty($condition['order_type_id'])) {
@@ -181,6 +188,12 @@ class   Sales_Order_Info {
         return  "`order_type_id` = " . (int) $condition['order_type_id'];
     }
     
+    /**
+     * 按照文件状态获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	
     static  private function _conditionOrderFileStatus (array $condition) {
 
         if (empty($condition['order_file_status'])) {
@@ -190,6 +203,13 @@ class   Sales_Order_Info {
 
         return  "`order_file_status` = " . (int) $condition['order_file_status'];
     }
+	
+    /**
+     * 按照订单获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	
     static  private function _conditionOrderStatusId (array $condition) {
 
         if (empty($condition['sales_order_status'])) {
@@ -200,6 +220,12 @@ class   Sales_Order_Info {
         return  "`sales_order_status` = " . (int) $condition['sales_order_status'];
     }
     
+    /**
+     * 按照一销售员ID获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	
     static  private function _conditionSalespersonId (array $condition) {
 
         if (empty($condition['salesperson_id'])) {
@@ -210,6 +236,12 @@ class   Sales_Order_Info {
         return  "`salesperson_id` = " . (int) $condition['salesperson_id'];
     }
 	
+    /**
+     * 按照开始订单ID获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	
     static  private function _conditionLastOrderId (array $condition) {
 
         if (empty($condition['last_order_id'])) {
@@ -219,7 +251,13 @@ class   Sales_Order_Info {
 
         return  "`sales_order_id` < " . (int) $condition['last_order_id'];
     }
-    
+
+    /**
+     * 按照客户获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	    
     static  private function _conditionCustomerId (array $condition) {
 
         if (empty($condition['customer_id'])) {
@@ -228,6 +266,24 @@ class   Sales_Order_Info {
         }
 
         return  "`customer_id` = " . (int) $condition['customer_id'];
+    }
+	
+    /**
+     * 按照一组销售订单ID获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */	
+    static  private function _conditionInSearchOrderId (array $condition) {
+
+        if (empty($condition['in_search_order_id'])) {
+
+            return  '';
+        }
+        $multiSalesOrderId  = array_map('intval', $condition['in_search_order_id']);
+	
+		return '`sales_order_id` IN ("' . implode('","', $multiSalesOrderId) . '")';
+
     }
     /**
      * 按关键词检索

@@ -53,6 +53,7 @@ class Api_Controller_Order {
                 'orderTotalWeight'  => $info['reference_weight'],
                 'orderTotalQuantity'=> $info['quantity_total'],
                 'createOrderAuPrice'=> $info['create_order_au_price'],
+				'orderSalesStatus'	=> $info['sales_order_status'],
 				'transactionAmount' => $info['transaction_amount'],
             );
             
@@ -131,6 +132,7 @@ class Api_Controller_Order {
                 'estimateWeight'    => $info['reference_weight'],
                 'estimateQuantity'  => $info['quantity_total'],
                 'completeGold'      => $info['create_order_au_price'],
+				'orderSalesStatus'	=> $info['sales_order_status'],
 				'transactionAmount'=> $info['transaction_amount'],
             );
             
@@ -147,7 +149,7 @@ class Api_Controller_Order {
 		$orderBy    = array(
 			'create_time' => 'DESC',
 		);
-		$conditionOrder['customer_id']			= $condition['customerId'];
+		$conditionOrder['in_search_order_id']	= $condition['listOrderId'];
 		$conditionOrder['sales_order_status']	= $condition['salesOrderStatus'];
 		$conditionOrder['last_order_id']		= $condition['lastOrderId'];
 		$listOrderInfo          				= Sales_Order_Info::listByCondition($conditionOrder, $orderBy, 0, $condition['number']);
@@ -157,7 +159,7 @@ class Api_Controller_Order {
         
         foreach($listOrderInfo as $key => $info){
             
-            $orderInfo[$info['sales_order_id']]  = array(
+            $orderInfo[$info['sales_order_id']] = array(
                 'orderId'           => $info['sales_order_id'],
                 'orderSn'           => $info['sales_order_sn'],
                 'orderDate'         => $info['create_time'],
