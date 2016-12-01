@@ -53,6 +53,7 @@ class Api_Controller_Order {
                 'orderTotalWeight'  => $info['reference_weight'],
                 'orderTotalQuantity'=> $info['quantity_total'],
                 'createOrderAuPrice'=> $info['create_order_au_price'],
+				'transactionAmount' => $info['transaction_amount'],
             );
             
             $salesOrderProduct          = array();
@@ -130,6 +131,7 @@ class Api_Controller_Order {
                 'estimateWeight'    => $info['reference_weight'],
                 'estimateQuantity'  => $info['quantity_total'],
                 'completeGold'      => $info['create_order_au_price'],
+				'transactionAmount'=> $info['transaction_amount'],
             );
             
             $redis->set(self::salesOrder.$info['sales_order_id'],json_encode($orderInfo[$info['sales_order_id']]));
@@ -165,6 +167,7 @@ class Api_Controller_Order {
                 'estimateQuantity'  => $info['quantity_total'],
                 'completeGold'      => $info['create_order_au_price'],
 				'orderSalesStatus'	=> $info['sales_order_status'],
+				'transactionAmount'=> $info['transaction_amount'],
             );
         }
         return array('salesOrderListInfo'=>$orderInfo);
