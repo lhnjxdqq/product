@@ -19,14 +19,23 @@ $listSpuId = array_unique($listSpuId);
 
 $spuImagesInfo 				= Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $groupSpuIdImage			= ArrayUtility::groupByField($spuImagesInfo,'spu_id');
+$listSpuInfo           		= Spu_Info::getByMultiId($listSpuId);
+$indexSpuIdInfo				= ArrayUtility::indexByField($listSpuInfo,'spu_id');
+$listSpuSn					= ArrayUtility::listField($indexSpuIdInfo,'spu_sn');
 
 foreach($listSpuId as $spuId){
 	
 	if(empty($groupSpuIdImage[$spuId])){
 		
 		$spuCountImage	= 0;
+		
+		Spu_Push::pushTagsListSpuSn(array($indexSpuIdInfo[$spuId]['spu_sn']), array('imageExists'=>0));
+
 	}else{
 		$spuCountImage	= count($groupSpuIdImage[$spuId]);
+		
+		Spu_Push::pushTagsListSpuSn(array($indexSpuIdInfo[$spuId]['spu_sn']), array('imageExists'=>1));
+    
 		$firstImage		= ArrayUtility::searchBy($groupSpuIdImage[$spuId],array('is_first_picture'=>1));
 		
 		if(empty($firstImage)){
@@ -39,9 +48,17 @@ foreach($listSpuId as $spuId){
 			));
 		}
 	}
+	
+    Sync::queueSpuData($spuId);
+	
+    Spu_Push::updatePushSpuData($spuId);
 	Spu_Info::update(array(
 		'spu_id'        => $spuId,
 		'image_total'   => $spuCountImage,
 	));
 }
+
+Spu_Push::pushListSpuSn($listSpuSn);
 Utility::notice('清除成功');
+
+
