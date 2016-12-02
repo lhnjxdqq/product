@@ -116,6 +116,7 @@ $listGoodsId    = array_values($mapSpuGoods);
 $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
 $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 
+//买款ID
 $listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
 $mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
 

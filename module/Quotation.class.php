@@ -538,11 +538,27 @@ class   Quotation {
             $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
           
             //获取SPU图片
-            $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
-            $mapSpuImages   = ArrayUtility::indexByField($listSpuImages, 'spu_id');
-            foreach ($mapSpuImages as $spuId => $spuImage) {
+            $listSpuImages  	= Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+            $groupSpuImages   	= ArrayUtility::groupByField($listSpuImages, 'spu_id');
+            foreach ($groupSpuImages as $spuId => $spuImage) {
 
-                $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($spuImage['image_key']);
+				if(!empty($spuImage)){
+					
+					$firstImageInfo = ArrayUtility::searchBy($spuImage,array('is_first_picture' => 1));
+				}
+				if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+					
+					$info = current($firstImageInfo);
+					$keyImage   = $info['image_key'];
+				}else{
+
+					$info = Sort_Image::sortImage($spuImage);
+
+					$keyImage  = !empty($info)
+						? $info[0]['image_key']
+						: '';     
+				}
+				$mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($keyImage);
             }
 
             $listSpecInfo       = Spec_Info::listAll();
@@ -582,20 +598,11 @@ class   Quotation {
             $listCategory   = Category_Info::getByMultiId($listCategoryId);
             $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
             $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
-            $groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
-            $listSourceId   = ArrayUtility::listField($mapProductInfo,'source_id');
-            $mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
-            $indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
-            $groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
-            $groupProductIdSourceId = array();
-            foreach($groupSkuSourceId as $productId => $sourceIdInfo){
 
-                $groupProductIdSourceId[$productId]    = array();
-                foreach($sourceIdInfo as $key=>$sourceId){
+			//买款ID
+			$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+			$mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
 
-                    $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
-                }
-            }
 
             // 根据商品查询规格重量
             $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
@@ -622,11 +629,6 @@ class   Quotation {
 
                     $goodsId        = $goods['goods_id'];
                     $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
-                    $listSourceId   = $groupProductIdSourceId[$goods['goods_id']];
-                    if(!empty($listSourceId)){
-
-                        $sourceId[$spuId][]= implode(',',$listSourceId);
-                    }
                     foreach ($goodsSpecValue as $key => $val) {
 
                         $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
@@ -645,11 +647,10 @@ class   Quotation {
                         }
                     }
                 }
+							
+				$sourceCodeList           = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
+				$sourceId[$spuId]  		  = implode(',', $sourceCodeList);
                 
-                if(!empty($sourceId[$spuId])){
-
-                    $sourceId[$spuId]      = implode(",",$sourceId[$spuId]);   
-                }
                 $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
                 $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
 
