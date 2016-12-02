@@ -116,24 +116,15 @@ $listGoodsId    = array_values($mapSpuGoods);
 $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
 $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 
+$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+$mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
+
 // 根据商品查询品类
 $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
 $listCategory   = Category_Info::getByMultiId($listCategoryId);
 $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
-$listSourceId   = ArrayUtility::listField($mapProductInfo,'source_id');
-$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
-$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
-$groupSkuSourceId   = ArrayUtility::groupByField($mapProductInfo,'goods_id','source_id');
-$groupProductIdSourceId = array();
-foreach($groupSkuSourceId as $productId => $sourceIdInfo){
-    
-    $groupProductIdSourceId[$productId]    = array();
-    foreach($sourceIdInfo as $key=>$sourceId){
 
-        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
-    }
-}
 // 根据商品查询规格重量
 $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 
@@ -160,7 +151,7 @@ foreach ($listSpecValue as $specValue) {
 
 $spuCost    = array();
 $mapSpuSalerCostByColor = array();
-$sourceId   = array();
+
 foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
     $mapColor   = array();
@@ -168,13 +159,7 @@ foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
         $goodsId        = $goods['goods_id'];
         $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
-        $listSourceId   = $groupProductIdSourceId[$goods['goods_id']];
-
-        if(!empty($listSourceId)){
-         
-            $sourceId[$spuId][]= implode(',',$listSourceId);
-        }
-
+		
         foreach ($goodsSpecValue as $key => $val) {
 
             $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
@@ -282,7 +267,9 @@ foreach ($listSpuInfo as $key => $spuInfo) {
                     
         }
     }
-    $listSpuInfo[$key]['source_id'] = $sourceId[$spuInfo['spu_id']];
+	
+    $sourceCodeList                 = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
+    $listSpuInfo[$key]['source_id'] = implode(',', $sourceCodeList);
     $listSpuInfo[$key]['image_url'] = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
 }
 
