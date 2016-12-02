@@ -304,7 +304,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
 
 	
-    $sourceCodeList                     = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
+    $sourceCodeList                     = ArrayUtility::listField($mapSpuSourceCode[$spuInfo['spu_id']], 'source_code');
     $listSpuInfo[$key]['source_id']  	= implode(',', $sourceCodeList);
     $listSpuInfo[$key]['image_url']     = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
     $listSpuInfo[$key]['is_red']        = $indexSpuIdRed[$spuInfo['spu_id']];
