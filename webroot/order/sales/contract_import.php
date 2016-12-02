@@ -2,6 +2,7 @@
 
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
+set_time_limit(300);
 $salesOrderId = $_POST['sales_order_id'];
 Validate::testNull($salesOrderId,'销售订单Id不能为空');
 $filePath           = $_FILES['quotation']['tmp_name'];

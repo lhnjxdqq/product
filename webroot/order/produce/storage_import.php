@@ -2,6 +2,7 @@
 
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
+set_time_limit(300);
 $produceOrderId         = $_POST['produce_order_id'];
 Validate::testNull($produceOrderId, '生产订单ID不能为空');
 
