@@ -256,7 +256,7 @@ class Search_Sku {
      */
     static private function _conditionByOnlineStatus (array $condition) {
 
-        return  !isset($condition['online_status']) ? '' : '`goods_info`.`online_status`= "' . (int) $condition['online_status'] . '"';
+        return  empty($condition['online_status']) ? '' : '`goods_info`.`online_status`= "' . (int) $condition['online_status'] . '"';
     }
 
     /**

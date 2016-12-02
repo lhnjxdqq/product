@@ -68,7 +68,7 @@ class Search_Product {
      */
     static private function _conditionByOnlineStatus (array $condition) {
 
-        return  !isset($condition['online_status']) ? '' : '`pi`.`online_status` = "' . (int) $condition['online_status'] . '"';
+        return  empty($condition['online_status']) ? '' : '`pi`.`online_status` = "' . (int) $condition['online_status'] . '"';
     }
 
     /**

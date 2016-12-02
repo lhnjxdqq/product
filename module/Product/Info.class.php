@@ -121,8 +121,8 @@ class   Product_Info {
      */
     static private function _conditionByOnlineStatus (array $condition) {
 
-        return  !isset($condition['online_status']) ? '' : '`online_status` = "' . (int) $condition['online_status'] . '"';
-    }
+        return  empty($condition['online_status']) ? '' : '`online_status` = "' . (int) $condition['online_status'] . '"';
+    } 
 
     /**
      * 根据删除状态拼接WHERE子句

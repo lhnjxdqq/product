@@ -118,8 +118,9 @@
                             </div>
                             <div class="col-md-2">
                                 <select name="online_status" class="form-control">
-                                    <option value="1">上架</option>
-                                    <option value="2">下架</option>
+									<option value="">请选择状态</option>
+                                    <option value="1"<{if $smarty.get.online_status == 1}> selected<{/if}>>上架</option>
+                                    <option value="2"<{if $smarty.get.online_status == 2}> selected<{/if}>>下架</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
