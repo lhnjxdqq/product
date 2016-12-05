@@ -133,6 +133,17 @@ class   Api_Controller_Spu {
 
         $listGoodsInfo  = ArrayUtility::searchBy(self::_getGoodsInfoMulti($listGoodsId), array('delete_status'=>Goods_DeleteStatus::NORMAL));
         $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+        $listGoodsSpec  = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
+        foreach ($listGoodsSpec as $goodsSpec) {
+            
+            $goodsId    = $goodsSpec['goods_id'];
+            $mapGoodsInfo[$goodsId] += array(
+                'material'  => $goodsSpec['material_value_data'],
+                'size'      => $goodsSpec['size_value_data'],
+                'color'     => $goodsSpec['color_value_data'],
+                'weight'    => $goodsSpec['weight_value_data'],
+            );
+        }
         $resultGoodsInfo=  array();
 
         foreach ($listSpuId as $spuId) {
