@@ -14,7 +14,7 @@ $listInfo   = Sales_Order_Info::listByCondition($condition, $order, 0, 100);
 
 foreach ($listInfo as $info) {
 
-    $excelFile    = Order::getFilePathByOrderSn($info['sales_order_sn']);  
+    $excelFile    = Order::getFilePathByOrderSn($info['sales_order_sn']);
 
     Sales_Order_Info::update(array(
         'sales_order_id'     => $info['sales_order_id'],

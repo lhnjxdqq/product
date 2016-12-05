@@ -93,50 +93,6 @@ $mapStyleInfo       = Style_Info::listAll();
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
 $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
 validate::testNull($listGoodsType, "表中无匹配产品类型,请修改后重新上传");
-$mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
-$mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
-$mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
-$mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
-$mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
-$mapEnumeration     = array(
-   'mapCategory'          => $mapCategoryName,
-   'mapTypeSpecValue'     => $mapTypeSpecValue,
-   'mapIndexSpecAlias'    => $mapIndexSpecAlias,
-   'mapSpecValue'         => $mapSpecValue,
-   'mapSizeId'            => $mapSizeId,
-   'mapStyle'             => $mapStyleInfo,
-   'mapSpecInfo'          => $mapSpecInfo,
-   'groupSpuId'           => $groupSpuId,
-   'salesQuotationSpuInfo'=> $salesQuotationSpuInfo,
-   'indexSpuSn'           => $indexSpuSn,
-);
-
-foreach ($list as $offsetRow => $row) {
-    
-    $line  = $offsetRow+2;
-    try{
-        
-        $datas[] = Order::testOrder($row,$mapEnumeration);
-        $addNums++;
-
-    }catch(ApplicationException $e){
-        
-        $errorList[]            = array(
-            'content'   => $e->getMessage(),
-            'line'      => $line ,
-        );
-        continue;
-    }
-}
-$template           = Template::getInstance();
-$template->assign('mainMenu', $mainMenu);
-if(!empty($errorList)){
-     
-    $template->assign('errorList',   $errorList);
-    $template->assign('addNums',   $addNums);
-    $template->display('import_quotation.tpl');
-    exit;
-}
 
 $orderSn    = $salesOrderInfo['sales_order_sn'];
 

@@ -130,7 +130,17 @@ class   Sales_Order_Import {
                 continue;
             }
         }
-
+		
+		if(!empty($errorList)){
+				
+			Sales_Order_Info::update(array(
+					'sales_order_id'    => $salesOrderId,
+					'order_file_status'	=> Sales_Order_File_Status::ERROR,
+					'import_error_log'	=> json_encode($errorList),
+				)
+			);
+			exit;
+		}
         foreach ($datas as $offsetRow => $row) {
 
             $content    = array(
