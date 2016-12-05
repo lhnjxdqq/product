@@ -112,7 +112,7 @@
                                                 <a href="/order/sales/supplies/index.php?sales_order_id=<{$item.sales_order_id}>" target='_blank' class="btn btn-primary btn-xs"><i class="fa fa-th"></i> 出货管理</a>
                                             <{/if}>
                                             <{if $item.order_file_status eq 0 || $item.order_file_status eq 3}>
-                                                <{if $item.sales_order_status != 1}>
+                                                <{if $item.sales_order_status != 1 && $item.sales_order_status != 2}>
                                                     <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
                                                 <{/if}>
                                                 <a href='/order/sales/sales_order_detail.php?sales_order_id=<{$item.sales_order_id}>' target='_blank' class="btn btn-primary btn-xs" type='button'>查看清单</a>
