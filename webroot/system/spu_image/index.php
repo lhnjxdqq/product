@@ -17,6 +17,8 @@ $page                       = new PageList(array(
 $listSpuInfo                = Spu_Images_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 $listSpuId					= ArrayUtility::listField($listSpuInfo,'spu_id');
 $imageType 					= Sort_Image::getImageTypeList();
+//Utility::dump($imageType);die;
+
 $spuImagesInfo 				= ArrayUtility::searchBy(Spu_Images_RelationShip::getByMultiSpuId($listSpuId),array('recycle_status'=>Spu_Images_RecycleStatus::NOT));
 $countRecycle				= Spu_Images_RelationShip::countRecycle();
 $groupSpuIdImage			= ArrayUtility::groupByField($spuImagesInfo,'spu_id');
