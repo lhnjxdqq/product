@@ -13,6 +13,18 @@ class Sync {
 
         $spuInfo        = Spu_Info::getById($spuId);
         $spuImageList   = Spu_Images_RelationShip::getBySpuId($spuId);
+        $categoryId     = 0;
+        $spuWeight      = 0;
+        $skuRelation    = Spu_Goods_RelationShip::getBySpuId($spuId);
+        if (!empty($skuRelation)) {
+
+            $skuData    = current($skuRelation);
+            $skuInfo    = Goods_Info::getById($skuData['goods_id']);
+            $skuSpec    = Common_Goods::getMultiGoodsSpecValue(array($skuData['goods_id']));
+            $skuSpec    = $skuSpec  ? current($skuSpec)             : array();
+            $categoryId = $skuInfo  ? $skuInfo['category_id']       : 0;
+            $spuWeight  = $skuSpec  ? $skuSpec['weight_value_data'] : 0;
+        }
         $firstImage     = ArrayUtility::searchBy($spuImageList, array(
             'is_first_picture'  => 1,
         ));
@@ -24,6 +36,8 @@ class Sync {
             'spuSn'         => $spuInfo['spu_sn'],
             'spuName'       => $spuInfo['spu_name'],
             'thumbKey'      => $thumbKey,
+            'categoryId'    => $categoryId,
+            'spuWeight'     => $spuWeight,
             'onlineStatus'  => $spuInfo['online_status'],
             'deleteStatus'  => $spuInfo['delete_status'],
         );
