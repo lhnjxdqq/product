@@ -91,6 +91,7 @@
                                     <th>客户名称</th>
                                     <th>销售员</th>
                                     <th>订单状态</th>
+                                    <th>下单日期</th>
                                     <th>创建时间</th>
                                     <th style="text-align:center" width="330px">操作</th>
                                 </tr>
@@ -106,6 +107,7 @@
                                         <td><{$mapCustomer[$item.customer_id]['customer_name']}></td>
                                         <td><{$mapSalesperson[$item.salesperson_id]['salesperson_name']}></td>
                                         <td><{$statusList[$item.sales_order_status]['status_name']}></td>
+                                        <td><{$item.order_time}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
                                             <{if $item.sales_order_status >3}>
