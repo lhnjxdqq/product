@@ -3,6 +3,7 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 Validate::testNull($_GET['goods_id'], 'goods_id is missing', '/product/sku/index.php');
 
+$_SESSION['page_product_sku']   = $_SERVER['HTTP_REFERER'];
 $listSpecInfo       = Spec_Info::listAll();
 $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
 $listSpecValueInfo  = Spec_Value_Info::listAll();

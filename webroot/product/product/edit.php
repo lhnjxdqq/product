@@ -13,6 +13,8 @@ $productInfo['goodsInfo']       = Goods_Info::getById($productInfo['goods_id']);
 $productInfo['styleInfo']       = Style_Info::getById($productInfo['goodsInfo']['style_id']);
 $productInfo['categoryInfo']    = Category_Info::getByCategoryId($productInfo['goodsInfo']['category_id']);
 
+$_SESSION['page_product']   = $_SERVER['HTTP_REFERER'];
+
 // 规格 规格值查询
 $specValueList  = Goods_Spec_Value_RelationShip::getByGoodsId($productInfo['goodsInfo']['goods_id']);
 $listSpecInfo   = Spec_Info::getByMulitId(ArrayUtility::listField($specValueList, 'spec_id'));

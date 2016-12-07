@@ -40,6 +40,11 @@ foreach ($files['tmp_name'] as $stream) {
     }
 }
 
+$productUrl     = '/product/product/index.php';
+if(!empty($_SESSION['page_product'])){
+    
+    $productUrl     = $_SESSION['page_product'];
+}
 $sourceInfo = Source_Info::listByCondition(array(
     'source_code'   => $sourceCode,
     'supplier_id'   => $supplierId,
@@ -98,7 +103,7 @@ if (Product_Info::update($data)) {
     }
     // 推送SKU更新数据到选货工具
     Goods_Push::updatePushGoodsData($goodsId);
-    Utility::notice('编辑产品成功', '/product/product/index.php');
+    Utility::notice('编辑产品成功', $productUrl);
 } else {
 
     Utility::notice('编辑产品失败');

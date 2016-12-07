@@ -33,6 +33,11 @@ foreach ($specList as $specValue) {
     );
 }
 
+$skuUrl     = '/product/sku/index.php';
+if(!empty($_SESSION['page_product_sku'])){
+    
+    $skuUrl     = $_SESSION['page_product_sku'];
+}
 $goodsInfo      = Goods_Info::getById($goodsId);
 $categoryId     = $goodsInfo['category_id'];
 $isGoodsExists  = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $styleId, $categoryId);
@@ -88,7 +93,7 @@ if (Goods_Info::update($data)) {
 
     // 推送更新SKU数据到生产工具
     Goods_Push::updatePushGoodsData($goodsId);
-    Utility::notice('编辑成功', '/product/sku/index.php');
+    Utility::notice('编辑成功', $skuUrl);
 } else {
 
     Utility::notice('编辑失败');
