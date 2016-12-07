@@ -141,6 +141,14 @@
 			oldImageType= $("#type_"+imageKey).html();
 			oldNumber	= $("#number_"+imageKey).html();
 
+			if(oldImageType == imageType && oldNumber == imageSerial){
+				
+				$(".edit-"+imageKey).addClass('hidden');
+				$(".display-"+imageKey).show();
+				$(".okImage-"+imageKey).addClass('hidden');
+				$(".editImage-"+imageKey).show();
+				return false;
+			}
 			$.post('/system/spu_image/edit_image.php', {
                 image_key           : imageKey,
                 spu_id           	: spuId,
