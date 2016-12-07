@@ -245,7 +245,7 @@ class   AliyunOSS {
      * @param   string  $id object id
      * @return  bool        判断结果
      */
-    public  function downLoadFile ($id) {
+    public  function downLoadFile ($id, $localfile = NULL) {
         
         $options = array(
             OssClient::OSS_FILE_DOWNLOAD => $localfile,
