@@ -109,7 +109,6 @@ chmod($path, 0777);
 
 Sales_Order_Info::update(array(
         'sales_order_id'    => $salesOrderId,
-        'order_file_status' => Sales_Order_File_Status::STANDBY,
         'update_time'       => date('Y-m-d H:i:s', time()),
         'order_file_status' => Sales_Order_File_Status::STANDBY,
     )

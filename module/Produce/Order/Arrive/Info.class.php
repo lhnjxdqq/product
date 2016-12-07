@@ -19,7 +19,7 @@ class   Produce_Order_Arrive_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'is_supplies_operation,is_whole_supplies,produce_order_arrive_id,produce_order_id,count_product,weight_total,quantity_total,storage_quantity_total,storage_weight,transaction_amount,file_path,is_storage,arrive_time,au_price,storage_time,storage_user_id,storage_count_product,refund_file_status,refund_file_path';
+    const   FIELDS      = 'is_supplies_operation,is_whole_supplies,produce_order_arrive_id,produce_order_id,count_product,weight_total,quantity_total,storage_quantity_total,storage_weight,transaction_amount,file_path,is_storage,arrive_time,au_price,storage_time,storage_user_id,storage_count_product,refund_file_status,refund_file_path,order_file_status,error_log';
     /**
      * 新增
      *
@@ -68,6 +68,23 @@ class   Produce_Order_Arrive_Info {
         $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_id`=' . addslashes($produceOrderId);
 
         return self::_getStore()->fetchAll($sql);
+    }
+    
+    /**
+     * 根据到货表文件状态获取一条数据
+     *
+     * @param  int      $orderFileStatus  文件状态
+     * @return array                      数据
+     */
+    static  public function getByOrderFileStatus($orderFileStatus){
+        
+        if(empty($orderFileStatus)){
+            
+            return array();
+        }
+        $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `order_file_status`=' . addslashes($orderFileStatus) .' limit 0,1';
+
+        return self::_getStore()->fetchOne($sql);
     }
     
     /**
@@ -198,7 +215,20 @@ class   Produce_Order_Arrive_Info {
 
         return  empty($sql) ? ''    : ' ORDER BY ' . implode(',', $sql);
     }
-
+    
+    /**
+     * 根据销售订单ID删除订单 
+     *
+     * @param   string $produceOrderArriveId  报价单ID
+     */
+    static public function delete($produceOrderArriveId) {
+    
+        Validate::testNull($produceOrderArriveId,"入库单ID不能为空");
+        
+        $condition = " `produce_order_arrive_id` = " . $produceOrderArriveId;
+        
+        self::_getStore()->delete(self::_tableName(), $condition);
+    }
     /**
      * 获取排序方向
      *

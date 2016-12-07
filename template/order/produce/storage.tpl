@@ -122,17 +122,24 @@
                                         <td><{$item.storage_weight}></td>
                                         <td><{$item.transaction_amount}></td>
                                         <td>
-                                            <{if $item.is_storage == 0}>
-                                                <a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a>
-                                            <{else if $item.is_storage == 1}>
-                                                <{if $item.refund_file_path != ''}>
-                                                    <a href='/common/download.php?file=<{$item.refund_file_path}>&module=refund_export&name=refund' class='btn btn-primary btn-xs'>下载退货单</a>
-                                                <{else}>
-                                                    退货单生成中
-                                                <{/if}>
-                                            <{/if}>
-                                            <a href='/order/produce/arrive_detail.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>' class='btn btn-primary btn-xs'>查看清单</a>
-                                        </td>
+											<{if $item.order_file_status eq 4}>
+												<a href="/order/produce/import_error_log.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>" style="color:red;text-decoration:underline;">导入失败,查看错误信息</a>						
+											<{else if $item.order_file_status eq 1 || $item.order_file_status eq 2}>
+											导入中...
+											<{else}>
+												<{if $item.is_storage == 0}>
+														<a href='#' class='btn btn-primary btn-xs storage' arrive-id=<{$item.produce_order_arrive_id}>>入库</a>
+													<{else if $item.is_storage == 1}>
+														<{if $item.refund_file_path != ''}>
+															<a href='/common/download.php?file=<{$item.refund_file_path}>&module=refund_export&name=refund' class='btn btn-primary btn-xs'>下载退货单</a>
+														<{else}>
+															退货单生成中
+														<{/if}>
+												<{/if}>
+												<a href='/order/produce/arrive_detail.php?produce_order_arrive_id=<{$item.produce_order_arrive_id}>' class='btn btn-primary btn-xs'>查看清单</a>
+													
+											<{/if}>
+										</td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>

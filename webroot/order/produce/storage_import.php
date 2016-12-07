@@ -115,24 +115,6 @@ $mapEnumeration     = array(
    'indexSourceCode'      => $indexSourceCode,
 );
 
-foreach ($list as $offsetRow => $row) {
-    
-    $line  = $offsetRow+2;
-    try{
-        
-        $datas[] = Arrive::testStorage($row,$mapEnumeration);
-        $addNums++;
-
-    }catch(ApplicationException $e){
-        
-        $errorList[]            = array(
-            'content'   => $e->getMessage(),
-            'line'      => $line ,
-        );
-        continue;
-    }
-}
-
 $template           = Template::getInstance();
 $template->assign('mainMenu', $mainMenu);
 if(!empty($errorList)){
@@ -160,25 +142,9 @@ chmod($storageFilePath, 0777);
 $produceOrderArriveId   = Produce_Order_Arrive_Info::create(array(
     'produce_order_id'      => $produceOrderId,
     'count_product'         => count($datas),
-    'weight_total'          => array_sum(ArrayUtility::listField($datas,'weight')),
-    'quantity_total'        => array_sum(ArrayUtility::listField($datas,'quantity')),
-    'storage_weight'        => array_sum(ArrayUtility::listField($datas,'weight')),
-    'storage_quantity_total'=> array_sum(ArrayUtility::listField($datas,'quantity')),
     'file_path'             => $fileStoragePath,
     'arrive_time'           => date('Y-m-d'),
+	'order_file_status'		=> Sales_Order_File_Status::STANDBY,
 ));
 
-foreach($datas as $info){
-
-    Produce_Order_Arrive_Product_Info::create(array(
-        'product_id'                => $info['product_id'],
-        'produce_order_arrive_id'   => $produceOrderArriveId,
-        'quantity'                  => $info['quantity'],
-        'weight'                    => $info['weight'],
-        'storage_weight'            => $info['weight'],
-        'storage_quantity'          => $info['quantity'],
-        'stock_quantity'            => $info['quantity'],
-        'stock_weight'              => $info['weight'],
-    ));
-}
-Utility::notice('导入成功');
+Utility::notice('文件导入成功，请稍后查看结果');
