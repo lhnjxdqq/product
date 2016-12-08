@@ -104,7 +104,7 @@ if (Product_Info::update($data)) {
     // 推送SKU更新数据到选货工具
     Goods_Push::updatePushGoodsData($goodsId);
 		
-	if(!strstr($skuUrl,'/product/index.php')){
+	if(!strstr($productUrl,'/product/index.php')){
 
 		echo "<script type='text/javascript'>document.onload = window.close();</script>";
 		exit;
