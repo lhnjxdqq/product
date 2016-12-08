@@ -120,13 +120,21 @@ class   Produce_Order_Arrive_Import {
 		   'indexSourceCode'      => $indexSourceCode,
 		);
 
+		$datas					= array();
+		
 		foreach ($list as $offsetRow => $row) {
 			
 			$line  = $offsetRow+2;
 			try{
 				
-				$datas[] = Arrive::testStorage($row,$mapEnumeration);
+				$listProductId 	= array_unique(ArrayUtility::listField($datas,'product_id'));
+				$info 			= Arrive::testStorage($row,$mapEnumeration);
+				$datas[]		= $info;
 				$addNums++;
+				if(in_array($info['product_id'],$listProductId)){
+					
+					throw   new ApplicationException('表中产品重复');
+				}
 
 			}catch(ApplicationException $e){
 				
