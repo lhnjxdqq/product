@@ -56,6 +56,10 @@ class   Sales_Order_Info {
         $newData    += array(
             'update_time'   => date('Y-m-d H:i:s'),
         );
+		if(!empty($newData['sales_order_status'])){
+			
+			self::_pushOrderStatus($data['sales_order_id'], $data['sales_order_status']);
+		}
         return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
@@ -72,6 +76,48 @@ class   Sales_Order_Info {
         return  self::_getStore()->fetchOne($sql);
     }
 
+	/**
+	 *	推送销售订单Id和状态代码
+	 *	
+	 * 	@param	int $salesOrderId  	销售订单ID
+	 * 	@param	int $orderStatus  	状态代码
+	 */
+	static private function _pushOrderStatus ($salesOrderId, $orderStatus){
+
+		$config     	= self::_getPushSpuApiConfig();
+		$apiUrl         = $config['apiConfig']['sales_order_status'];
+		$plApiUrl       = $config['apiConfig']['pl_sales_order_status'];
+
+		$orderStatus	= array('salesOrderId'=>array('salesOrderId'	=> $salesOrderId,'salesStatus'=> $orderStatus));
+
+		if($plApiUrl){
+		
+			$res    = HttpRequest::getInstance($plApiUrl)->post($orderStatus);
+		}
+		
+		if($apiUrl){
+		
+			$res    = HttpRequest::getInstance($apiUrl)->post($orderStatus);
+		}
+	}
+	
+	/**
+     * 获取API配置
+     *
+     * @param string $appName
+     * @return array
+     * @throws Exception
+     */
+    static private function _getPushSpuApiConfig () {
+		
+        $appList    = Config::get('api|PHP', 'app_list');
+        $apiList    = Config::get('api|PHP', 'api_list');
+        return      array(
+            'appConfig' => $appList['select'],
+            'apiConfig' => $apiList['select'],
+        );
+    }
+	
     /**
      * 生成订单编号
      *
