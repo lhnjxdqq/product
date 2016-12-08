@@ -34,9 +34,9 @@ foreach ($specList as $specValue) {
 }
 
 $skuUrl     = '/product/sku/index.php';
-if(!empty($_SESSION['page_product_sku'])){
+if(!empty($_SESSION['page_product'])){
     
-    $skuUrl     = $_SESSION['page_product_sku'];
+    $skuUrl     = $_SESSION['page_product'];
 }
 $goodsInfo      = Goods_Info::getById($goodsId);
 $categoryId     = $goodsInfo['category_id'];

@@ -1,7 +1,11 @@
 <?php
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
-$_SESSION['page_product_spu']   = $_SERVER['HTTP_REFERER'];
+
+if(strstr($_SERVER['HTTP_REFERER'],'/spu/index.php')){
+	
+	$_SESSION['page_product']   = $_SERVER['HTTP_REFERER'];
+}
 Validate::testNull($_GET['spu_id'], 'spu_id is missing', '/product/spu/index.php');
 
 $spuId                  = (int) $_GET['spu_id'];

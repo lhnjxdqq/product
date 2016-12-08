@@ -39,9 +39,9 @@ $update = Spu_Info::update(array(
 ));
 
 $spuUrl     = '/product/spu/index.php';
-if(!empty($_SESSION['page_product_spu'])){
+if(!empty($_SESSION['page_product'])){
     
-    $spuUrl     = $_SESSION['page_product_spu'];
+    $spuUrl     = $_SESSION['page_product'];
 }
 if ($update) {
 
