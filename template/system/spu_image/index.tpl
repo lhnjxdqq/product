@@ -32,7 +32,7 @@
 					</label>
 					<button class="btn btn-primary btn-sm" id="addImageMultiImage" style="margin-left: 10px;">批量删除</button>已选择<span id="imageTotal">0</span>张图片
 					<a href="/system/spu_image/recycle.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-trash"> 回收车(<span id='recycle_number'><{$countRecycle}></span>)</i></a>
-					<form class="form-inline pull-right"  action="?" method="get">
+					<form class="form-inline pull-right" style="margin-right:10px" action="?" method="get">
 							<div class="input-group input-group-sm">
 								<input type="text" class="form-control" name="list_spu_sn" class="form-control" value="<{$smarty.get.list_spu_sn}>" placeholder="请输入SPU编号" />
 								<span class="input-group-btn">
