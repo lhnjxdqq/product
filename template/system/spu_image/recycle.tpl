@@ -26,19 +26,6 @@
         <section class="content">
             <div class="box">
                 <div class="box-header check-image with-border">
-					<div class="box-header with-border row">
-						<form class="form-inline" action="?" method="get">
-							<div class="pull-left">
-								<div class="input-group">
-									<span class="input-group-addon">SPU编号搜索:</span>
-									<input type="text" class="form-control" name="list_spu_sn" class="form-control" value="<{$smarty.get.list_spu_sn}>" placeholder="请输入SPU编号" />
-									<span class="input-group-btn">
-										<button class="btn btn-primary" type="submit">搜索</button>
-									</span>
-								</div>
-							</div>
-						</form>
-					</div>
 					<label>
                       <input type="checkbox" name='check-all'> 全选
                     </label>
@@ -46,7 +33,15 @@
                     <button class="btn btn-primary btn-sm" id="deleteMultiImage" style="margin-left: 10px;">批量清除</button>
                     已选择<span id="imageTotal">0</span>张图片
                     <a href="/system/spu_image/clear_recycle.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-trash"> 全部清除</i></a>
-                </div>
+					<form class="form-inline pull-right"  action="?" method="get">
+							<div class="input-group input-group-sm">
+								<input type="text" class="form-control" name="list_spu_sn" class="form-control" value="<{$smarty.get.list_spu_sn}>" placeholder="请输入SPU编号" />
+								<span class="input-group-btn">
+									<button class="btn btn-primary" type="submit">搜索</button>
+								</span>
+							</div>
+					</form>
+				</div>
                 <div class="box-body">
                     <div class="row" id="spu-list">
                         <{foreach from=$listSpuInfo item=item name=foo}>
