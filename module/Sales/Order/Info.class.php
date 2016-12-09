@@ -88,7 +88,7 @@ class   Sales_Order_Info {
 		$apiUrl         = $config['apiConfig']['sales_order_status'];
 		$plApiUrl       = $config['apiConfig']['pl_sales_order_status'];
 
-		$orderStatus	= array('salesOrderId'=>array('salesOrderId'	=> $salesOrderId,'salesStatus'=> $orderStatus));
+		$orderStatus	= array('salesOrderId'=>array('salesOrderId'=> 483,'salesStatus'=> $orderStatus));
 
 		if($plApiUrl){
 		

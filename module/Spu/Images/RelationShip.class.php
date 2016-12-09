@@ -112,12 +112,18 @@ class   Spu_Images_RelationShip {
      *
      * @return int 个数
      */
-    static public function countGtSpuId ($spuId) {
+    static public function countBySpuId (array $condition ,$spuId) {
 			
-		$sql = "SELECT count(1) as `cnt` FROM `" . self::_tableName() . "` WHERE recycle_status = " . Spu_Images_RecycleStatus::NOT ." AND `spu_id` >" . $spuId;
+		$sql = "SELECT count(1) as `cnt` FROM `" . self::_tableName() . "` WHERE recycle_status = " . Spu_Images_RecycleStatus::NOT ." AND `spu_id` >" . $spuId ;
 
-        $row            = self::_getStore()->fetchOne($sql);
-
+		if(!empty($condition['list_spu_id'])){
+			
+			$multiSpuId    = array_map('intval', array_unique(array_filter($condition['list_spu_id'])));
+			
+			$sql .= ' AND `spu_id` IN ("' . implode('","', $multiSpuId) . '")';
+		}
+		$row            = self::_getStore()->fetchOne($sql);
+		
         return          $row['cnt'];
 	}
 	
@@ -205,6 +211,7 @@ class   Spu_Images_RelationShip {
 
         $sql        = array();
         $sql[]      = self::_conditionByRecycleStatus($condition);
+        $sql[]      = self::_conditionByMultiSpuId($condition);
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);
@@ -221,6 +228,24 @@ class   Spu_Images_RelationShip {
         return  isset($condition['recycle_status'])
                 ? '`recycle_status` = "' . (int) $condition['recycle_status'] . '"'
                 : '';
+    }
+	
+    /**
+     * 根据一组spuId拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string           WHERE子句
+     */
+    static private function _conditionByMultiSpuId (array $condition) {
+
+		if(empty($condition['list_spu_id'])){
+			
+			return ;
+		}
+        $multiSpuId    = array_map('intval', array_unique(array_filter($condition['list_spu_id'])));
+
+		return '`spu_id` IN ("' . implode('","', $multiSpuId) . '")';
+
     }
 
     /**

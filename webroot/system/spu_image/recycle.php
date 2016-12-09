@@ -2,11 +2,19 @@
 
 require_once dirname(__FILE__).'/../../../init.inc.php';
 
+
 $condition['recycle_status']	= Spu_Images_RecycleStatus::YES;
 
 $perpage                    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
 
-$countRecycle				= Spu_Images_RelationShip::countRecycle();
+if(!empty($_GET['list_spu_sn'])){
+	
+	$listSpuSn	= explode(" ",trim($_GET['list_spu_sn']));
+	$spuInfo 	= Spu_Info::getByMultiSpuSn($listSpuSn);
+	$condition['list_spu_id']	= ArrayUtility::listField($spuInfo,'spu_id');
+}
+
+$countRecycle				= Spu_Images_RelationShip::countByCondition($condition);
 
 $page                       = new PageList(array(
     PageList::OPT_TOTAL     => $countRecycle,

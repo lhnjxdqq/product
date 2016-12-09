@@ -52,6 +52,7 @@ class Spu_Images_List {
         $sql        = array();
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sql[]      = self::_conditionByRecycleStatus($condition);
+        $sql[]      = self::_conditionByListSpuSn($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
@@ -66,6 +67,22 @@ class Spu_Images_List {
     static private function _conditionByDeleteStatus (array $condition) {
 
         return  '`spu_info`.`delete_status` = ' . (int) $condition['delete_status'];
+    }
+    
+    /**
+     * 根据SPU编号拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByListSpuSn (array $condition) {
+
+		if(empty($condition['list_spu_sn'])){
+		
+			return ;
+		}
+		$listSpuSn	= array_unique(explode(" ", $condition['list_spu_sn']));
+		return '`spu_info`.`spu_sn` IN ("' . implode('","', $listSpuSn) . '")';
     }
     
     /**

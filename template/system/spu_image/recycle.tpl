@@ -26,6 +26,19 @@
         <section class="content">
             <div class="box">
                 <div class="box-header check-image with-border">
+					<div class="box-header with-border row">
+						<form class="form-inline" action="?" method="get">
+							<div class="pull-left">
+								<div class="input-group">
+									<span class="input-group-addon">SPU编号搜索:</span>
+									<input type="text" class="form-control" name="list_spu_sn" class="form-control" value="<{$smarty.get.list_spu_sn}>" placeholder="请输入SPU编号" />
+									<span class="input-group-btn">
+										<button class="btn btn-primary" type="submit">搜索</button>
+									</span>
+								</div>
+							</div>
+						</form>
+					</div>
 					<label>
                       <input type="checkbox" name='check-all'> 全选
                     </label>
