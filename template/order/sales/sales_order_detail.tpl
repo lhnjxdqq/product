@@ -80,7 +80,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <div class="box-title">产品清单</div>
-                    <a href='/order/sales/sales_order_export.php?sales_order_id=<{$smarty.get.sales_order_id}>' class="box-title" style="color:red">导出清单</a>
+                    <a href='/order/sales/sales_order_export.php?sales_order_id=<{$smarty.get.sales_order_id}>' class="btn btn-primary">导出清单</a>
                     <div class="box-tools pull-right">
                         共计<span style="color:red"><{$salesOrderInfo.count_goods}></span>款,<span style="color:red"><{$salesOrderInfo.quantity_total}></span>件,参考重量<span style="color:red"><{$salesOrderInfo.reference_weight}></span>g
                     </div>
