@@ -240,7 +240,7 @@ foreach($listGoodsInfo as $key =>$val){
 
 // 这里是数据转换并下载
 header('Content-type:text/csv');
-header("Content-Disposition:attachment;filename=salesOrder.csv");
+header("Content-Disposition:attachment;filename=".$salesOrderInfo['sales_order_sn'].".csv");
 header('Cache-Control:must-revalidate,post-check=0,pre-check=0');
 header('Expires:0');
 header('Pragma:public');
