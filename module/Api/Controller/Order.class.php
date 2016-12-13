@@ -103,8 +103,12 @@ class Api_Controller_Order {
                     'quantity'      		=> $goodsInfo['goods_quantity'],
                     'cost'          		=> $goodsInfo['cost'],
                     'remark'        		=> $goodsInfo['remark'],
-					'totalWeight '			=> $sumGoodsAssign[$goodsInfo['goods_id']]['assignWeight'],
-					'totalAssignQuantity'	=> $sumGoodsAssign[$goodsInfo['goods_id']]['assignQuantity'],
+					'totalWeight'			=> !empty($sumGoodsAssign[$goodsInfo['goods_id']]['assignWeight']) 
+												? $sumGoodsAssign[$goodsInfo['goods_id']]['assignWeight'] 
+												: '0.00',
+					'totalAssignQuantity'	=> !empty($sumGoodsAssign[$goodsInfo['goods_id']]['assignQuantity'])
+												? $sumGoodsAssign[$goodsInfo['goods_id']]['assignQuantity']
+												: 0,
                 );
             }
             $redisSalesOrderGoodsInfo           = $redis->set(self::salesOrderGoods.$info['sales_order_id'],json_encode($salesOrderProduct));
