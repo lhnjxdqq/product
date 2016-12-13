@@ -8,7 +8,12 @@ class Api_Controller_Order {
     
     // 订单
     const salesOrder            = 'sales_order_';
-
+	
+	// 订单出货数量
+	const salesAsssignQuantity	= 'sales_assign_quantity_';
+	
+	//订单每个SKU出货数量
+	const salesAssignGoods		= 'sales_goods_assign_';
 
     static public function create (array $orderInfo) {
        
@@ -30,7 +35,7 @@ class Api_Controller_Order {
     }
     
     static public function getByIdList(array $listOrder) {
-        
+
         if(empty($listOrder)){
 
             return array(
@@ -45,6 +50,12 @@ class Api_Controller_Order {
                 
         foreach($listOrder as $key => $info){
             
+			$completeTime		= 0;
+			
+			if($info['sales_order_status'] == Sales_Order_Status::COMPLETION || $info['sales_order_status'] == Sales_Order_Status::PARTIALLY_OUT_OF_STOCK){
+				
+				$completeTime	= $info['update_time'];
+			}
             $salesOrderInfo  = array(
                 'orderId'           => $info['sales_order_id'],
                 'orderSn'           => $info['sales_order_sn'],
@@ -55,29 +66,36 @@ class Api_Controller_Order {
                 'createOrderAuPrice'=> $info['create_order_au_price'],
 				'orderSalesStatus'	=> $info['sales_order_status'],
 				'transactionAmount' => $info['transaction_amount'],
+				'totalWeight'		=> $info['actual_weight'],
+				'completeTime'		=> $completeTime, 
             );
             
             $salesOrderProduct          = array();
             $redisSalesOrderGoodsInfo   = $redis->get(self::salesOrderGoods.$info['sales_order_id']);
-            
+
+			$salesOrderInfo['totalAssignQuantity'] = self::_getByTotalAssignQuantityBySalesOrderId($info['sales_order_id']);
+			$sumGoodsAssign			= self::_getGoodsAssignQuantityBySalesOrderId($info['sales_order_id']);
+
             if(!empty($redisSalesOrderGoodsInfo)){
              
-                $salesOrderProduct                  =  json_decode($redisSalesOrderGoodsInfo,true);
+                $salesOrderProduct                  = json_decode($redisSalesOrderGoodsInfo,true);
                 $salesOrderInfo['orderGoodsList']   = $salesOrderProduct;
                 $orderInfo[]                        = $salesOrderInfo;
                 continue;
             }
-
+		
             $salesOrderGoods        =  Sales_Order_Goods_Info::getBySalesOrderId($info['sales_order_id']);
             foreach($salesOrderGoods as $row => $goodsInfo){
                 
                 $salesOrderProduct[]          = array(
-                    'spuId'         => $goodsInfo['spu_id'],
-                    'goodsId'       => $goodsInfo['goods_id'],
-                    'quotationId'   => $goodsInfo['sales_quotation_id'],
-                    'quantity'      => $goodsInfo['goods_quantity'],
-                    'cost'          => $goodsInfo['cost'],
-                    'remark'        => $goodsInfo['remark'],
+                    'spuId'         		=> $goodsInfo['spu_id'],
+                    'goodsId'       		=> $goodsInfo['goods_id'],
+                    'quotationId'   		=> $goodsInfo['sales_quotation_id'],
+                    'quantity'      		=> $goodsInfo['goods_quantity'],
+                    'cost'          		=> $goodsInfo['cost'],
+                    'remark'        		=> $goodsInfo['remark'],
+					'totalWeight '			=> $sumGoodsAssign[$goodsInfo['goods_id']]['assignWeight'],
+					'totalAssignQuantity'	=> $sumGoodsAssign[$goodsInfo['goods_id']]['assignQuantity'],
                 );
             }
             $redisSalesOrderGoodsInfo           = $redis->set(self::salesOrderGoods.$info['sales_order_id'],json_encode($salesOrderProduct));
@@ -122,8 +140,15 @@ class Api_Controller_Order {
         $indexSpuId                 = ArrayUtility::indexByField($listGroupSalesGoodsInfo,'sales_order_id');
         
         foreach($listOrder as $key => $info){
+			
+			$completeTime		= 0;
+			
+			if($info['sales_order_status'] == Sales_Order_Status::COMPLETION || $info['sales_order_status'] == Sales_Order_Status::PARTIALLY_OUT_OF_STOCK){
+				
+				$completeTime	= $info['update_time'];
+			}
             
-            $orderInfo[$info['sales_order_id']]  = array(
+			$orderInfo[$info['sales_order_id']]  = array(
                 'orderId'           => $info['sales_order_id'],
                 'orderSn'           => $info['sales_order_sn'],
                 'orderDate'         => $info['create_time'],
@@ -133,9 +158,13 @@ class Api_Controller_Order {
                 'estimateQuantity'  => $info['quantity_total'],
                 'completeGold'      => $info['create_order_au_price'],
 				'orderSalesStatus'	=> $info['sales_order_status'],
-				'transactionAmount'=> $info['transaction_amount'],
+				'transactionAmount'	=> $info['transaction_amount'],
+				'totalWeight'		=> $info['actual_weight'],
+				'completeTime'		=> $completeTime, 
             );
             
+			$orderInfo[$info['sales_order_id']]['totalAssignQuantity'] = self::_getByTotalAssignQuantityBySalesOrderId($info['sales_order_id']);
+			
             $redis->set(self::salesOrder.$info['sales_order_id'],json_encode($orderInfo[$info['sales_order_id']]));
         }
         return array('salesOrderListInfo'=>$orderInfo);
@@ -159,6 +188,12 @@ class Api_Controller_Order {
         
         foreach($listOrderInfo as $key => $info){
             
+			$completeTime		= 0;
+
+			if($info['sales_order_status'] == Sales_Order_Status::COMPLETION || $info['sales_order_status'] == Sales_Order_Status::PARTIALLY_OUT_OF_STOCK){
+				
+				$completeTime	= $info['update_time'];
+			}
             $orderInfo[$info['sales_order_id']] = array(
                 'orderId'           => $info['sales_order_id'],
                 'orderSn'           => $info['sales_order_sn'],
@@ -169,9 +204,99 @@ class Api_Controller_Order {
                 'estimateQuantity'  => $info['quantity_total'],
                 'completeGold'      => $info['create_order_au_price'],
 				'orderSalesStatus'	=> $info['sales_order_status'],
-				'transactionAmount'=> $info['transaction_amount'],
+				'transactionAmount'	=> $info['transaction_amount'],
+				'totalWeight'		=> $info['actual_weight'],
+				'completeTime'		=> $completeTime, 
             );
+			$orderInfo[$info['sales_order_id']]['totalAssignQuantity'] = self::_getByTotalAssignQuantityBySalesOrderId($info['sales_order_id']);
+			
         }
         return array('salesOrderListInfo'=>$orderInfo);
+	}
+	
+	/**
+	 * 获取订单ID实际发货数量
+	 */
+	 
+	static private function _getByTotalAssignQuantityBySalesOrderId ($salesOrderId){
+		 
+		if(empty($salesOrderId)){
+
+			return 0;
+		}
+
+		$redis  = RedisProxy::getInstance('product');
+		$redisAssignQuantity   = $redis->get(self::salesAsssignQuantity.$salesOrderId);
+		
+		if(!empty($redisAssignQuantity)){
+			
+			return $redisAssignQuantity;
+		}
+
+		$salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesOrderId),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
+
+		$totalQuantity  = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'supplies_quantity_total'));
+
+		$redis->set(self::salesAsssignQuantity.$salesOrderId,$totalQuantity);
+		return $totalQuantity;
+	}
+	
+	/**
+	 * 根据订单ID获取每个sku的发货数量
+	 */
+	static private function _getGoodsAssignQuantityBySalesOrderId ($salesOrderId){
+
+	 
+		if(empty($salesOrderId)){
+
+			return 0;
+		}
+
+		$redis  			= RedisProxy::getInstance('product');
+		$redisGoodsAssign   = $redis->get(self::salesAssignGoods.$salesOrderId);
+		
+		if(!empty($redisGoodsAssign)){
+			
+			return json_decode($redisGoodsAssign,true);
+		}
+
+		$salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesOrderId),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
+
+		if(empty($salesSupplesProductInfo)){
+			
+			return ;
+		}
+		$supplierInfo				= Sales_Supplies_Product_Info::getByMultiSuppliesId(ArrayUtility::listField($salesSupplesProductInfo,'supplies_id'));
+
+		if(empty($supplierInfo)){
+			
+			return ;
+		}
+		$listProductId				= array_unique(ArrayUtility::listField($supplierInfo,'product_id'));
+		
+		$productInfo				= Product_Info::getByMultiId($listProductId);
+		$groupGoodsId				= ArrayUtility::groupByField($productInfo,'goods_id','product_id');
+		$groupProductId				= ArrayUtility::groupByField($supplierInfo,'product_id');
+		
+		foreach($groupProductId as $key => $val){
+			
+			$sumProduct[$key]['supplies_quantity']	= array_sum(ArrayUtility::listField($val,'supplies_quantity'));
+			$sumProduct[$key]['supplies_weight']	= array_sum(ArrayUtility::listField($val,'supplies_weight'));
+		}
+
+		foreach($groupGoodsId as $goodsId => $productId){
+			
+			$sumGoods[$goodsId]['assignQuantity']	= 0;
+			$sumGoods[$goodsId]['assignWeight']		= 0;
+			
+			foreach($productId as $id){
+				
+				$sumGoods[$goodsId]['assignQuantity']+= $sumProduct[$id]['supplies_quantity'];
+				$sumGoods[$goodsId]['assignWeight']+= $sumProduct[$id]['supplies_weight'];
+			}
+		}
+		
+		$redis->set(self::salesAsssignQuantity.$salesAssignGoods,json_encode($sumGoods));
+		return $sumGoods;
 	}
 }

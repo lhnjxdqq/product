@@ -43,18 +43,25 @@ if($data['result'] == 'OK'){
     $salesSuppliesInfo          = Sales_Supplies_Info::getById($data['supplies_id']);
     $salesSupplesProductInfo    = ArrayUtility::searchBy(Sales_Supplies_Info::getBySalesOrderId($salesSuppliesInfo['sales_order_id']),array('supplies_status'=>Sales_Supplies_Status::DELIVREED));
     $totalPrice                 = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'total_price'));
+    $totalWeight                = array_sum(ArrayUtility::listField($salesSupplesProductInfo,'supplies_weight'));
+	
+	//订单是否完成
+	$salesGoodsInfo				= Sales_Order_Goods_Info::getBySalesOrderId($salesSuppliesInfo['sales_order_id']);
+	$supplierInfo				= Sales_Supplies_Product_Info::getByMultiSuppliesId(ArrayUtility::listField($salesSupplesProductInfo,'supplies_id'));
+
     Sales_Order_Info::update(array(
         'sales_order_id'    => $salesSuppliesInfo['sales_order_id'],
         'transaction_amount'=> $totalPrice,
+		'actual_weight'		=> $totalWeight,//实际重量
         'order_amount'      => $totalPrice,
-        ''
+		'sales_order_status'=> Sales_Order_Status::PARTIAL_SHIPMENT,
     ));
 }else{
     
     $content['supplies_status'] = Sales_Supplies_Status::NO_REVIEWED;
     $content['review_explain']  = $_POST['explain'];
     
-    Sales_Supplies_Info::update($content);
+ //   Sales_Supplies_Info::update($content);
 }
 
 Utility::notice('审核成功','/order/sales/supplies/index.php?sales_order_id='.$salesSuppliesInfo['sales_order_id']);
