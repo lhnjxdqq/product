@@ -56,13 +56,13 @@ class   Sales_Order_Info {
         $newData    += array(
             'update_time'   => date('Y-m-d H:i:s'),
         );
-		if(!empty($newData['sales_order_status'])){
-			
-			self::_pushOrderStatus($data['sales_order_id'], $data['sales_order_status']);
-		}
-		
-		Api_Controller_Order::getBySalesOrderInitRedis($data['sales_order_id']);
-		
+        if(!empty($newData['sales_order_status'])){
+            
+            self::_pushOrderStatus($data['sales_order_id'], $data['sales_order_status']);
+        }
+        
+        Api_Controller_Order::getBySalesOrderInitRedis($data['sales_order_id']);
+        
         return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
@@ -79,32 +79,32 @@ class   Sales_Order_Info {
         return  self::_getStore()->fetchOne($sql);
     }
 
-	/**
-	 *	推送销售订单Id和状态代码
-	 *	
-	 * 	@param	int $salesOrderId  	销售订单ID
-	 * 	@param	int $orderStatus  	状态代码
-	 */
-	static private function _pushOrderStatus ($salesOrderId, $orderStatus){
+    /**
+     *  推送销售订单Id和状态代码
+     *  
+     *  @param  int $salesOrderId   销售订单ID
+     *  @param  int $orderStatus    状态代码
+     */
+    static private function _pushOrderStatus ($salesOrderId, $orderStatus){
 
-		$config     	= self::_getPushSpuApiConfig();
-		$apiUrl         = $config['apiConfig']['sales_order_status'];
-		$plApiUrl       = $config['apiConfig']['pl_sales_order_status'];
+        $config         = self::_getPushSpuApiConfig();
+        $apiUrl         = $config['apiConfig']['sales_order_status'];
+        $plApiUrl       = $config['apiConfig']['pl_sales_order_status'];
 
-		$orderStatus	= array('salesOrderId'=>array('salesOrderId'=> 483,'salesStatus'=> $orderStatus));
+        $orderStatus    = array('salesOrderId'=>array('salesOrderId'=> $salesOrderId,'salesStatus'=> $orderStatus));
 
-		if($plApiUrl){
-		
-			$res    = HttpRequest::getInstance($plApiUrl)->post($orderStatus);
-		}
-		
-		if($apiUrl){
-		
-			$res    = HttpRequest::getInstance($apiUrl)->post($orderStatus);
-		}
-	}
-	
-	/**
+        if($plApiUrl){
+        
+            $res    = HttpRequest::getInstance($plApiUrl)->post($orderStatus);
+        }
+        
+        if($apiUrl){
+        
+            $res    = HttpRequest::getInstance($apiUrl)->post($orderStatus);
+        }
+    }
+    
+    /**
      * 获取API配置
      *
      * @param string $appName
@@ -112,7 +112,7 @@ class   Sales_Order_Info {
      * @throws Exception
      */
     static private function _getPushSpuApiConfig () {
-		
+        
         $appList    = Config::get('api|PHP', 'app_list');
         $apiList    = Config::get('api|PHP', 'api_list');
         return      array(
@@ -120,7 +120,7 @@ class   Sales_Order_Info {
             'apiConfig' => $apiList['select'],
         );
     }
-	
+    
     /**
      * 生成订单编号
      *
@@ -226,7 +226,7 @@ class   Sales_Order_Info {
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	
+     */ 
     static  private function _conditionOrderTypeId (array $condition) {
 
         if (empty($condition['order_type_id'])) {
@@ -242,7 +242,7 @@ class   Sales_Order_Info {
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	
+     */ 
     static  private function _conditionOrderFileStatus (array $condition) {
 
         if (empty($condition['order_file_status'])) {
@@ -252,13 +252,13 @@ class   Sales_Order_Info {
 
         return  "`order_file_status` = " . (int) $condition['order_file_status'];
     }
-	
+    
     /**
      * 按照订单获取sql
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	
+     */ 
     static  private function _conditionOrderStatusId (array $condition) {
 
         if (empty($condition['sales_order_status'])) {
@@ -274,7 +274,7 @@ class   Sales_Order_Info {
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	
+     */ 
     static  private function _conditionSalespersonId (array $condition) {
 
         if (empty($condition['salesperson_id'])) {
@@ -284,13 +284,13 @@ class   Sales_Order_Info {
 
         return  "`salesperson_id` = " . (int) $condition['salesperson_id'];
     }
-	
+    
     /**
      * 按照开始订单ID获取sql
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	
+     */ 
     static  private function _conditionLastOrderId (array $condition) {
 
         if (empty($condition['last_order_id'])) {
@@ -306,7 +306,7 @@ class   Sales_Order_Info {
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	    
+     */     
     static  private function _conditionCustomerId (array $condition) {
 
         if (empty($condition['customer_id'])) {
@@ -316,13 +316,13 @@ class   Sales_Order_Info {
 
         return  "`customer_id` = " . (int) $condition['customer_id'];
     }
-	
+    
     /**
      * 按照一组销售订单ID获取sql
      *
      * @param   array   $condition  条件
      * @return  string              条件SQL子句 
-     */	
+     */ 
     static  private function _conditionInSearchOrderId (array $condition) {
 
         if (empty($condition['in_search_order_id'])) {
@@ -330,8 +330,8 @@ class   Sales_Order_Info {
             return  '';
         }
         $multiSalesOrderId  = array_map('intval', $condition['in_search_order_id']);
-	
-		return '`sales_order_id` IN ("' . implode('","', $multiSalesOrderId) . '")';
+    
+        return '`sales_order_id` IN ("' . implode('","', $multiSalesOrderId) . '")';
 
     }
     /**
