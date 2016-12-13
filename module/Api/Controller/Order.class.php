@@ -15,6 +15,15 @@ class Api_Controller_Order {
 	//订单每个SKU出货数量
 	const salesAssignGoods		= 'sales_goods_assign_';
 
+	static public function getBySalesOrderInitRedis($salesOrderId){
+		
+		$redis  = RedisProxy::getInstance('product');
+		$redis->del(self::salesOrderGoods.$salesOrderId);
+		$redis->del(self::salesOrder.$salesOrderId);
+		$redis->del(self::salesAsssignQuantity.$salesOrderId);
+		$redis->del(self::salesAssignGoods.$salesOrderId);
+	}
+	
     static public function create (array $orderInfo) {
        
         if(empty($orderInfo)){

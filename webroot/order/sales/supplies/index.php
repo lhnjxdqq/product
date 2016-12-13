@@ -29,7 +29,6 @@ $mapUser            = ArrayUtility::indexByField(User_Info::listAll(),'user_id')
 
 $mapSalesperson = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');
 
-
 $statusList = Sales_Order_Status::getOrderStatus();
 
 foreach($statusList as $statusId=>$statusName){

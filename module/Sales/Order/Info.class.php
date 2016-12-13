@@ -60,6 +60,9 @@ class   Sales_Order_Info {
 			
 			self::_pushOrderStatus($data['sales_order_id'], $data['sales_order_status']);
 		}
+		
+		Api_Controller_Order::getBySalesOrderInitRedis($data['sales_order_id']);
+		
         return      self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
