@@ -183,7 +183,6 @@ class   Quotation {
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
-            Sync::queueSpuData($spuGoodsInfo['spu_id']['spu_id']);
             $paramsTagApi       = array(
                 'spuList'   => array($spu['spu_sn']),
             );
@@ -205,6 +204,7 @@ class   Quotation {
                 
                 Sync::queueSkuData($info['goods_id']);
             }
+            Sync::queueSpuData($spuGoodsInfo['spu_id']['spu_id']);
         }
         Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
     }
