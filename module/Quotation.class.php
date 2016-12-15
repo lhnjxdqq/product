@@ -178,6 +178,7 @@ class   Quotation {
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
+            Sync::queueSpuData($spuGoodsInfo['spu_id']['spu_id']);
             $paramsTagApi       = array(
                 'spuList'   => array($spu['spu_sn']),
             );
@@ -538,27 +539,27 @@ class   Quotation {
             $listSpuInfo     = Spu_Info::getByMultiId($listSpuId);
           
             //获取SPU图片
-            $listSpuImages  	= Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
-            $groupSpuImages   	= ArrayUtility::groupByField($listSpuImages, 'spu_id');
+            $listSpuImages      = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+            $groupSpuImages     = ArrayUtility::groupByField($listSpuImages, 'spu_id');
             foreach ($groupSpuImages as $spuId => $spuImage) {
 
-				if(!empty($spuImage)){
-					
-					$firstImageInfo = ArrayUtility::searchBy($spuImage,array('is_first_picture' => 1));
-				}
-				if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
-					
-					$info = current($firstImageInfo);
-					$keyImage   = $info['image_key'];
-				}else{
+                if(!empty($spuImage)){
+                    
+                    $firstImageInfo = ArrayUtility::searchBy($spuImage,array('is_first_picture' => 1));
+                }
+                if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+                    
+                    $info = current($firstImageInfo);
+                    $keyImage   = $info['image_key'];
+                }else{
 
-					$info = Sort_Image::sortImage($spuImage);
+                    $info = Sort_Image::sortImage($spuImage);
 
-					$keyImage  = !empty($info)
-						? $info[0]['image_key']
-						: '';     
-				}
-				$mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($keyImage);
+                    $keyImage  = !empty($info)
+                        ? $info[0]['image_key']
+                        : '';     
+                }
+                $mapSpuImages[$spuId]['image_url']  = AliyunOSS::getInstance('images-spu')->url($keyImage);
             }
 
             $listSpecInfo       = Spec_Info::listAll();
@@ -599,9 +600,9 @@ class   Quotation {
             $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
             $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
 
-			//买款ID
-			$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
-			$mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
+            //买款ID
+            $listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+            $mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
 
 
             // 根据商品查询规格重量
@@ -647,9 +648,9 @@ class   Quotation {
                         }
                     }
                 }
-							
-				$sourceCodeList           = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
-				$sourceId[$spuId]  		  = implode(',', $sourceCodeList);
+                            
+                $sourceCodeList           = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
+                $sourceId[$spuId]         = implode(',', $sourceCodeList);
                 
                 $mapSizeValue[$spuId]     = !empty($mapSizeValue[$spuId]) ? array_unique($mapSizeValue[$spuId]) : "";
                 $mapMaterialValue[$spuId] = !empty($mapMaterialValue[$spuId]) ? array_unique($mapMaterialValue[$spuId]) : "";
