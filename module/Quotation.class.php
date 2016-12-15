@@ -165,7 +165,12 @@ class   Quotation {
                         'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                     );
                     Spu_Goods_RelationShip::create($content);
-                } 
+                }
+                
+                foreach($goodsInfo as $key=>$info) {
+                    
+                    Sync::queueSkuData($info['goods_id']);
+                }
             }
             return ;
         }
@@ -194,6 +199,11 @@ class   Quotation {
                     'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                 );
                 Spu_Goods_RelationShip::create($content);
+            }
+            
+            foreach($goodsInfo as $key=>$info) {
+                
+                Sync::queueSkuData($info['goods_id']);
             }
         }
         Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
@@ -241,7 +251,12 @@ class   Quotation {
                         'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                     );
                     Spu_Goods_RelationShip::create($content);
-                } 
+                }
+
+                foreach($goodsInfo as $key=>$info) {
+                    
+                    Sync::queueSkuData($info['goods_id']);
+                }               
             }
             return ;
         }
@@ -254,7 +269,7 @@ class   Quotation {
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
-			Sync::queueSpuData($spuGoodsInfo['spu_id']['spu_id']);
+            Sync::queueSpuData($spuGoodsInfo['spu_id']['spu_id']);
             $paramsTagApi       = array(
                 'spuList'   => array($spu['spu_sn']),
             );
@@ -271,6 +286,11 @@ class   Quotation {
                 );
                 Spu_Goods_RelationShip::create($content);
             }
+            foreach($goodsInfo as $key=>$info) {
+                
+                Sync::queueSkuData($info['goods_id']);
+            }
+            
         }
         Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
     }
@@ -348,8 +368,7 @@ class   Quotation {
             
             // 记录商品的规格 和 规格值
             $goodsId                    = Goods_Info::create($goodsData);
-			Sync::queueSkuData($goodsId);
-			
+
             foreach ($specValueList as $specValue) {
                 Goods_Spec_Value_Relationship::create(array(
                     'goods_id'      => $goodsId,
