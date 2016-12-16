@@ -36,13 +36,11 @@ i{
         <section class="content">
             <!-- Default box -->
             <div class="box">
-				<div class="box-header with-border">
-                   <div class="box-tools pull-right">
-						<a class="btn btn-success btn-xs add-category pull-right"  parent-cartgory-id=0><i class="fa fa-plus"></i> 添加一级品类</a>
-                    </div>
+                <div class="box-header with-border">
+                    <a class="btn btn-success btn-xs add-category pull-right"  parent-cartgory-id=0><i class="fa fa-plus"></i> 添加一级品类</a>
                 </div>
-				<div class="box-body">
-					<div class="table-responsive">
+                <div class="box-body">
+                    <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">
                             <thead>
                                 <tr class='info'>
@@ -106,7 +104,7 @@ i{
                                             <td>
                                                 <i style="margin-left:10%;margin-right:10%" class="glyphicon glyphicon-pencil pull-left" edit-category-id=<{$two_item.category_id}>></i>
                                                 <button  parent-cartgory-id=<{$two_item.category_id}> class='btn btn-xs btn-primary add-category pull-left'>添加子品类</button>
-												<a href='/manage/category/delete.php?category_id=<{$two_item.category_id}>' style="margin-right:20%" class='btn btn-xs btn-warning pull-right <{if $two_item.is_parent eq 1}>disabled<{/if}>'>删除</a>
+                                                <a href='/manage/category/delete.php?category_id=<{$two_item.category_id}>' style="margin-right:20%" class='btn btn-xs btn-warning pull-right <{if $two_item.is_parent eq 1}>disabled<{/if}>'>删除</a>
                                             </td>
                                         </tr>
                                             
@@ -141,7 +139,7 @@ i{
                                 <{/foreach}>
                             </tbody>
                         </table>
-						<!-- 蒙版区 - 添加文件 -->
+                        <!-- 蒙版区 - 添加文件 -->
                           <div class="modal fade" id="addFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-md">
                               <div class="modal-content ">
@@ -263,7 +261,7 @@ i{
     
     $(".add-category").click(function(){
         $("#addFileModal").modal({"show" : true})
-		$("#parent_id").val($(this).attr("parent-cartgory-id"));
+        $("#parent_id").val($(this).attr("parent-cartgory-id"));
     })
     function getEntityById (list, field, id) {
 
@@ -284,7 +282,7 @@ i{
         goodsType       = $("#goods_type_"+categoryId).val();
         console.log(categorySn)
         console.log(goodsType)
-		//return ;
+        //return ;
         if(categoryName.length == 0){
         
             alert("品类名称不能为空");

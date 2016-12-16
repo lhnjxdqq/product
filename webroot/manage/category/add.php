@@ -41,7 +41,6 @@ if($_POST['parent_id'] != 0){
 	$_POST['parent_id'] = 0;
 }
 
-//Utility::dump($_POST);die;
 if(!empty($searchCateName)){
 
     Utility::notice('品类名称已经存在'); 
