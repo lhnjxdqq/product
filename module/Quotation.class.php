@@ -380,7 +380,10 @@ class   Quotation {
             // 新增产品
             $productData['goods_id']    = $goodsId;
         }
-        
+        Goods_Info::update(array(
+            'goods_id'      => $goodsId,
+            'online_status' => Goods_OnlineStatus::ONLINE,
+        ));
         $productId                  = Product_Info::create($productData);
      
         Cost_Update_Log_Info::create(array(
