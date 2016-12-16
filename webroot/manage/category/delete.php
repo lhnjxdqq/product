@@ -14,7 +14,7 @@ if(in_array($_GET['category_id'],$listParentId)){
     
     Utility::notice('有子分类无法删除');
 }
-$count      = Goods_Info::countByCondition(array('category_id'=>$_GET['category_id']));
+$count      = Goods_Info::countByCondition(array('category_id'=>$_GET['category_id'],'delete_status'=>0));
 if($count > 0 ){
     
     Utility::notice('有未删除的SKU');

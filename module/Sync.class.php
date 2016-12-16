@@ -57,6 +57,9 @@ class Sync {
         $skuSpec        = current($skuSpecList);
         $mapSkuSpuList  = Common_Spu::getGoodsSpu(array($skuId));
         $listSkuSpu     = $mapSkuSpuList[$skuId];
+		if(empty($listSkuSpu)){
+			$listSkuSpu	= array();
+		}
         ArrayUtility::sortByField($listSkuSpu, 'spu_id');
         $minIdSpu       = current($listSkuSpu);
 
