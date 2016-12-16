@@ -19,10 +19,10 @@ if(empty($mapUpdateCost)){
 
 foreach($mapUpdateCost as $key=>$info){
     
-	Update_Cost_Info::update(array(
-		'update_cost_id'       => $info['update_cost_id'],
-		'status_id'            => Update_Cost_Status::UPDATE,
-	));
+    Update_Cost_Info::update(array(
+        'update_cost_id'       => $info['update_cost_id'],
+        'status_id'            => Update_Cost_Status::UPDATE,
+    ));
     $mapUpdateCostSourceInfo    = Update_Cost_Source_Info::getByUpdateCostId($info['update_cost_id']);
     $data                       = array();
     foreach($mapUpdateCostSourceInfo as $updateCostSourceInf){
@@ -97,6 +97,18 @@ foreach($mapUpdateCost as $key=>$info){
                                             'delete_status' => Goods_DeleteStatus::NORMAL,
                                             'online_status' => Goods_OnlineStatus::ONLINE,
                                         ));
+                                        $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($id);
+
+                                        if(!empty($spuGoodsInfo)){
+                                            
+                                            foreach($spuGoodsInfo as $key=>$val){
+                                                
+                                                Spu_Info::update(array(
+                                                    'spu_id'        => $val['spu_id'],
+                                                    'online_status' => Spu_OnlineStatus::ONLINE,
+                                                ));
+                                            }
+                                        }
                                         Product_Info::update(array(
                                             'product_id'    => $indexGoodsIdProductId[$id],
                                             'product_cost'  => $colorPrice,
