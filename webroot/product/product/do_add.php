@@ -92,6 +92,22 @@ $goodsId                = Goods_Spec_Value_RelationShip::validateGoods($specValu
 if ($goodsId) {
 
     $productData['goods_id']    = $goodsId;
+    Goods_Info::update(array(
+        'goods_id'      => $goodsId,
+        'online_status' => Goods_OnlineStatus::ONLINE,
+    ));
+    $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($goodsId);
+    
+    if(!empty($spuGoodsInfo)){
+        
+        foreach($spuGoodsInfo as $key=>$val){
+            
+            Spu_Info::update(array(
+                'spu_id'        => $val['spu_id'],
+                'online_status' => Spu_OnlineStatus::ONLINE,
+            ));
+        }   
+    }
 } else {
 
     // 先新增一个商品
@@ -120,10 +136,6 @@ if ($goodsId) {
     $productData['goods_id']    = $goodsId;
 }
 
-Goods_Info::update(array(
-    'goods_id'      => $goodsId,
-    'online_status' => Goods_OnlineStatus::ONLINE,
-));
 $productId  = Product_Info::create($productData);
 
 Cost_Update_Log_Info::create(array(
