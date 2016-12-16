@@ -36,9 +36,13 @@ i{
         <section class="content">
             <!-- Default box -->
             <div class="box">
-
-                <div class="box-body">
-                    <div class="table-responsive">
+				<div class="box-header with-border">
+                   <div class="box-tools pull-right">
+						<a class="btn btn-success btn-xs add-category pull-right"  parent-cartgory-id=0><i class="fa fa-plus"></i> 添加一级品类</a>
+                    </div>
+                </div>
+				<div class="box-body">
+					<div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">
                             <thead>
                                 <tr class='info'>

@@ -28,20 +28,25 @@ if($_POST['parent_id'] != 0){
 
     $searchParentId     = current(ArrayUtility::searchBy($listCategort,array('category_id'=>$_POST['parent_id'])));
     $parentLevel        = $searchParentId['category_level'];
-    if($parentLevel == 1){
-
-		$level	= $parentLevel + 1;         
+	$level	= $parentLevel + 1; 
+    
+	if($parentLevel == 1){
+        
         if(empty($_POST['goods_type_id']) || empty($_POST['category_sn'])){
             
             Utility::notice('三级品类的商品类型和分类代码不能为空');
         }
     }
+}else{
+	$_POST['parent_id'] = 0;
 }
+
+//Utility::dump($_POST);die;
 if(!empty($searchCateName)){
 
     Utility::notice('品类名称已经存在'); 
 }
-if(!empty($searchCateSn)){
+if(!empty($_POST['category_sn']) && !empty($searchCateSn)){
 
     Utility::notice('品类代码已经存在'); 
 }
