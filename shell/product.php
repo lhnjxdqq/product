@@ -235,13 +235,3 @@ Quotation_Info::update(array(
     'status_code'   => Quotation_StatusCode::GENERATED,
 ));
 
-/*
-if(!empty($errorList)){
-
-    $template->assign('errorList',   $errorList);
-    $template->assign('addNums',   $addNums);
-    $template->display('import_quotation.tpl');
-    exit;
-}
-Utility::notice('导入报价单成功');
-*/

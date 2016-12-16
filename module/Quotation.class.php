@@ -356,7 +356,7 @@ class   Quotation {
                 'online_status' => Goods_OnlineStatus::ONLINE,
             ));
             $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($goodsId);
-            
+
 			if(!empty($spuGoodsInfo)){
                 
                 foreach($spuGoodsInfo as $key=>$val){
@@ -365,7 +365,7 @@ class   Quotation {
                         'spu_id'        => $val['spu_id'],
                         'online_status' => Spu_OnlineStatus::ONLINE,
                     ));
-                }   
+                }
             }
         } else {
 
