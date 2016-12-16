@@ -28,9 +28,9 @@ if($_POST['parent_id'] != 0){
 
     $searchParentId     = current(ArrayUtility::searchBy($listCategort,array('category_id'=>$_POST['parent_id'])));
     $parentLevel        = $searchParentId['category_level'];
-	$level	= $parentLevel + 1; 
+    $level  = $parentLevel + 1; 
     
-	if($parentLevel == 1){
+    if($parentLevel == 1){
         
         if(empty($_POST['goods_type_id']) || empty($_POST['category_sn'])){
             
@@ -38,7 +38,7 @@ if($_POST['parent_id'] != 0){
         }
     }
 }else{
-	$_POST['parent_id'] = 0;
+    $_POST['parent_id'] = 0;
 }
 
 if(!empty($searchCateName)){
@@ -49,13 +49,17 @@ if(!empty($_POST['category_sn']) && !empty($searchCateSn)){
 
     Utility::notice('品类代码已经存在'); 
 }
-Category_Info::create(array(
+$data       = array(
     'category_name' => $_POST['category_name'],
-    'category_sn'   => $_POST['category_sn'],
     'parent_id'     => $_POST['parent_id'],
     'goods_type_id' => $_POST['goods_type_id'],
     'category_level'=> $level,
+);
+if(!empty($_POST['category_sn'])){
     
-));
+    $data['category_sn']    = $_POST['category_sn'];
+}
+
+Category_Info::create($data);
 
 Utility::notice('添加品类成功', '/manage/category/index.php');
