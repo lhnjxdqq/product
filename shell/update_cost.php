@@ -184,7 +184,7 @@ foreach($mapUpdateCost as $key=>$info){
         $mapEnumeration = array();
 
         $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
-        $mapStyleInfo       = Style_Info::listAll();
+        $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
         $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
         $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
         if (empty($listGoodsType)) {

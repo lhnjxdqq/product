@@ -211,7 +211,7 @@ class Sales_Order_Export_Adapter_Standard implements Sales_Order_Export_Adapter_
         $mapGoodsDetail             = ArrayUtility::indexByField(Common_Goods::getMultiGoodsDetail($listGoodsId), 'goods_id');
         $mapSpuImageRelationship    = Common_Spu::getGoodsThumbnail($listSpuId);
         $mapSpuSourceCode           = ArrayUtility::indexByField(Common_Spu::getSpuSourceCodeList($listSpuId), 'spu_id');
-        $mapStyleInfo               = ArrayUtility::indexByField(Style_Info::listAll(), 'style_id');
+        $mapStyleInfo               = ArrayUtility::indexByField(ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL)), 'style_id');
 
         $order      = array();
         $orderList  = array();

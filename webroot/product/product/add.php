@@ -8,7 +8,7 @@ $listStyle      = Style_Info::listAll();
 $listStyle      = ArrayUtility::searchBy($listStyle, array('delete_status'=>Style_DeleteStatus::NORMAL));
 $groupStyle     = ArrayUtility::groupByField($listStyle, 'parent_id');
 
-$listCategory   = Category_Info::listAll();
+$listCategory   = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $listCategory   = ArrayUtility::searchBy($listCategory, array('delete_status'=>Category_DeleteStatus::NORMAL));
 $groupCategory  = ArrayUtility::groupByField($listCategory, 'parent_id');
 

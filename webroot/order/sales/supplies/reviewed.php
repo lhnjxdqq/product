@@ -41,10 +41,10 @@ $customerInfo       = Customer_Info::getById($customerId);
 $listUserInfo       = User_Info::listAll();
 $mapUserInfo        = ArrayUtility::indexByField($listUserInfo, 'user_id', 'username');
 // 分类信息
-$listCategoryInfo   = Category_Info::listAll();
+$listCategoryInfo   = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 // 款式信息
-$listStyleInfo      = Style_Info::listAll();
+$listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 
 $condition['supplies_id']       = $suppliesId;

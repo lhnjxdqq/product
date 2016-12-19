@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 $condition                  = $_GET;
 $userId                     = (int) $_SESSION['user_id'];
 
-$listCategoryInfo           = Category_Info::listAll();
+$listCategoryInfo           = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
 $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, 'category_id');
 

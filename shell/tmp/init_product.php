@@ -45,7 +45,7 @@ $indexSupplierId    = ArrayUtility::indexByField($supplierInfo,'supplier_id');
 $listSupplierId     = ArrayUtility::listField($supplierInfo,'supplier_id');
 
 //获取分类信息
-$listCategory       = Category_Info::listAll();
+$listCategory       = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $indexCategoryId    = ArrayUtility::indexByField($listCategory,'category_id');
 
 //获取属性值

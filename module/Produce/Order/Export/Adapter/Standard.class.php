@@ -105,7 +105,7 @@ class Produce_Order_Export_Adapter_Standard implements Produce_Order_Export_Adap
 
         $orderData          = self::_getOrderData();
         $groupOrderData     = ArrayUtility::groupByField($orderData, 'group_by');
-        $listStyleInfo      = Style_Info::listAll();
+        $listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
         $mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
         $result             = array();
         $rowNumber          = 1;

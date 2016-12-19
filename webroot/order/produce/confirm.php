@@ -12,9 +12,9 @@ $supplierId             = (int) $_GET['supplier_id'];
 $salesOrderInfo         = Sales_Order_Info::getById($salesOrderId);
 $supplierInfo           = Supplier_Info::getById($supplierId);
 
-$listCategoryInfo       = Category_Info::listAll();
+$listCategoryInfo       = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo        = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
-$listStyleInfo          = Style_Info::listAll();
+$listStyleInfo          = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapStyleInfo           = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 
 $listSupplierCart       = Produce_Order_Cart::getSupplierGoodsDetail($salesOrderId, $supplierId);

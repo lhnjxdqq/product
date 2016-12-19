@@ -63,7 +63,7 @@ if (count(array_unique($spuParams)) != 1) {
     Utility::notice('所选SPU三级分类和规格重量不同, 无法创建SPU');
 }
 
-$listCategoryInfo   = Category_Info::listAll();
+$listCategoryInfo   = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 foreach ($mapGoodsInfo as &$goodsInfo) {
 

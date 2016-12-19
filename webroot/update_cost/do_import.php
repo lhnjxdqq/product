@@ -108,7 +108,7 @@ $mapEnumeration = array();
 
 $addNums = 1;
 $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
-$mapStyleInfo       = Style_Info::listAll();
+$mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
 $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
 validate::testNull($listGoodsType, "表中无匹配产品类型,请修改后重新上传");

@@ -111,7 +111,7 @@ foreach ($listInfo as $info) {
 
     $addNums = 1;
     $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
-    $mapStyleInfo       = Style_Info::listAll();
+    $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
     $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
     $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
     if (empty($listGoodsType)) {

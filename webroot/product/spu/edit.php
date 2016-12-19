@@ -3,8 +3,8 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 
 if(strstr($_SERVER['HTTP_REFERER'],'/spu/index.php')){
-	
-	$_SESSION['page_product']   = $_SERVER['HTTP_REFERER'];
+    
+    $_SESSION['page_product']   = $_SERVER['HTTP_REFERER'];
 }
 Validate::testNull($_GET['spu_id'], 'spu_id is missing', '/product/spu/index.php');
 
@@ -38,7 +38,7 @@ $listSpecInfo           = Spec_Info::listAll();
 $mapSpecInfo            = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
 $listSpecValueInfo      = Spec_Value_Info::listAll();
 $mapSpecValueInfo       = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
-$listCategoryInfo       = Category_Info::listAll();
+$listCategoryInfo       = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo        = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 
 $weightValueId          = 0;

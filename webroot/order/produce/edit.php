@@ -35,7 +35,7 @@ $listOrderGoodsId       = array_unique(ArrayUtility::listField($listOrderProduct
 $listGoodsSpecValue     = Common_Goods::getMultiGoodsSpecValue($listOrderGoodsId);
 $mapGoodsSpecValue      = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
 // 款式
-$listStyleInfo          = Style_Info::listAll();
+$listStyleInfo          = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapStyleInfo           = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 // 产品对应的SPU
 $mapGoodsSpuList        = Common_Spu::getGoodsSpu($listOrderGoodsId);

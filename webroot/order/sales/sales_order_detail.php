@@ -31,8 +31,6 @@ $listProductId              = array_keys($groupProductIdSupplies);
 $listProductInfo            = Product_Info::getByMultiId($listProductId); 
 $indexGoodsId               = ArrayUtility::indexByField($listProductInfo,'goods_id');
 
-
-
 if(empty($listGoods)){
     
     Utility::notice('销售订单中没有产品','/order/sales/index.php');
@@ -52,7 +50,7 @@ $groupSkuSpu            = ArrayUtility::groupByField($skuRelationShipSpuInfo,'go
 
 $condition['list_goods_id'] = $listGoods;
 
-$listCategoryInfo           = Category_Info::listAll();
+$listCategoryInfo           = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
 $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, 'category_id');

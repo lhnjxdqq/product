@@ -22,7 +22,7 @@ $page                   = new PageList(array(
     PageList::OPT_PERPAGE   => 100,
 ));
 
-$listCategoryInfo           = Category_Info::listAll();
+$listCategoryInfo           = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
 $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, 'category_id');
@@ -30,8 +30,7 @@ $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, '
 $listSupplierInfo           = Supplier_Info::listAll();
 $mapSupplierInfo            = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
 
-$listStyleInfo              = Style_Info::listAll();
-$listStyleInfo              = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
+$listStyleInfo              = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $groupStyleInfo             = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
 
 $weightSpecInfo             = Spec_Info::getByAlias('weight');

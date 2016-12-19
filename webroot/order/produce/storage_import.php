@@ -92,7 +92,7 @@ $listProductId      = ArrayUtility::listField($orderProductInfo,'product_id');
 
 $listMapProudctInfo = Product_Info::getByMultiId($listProductId);
 
-$mapStyleInfo       = Style_Info::listAll();
+$listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
 
 $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
@@ -108,7 +108,7 @@ $mapEnumeration     = array(
    'mapIndexSpecAlias'    => $mapIndexSpecAlias,
    'mapSpecValue'         => $mapSpecValue,
    'mapSizeId'            => $mapSizeId,
-   'mapStyle'             => $mapStyleInfo,
+   'mapStyle'             => $listStyleInfo,
    'mapSpecInfo'          => $mapSpecInfo,
    'listMapProudctInfo'   => $listMapProudctInfo,
    'listProductId'        => $listProductId,

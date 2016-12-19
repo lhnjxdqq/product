@@ -48,7 +48,7 @@ $groupSkuSpu            = ArrayUtility::groupByField($skuRelationShipSpuInfo,'go
 
 $condition['list_goods_id'] = $listGoods;
 
-$listCategoryInfo           = Category_Info::listAll();
+$listCategoryInfo           = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
 $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, 'category_id');
