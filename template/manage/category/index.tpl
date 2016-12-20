@@ -280,9 +280,7 @@ i{
         categoryName    = $("#input-category-name-"+categoryId).val();
         categorySn      = $("#input-category-sn-"+categoryId).val();
         goodsType       = $("#goods_type_"+categoryId).val();
-        console.log(categorySn)
-        console.log(goodsType)
-        //return ;
+
         if(categoryName.length == 0){
         
             alert("品类名称不能为空");

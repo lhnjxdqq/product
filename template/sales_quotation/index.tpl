@@ -27,15 +27,15 @@
             <div class="box">
                 <div class="box-header with-border row">
                     <form class="form-inline" action="/sales_quotation/index.php" method="get">
-						<div class="pull-left col-md-4">
-							<div class="input-daterange input-group input-group-sm">
-								<span class="input-group-addon" style="border-width:1px 0 1px 1px;">统计时间:</span>
-								<input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
-								<span class="input-group-addon">到</span>
-								<input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
-							</div>
-						</div>
-						<div class="col-md-2" style="">
+                        <div class="pull-left col-md-4">
+                            <div class="input-daterange input-group input-group-sm">
+                                <span class="input-group-addon" style="border-width:1px 0 1px 1px;">统计时间:</span>
+                                <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
+                                <span class="input-group-addon">到</span>
+                                <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">客户名称:</span>
                                     <select class="form-control select-multiple" name="customer_id">
@@ -46,15 +46,15 @@
                                     </select>
                             </div>
                         </div>
-						<div class="pull-left col-md-4">
-							<div class="input-group input-group-sm">
-								<span class="input-group-addon">关键词搜索:</span>
-								<input type="text" class="form-control" name="keyword" class="form-control" value="<{$condition.keyword}>" placeholder="请输入销售报价单名称/关键词" />
-								<span class="input-group-btn">
-									<button class="btn btn-primary" type="submit">搜索</button>
-								</span>
-							</div>
-						</div>
+                        <div class="pull-left col-md-4">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon">关键词搜索:</span>
+                                <input type="text" class="form-control" name="keyword" class="form-control" value="<{$condition.keyword}>" placeholder="请输入销售报价单名称/关键词" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">搜索</button>
+                                </span>
+                            </div>
+                        </div>
                     </form>
                     <div class="pull-right col-md-2">
                         <a href="/sales_quotation/create_by_excel/upload.php" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 创建销售报价单</a>
