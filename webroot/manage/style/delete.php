@@ -16,7 +16,7 @@ $count      = Goods_Info::countByCondition(array('style_id' => $styleId,'delete_
 
 if($count >= 1){
     
-    Utility::notice('该款式下有未删除的产品');
+    Utility::notice('该款式下有未删除的SKU');
 }
 Style_Info::update(array(
     'style_id'      => $styleId,
