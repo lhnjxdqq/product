@@ -19,25 +19,25 @@ file_put_contents(LOCK_FILE, 'file.lock');
  * @param string $path 要递归删除文件或目录的
  */
 function deleteByDirFile($path,$tagRootPath){
-	
-	if( is_dir($path) ){
-		$handler = opendir($path);
-		while( ( $file = readdir($handler) ) !== false ){
-			if( $file!='.' && $file!='..' ){
-				deleteByDirFile($path.DIRECTORY_SEPARATOR.$file,$tagRootPath);
-			}
-		}
-		closedir($handler);
-	}
-	
-	//如果是一个文件，就删除该文件
-	if( is_file($path)){
-		@unlink($path);
-	//如果是一个目录，且该目录的子级目录等于2，则可以删除；若大于2个以上递归遍历删除；且不是标记的根目录路径时，才可删除
-	}else if( is_dir($path) && count(scandir($path))==2 && $path!=$tagRootPath ){
-		@rmdir($path);
-	}
-	
+    
+    if( is_dir($path) ){
+        $handler = opendir($path);
+        while( ( $file = readdir($handler) ) !== false ){
+            if( $file!='.' && $file!='..' ){
+                deleteByDirFile($path.DIRECTORY_SEPARATOR.$file,$tagRootPath);
+            }
+        }
+        closedir($handler);
+    }
+    
+    //如果是一个文件，就删除该文件
+    if( is_file($path)){
+        @unlink($path);
+    //如果是一个目录，且该目录的子级目录等于2，则可以删除；若大于2个以上递归遍历删除；且不是标记的根目录路径时，才可删除
+    }else if( is_dir($path) && count(scandir($path))==2 && $path!=$tagRootPath ){
+        @rmdir($path);
+    }
+    
 }
 
 /**
@@ -45,19 +45,19 @@ function deleteByDirFile($path,$tagRootPath){
  */
 function getByDirFile($path,&$files){
 
-	if( is_dir($path) ){
-		$handler = opendir($path);
-		while( ( $file = readdir($handler) ) !== false ){
-			if( $file!='.' && $file!='..' ){
-				getByDirFile($path.DIRECTORY_SEPARATOR.$file,$files);
-			}
-		}
-		closedir($handler);
-	}
+    if( is_dir($path) ){
+        $handler = opendir($path);
+        while( ( $file = readdir($handler) ) !== false ){
+            if( $file!='.' && $file!='..' ){
+                getByDirFile($path.DIRECTORY_SEPARATOR.$file,$files);
+            }
+        }
+        closedir($handler);
+    }
 
-	if( is_file($path) ){
-		$files[] = $path;
-	}
+    if( is_file($path) ){
+        $files[] = $path;
+    }
 
 }
 
@@ -67,8 +67,8 @@ function getByDirFile($path,&$files){
 function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $serialNumber, $productImageKey) {
     echo 'spu标记' . "\n";
 
-	$listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuIdAndImageTypeSerialNumber($spuId , $imageType , $serialNumber);
-    $spuImageInstance 	       = AliyunOSS::getInstance('images-spu');
+    $listSpuImagesRelationship = Spu_Images_RelationShip::getBySpuIdAndImageTypeSerialNumber($spuId , $imageType , $serialNumber);
+    $spuImageInstance          = AliyunOSS::getInstance('images-spu');
     $spuflag = 0;
     
     foreach ($listSpuImagesRelationship as $spuImagesRelationship) {
@@ -110,14 +110,14 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
     }
 
     $data = array(
-    	'spu_id'        => $spuId,
-    	'image_key'     => $productImageKey,
+        'spu_id'        => $spuId,
+        'image_key'     => $productImageKey,
         'image_type'    => $imageType,
         'serial_number' => $serialNumber,
-    	);
+        );
 
     if (Spu_Images_RelationShip::create($data)) {
-    	Spu_Push::updatePushSpuData($spuId);
+        Spu_Push::updatePushSpuData($spuId);
     }
     $listImages     = Spu_Images_RelationShip::getBySpuId($spuId);
     $sortImage      = Sort_Image::sortImage($listImages);
@@ -133,7 +133,7 @@ function addImageForSpu($spuId , $imageMd5 ,  $fileSavePath , $imageType , $seri
         'spu_id'        => $spuId,
         'image_total'   => $spuCountImage,
     ));
-    
+	Sync::queueSpuData($spuId);
 }
 
 /**
@@ -144,9 +144,9 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
     echo 'product标记' . "\n";
     echo 'productID标记' . $productId . "\n";
 
-	$listProductImagesRelationship      = Product_Images_RelationShip::getByIdAndImageTypeSerialNumber($productId , $imageType , $serialNumber);
+    $listProductImagesRelationship      = Product_Images_RelationShip::getByIdAndImageTypeSerialNumber($productId , $imageType , $serialNumber);
     $productImageInstance               = AliyunOSS::getInstance('images-product');
-	$productflag = 0;
+    $productflag = 0;
     
     foreach ($listProductImagesRelationship as $productImagesRelationship) {
 
@@ -179,21 +179,21 @@ function addImageForProduct($productId , $imageMd5 ,$fileSavePath , $imageType ,
         }
     }
 
-	if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
-		unset($productflag);
-		return $imageKey;
-	}
+    if ($productflag) { // 如果为真的话,则证明有一张图片和上传图片一样,则无需上传
+        unset($productflag);
+        return $imageKey;
+    }
     
-	// 上传开始了
+    // 上传开始了
     $prodImageKey               = $productImageInstance->create($fileSavePath, null, true);
     
     //写入数据库
     $data = array(
-    	'product_id'    => $productId,
-    	'image_key'     => $prodImageKey,
+        'product_id'    => $productId,
+        'image_key'     => $prodImageKey,
         'image_type'    => $imageType,
         'serial_number' => $serialNumber,
-    	);
+        );
     Product_Images_RelationShip::create($data);
     $listImages     = Product_Images_RelationShip::getById($productId);
     $sortImage      = Sort_Image::sortImage($listImages);
@@ -216,7 +216,7 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
     echo 'sku标记' . "\n";
 
     $listGoodsImagesRelationship = Goods_Images_RelationShip::getByGoodsIdAndImageTypeSerialNumber($goodsId , $imageType , $serialNumber);
-    $goodsImageInstance 					 = AliyunOSS::getInstance('images-sku');
+    $goodsImageInstance                      = AliyunOSS::getInstance('images-sku');
     $goodsflag = 0;
     
     foreach ($listGoodsImagesRelationship as $goodsImagesRelationship) {
@@ -256,14 +256,14 @@ function addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $s
     }
 
     $data = array(
-    	'goods_id'      => $goodsId,
-    	'image_key'     => $productImageKey,
+        'goods_id'      => $goodsId,
+        'image_key'     => $productImageKey,
         'image_type'    => $imageType,
         'serial_number' => $serialNumber,
-    	);
+        );
 
     if (Goods_Images_RelationShip::create($data)) {
-    	Goods_Push::updatePushGoodsData($goodsId);
+        Goods_Push::updatePushGoodsData($goodsId);
     }
     
     $listImages     = Goods_Images_RelationShip::getByGoodsId($goodsId);
@@ -295,16 +295,16 @@ $typeList       = array_flip(Sort_Image::getImageTypeList());
 $listSpuSn      = array();    
 //处理所有的文件
 if( !empty($files) && is_array($files) ){
-	foreach($files as $fileSavePath){
+    foreach($files as $fileSavePath){
 
-		//若文件存在，则进行数据库查询操作
-		if( !file_exists($fileSavePath) ){
-			continue;
-		}
-		
-		//获取产品编号/不带后缀的文件名称
-		$imageName = pathinfo($fileSavePath,PATHINFO_FILENAME);
-		//查找该产品编号对应的产品数据是否存在
+        //若文件存在，则进行数据库查询操作
+        if( !file_exists($fileSavePath) ){
+            continue;
+        }
+        
+        //获取产品编号/不带后缀的文件名称
+        $imageName = pathinfo($fileSavePath,PATHINFO_FILENAME);
+        //查找该产品编号对应的产品数据是否存在
         
         //图片序号
         $serialNumber   = substr($imageName,strlen($imageName)-2);
@@ -318,66 +318,66 @@ if( !empty($files) && is_array($files) ){
             continue;
         }
         $sourceInfo = Source_Info::getBySourceCode($sourceSn);
-		$sourceInfo = ArrayUtility::searchBy($sourceInfo , array('delete_status'=>0));
+        $sourceInfo = ArrayUtility::searchBy($sourceInfo , array('delete_status'=>0));
 
-		//若存在，修改产品对应的图片路径；若不存在，则删除该文件
-		if( !empty($sourceInfo) && !empty($imageType) && !empty($serialNumber)){
+        //若存在，修改产品对应的图片路径；若不存在，则删除该文件
+        if( !empty($sourceInfo) && !empty($imageType) && !empty($serialNumber)){
             foreach ($sourceInfo as $source) {
 
-    			$listProductInfo = Product_Info::getByMultiSourceId(array($source['source_id']));
+                $listProductInfo = Product_Info::getByMultiSourceId(array($source['source_id']));
         
-    			$listProductInfo = array_values(ArrayUtility::searchBy($listProductInfo , array('delete_status'=>0 , 'online_status'=>1)));
+                $listProductInfo = array_values(ArrayUtility::searchBy($listProductInfo , array('delete_status'=>0 , 'online_status'=>1)));
 
-    			if (!$listProductInfo) {
-    				// 东西不存在,跳过
-    				continue;
-    			}
+                if (!$listProductInfo) {
+                    // 东西不存在,跳过
+                    continue;
+                }
                 
-    			foreach ($listProductInfo as $productInfo) {
+                foreach ($listProductInfo as $productInfo) {
 
-    				$imageMd5       = md5_file($fileSavePath);
+                    $imageMd5       = md5_file($fileSavePath);
                     try {
-    				    $productImageKey = addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
+                        $productImageKey = addImageForProduct($productInfo['product_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber);
                     } catch (Exception $e) {
                         echo $e->getMessage();
                     }
 
-    				//查询 goods 图片是否有
-    		        $goodsId = $productInfo['goods_id'];
+                    //查询 goods 图片是否有
+                    $goodsId = $productInfo['goods_id'];
                     try {
-    		            addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey);
+                        addImageForGoods($goodsId , $imageMd5 , $fileSavePath , $imageType , $serialNumber ,$productImageKey);
                     } catch (Exception $e) {
                         echo $e->getMessage();
                     }
 
-    		        // 通过goods_id查询spu_id
-    		        $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
-    				if ($listSpuGoodsRelationship) {
+                    // 通过goods_id查询spu_id
+                    $listSpuGoodsRelationship = Spu_Goods_RelationShip::getByGoodsId($goodsId);
+                    if ($listSpuGoodsRelationship) {
 
-    			        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
-    			        	$spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
-    			        	if ($spuInfo) {
+                        foreach ( $listSpuGoodsRelationship as $spuGoodsRelationship ) {
+                            $spuInfo = Spu_Info::getById($spuGoodsRelationship['spu_id']);
+                            if ($spuInfo) {
                                 try {
                                     $listSpuSn[] = $spuInfo['spu_sn'];
-    			        		    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $productImageKey);
+                                    addImageForSpu($spuInfo['spu_id'] , $imageMd5 , $fileSavePath , $imageType , $serialNumber, $productImageKey);
                                 } catch (Exception $e) {
                                     echo $e->getMessage();
                                 }
-    			        	}
-    			        }
-    				}		        
-    			}
+                            }
+                        }
+                    }               
+                }
             }
 
-		}else{
-			
-			//没有找到产品信息的错误文件输出
-			echo "\r\n";
-			echo "Did not find the product_info file:{$fileSavePath}";
-			
-		}
-		
-	}
+        }else{
+            
+            //没有找到产品信息的错误文件输出
+            echo "\r\n";
+            echo "Did not find the product_info file:{$fileSavePath}";
+            
+        }
+        
+    }
 }
 
 if(!empty($listSpuSn)){
