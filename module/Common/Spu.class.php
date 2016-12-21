@@ -45,11 +45,17 @@ FROM
 LEFT JOIN
   `product_info` AS `pi` ON `pi`.`source_id`=`soi`.`source_id`
 LEFT JOIN
+  `goods_info`  AS `gi` ON  `gi`.`goods_id`=`pi`.`goods_id`
+LEFT JOIN
   `spu_goods_relationship` AS `sgr` ON `sgr`.`goods_id`=`pi`.`goods_id`
 LEFT JOIN
   `spu_info` AS `spi` ON `spi`.`spu_id`=`sgr`.`spu_id`
 WHERE
-  `spi`.`spu_id` IN ("{$multiSpuIdStr}")
+  `spi`.`spu_id` IN ("{$multiSpuIdStr}") 
+AND 
+    `pi`.`delete_status`= 0
+AND
+    `gi`.`delete_status` = 0
 GROUP BY
   `soi`.`source_id`,`spi`.`spu_id`
 SQL;
