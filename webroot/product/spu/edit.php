@@ -17,7 +17,7 @@ if ($spuInfo['online_status'] == Spu_OnlineStatus::OFFLINE) {
 $spuGoodsList           = Spu_Goods_RelationShip::getBySpuId($spuId);
 $mapSpuGoodsList        = ArrayUtility::indexByField($spuGoodsList, 'goods_id');
 $listGoodsId            = ArrayUtility::listField($spuGoodsList, 'goods_id');
-$listGoodsInfo          = Goods_Info::getByMultiId($listGoodsId);
+$listGoodsInfo          = ArrayUtility::searchBy(Goods_Info::getByMultiId($listGoodsId),array('delete_status'=>Goods_DeleteStatus::NORMAL));
 $mapGoodsInfo           = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 $listGoodsSpecValue     = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 $groupGoodsSpecValue    = ArrayUtility::groupByField($listGoodsSpecValue, 'goods_id');
