@@ -45,6 +45,7 @@ if(!empty($broStyleInfo) && $broInfo['style_id'] != $_POST['style_id']){
 Style_Info::update(array(
     'style_name'    => $_POST['style_name'],
     'style_id'      => $_POST['style_id'],
+	'update_time'	=> date("Y-m-d H:i:s"),
 ));
 
 echo json_encode(array(

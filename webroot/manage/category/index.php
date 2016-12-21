@@ -8,7 +8,7 @@ $listParentId       = array_unique(ArrayUtility::listField($listCategort,'parent
 //按照父类ID分组
 $groupParentId      = ArrayUtility::groupByField($listCategort,'parent_id');
 //获取商品类型
-$goodsTypeInfo      = ArrayUtility::indexByField(Goods_Type_Info::listAll(),'goods_type_id');
+$goodsTypeInfo      = ArrayUtility::indexByField(ArrayUtility::searchBy(Goods_Type_Info::listAll(),array('delete_status'=>Goods_Type_DeleteStatus::NORMAL)),'goods_type_id');
 
 foreach($groupParentId as $key => $info){
     

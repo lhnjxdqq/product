@@ -31,7 +31,12 @@ class   Style_Info {
             'fields'    => self::FIELDS,
             'filter'    => 'style_id',
         );
+        $datetime   = date('Y-m-d H:i:s');
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => $datetime,
+            'update_time'   => $datetime,
+        );
         self::_getStore()->insert(self::_tableName(), $newData);
     }
 
@@ -48,6 +53,9 @@ class   Style_Info {
         );
         $condition  = "`style_id` = '" . addslashes($data['style_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'update_time'   => date('Y-m-d H:i:s'),
+        );
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 

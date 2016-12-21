@@ -31,7 +31,12 @@ class   Category_Info {
             'fields'    => self::FIELDS,
             'filter'    => 'category_id',
         );
+        $datetime   = date('Y-m-d H:i:s');
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'create_time'   => $datetime,
+            'update_time'   => $datetime,
+        );
         self::_getStore()->insert(self::_tableName(), $newData);
     }
 
@@ -47,7 +52,11 @@ class   Category_Info {
             'filter'    => 'category_id',
         );
         $condition  = "`category_id` = '" . addslashes($data['category_id']) . "'";
+        
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData    += array(
+            'update_time'   => date('Y-m-d H:i:s'),
+        );
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
@@ -62,6 +71,19 @@ class   Category_Info {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `category_id`="' . (int) $categoryId . '"';
 
         return  self::_getStore()->fetchOne($sql);
+    }
+    
+    /**
+     * 根据商品类型获取该品类的信息
+     *
+     * @param $goodsTypeId   品类ID
+     * @return array        品类信息
+     */
+    static public function getByGoodsTypeId ($goodsTypeId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_id`="' . (int) $goodsTypeId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
     }
     
     /**
