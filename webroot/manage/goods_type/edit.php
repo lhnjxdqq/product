@@ -25,7 +25,7 @@ if(empty($_POST['goods_type_id'])){
 }
 $listGoodsType  = ArrayUtility::searchBy(Goods_Type_Info::listAll(),array('delete_status'=>0));
 
-$goodsTypeInfo  = ArrayUtility::SearchBy($listGoodsType, array('goods_type_name'=>$_POST['goods_type_name']));
+$goodsTypeInfo  = current(ArrayUtility::SearchBy($listGoodsType, array('goods_type_name'=>$_POST['goods_type_name'])));
 
 if(!empty($goodsTypeInfo) && $goodsTypeInfo['goods_type_id'] != $_POST['goods_type_id']){
 

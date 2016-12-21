@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/../../../init.inc.php';
 
 if(empty($_POST['goods_type_name'])){
     
-    Utility::notice("商品类型名称不能为空",'/manage/style/index.php');
+    Utility::notice("商品类型名称不能为空");
     exit;
 }
 

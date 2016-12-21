@@ -28,7 +28,7 @@ $mapTypeSpecValue   = ArrayUtility::groupByField($goodsTypeSpecValue, 'spec_id',
 $listGoodsSpecValue = Goods_Spec_Value_RelationShip::getByGoodsId($goodsId);
 $mapGoodsSpecValue  = ArrayUtility::indexByField($listGoodsSpecValue, 'spec_id', 'spec_value_id');
 
-$listProductInfo    = Product_Info::getByGoodsId($goodsId);
+$listProductInfo    = ArrayUtility::searchBy(Product_Info::getByGoodsId($goodsId),array('delete_status'=>Goods_DeleteStatus::NORMAL));
 $listProductId      = ArrayUtility::listField($listProductInfo, 'product_id');
 $listSourceId       = ArrayUtility::listField($listProductInfo, 'source_id');
 $listSourceInfo     = Source_Info::getByMultiId($listSourceId);
