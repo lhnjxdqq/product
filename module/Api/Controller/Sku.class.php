@@ -108,7 +108,7 @@ class Api_Controller_Sku {
             'code'      => 0,
             'message'   => 'OK',
             'data'      => array(
-				'listSouece'	=> $indexGoodsSnSource,
+				'listSource'	=> $indexGoodsSnSource,
             ),
         );
     }
