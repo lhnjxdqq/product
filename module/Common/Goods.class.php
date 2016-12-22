@@ -58,12 +58,8 @@ LEFT JOIN
   `goods_info`  AS `gi` ON  `gi`.`goods_id`=`pi`.`goods_id`
 WHERE
   `gi`.`goods_id` IN ("{$multiGoodsIdStr}") 
-AND 
-    `pi`.`delete_status`= 0
-AND
-    `gi`.`delete_status` = 0
 GROUP BY
-    `gi`.`goods_id`
+	`gi`.`goods_id`
 SQL;
 
         return      self::_query($sql);
