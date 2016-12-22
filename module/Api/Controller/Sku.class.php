@@ -82,5 +82,34 @@ class Api_Controller_Sku {
             ),
         );
     }
-
+    
+    /**
+     * 按多个SKU编号查询买款ID
+     * 
+     * @param  array  $listGoodsSn
+     * @return [type]         
+     */
+    static public function getBySourceCodeByMultiSn (array $listGoodsSn) {
+        
+        if(empty($listGoodsSn)){
+               
+            return              array(
+                'code'      => 1,
+                'message'   => '无数据',
+                'data'      => array(
+                ),
+            );
+        }
+        $listSkuInfo            = Goods_Info::getByMultiGoodsSn($listGoodsSn);
+        $listGoodsId            = ArrayUtility::listField($listSkuInfo,'goods_id');
+        $goodsSourceInfo        = Common_Goods::getGoodsSourceCodeList($listGoodsId);
+        $indexGoodsSnSource     = ArrayUtility::indexByField($goodsSourceInfo,'goods_sn','source_code');
+        return              array(
+            'code'      => 0,
+            'message'   => 'OK',
+            'data'      => array(
+				'listSouece'	=> $indexGoodsSnSource,
+            ),
+        );
+    }
 }

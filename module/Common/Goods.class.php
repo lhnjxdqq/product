@@ -41,6 +41,34 @@ SQL;
         return      self::_query($sql);
     }
 
+    static public function getGoodsSourceCodeList (array $multiGoodsId) {
+
+        $multiGoodsId     = array_map('intval', array_unique(array_filter($multiGoodsId)));
+        $multiGoodsIdStr  = implode('","', $multiGoodsId);
+        $sql            =<<<SQL
+SELECT
+  `gi`.`goods_sn`,
+  `gi`.`goods_id`,
+  `soi`.`source_code`
+FROM
+  `source_info` AS `soi`
+LEFT JOIN
+  `product_info` AS `pi` ON `pi`.`source_id`=`soi`.`source_id`
+LEFT JOIN
+  `goods_info`  AS `gi` ON  `gi`.`goods_id`=`pi`.`goods_id`
+WHERE
+  `gi`.`goods_id` IN ("{$multiGoodsIdStr}") 
+AND 
+    `pi`.`delete_status`= 0
+AND
+    `gi`.`delete_status` = 0
+GROUP BY
+  `soi`.`source_id`,`gi`.`goods_id`
+SQL;
+
+        return      self::_query($sql);
+    }
+
     /**
      * 获取一组SKU的分类和款式信息
      *

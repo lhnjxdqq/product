@@ -357,7 +357,7 @@ class   Quotation {
             ));
             $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($goodsId);
 
-			if(!empty($spuGoodsInfo)){
+            if(!empty($spuGoodsInfo)){
                 
                 foreach($spuGoodsInfo as $key=>$val){
                     
@@ -1062,7 +1062,8 @@ class   Quotation {
         $specSizeId           = $specSizeInfo['size'];
         $specWeightId         = $specWeightInfo['weight'];
         $specColorId          = $specColorInfo['color'];
-
+        $goodsSourceInfo      = Common_Goods::getGoodsSourceCodeList($listGoodsId);
+        $indexGoodsIdSource   = ArrayUtility::indexByField($goodsSourceInfo,'goods_id');
         $mapSpecValue   = array();
         $mapMaterialValue = array();
         $mapSizeValue = array();
@@ -1171,6 +1172,7 @@ class   Quotation {
                     continue;
                 }
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_id']       = $goodsId;
+                $listSpuInfo[$key]['goods'][$goodsId]['source_code']    = $indexGoodsIdSource[$goodsId]['source_code'];
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_sn']       = $mapAllGoodsInfo[$goodsId]['goods_sn'];
                 $listSpuInfo[$key]['goods'][$goodsId]['goods_name']     = $mapAllGoodsInfo[$goodsId]['goods_name'];
                 $listSpuInfo[$key]['goods'][$goodsId]['sale_cost']      = $listSpuInfo[$key]['color'][$mapGoodsValueColorId[$goodsId]['color_id']];

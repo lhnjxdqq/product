@@ -23,6 +23,7 @@ return  array(
         'SalesQuotation.success',
         'Spu.getByMultiSn',
         'Spu.getSkuMulti',
+        'Sku.getBySourceCodeByMultiSn',
     ),
     'white_list_host'   => array(
         '127.0.0.1',
