@@ -104,12 +104,7 @@ class Api_Controller_Sku {
         $listGoodsId            = ArrayUtility::listField($listSkuInfo,'goods_id');
         $goodsSourceInfo        = Common_Goods::getGoodsSourceCodeList($listGoodsId);
         $indexGoodsSnSource     = ArrayUtility::indexByField($goodsSourceInfo,'goods_sn','source_code');
-        return              array(
-            'code'      => 0,
-            'message'   => 'OK',
-            'data'      => array(
-				'listSource'	=> $indexGoodsSnSource,
-            ),
-        );
+        
+		return   array('listSource'	=> $indexGoodsSnSource);
     }
 }
