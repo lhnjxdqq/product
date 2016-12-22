@@ -63,7 +63,7 @@ AND
 AND
     `gi`.`delete_status` = 0
 GROUP BY
-  `soi`.`source_id`,`gi`.`goods_id`
+    `gi`.`goods_id`
 SQL;
 
         return      self::_query($sql);
