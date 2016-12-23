@@ -14,6 +14,7 @@ if (Goods_Info::update($data)) {
 
     $listSpuGoods       = Spu_Goods_RelationShip::getByGoodsId($goodsId);
     $listSpuId          = ArrayUtility::listField($listSpuGoods, 'spu_id');
+    Sync::queueSkuData($goodsId);
     Goods_Push::changePushGoodsDataStatus($goodsId, 'delete');
     // 获取SPU的状态操作
     $listPendingSpu     = Common_Product::getSpuPendingStatus($listSpuId);
@@ -27,6 +28,9 @@ if (Goods_Info::update($data)) {
         Spu_Info::setOnlineStatusByMultiSpuId($pendingOfflineList, 'offline');
         foreach ($pendingOfflineList as $spuId) {
 
+            Sync::queueSpuData($spuId);
+            $spuInfo = Spu_Info::getById($spuId);
+            Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>Spu_OnlineStatus::OFFLINE));
             Spu_Push::changePushSpuDataStatus($spuId, 'offline');
         }
     }
@@ -35,6 +39,9 @@ if (Goods_Info::update($data)) {
         Spu_Info::setDeleteStatusByMultiSpuId($pendingDeletedList, Spu_DeleteStatus::DELETED);
         foreach ($pendingDeletedList as $spuId) {
 
+            Sync::queueSpuData($spuId);
+            $spuInfo = Spu_Info::getById($spuId);
+            Spu_Push::pushTagsListSpuSn(array($spuInfo['spu_sn']), array('onlineStatus'=>Spu_OnlineStatus::OFFLINE));
             Spu_Push::changePushSpuDataStatus($spuId, 'delete');
         }
     }
