@@ -13,12 +13,24 @@ if($salesQuotationInfo['is_confirm'] ==1 ){
         
         Utility::notice("没有此权限，请联系管理员");
     }
+    $apiUrl       = $apiList['select']['sales_quotation_log_file'];
+    $plApiUrl     = $apiList['select']['pl_sales_quotation_log_file'];
+
+    if(!empty($apiUrl)){
+     
+        HttpRequest::getInstance($apiUrl)->post(array('salesQuotationId'=>$salesQuotationId));
+    }
+    if(!empty($plApiUrl)){
+     
+        HttpRequest::getInstance($plApiUrl)->post(array('salesQuotationId'=>$salesQuotationId));
+    }
+
 }
 
 Sales_Quotation_Info::update(array(
     'sales_quotation_id'    => $salesQuotationId,
     'delete_status'         => DeleteStatus::DELETED,
-	'is_confirm'			=> 1,
+    'is_confirm'            => Sales_Quotation_ConfirmStatus::NO,
 ));
 
 Utility::notice("删除成功","/sales_quotation/index.php");
