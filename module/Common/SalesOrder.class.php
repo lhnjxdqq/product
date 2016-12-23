@@ -29,6 +29,8 @@ LEFT JOIN
   `product_info` AS `pi` ON `pi`.`product_id`=`popi`.`product_id`
 WHERE
   `soi`.`sales_order_id`="{$salesOrderId}"
+AND
+  `poi`.`status_code`!= 6
 ORDER BY
   `poi`.`produce_order_id` ASC
 SQL;

@@ -120,7 +120,10 @@
                                         <td><{$item.create_time}></td>
                                         <td>
                                             <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-info-circle"></i> 查看清单</a>
-                                            <{if $item.status_code == $data.listStatusCode.new_built}>
+                                            <{if $item.status_code != 6}>
+											<a href="/order/produce/delete.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
+                                            <{/if}>
+											<{if $item.status_code == $data.listStatusCode.new_built}>
                                             <a href="/order/produce/order_verify.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-retweet"></i> 审核</a>
                                             <{/if}>
                                             <{if $item.status_code == $data.listStatusCode.confirmed}>
@@ -200,6 +203,10 @@
     $('.input-daterange').datepicker({
         format  : 'yyyy-mm-dd',
         language: 'zh-CN'
+    });
+    $('.delete-confirm').click(function () {
+
+        return  confirm('确认删除？');
     });
     function reExport(produceOrderId) {
 

@@ -90,9 +90,9 @@
                                             <{if $item.is_confirm != $yesConfireCode}>
                                             <a href="/sales_quotation/edit_sales_quotation_confirm.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-success btn-xs confirm-yes" spu-quotation-id=<{$item.sales_quotation_id}>><i class="fa fa-check"></i>确认</a>
                                             <a href="/sales_quotation/edit.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i> 编辑</a>
-                                            <a href="/sales_quotation/do_delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
                                             <{/if}>
                                             <a href="javascript:void(0);" class="btn btn-warning btn-xs sales-quotaiton-copy" spu-quotation-id=<{$item.sales_quotation_id}>><i class="fa fa-copy"></i> 复制</a>
+                                            <a href="/sales_quotation/do_delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
                                             <{if $mapFile[$item.hash_code]}><a href="/sales_quotation/zip_download.php?code=<{$item.hash_code}>&file_name=<{$item.sales_quotation_name}>" class="btn btn-info btn-xs"><i class="fa fa-cloud-download"></i>下载</a><{else}>努力生成中....<{/if}>    
                                         </td>
                                     </tr>

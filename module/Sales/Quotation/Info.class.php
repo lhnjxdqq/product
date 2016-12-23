@@ -19,7 +19,7 @@ class   Sales_Quotation_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id,spu_num,author_id,operatior_id,is_confirm,hash_code,markup_rule,run_status';
+    const   FIELDS      = 'sales_quotation_id,sales_quotation_name,sales_quotation_date,customer_id,spu_num,author_id,operatior_id,is_confirm,hash_code,markup_rule,run_status,delete_status';
     /**
      * 新增
      *
@@ -88,6 +88,7 @@ class   Sales_Quotation_Info {
         $sql[]      = self::_conditionKeywords($condition);
         $sql[]      = self::_conditionCustomerId($condition);
         $sql[]      = self::_conditionIsConfirm($condition);
+        $sql[]      = self::_conditionDeleteStatus($condition);
         $sql[]      = self::_conditionrange(
             array(
                 'fieldCondition'    => 'sales_quotation_date',
@@ -128,6 +129,16 @@ class   Sales_Quotation_Info {
         }
 
         return  "`run_status` = '" . addslashes($condition['run_status']) . "'";
+    }
+    
+    static  private function _conditionDeleteStatus (array $condition) {
+
+        if (empty($condition['delete_status'])) {
+
+            return   "`delete_status` = 0";
+        }
+
+        return  "`delete_status` = '" . addslashes($condition['delete_status']) . "'";
     }
     
     static  private function _conditionIsConfirm (array $condition) {

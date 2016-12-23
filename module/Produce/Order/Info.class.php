@@ -81,7 +81,7 @@ class   Produce_Order_Info {
      */
     static public function getBySalesOrderId ($salesOrderId) {
 
-        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '"';
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `sales_order_id` = "' . (int) $salesOrderId . '" AND `status_code`!='. Produce_Order_StatusCode::DELETED;
 
         return  self::_getStore()->fetchAll($sql);
     }

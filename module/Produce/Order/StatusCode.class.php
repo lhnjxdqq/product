@@ -10,6 +10,8 @@ class Produce_Order_StatusCode extends SplEnum {
     const   ARRIVAL     = 4;    // 部分到货
 
     const   FINISHED    = 5;    // 订单完成
+    
+    const   DELETED     = 6;    // 已删除
 
     /**
      * 获取生产订单状态
@@ -24,6 +26,7 @@ class Produce_Order_StatusCode extends SplEnum {
             self::STOCKING      => '采购中',
             self::ARRIVAL       => '部分到货',
             self::FINISHED      => '订单完成',
+			self::DELETED		=> '已删除',
         );
     }
 }
