@@ -7,7 +7,7 @@ Validate::testNull($salesQuotationId, "报价单ID不能为空");
 
 $salesQuotationInfo = Sales_Quotation_Info::getBySalesQuotationId($salesQuotationId);
 Validate::testNull($salesQuotationInfo,"报价单不存在");
-if($salesQuotationInfo['is_confirm'] ==1 ){
+if($salesQuotationInfo['is_confirm'] == Sales_Quotation_ConfirmStatus::YES ){
     
     if(!in_array('/sales_quotation/do_delete.php',$_SESSION['user_auth'])){
         
