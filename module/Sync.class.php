@@ -82,6 +82,16 @@ class Sync {
         self::queue('sku_info_bi', $skuData);
     }
 
+    static public function queueSalesOrderData ($salesOrderId, $action) {
+
+        $salesOrderInfo = Sales_Order_Info::getById($salesOrderId);
+        $data           = array(
+            'salesOrderSn'  => $salesOrderInfo['sales_order_sn'],
+            'action'        => $action,
+        );
+        self::queue('sales_order_info', $data);
+    }
+
     static private function _initialize () {
 
         self::$_handler = RedisProxy::getInstance('test');

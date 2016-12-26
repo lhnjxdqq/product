@@ -11,4 +11,8 @@ Sales_Order_Info::update(array(
     )
 );
 
+if (SYNC_SALES_ORDER_TO_BI) {
+
+    Sync::queueSalesOrderData($_GET['sales_order_id'], 'create');
+}
 Utility::notice('订单审核成功','/order/sales/index.php');
