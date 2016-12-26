@@ -13,6 +13,7 @@ if($salesQuotationInfo['is_confirm'] ==1 ){
         
         Utility::notice("没有此权限，请联系管理员");
     }
+	$apiList    = Config::get('api|PHP', 'api_list');
     $apiUrl       = $apiList['select']['sales_quotation_log_file'];
     $plApiUrl     = $apiList['select']['pl_sales_quotation_log_file'];
 
