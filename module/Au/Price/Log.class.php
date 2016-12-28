@@ -161,4 +161,30 @@ class   Au_Price_Log {
     
     	return  $sequence == 'ASC'  ? $sequence : 'DESC';
     }
+
+    /**
+     * 按日期获取金价
+     *
+     * @param $date
+     * @return array
+     */
+    static public function getByDate ($date) {
+
+        $date   = date('Y-m-d', strtotime($date));
+        $sql    = "SELECT " . self::FIELDS . " FROM `" . self::_tableName() . "` WHERE `create_time` <= '" . $date . "' ORDER BY `create_time` DESC LIMIT 0,1";
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
+     * 获取系统日期最早的金价
+     *
+     * @return array
+     */
+    static public function getFirstDatePrice () {
+
+        $sql    = "SELECT " . self::FIELDS . " FROM `" . self::_tableName() . "` ORDER BY `create_time` ASC LIMIT 0,1";
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

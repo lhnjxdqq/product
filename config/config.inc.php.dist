@@ -27,4 +27,7 @@ define('SPU_IMAGE_TMP' , '/home/shuishou/product_image/image_tmp/');
 define('SPU_IMAGE_UNZIP_PATH' , '/home/shuishou/product_image/SPU');
 define('FRONTEND_DOMAIN', '*');
 
+// 是否推送销售订单到redis
+define('SYNC_SALES_ORDER_TO_BI', 0);
+
 

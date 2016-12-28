@@ -410,4 +410,18 @@ class   Sales_Order_Info {
 
         return              self::_getStore()->fetchAll($sql);
     }
+
+    /**
+     * 根据一组销售订单编号 查询销售订单数据
+     *
+     * @param array $multiSn
+     * @return array
+     */
+    static public function getByMultiSn (array $multiSn) {
+
+        $multiSn    = array_unique(array_filter(array_map('addslashes', array_map('trim', $multiSn))));
+        $sql        = "SELECT " . self::FIELDS . " FROM `" . self::_tableName() . "` WHERE `sales_order_sn` IN ('" . implode("','", $multiSn) . "')";
+
+        return      self::_getStore()->fetchAll($sql);
+    }
 }
