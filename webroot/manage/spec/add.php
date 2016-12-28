@@ -13,7 +13,7 @@ if(!empty($specInfo) && $specInfo['delete_status'] == 0){
     $specId     = array_unique(ArrayUtility::listField($specValueGoodsType,'spec_id'));
     
     if($specId == $specId[0]){
-        Utility::notice('规格名称重复');
+        Utility::notice('规格重复');
         exit;
     }
 }elseif($specInfo['delete_status'] == 1){
