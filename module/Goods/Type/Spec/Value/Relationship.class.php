@@ -92,6 +92,20 @@ class   Goods_Type_Spec_Value_Relationship {
     }
 
     /**
+     * 根据一组规格值ID 获取规格信息
+     *
+     * @param array $multiSpecValueId    规格ID
+     * @return array
+     */
+    static public function getByMultiSpecValueId (array $multiSpecValueId) {
+
+        $multiSpecValueId    = array_map('intval', array_unique(array_filter($multiSpecValueId)));
+        $sql            = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_value_id` IN ("' . implode('","', $multiSpecValueId) . '")';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 根据规格ID查询所有规格值
      *
      * @param $specId
@@ -102,5 +116,19 @@ class   Goods_Type_Spec_Value_Relationship {
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_id` = "' . (int) $specId . '"';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+    
+    /**
+     * 根据规格ID删除关联记录
+     *
+     * @param $specValueId
+     * @return array
+     */
+    static public function deleteBySpecValueId ($specValueId) {
+
+        Validate::testNull($specValueId,'规格ID不能为空');
+		
+        $condition  = 'spec_value_id='.(int)$specValueId;
+        self::_getStore()->delete(self::_tableName(),$condition);
     }
 }

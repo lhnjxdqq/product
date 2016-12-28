@@ -196,6 +196,19 @@ class   Goods_Spec_Value_RelationShip {
     }
 
     /**
+     * 根据规格ID查询商品
+     *
+     * @param $specValueId  商品ID
+     * @return array    	该商品的规格和规格值ID
+     */
+    static public function getBySpecValueId ($specValueId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_value_id` = "' . (int) $specValueId . '"';
+
+        return  self::_getStore()->fetchAll($sql);
+    }
+
+    /**
      * 获取所有符合该组 规格 规格值得商品
      *
      * @param $multiSpecValueList
