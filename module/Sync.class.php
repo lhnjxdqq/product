@@ -89,7 +89,7 @@ class Sync {
             'salesOrderSn'  => $salesOrderInfo['sales_order_sn'],
             'action'        => $action,
         );
-        self::queue('sales_order_info', $data);
+        self::queue('sales_order_info_bi', $data);
     }
 
     static private function _initialize () {
