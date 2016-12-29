@@ -39,7 +39,7 @@ foreach($goodsTypeSpecValue as $specId=> $info){
         
         $goodsTypeNmaeInfo[] = $indexGoodsIdName[$goodsTypeId];
     }
-    $goodsTypeNameSpec[$specId] = implode(',',array_unique($goodsTypeNmaeInfo));
+    $goodsTypeNameSpec[$specId] = implode(',',array_filter(array_unique($goodsTypeNmaeInfo)));
 }
 
 $template       = Template::getInstance();
