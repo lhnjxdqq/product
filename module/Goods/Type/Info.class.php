@@ -59,4 +59,17 @@ class   Goods_Type_Info {
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
+    /**
+     * 根据商品类型名称获取详情
+     *
+     * @param $goodsTypeName  商品类型名称
+     * @return array          商品类型信息
+     */
+    static public function getBygoodsTypeName ($goodsTypeName) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_name` = "' . addslashes(trim($goodsTypeName)) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
 }

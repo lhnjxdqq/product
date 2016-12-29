@@ -137,7 +137,8 @@ class   Spec_Value_List {
 
         return  array(
             '`svi`.`spec_value_id`',
-			'`svi`.`spec_value_data`'
+			'`svi`.`spec_value_data`',
+			'`si`.`spec_id`',
         );
     }
 }
