@@ -31,15 +31,15 @@ class   Spec_Value_Info {
             'fields'    => self::FIELDS,
             'filter'    => 'spec_value_id',
         );
-		$datetime	= date("Y-m-d H:i:s");
+        $datetime   = date("Y-m-d H:i:s");
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-		$newData    += array(
+        $newData    += array(
             'create_time'   => $datetime,
             'update_time'   => $datetime,
         );
         self::_getStore()->insert(self::_tableName(), $newData);
-		
-		return      self::_getStore()->lastInsertId();
+        
+        return      self::_getStore()->lastInsertId();
     }
 
     /**
@@ -55,7 +55,7 @@ class   Spec_Value_Info {
         );
         $condition  = "`spec_value_id` = '" . addslashes($data['spec_value_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
-		$newData    += array(
+        $newData    += array(
             'update_time'   => date("Y-m-d H:i:s"),
         );
         self::_getStore()->update(self::_tableName(), $newData, $condition);
@@ -71,7 +71,7 @@ class   Spec_Value_Info {
     static public function getByMulitId (array $multiId) {
 
         $multiId    = array_map('intval', array_unique(array_filter($multiId)));
-        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_value_id` IN ("' . implode('","', $multiId) . '")';
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `delete_status`=0 AND `spec_value_id` IN ("' . implode('","', $multiId) . '")';
 
         return      self::_getStore()->fetchAll($sql);
     }
@@ -102,7 +102,7 @@ class   Spec_Value_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
-	    
+        
     static public function query ($sql) {
 
         return  self::_getStore()->fetchAll($sql);

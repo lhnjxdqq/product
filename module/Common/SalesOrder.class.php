@@ -9,6 +9,7 @@ class Common_SalesOrder {
      */
     static public function getProduceOrderDetail ($salesOrderId) {
 
+        $salesOrderId = (int) $salesOrderId;
         $sql    =<<<SQL
 SELECT
   `soi`.`sales_order_id`,
@@ -46,6 +47,7 @@ SQL;
      */
     static public function getProducedGoods ($salesOrderId) {
 
+        $salesOrderId           = (int) $salesOrderId;
         $listProduceOrder       = Produce_Order_Info::getBySalesOrderId($salesOrderId);
         $listProduceOrderId     = ArrayUtility::listField($listProduceOrder, 'produce_order_id');
         $listProduceOrderIdStr  = implode('","', $listProduceOrderId);

@@ -9,6 +9,7 @@ class Common_ProduceOrder {
      */
     static public function getOrderDetail ($produceOrderId) {
 
+        $produceOrderId = (int) $produceOrderId;
         $sql    =<<<SQL
 SELECT 
   `poi`.`produce_order_id`,
