@@ -30,6 +30,9 @@ if(!empty($specInfo) && $specInfo['delete_status'] == 0){
         'delete_status'     => 0,
     ));     
 }
+
+Goods_Type_Spec_Value_Relationship::deleteBySpecValueId($specValueId);
+
 if(!empty($data['goods_type_id'])){
     
     foreach($data['goods_type_id'] as $goodsTypeId){
