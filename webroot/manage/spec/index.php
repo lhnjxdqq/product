@@ -7,7 +7,7 @@ $condition['spec_id']       = $_GET['spec_id'];
 $condition['delete_status'] = Spec_Value_DeleteStatus::NORMAL;
 
 $orderBy    = array(
-    'spec_value_id' => 'DESC',
+    'serial_number' => 'ASC',
 );
 $specInfo       = ArrayUtility::indexByField(Spec_Info::listAll(),'spec_id');
 if(!empty($_GET['spec_id'])){

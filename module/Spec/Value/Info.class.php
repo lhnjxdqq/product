@@ -19,7 +19,7 @@ class   Spec_Value_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'spec_value_id,spec_value_data,delete_status,create_time,update_time';
+    const   FIELDS      = 'spec_value_id,spec_value_data,delete_status,create_time,update_time,serial_number';
     /**
      * 新增
      *

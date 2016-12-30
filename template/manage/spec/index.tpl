@@ -47,6 +47,8 @@ i{
                             <i class="fa fa-minus"></i></button>
                     </div>
                 </div>
+                
+                <form action="/manage/spec/sort.php" method="POST">
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="role-list">
@@ -57,8 +59,9 @@ i{
                                 <th style="width: 15%;">操作</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="<{if $specName == '颜色' || $specName == '规格尺寸'}>sortable<{/if}>">
                             <{foreach from=$listSpecInfo item=item}>
+
                                 <tr>
                                     <td>
                                         <span style='margin-right:20%' id="spec_value_id_name_<{$item.spec_value_id}>" class="value-<{$item.spec_value_id}>"><{$item.spec_value_data}></span>
@@ -75,6 +78,7 @@ i{
                                         </span>
                                     </td>
                                     <td>
+                                        <input type="hidden" name="spec_value_id[]" value="<{$item.spec_value_id}>" />
                                         <i class="pull-left glyphicon glyphicon-pencil" edit-spec_value_id-id=<{$item.spec_value_id}>></i>    
                                         <a href="/manage/spec/delete.php?spec_value_id=<{$item.spec_value_id}>" class="pull-right btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
                                     </td>
@@ -82,7 +86,12 @@ i{
                                 <{/foreach}>
                             </tbody>
                         </table>
+                        <{if $specName == '颜色' || $specName == '规格尺寸'}><button type="submit" class="btn btn-primary pull-right">保存排序</button><{/if}>
                     </div>
+                </div>
+                </form>
+                <div class="box-footer">
+                    <{include file="section/pagelist.tpl" viewData=$pageViewData}>
                 </div>
                 <!-- 蒙版区 - 添加文件 -->
                   <div class="modal fade" id="addFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -128,9 +137,6 @@ i{
 
                 <!-- /.box-body -->
             </div>
-            <div class="box-footer">
-                <{include file="section/pagelist.tpl" viewData=$pageViewData}>
-            </div>
             <!-- /.box -->
         </section>
         <!-- /.content -->
@@ -155,7 +161,12 @@ i{
 <!-- ./wrapper -->
 
 <{include file="section/foot.tpl"}>
+
+<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
 <script>
+
+$(".sortable").sortable();
+$(".sortable").disableSelection();
 $(".add-category").click(function(){
     $("#addFileModal").modal({"show" : true});
 })
@@ -212,12 +223,12 @@ $(".table-responsive").on("click" , function(ev){
                 
                 goodsTypeName    = $("#spec_value_id_name_"+specValueId).html();                
                 $("#input-spec_value_data-"+specValueId).val(goodsTypeName);
-				history.go(0)
+                history.go(0)
             }else{
             
                 goodsTypeName    = $("#input-spec_value_data-"+specValueId).val();
                 $("#spec_value_id_name_"+specValueId).html(goodsTypeName);
-				$("#goods_type"+specValueId).html(response.data.listGoodsName);
+                $("#goods_type"+specValueId).html(response.data.listGoodsName);
             }
         }, 'json');   
         
