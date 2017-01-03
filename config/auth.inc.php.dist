@@ -25,6 +25,7 @@ return  array(
         'Spu.getSkuMulti',
         'Sku.getBySourceCodeByMultiSn',
         'SalesOrder.getByMultiSn',
+        'Spec.getSpecValueAll',
     ),
     'white_list_host'   => array(
         '127.0.0.1',

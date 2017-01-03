@@ -61,7 +61,6 @@ class   Spec_Value_Info {
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
 
-
     /**
      * 根据一组规格值ID获取规格信息
      *
@@ -74,6 +73,19 @@ class   Spec_Value_Info {
         $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `delete_status`=0 AND `spec_value_id` IN ("' . implode('","', $multiId) . '")';
 
         return      self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 根据一组规格值ID获取规格信息
+     *
+     * @param array $id    规格ID
+     * @return array       规格值信息
+     */
+    static public function getById ($id) {
+
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `spec_value_id`='.(int)$id;
+
+        return      self::_getStore()->fetchOne($sql);
     }
 
     /**

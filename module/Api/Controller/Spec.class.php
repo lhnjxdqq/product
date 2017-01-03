@@ -9,5 +9,13 @@ class Api_Controller_Spec {
           'listSpecInfo' => $listSpecInfo,
         );
     }
+    
+    static public function getSpecValueAll () {
+
+        $listSpecInfo   = Spec_Value_Info::listAll();
+        return array(
+          'listSpecValueInfo' => $listSpecInfo,
+        );
+    }
 
 }
