@@ -27,6 +27,8 @@ return  array(
             'pl_sales_order_status'         => 'http://dalei.piling.kuandd.com/api/order_sync.php',
             'spec_value'                    => 'http://dalei.wholesale.select.kuandd.com/api/spec_value_data.php',
             'pl_spec_value'                 => 'http://dalei.piling.kuandd.com/api/spec_value_data.php',
+            'goods'                         => 'http://dalei.wholesale.select.kuandd.com/api/goods.php',
+            'pl_goods'                      => 'http://dalei.piling.kuandd.com/api/goods.php',
         ),
     ),
 );
