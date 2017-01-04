@@ -130,4 +130,5 @@ foreach($data as $spuId => $colorCost){
         Sales_Quotation_Spu_Info::update($content);
     }
 }
-Utility::notice('报价单修改成功', '/sales_quotation/index.php');
+Utility::notice('报价单修改成功', $_SESSION['sales_quotation_page']);
+unset($_SESSION['sales_quotation_page']);

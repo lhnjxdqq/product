@@ -2,6 +2,11 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
+if(strstr($_SERVER['HTTP_REFERER'],'/sales_quotation/index.php')){
+    
+    $_SESSION['sales_quotation_page']  = $_SERVER['HTTP_REFERER'];
+}
+
 $salesQuotationId           = (int) $_GET['sales_quotation_id'];
 $salesQuotationMarkupRule   = (int) $_GET['plue_price'];
 Validate::testNull($salesQuotationId, "报价单ID不能为空");
@@ -303,9 +308,9 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     
     $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
 
-	
+    
     $sourceCodeList                     = ArrayUtility::listField($mapSpuSourceCode[$spuInfo['spu_id']], 'source_code');
-    $listSpuInfo[$key]['source_id']  	= implode(',', $sourceCodeList);
+    $listSpuInfo[$key]['source_id']     = implode(',', $sourceCodeList);
     $listSpuInfo[$key]['image_url']     = $mapSpuImages[$spuInfo['spu_id']]['image_url'];    
     $listSpuInfo[$key]['is_red']        = $indexSpuIdRed[$spuInfo['spu_id']];
     $listSpuInfo[$key]['is_cart_join']  = $indexSpuIdIsCartJoin[$spuInfo['spu_id']];
@@ -345,6 +350,7 @@ $template->assign('listSpuInfo',$listSpuInfo);
 $template->assign('countColor',$countColor);
 $template->assign('salesQuotationInfo',$salesQuotationInfo);
 $template->assign('indexCustomerId',$indexCustomerId);
+$template->assign('httpReferer',$_SERVER['HTTP_REFERER']);
 $template->assign('mapSpecColorId',$mapSpecColorId);
 $template->assign('mapSpecValueInfo',$mapSpecValueInfo);
 $template->assign('salesQuotationId',$salesQuotationId);

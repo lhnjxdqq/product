@@ -13,7 +13,7 @@ if($salesQuotationInfo['is_confirm'] == Sales_Quotation_ConfirmStatus::YES ){
         
         Utility::notice("没有此权限，请联系管理员");
     }
-	$apiList    = Config::get('api|PHP', 'api_list');
+    $apiList    = Config::get('api|PHP', 'api_list');
     $apiUrl       = $apiList['select']['sales_quotation_log_file'];
     $plApiUrl     = $apiList['select']['pl_sales_quotation_log_file'];
 
@@ -34,4 +34,4 @@ Sales_Quotation_Info::update(array(
     'is_confirm'            => Sales_Quotation_ConfirmStatus::NO,
 ));
 
-Utility::notice("删除成功","/sales_quotation/index.php");
+Utility::notice("删除成功",$_SERVER['HTTP_REFERER']);
