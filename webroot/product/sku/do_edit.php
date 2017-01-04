@@ -93,12 +93,12 @@ if (Goods_Info::update($data)) {
 
     // 推送更新SKU数据到生产工具
     Goods_Push::updatePushGoodsData($goodsId);
-	
-	if(!strstr($skuUrl,'/sku/index.php')){
+    
+    if(!strstr($skuUrl,'/sku/index.php')){
 
-		echo "<script type='text/javascript'>document.onload = window.close();</script>";
-		exit;
-	}
+        echo "<script type='text/javascript'>document.onload = window.close();</script>";
+        exit;
+    }
 
     Utility::notice('编辑成功', $skuUrl);
 } else {

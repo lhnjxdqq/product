@@ -167,6 +167,34 @@ class Goods_Push {
     }
 
     /**
+     *  推送批零，选货sku上下架
+     *
+     *  @param  string  $operation 操作
+     *  @param  array   $listSkuId 需要操作的skuID
+     */
+    static public function linePushByMultiSkuId ($operation, array $listSkuId){
+        
+        Validate::testNull($operation,'操作指令不能为空');
+        Validate::testNull($listSkuId,'SkuId不能为空');
+        $config         = self::_getPushGoodsApiConfig();
+        $apiUrl         = $config['apiConfig']['goods'];
+        $plApiUrl       = $config['apiConfig']['pl_goods'];
+        $goodsInfo      = Goods_Info::getByMultiId($listSkuId);
+            
+        $skuPushData    = array($operation=>ArrayUtility::listField($goodsInfo,'goods_sn'));
+        
+        if($plApiUrl){
+
+            $res    = HttpRequest::getInstance($plApiUrl)->post($skuPushData);
+        }
+        
+        if($apiUrl){
+
+            $res    = HttpRequest::getInstance($apiUrl)->post($skuPushData);
+        }
+
+    }
+    /**
      * 获取API配置
      *
      * @return array

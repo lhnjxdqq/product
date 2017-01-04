@@ -31,6 +31,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
                 Goods_Push::changePushGoodsDataStatus($goodsId, 'offline');
             }
 
+            Goods_Push::linePushByMultiSkuId('offline',$listGoodsId);
             // 查这些下架的SKU关联了哪些SPU
             $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listOffLineGoodsId);
             $listSpuId          = array_unique(ArrayUtility::listField($listSpuGoods, 'spu_id'));
@@ -65,6 +66,7 @@ if (Product_Info::setOnlineStatusByMultiProductId($productIdList, $onlineStatus)
                 Sync::queueSkuData($goodsId);
                 Goods_Push::changePushGoodsDataStatus($goodsId, 'online');
             }
+            Goods_Push::linePushByMultiSkuId('online',$listGoodsId);
 
             // 查这些SKU关联了哪些SPU
             $listSpuGoods       = Spu_Goods_RelationShip::getByMultiGoodsId($listOnlineGoodsId);

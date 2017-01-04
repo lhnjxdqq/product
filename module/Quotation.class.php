@@ -355,6 +355,8 @@ class   Quotation {
                 'goods_id'      => $goodsId,
                 'online_status' => Goods_OnlineStatus::ONLINE,
             ));
+			Goods_Push::linePushByMultiSkuId('online',$goodsId);
+
             $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($goodsId);
 
             if(!empty($spuGoodsInfo)){

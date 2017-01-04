@@ -12,6 +12,8 @@ $data   = array(
 
 if (Goods_Info::update($data)) {
 
+    Goods_Push::linePushByMultiSkuId('offline',array($goodsId));
+
     $listSpuGoods       = Spu_Goods_RelationShip::getByGoodsId($goodsId);
     $listSpuId          = ArrayUtility::listField($listSpuGoods, 'spu_id');
     Sync::queueSkuData($goodsId);
