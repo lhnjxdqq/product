@@ -359,8 +359,9 @@ class ImportSalesOrder {
         $groupByOrderSn     = array();
         foreach (self::$_csvIteator as $offset => $rowData) {
 
-            $lineNumber = $offset + 1;
-            if ($lineNumber == 1) {
+            $lineNumber     = $offset + 1;
+            $rowDataFilter  = array_unique(array_filter($rowData));
+            if (($lineNumber == 1) || empty($rowDataFilter)) {
 
                 continue;
             }
