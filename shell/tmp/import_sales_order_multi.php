@@ -29,7 +29,7 @@ class ImportSalesOrder {
         echo "检测文件内容\n";
         self::_checkContent();
         echo "检测文件内容通过\n\n";
-
+exit;
         echo "创建销售订单\n";
         self::_createSalesOrder();
         echo "创建销售订单完毕\n\n";
@@ -356,6 +356,7 @@ class ImportSalesOrder {
     static private function _checkContent () {
 
         $errorMessageList   = array();
+        $groupByOrderSn     = array();
         foreach (self::$_csvIteator as $offset => $rowData) {
 
             $lineNumber = $offset + 1;
@@ -381,6 +382,7 @@ class ImportSalesOrder {
             $remark             = trim($rowData['remark']);
             $orderSn            = trim($rowData['order_sn']);
 
+            $groupByOrderSn[$orderSn][$spuSn][$materialValue . '/' . $weightValue . '/' . $sizeValue . '/' . $colorValue] += 1;
             if (!(Sales_Quotation_Info::getBySalesQuotationId($salesQuotationId))) {
 
                 $errorMessageList['sales_quotation_id'][]   = $lineNumber;
@@ -458,10 +460,24 @@ class ImportSalesOrder {
 
         }
 
+        foreach ($groupByOrderSn as $orderSn => $spuList) {
+
+            foreach ($spuList as $spuSn => $specValueCountList) {
+
+                foreach ($specValueCountList as $specValue => $count) {
+
+                    if ($count > 1) {
+
+                        $errorMessageList['sku_repeat'][]   = "[{$orderSn} -- {$orderSn} -- {$specValue}]";
+                    }
+                }
+            }
+        }
+
         if (!empty($errorMessageList)) {
 
             $errorMessageList   = self::_formatErrorMessageList($errorMessageList);
-            exit(implode("\n", $errorMessageList) . "\n");
+            exit(implode("\n", $errorMessageList) . "\n检测文件内容不通过\n");
         }
     }
 
@@ -476,14 +492,16 @@ class ImportSalesOrder {
         $mapErrorFlag   = array_flip(self::_getCsvHeader());
         $mapErrorFlag   = array_map(function ($val) {
 
-            return  $val . "有误,错误行数: ";
+            return  $val . "有误, 错误行数: ";
         }, $mapErrorFlag);
-        $mapErrorFlag['sku_id'] = '找不到对应的SKU，错误行数：';
+        $mapErrorFlag['sku_id']     = "找不到对应的SKU, 错误行数: ";
+        $mapErrorFlag['sku_repeat'] = "有SKU重复, [购销合同编号 -- SPU编号 -- 重复的规格值]:\n";
         $result         = array();
 
         foreach ($errorMessageList as $flag => $errorLineNumberList) {
 
-            $result[]   = $mapErrorFlag[$flag] . implode(",", $errorLineNumberList);
+            $delimiter  = $flag == "sku_repeat" ? "\n"  : ",";
+            $result[]   = $mapErrorFlag[$flag] . implode($delimiter, $errorLineNumberList);
         }
 
         return          $result;
