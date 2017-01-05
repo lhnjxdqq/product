@@ -29,7 +29,7 @@ class ImportSalesOrder {
         echo "检测文件内容\n";
         self::_checkContent();
         echo "检测文件内容通过\n\n";
-exit;
+
         echo "创建销售订单\n";
         self::_createSalesOrder();
         echo "创建销售订单完毕\n\n";
