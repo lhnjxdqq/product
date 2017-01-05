@@ -417,7 +417,7 @@ class ImportSalesOrder {
 
                 $errorMessageList['weight_value'][]         = $lineNumber;
             }
-            if (!(Spec_Value_Info::getBySpecValueData($sizeValue))) {
+            if (!empty($sizeValue) && !(Spec_Value_Info::getBySpecValueData($sizeValue))) {
 
                 $errorMessageList['size_value'][]           = $lineNumber;
             }
