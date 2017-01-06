@@ -18,16 +18,17 @@ if (!$areaId) {
 
 $valueColorId       = $_POST['color_value_id'];
 
-if(in_array($valueColorId,$_POST['plus_color'])){
+$plusColor	= !empty($_POST['plus_color']) ? $_POST['plus_color'] : array() ;
+if(in_array($valueColorId,$plusColor)){
     Utility::notice("可生产颜色中包含了基价颜色");
     exit;
 }
-if(count($_POST['plus_color']) != count(array_unique($_POST['plus_color']))){
+if(count($plusColor) != count(array_unique($plusColor))){
     Utility::notice("可生产颜色有重复");
     exit;
 }
 
-if(count($_POST['plus_color']) != count($_POST['price_plus'])){
+if(count($plusColor) != count($_POST['price_plus'])){
     
     Utility::notice('颜色和工费不匹配');
     exit;
