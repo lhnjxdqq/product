@@ -2,6 +2,11 @@
 
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
+if(strstr($_SERVER['HTTP_REFERER'],'/order/sales/index.php')){
+    
+    $_SESSION['order_sales_index']  = $_SERVER['HTTP_REFERER'];
+}
+
 $salesOrderId       = $_GET['sales_order_id'];
 Validate::testNull($salesOrderId,'销售订单ID不能为空');
 $salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);

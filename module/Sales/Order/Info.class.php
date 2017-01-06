@@ -198,6 +198,14 @@ class   Sales_Order_Info {
                 'condition'         => $condition,
             )
         );
+        $sql[]      = self::_conditionrange(
+            array(
+                'fieldCondition'    => 'order_time',
+                'paramA'            => 'order_date_start',
+                'paramB'            => 'order_date_end',
+                'condition'         => $condition,
+            )
+        );
         $sqlFilterd = array_filter($sql);
 
         return      empty($sqlFilterd)  ? ''    : ' WHERE ' . implode(' AND ', $sqlFilterd);

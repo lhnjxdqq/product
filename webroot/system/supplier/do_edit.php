@@ -29,7 +29,7 @@ if(!empty($_POST['plus_color'])){
     
     foreach($_POST['plus_color'] as $key => $val){
 
-        $productColor[][$val]   = $_POST['price_plus'][$key];
+        $productColor[][$val]   = (int) $_POST['price_plus'][$key];
     }
 }
 

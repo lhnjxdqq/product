@@ -7,6 +7,7 @@ $condition  = empty($_GET) ? array() : $_GET ;
 $orderBy    = array(
     'create_time' => 'DESC',
 );
+
 $mapCustomer    = ArrayUtility::indexByField(ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL)),'customer_id');
 
 $mapSalesperson = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');

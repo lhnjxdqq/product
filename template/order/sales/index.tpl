@@ -24,8 +24,8 @@
             <!-- Default box -->
             <!-- /.box -->
             <div class="box">
-                <div class="box-header with-border row">
-                    <form class="form-inline" action="?" method="get">
+                <form class="form-inline" action="?" method="get">
+                    <div class="box-header with-border row">
                         <div class="col-md-4" style="">
                             <div class="input-daterange input-group input-group-sm">
                                 <span class="input-group-addon" style="border-width:1px 0 1px 1px;">创建日期:</span>
@@ -34,7 +34,7 @@
                                 <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
                             </div>
                         </div>
-                        <div class="col-md-2" style="">
+                        <div class="col-md-3" style="">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">客户名称:</span>
                                     <select class="form-control select-multiple" name="customer_id">
@@ -45,7 +45,7 @@
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-2" style="">
+                        <div class="col-md-3" style="">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">销售员:</span>
                                     <select class="form-control select-multiple" name="salesperson_id">
@@ -67,17 +67,24 @@
                                     </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="box-header with-border row">
+                        <div class="col-md-4" style="">
+                            <div class="input-daterange input-group input-group-sm">
+                                <span class="input-group-addon" style="border-width:1px 0 1px 1px;">下单日期:</span>
+                                <input type="text" name="order_date_start" readonly class="form-control" value="<{$condition.order_date_start}>">
+                                <span class="input-group-addon">到</span>
+                                <input type="text" name="order_date_end" readonly class="form-control" value="<{$condition['order_date_end']}>">
+                            </div>
+                        </div>
                         <div class="col-md-1" style="">
                                 <button class="btn btn-primary" type="submit">搜索</button>
                         </div>
-
-                    </form>
-                </div>
-                <div class='row'>
-                    <div class='col-md-12'>
-                        <a href="/order/sales/select_sales_quotation.php" class="pull-right btn btn-primary" type="button">创建新订单</a>
+                </form>
+                        <div class='col-md-2'>
+                            <a href="/order/sales/select_sales_quotation.php" class="pull-right btn btn-primary" type="button">创建新订单</a>
+                        </div>
                     </div>
-                </div>
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered" id="user-list">

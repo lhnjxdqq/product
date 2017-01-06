@@ -14,4 +14,4 @@ if (SYNC_SALES_ORDER_TO_BI) {
 
     Sync::queueSalesOrderData($salesOrderId, 'delete');
 }
-Utility::notice("删除成功","/order/sales/index.php");
+Utility::notice("删除成功",$_SERVER['HTTP_REFERER']);
