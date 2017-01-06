@@ -82,7 +82,7 @@
                         </div>
                 </form>
                         <div class='col-md-2'>
-                            <a href="/order/sales/select_sales_quotation.php" class="pull-right btn btn-primary" type="button">创建新订单</a>
+                            <a href="/order/sales/select_sales_quotation.php" class="pull-left btn btn-primary" type="button">创建新订单</a>
                         </div>
                     </div>
                 <div class="box-body">
@@ -113,7 +113,7 @@
                                         <td><{$item.order_amount}></td>
                                         <td><{$mapCustomer[$item.customer_id]['customer_name']}></td>
                                         <td><{$mapSalesperson[$item.salesperson_id]['salesperson_name']}></td>
-                                        <td><{$statusList[$item.sales_order_status]['status_name']}></td>
+                                        <td><{if $statusList[$item.sales_order_status]['status_name'] == '删除'}><font color='red'>删除</font><{else}><{$statusList[$item.sales_order_status]['status_name']}><{/if}></td>
                                         <td><{$item.order_time}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
