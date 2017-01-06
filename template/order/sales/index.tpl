@@ -77,13 +77,11 @@
                                 <input type="text" name="order_date_end" readonly class="form-control" value="<{$condition['order_date_end']}>">
                             </div>
                         </div>
-                        <div class="col-md-1" style="">
+                        <div class="col-md-3" style="">
                                 <button class="btn btn-primary" type="submit">搜索</button>
+                                <a href="/order/sales/select_sales_quotation.php" class="btn btn-success" type="button">创建新订单</a>
                         </div>
                 </form>
-                        <div class='col-md-2'>
-                            <a href="/order/sales/select_sales_quotation.php" class="pull-left btn btn-primary" type="button">创建新订单</a>
-                        </div>
                     </div>
                 <div class="box-body">
                     <div class="table-responsive">
