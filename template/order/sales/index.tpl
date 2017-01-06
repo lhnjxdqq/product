@@ -31,7 +31,7 @@
                                 <span class="input-group-addon" style="border-width:1px 0 1px 1px;">创建日期:</span>
                                 <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
                                 <span class="input-group-addon">到</span>
-                                <input type="text" name="date_end" readonly class="form-control" value="<{date('Y-m-d', strtotime($condition['date_end']))}>">
+                                <input type="text" name="date_end" readonly class="form-control" value="<{$condition['date_end']}>">
                             </div>
                         </div>
                         <div class="col-md-3" style="">

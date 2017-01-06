@@ -25,8 +25,8 @@ foreach($statusList as $statusId=>$statusName){
     );
 }
 
-$condition['date_start']    = isset($_GET['date_start']) ? $_GET['date_start'] : date('Y-m-d', strtotime('-30 day'));
-$condition['date_end']      = isset($_GET['date_end']) ? date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime($_GET['date_end']))) + 3600 * 24 - 1) : date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
+$condition['order_date_start']    = isset($_GET['order_date_start']) ? $_GET['order_date_start'] : date('Y-m-d', strtotime('-30 day'));
+$condition['order_date_end']      = isset($_GET['order_date_end']) ? date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime($_GET['order_date_end']))) + 3600 * 24 - 1) : date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
       
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countOrder     = Sales_Order_Info::countByCondition($condition);
