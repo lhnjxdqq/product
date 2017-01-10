@@ -97,7 +97,7 @@ foreach($mapUpdateCost as $key=>$info){
                                             'delete_status' => Goods_DeleteStatus::NORMAL,
                                             'online_status' => Goods_OnlineStatus::ONLINE,
                                         ));
-                                        Goods_Push::linePushByMultiSkuId('online',$id);
+                                        Goods_Push::linePushByMultiSkuId('online',array($id));
 
                                         $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($id);
 
