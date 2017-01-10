@@ -6,7 +6,7 @@ $supplierId     = (int) $_POST['supplier-id'];
 $sourceCode     = trim($_POST['source-code']);
 $styleId        = (int) $_POST['style-id'];
 $categoryId     = (int) $_POST['category-id'];
-$specList       = isset($_POST['spec-list']) ? $_POST['spec-list'] : null;
+$specList       = isset($_POST['spec-list']) ? $_POST['spec-list'] : array();
 $productCost    = trim($_POST['product-cost']);
 $productRemark  = trim($_POST['product-remark']);
 
@@ -28,6 +28,17 @@ if (empty($sourceCode)) {
 if ($categoryId == 0) {
 
     Utility::notice('请选择品类');
+}
+
+$orSpecInfo	= $specList;
+$specInfo 		= Spec_Info::getByAlias("assistant_material");
+foreach($specList as $key => $val){
+	
+	$temp               = explode("\t", $val);
+    $specId = $temp[0];
+	if($specInfo['spec_id'] == $specId){
+		unset($specList[$key]);
+	}
 }
 
 if (!$specList || in_array('0', $specList)) {
@@ -78,7 +89,7 @@ $productData    = array(
 
 // 根据规格 规格值查询商品
 $specValueList          = array();
-foreach ($specList as $specData) {
+foreach ($orSpecInfo as $specData) {
 
     $temp               = explode("\t", $specData);
     $specValueList[]    = array(

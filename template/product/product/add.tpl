@@ -208,7 +208,7 @@
                     if (data.statusCode == 'success') {
                         var specString = '';
                         $.each(data.resultData, function (specId, specData) {
-                            var tempString = '<div class="form-group"><label class="col-sm-2 control-label">' + specData[0].spec_name + '</label><div class="col-sm-10"><select name="spec-list[]" class="form-control" style="width: 200px;"><option value="0">请选择' + specData[0].spec_name + '</option>';
+                            var tempString = '<div class="form-group"><label class="col-sm-2 control-label">' + specData[0].spec_name + '</label><div class="col-sm-10"><select name="spec-list[]" class="form-control" style="width: 200px;"><option value= '+specId+'\t0">请选择' + specData[0].spec_name + '</option>';
                             $.each(specData, function (index, val) {
                                 tempString += '<option value="' + specId + "\t" + val.spec_value_id + '">' + val.spec_value_data + val.spec_unit + '</option>';
                             });

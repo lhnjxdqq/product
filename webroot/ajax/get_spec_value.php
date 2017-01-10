@@ -16,9 +16,14 @@ $listValue      = Spec_Value_Info::getByMulitId(ArrayUtility::listField($listSpe
 $mapValue       = ArrayUtility::indexByField($listValue, 'spec_value_id');
 
 $thisSpecValue  = array();
+$listSpecId		= array_keys($mapSpec);
 foreach ($listSpecValue as $key => $specValue) {
 
     $specId                     = $specValue['spec_id'];
+	if(!in_array($specId,$listSpecId)){
+		
+		continue;
+	}
     $specValueId                = $specValue['spec_value_id'];
     $temp['spec_id']            = $specId;
     $temp['spec_alias']         = $mapSpec[$specId]['spec_alias'];
