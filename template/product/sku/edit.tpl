@@ -72,6 +72,7 @@
                                 <label class="col-sm-2 control-label"><{$data.mapSpecInfo[$specId]['spec_name']}></label>
                                 <div class="col-sm-10">
                                     <select name="spec-list[]" class="form-control" style="width: 200px;">
+										<option>请选择</option>
                                         <{foreach from=$typeSpecValueList item=specValueId}>
                                             <option value="<{$specId}>~<{$specValueId}>"<{if $data.mapGoodsSpecValue[$specId] eq $specValueId}> selected<{/if}>><{$data.mapSpecValueInfo[$specValueId]['spec_value_data']}></option>
                                         <{/foreach}>
