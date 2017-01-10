@@ -34,6 +34,7 @@ $excelHead1         = array(
     '三级分类'          => 'categoryLv3',
     '主料材质'          => 'material_main_name',
     '规格尺寸'          => 'size_name',
+	'辅料材质'			=> 'assistant_material',
     '规格重量'          => 'weight_name',
     '备注'              => 'remark',
     '款式'              => 'style_one_level',

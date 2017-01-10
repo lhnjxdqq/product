@@ -3,7 +3,12 @@
 require_once dirname(__FILE__).'/../../../init.inc.php';
 
 $specValueId    = $_GET['spec_value_id'];
+$specId    		= $_GET['spec_id'];
 Validate::testNull($specValueId,'规格ID不能为空');
+Validate::testNull($specId,'规格ID不能为空');
+
+$specValueGoodsType = Goods_Type_Spec_Value_Relationship::getByMultiSpecValueId(array($specValueId));
+$listSpecId   		= array_unique(ArrayUtility::listField($specValueGoodsType,'spec_id'));
 
 $specGoodsInfo  = Goods_Spec_Value_RelationShip::getBySpecValueId($specValueId);
 $specInfo   = Spec_Value_Info::getById($specValueId);
@@ -20,11 +25,18 @@ $deleteData     = array('delete'=>array(
 )));
 if(empty($specGoodsInfo)){
     
+	if(count($listSpecId)>1){
+
+		Goods_Type_Spec_Value_Relationship::deleteBySpecValueIdAndSpecId($specValueId,$specId);
+		Utility::notice("删除成功");
+		exit;
+	}
     Spec_Value_Info::update(array(
         'spec_value_id' => $specValueId,
         'delete_status' => Spec_Value_DeleteStatus::DELETED,
     ));
-    
+    Goods_Type_Spec_Value_Relationship::deleteBySpecValueIdAndSpecId($specValueId,$specId);
+		
     if($plApiUrl){
 
         $res    = HttpRequest::getInstance($plApiUrl)->post($deleteData);
@@ -46,11 +58,18 @@ if(count($goodsInfo)>0){
     
 }else{
     
+	if(count($listSpecId)>1){
+		
+		Goods_Type_Spec_Value_Relationship::deleteBySpecValueIdAndSpecId($specValueId,$specId);
+		Utility::notice("删除成功");
+		exit;
+	}
     Spec_Value_Info::update(array(
         'spec_value_id' => $specValueId,
         'delete_status' => Spec_Value_DeleteStatus::DELETED,
     ));
-
+	Goods_Type_Spec_Value_Relationship::deleteBySpecValueIdAndSpecId($specValueId,$specId);
+		
     if($plApiUrl){
 
         $res    = HttpRequest::getInstance($plApiUrl)->post($deleteData);

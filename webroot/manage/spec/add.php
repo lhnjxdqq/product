@@ -16,7 +16,7 @@ if(!empty($specInfo) && $specInfo['delete_status'] == 0){
     $specValueGoodsType = Goods_Type_Spec_Value_Relationship::getByMultiSpecValueId(array($specValueId));
     $specId     = array_unique(ArrayUtility::listField($specValueGoodsType,'spec_id'));
 
-    if($data['spec_id'] == $specId[0]){
+    if(in_array($data['spec_id'],$specId)){
         Utility::notice('规格重复');
         exit;
     }
@@ -68,11 +68,10 @@ if(!empty($specInfo) && $specInfo['delete_status'] == 0){
     if($apiUrl){
 
         $res    = HttpRequest::getInstance($apiUrl)->post($addData);
-        var_dump($res);
     }
 }
 
-Goods_Type_Spec_Value_Relationship::deleteBySpecValueId($specValueId);
+Goods_Type_Spec_Value_Relationship::deleteBySpecValueIdAndSpecId($specValueId,$data['spec_id']);
 
 if(!empty($data['goods_type_id'])){
     

@@ -63,9 +63,10 @@ class   Quotation {
         $goodsType              = $indexCategoryName[$data['categoryLv3']]['goods_type_id'];
         $data['goods_type_id']     = $goodsType;
         $listTypeSpecValue      = ArrayUtility::searchBy($mapEnumeration['mapTypeSpecValue'], array('goods_type_id'=>$goodsType));
-        $mapMatetialSpecValue   = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['material']));
+        $mapMaterialSpecValue   = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['material']));
         $mapWeightSpecValue     = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['weight']));
         $mapColorSpecValue      = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['color']));
+        $mapAssistantMaterialValue      = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['assistant_material']));
         
         foreach($listTypeSpecValue as $key=>$val){
             
@@ -79,9 +80,13 @@ class   Quotation {
         
         $mapSizeSpecValue    = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$sizeSpecId));
 
+		if(!empty($data['assistant_material'])){
+			
+			$data['assistant_material_id']	= self::_getSpecValueId($data['assistant_material'],$mapAssistantMaterialValue,"辅料材质不正确",$mapEnumeration);
+		}
         $data['material_id'] = trim($data['material_id']);
         $data['weight_id']   = trim($data['weight_id']);
-        $data['material_id'] = self::_getSpecValueId($data['material_main_name'],$mapMatetialSpecValue,"主料材质不正确",$mapEnumeration);
+        $data['material_id'] = self::_getSpecValueId($data['material_main_name'],$mapMaterialSpecValue,"主料材质不正确",$mapEnumeration);
         $data['weight_id']   = self::_getSpecValueId($data['weight_name'],$mapWeightSpecValue,"规格重量不正确",$mapEnumeration);
         
         if(!empty($data['size_name'])) {
@@ -334,6 +339,10 @@ class   Quotation {
             $mapEnumeration['mapIndexSpecAlias']['weight']      => $data['weight_id'],
             $mapEnumeration['mapIndexSpecAlias']['color']       => $colorId,    
         );
+		if(!empty($data['assistant_material_id'])){
+			
+			$specInfo[$mapEnumeration['mapIndexSpecAlias']['assistant_material']] = $data['assistant_material_id'];
+		}
         $specValueList  = array();
         foreach($specInfo as $specId=>$specName){
             if(empty($specName)){
@@ -346,6 +355,7 @@ class   Quotation {
             );   
         }
         
+
         $goodsId = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $data['style_id'], $data['category_id']);
 
         if ($goodsId) {

@@ -77,7 +77,7 @@ if(!empty($data['spec_id'])){
     $specId = $data['spec_id'];
 }
 
-Goods_Type_Spec_Value_Relationship::deleteBySpecValueId($data['spec_value_id']);
+Goods_Type_Spec_Value_Relationship::deleteBySpecValueIdAndSpecId($data['spec_value_id'],$data['spec_id']);
 
 if(!empty($data['goods_type_id'])){
     

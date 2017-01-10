@@ -80,7 +80,7 @@ i{
                                     <td>
                                         <input type="hidden" name="spec_value_id[]" value="<{$item.spec_value_id}>" />
                                         <i class="pull-left glyphicon glyphicon-pencil" edit-spec_value_id-id=<{$item.spec_value_id}>></i>    
-                                        <a href="/manage/spec/delete.php?spec_value_id=<{$item.spec_value_id}>" class="pull-right btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
+                                        <a href="/manage/spec/delete.php?spec_value_id=<{$item.spec_value_id}>&spec_id=<{$smarty.get.spec_id}>" class="pull-right btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
                                     </td>
                                 </tr>
                                 <{/foreach}>

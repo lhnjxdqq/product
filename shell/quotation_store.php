@@ -27,6 +27,7 @@ foreach ($listInfo as $info) {
         '主料材质'          => 'material_main_name',
         '规格尺寸'          => 'size_name',
         '规格重量'          => 'weight_name',
+		'辅料材质'			=> 'assistant_material',
         '备注'              => 'remark',
         '款式'              => 'style_one_level',
         '子款式'            => 'style_two_level',

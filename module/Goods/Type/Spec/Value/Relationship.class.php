@@ -124,11 +124,12 @@ class   Goods_Type_Spec_Value_Relationship {
      * @param $specValueId
      * @return array
      */
-    static public function deleteBySpecValueId ($specValueId) {
+    static public function deleteBySpecValueIdAndSpecId ($specValueId,$specId) {
 
         Validate::testNull($specValueId,'规格ID不能为空');
+        Validate::testNull($specId,'规格ID不能为空');
 		
-        $condition  = 'spec_value_id='.(int)$specValueId;
+        $condition  = 'spec_value_id ='. (int)$specValueId . ' AND spec_id = '.(int) $specId;
         self::_getStore()->delete(self::_tableName(),$condition);
     }
 }
