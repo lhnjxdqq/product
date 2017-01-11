@@ -70,7 +70,7 @@ class   Spec_Value_Info {
     static public function getByMulitId (array $multiId) {
 
         $multiId    = array_map('intval', array_unique(array_filter($multiId)));
-        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `delete_status`=0 AND `spec_value_id` IN ("' . implode('","', $multiId) . '")';
+        $sql        = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `delete_status`= 0 AND `spec_value_id` IN ("' . implode('","', $multiId) . '")';
 
         return      self::_getStore()->fetchAll($sql);
     }

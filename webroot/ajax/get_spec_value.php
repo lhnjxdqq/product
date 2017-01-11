@@ -20,12 +20,13 @@ $listSpecId		= array_keys($mapSpec);
 foreach ($listSpecValue as $key => $specValue) {
 
     $specId                     = $specValue['spec_id'];
-	if(!in_array($specId,$listSpecId)){
+	
+    $specValueId                = $specValue['spec_value_id'];
+    if(!in_array($specId,$listSpecId) || empty($mapValue[$specValueId])){
 		
 		continue;
 	}
-    $specValueId                = $specValue['spec_value_id'];
-    $temp['spec_id']            = $specId;
+	$temp['spec_id']            = $specId;
     $temp['spec_alias']         = $mapSpec[$specId]['spec_alias'];
     $temp['spec_name']          = $mapSpec[$specId]['spec_name'];
     $temp['spec_unit']          = $mapSpec[$specId]['spec_unit'];
