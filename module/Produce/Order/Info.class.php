@@ -109,10 +109,12 @@ class   Produce_Order_Info {
         $sql        = 'SHOW TABLE STATUS like "' . self::_tableName() . '"';
         $data       = self::_getStore()->fetchOne($sql);
         $insertId   = $data['Auto_increment'];
-        $last       = str_pad($insertId,7,'0',STR_PAD_LEFT);
-        $sn         = 'P' . date('Ymd') . $last;
 
-        return  $sn;
+		$length	= 7;
+		$idLength	= strlen($insertId);
+		$randNumber	= $length - $idLength;
+		
+		return  'P' . date('Ymd',time()) . $insertId . rand(pow(10,$randNumber-1),pow(10,$randNumber));
     }
 
     /**

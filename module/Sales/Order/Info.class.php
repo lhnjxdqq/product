@@ -133,10 +133,12 @@ class   Sales_Order_Info {
         $row    = self::_getStore()->fetchOne($sql);
 
         $sales_order_id = $row['sales_order_id']+1;
+
+		$length	= 7;
+		$idLength	= strlen($sales_order_id);
+		$randNumber	= $length - $idLength;
 		
-		$str	= str_pad($sales_order_id,7,'0',STR_PAD_LEFT);
-		
-		return  date('Ymd',time()).$str;
+		return  date('Ymd',time()).$sales_order_id.rand(pow(10,$randNumber-1),pow(10,$randNumber));
     }
     /**
      * 根据条件获取数据列表
