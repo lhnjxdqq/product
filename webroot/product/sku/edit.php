@@ -10,7 +10,7 @@ if(strstr($_SERVER['HTTP_REFERER'],'/sku/index.php')){
 
 $listSpecInfo       = Spec_Info::listAll();
 $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
-$listSpecValueInfo  = Spec_Value_Info::listAll();
+$listSpecValueInfo  = ArrayUtility::searchBy(Spec_Value_Info::listAll(),array('delete_status'=>0));
 $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
 $listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapStyleInfo       = ArrayUtility::groupByField($listStyleInfo, 'parent_id');

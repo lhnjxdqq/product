@@ -26,6 +26,10 @@ $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
 $mapSpecValue   = ArrayUtility::indexByField($listSpecValue, 'spec_value_id');
 foreach ($specValueList as $key => $specValue) {
 
+	if(empty($mapSpecValue[$specValue['spec_value_id']])){
+
+		continue;
+	}
     $specValueList[$key]['spec_name']       = $mapSpecInfo[$specValue['spec_id']]['spec_name'];
     $specValueList[$key]['spec_unit']       = $mapSpecInfo[$specValue['spec_id']]['spec_unit'];
     $specValueList[$key]['spec_value_data'] = $mapSpecValue[$specValue['spec_value_id']]['spec_value_data'];
