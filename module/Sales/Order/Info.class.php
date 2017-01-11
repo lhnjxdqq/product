@@ -133,9 +133,10 @@ class   Sales_Order_Info {
         $row    = self::_getStore()->fetchOne($sql);
 
         $sales_order_id = $row['sales_order_id']+1;
-        $code   = substr($sales_order_id,strlen($sales_order_id)-1);
-
-        return  date('YmdHis',time()).$code;
+		
+		$str	= str_pad($sales_order_id,7,'0',STR_PAD_LEFT);
+		
+		return  date('Ymd',time()).$str;
     }
     /**
      * 根据条件获取数据列表

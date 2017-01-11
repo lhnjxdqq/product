@@ -109,8 +109,8 @@ class   Produce_Order_Info {
         $sql        = 'SHOW TABLE STATUS like "' . self::_tableName() . '"';
         $data       = self::_getStore()->fetchOne($sql);
         $insertId   = $data['Auto_increment'];
-        $last       = substr($insertId, -1);
-        $sn         = 'P' . date('YmdHis') . $last;
+        $last       = str_pad($insertId,7,'0',STR_PAD_LEFT);
+        $sn         = 'P' . date('Ymd') . $last;
 
         return  $sn;
     }
