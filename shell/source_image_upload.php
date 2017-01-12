@@ -297,6 +297,7 @@ $listSpuSn      = array();
 if( !empty($files) && is_array($files) ){
     foreach($files as $fileSavePath){
 
+		deleteByDirFile(SPU_IMAGE_TMP,SPU_IMAGE_TMP);
         //若文件存在，则进行数据库查询操作
         if( !file_exists($fileSavePath) ){
             continue;
