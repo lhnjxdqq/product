@@ -49,7 +49,8 @@ foreach ($listProductInfo as &$productInfo) {
 
     $sourceId   = $productInfo['source_id'];
     $productId  = $productInfo['product_id'];
-
+	$firstImageInfo = array();
+	
     if(!empty($groupProductIdImages[$productId])){
      
         $firstImageInfo = ArrayUtility::searchBy($groupProductIdImages[$productId],array('is_first_picture' => 1));   

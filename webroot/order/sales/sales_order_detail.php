@@ -151,7 +151,8 @@ foreach ($listGoodsInfo as &$goodsInfo) {
            continue;
         }
     }
-        
+    
+	$firstImageInfo = array();
     if(!empty($groupGoodsIdImages[$goodsId])){
         
         $firstImageInfo = ArrayUtility::searchBy($groupGoodsIdImages[$goodsId],array('is_first_picture' => 1));
