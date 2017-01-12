@@ -371,7 +371,7 @@ if( !empty($files) && is_array($files) ){
             echo "Did not find the product_info file:{$fileSavePath}";
             
         }
-        
+        deleteByDirFile(SPU_IMAGE_TMP,SPU_IMAGE_TMP);
     }
 }
 

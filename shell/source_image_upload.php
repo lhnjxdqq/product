@@ -4,7 +4,7 @@
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
 ignore_user_abort();
-
+echo SOURCE_IMAGE_TMP;die;
 // php 锁文件路径
 define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
 
@@ -377,7 +377,7 @@ if( !empty($files) && is_array($files) ){
             echo "Did not find the product_info file:{$fileSavePath}";
             
         }
-        
+        @deleteByDirFile(SPU_IMAGE_TMP,SPU_IMAGE_TMP);
     }
 }
 
