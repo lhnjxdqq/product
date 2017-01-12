@@ -294,14 +294,12 @@ $productIdList = array();
 
 //图片类型
 $typeList       = array_flip(Sort_Image::getImageTypeList());
-
 $listSpuSn  = array();
 
 //处理所有的文件
 if( !empty($files) && is_array($files) ){
     foreach($files as $fileSavePath){
 
-		deleteByDirFile(SPU_IMAGE_TMP,SPU_IMAGE_TMP);
         //若文件存在，则进行数据库查询操作
         if( !file_exists($fileSavePath) ){
             continue;

@@ -86,9 +86,6 @@ $listSpecValueId            = array_unique(array_merge(
 ));
 $listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
 $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
-$countCartGoods             = Cart_Goods_Sample::countByUser($userId);
-$cartGoodsInfo              = Cart_Goods_Sample::getByUserId($userId);
-$listCartGoodsId            = ArrayUtility::listField($cartGoodsInfo,'goods_id');
 
 $listSampleGoodsId          = ArrayUtility::listField(ArrayUtility::searchBy(Sample_Info::getByMultiId($listGoodsId),array('is_delete'=>Goods_DeleteStatus::NORMAL)),'goods_id');
 
@@ -116,10 +113,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     }
 
     $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
-    if(in_array($goodsId,$listCartGoodsId)){
-        
-        $goodsInfo['is_cart']   = 1;   
-    }
+
     if(in_array($goodsId,$listSampleGoodsId)){
         
         $goodsInfo['is_sample']   = 1;   

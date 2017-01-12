@@ -149,10 +149,8 @@
                     <label>
                       <input type="checkbox" name='select-all'> 全选
                     </label> 
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;">选择产品 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
                     <a href="/sample/search_sku_join_cart.php?<{$smarty.get|http_build_query}>" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="createSpu" style="margin-left: 10px;"><i class="fa fa-paper-plane-o"></i> 创建SPU</a>
-                    <a href="/sample/do_confirm.php" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> 样板库 <{if $countCartGoods!=""}><{$countCartGoods}><{else}>0<{/if}></i></a>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -191,7 +189,6 @@
                                         <td><{$item.sale_cost}></td>
                                         <td><{$item.goods_remark}></td>
                                         <td>
-                                            <{if $item['is_sample'] != 1}><button tyle='button' id='goods_<{$item.goods_id}>' goods-id="<{$item.goods_id}>" class="btn btn-<{if $item.is_cart == 1 }>default disabled<{else}>primary<{/if}> btn-xs add-cart"><i class="fa fa-shopping-cart"></i></button><{/if}>
                                             <a href="javascript:editSku(<{$item.goods_id}>, <{$item.online_status}>);" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <a href="javascript:delSku(<{$item.goods_id}>);" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> 删除</a>
                                         </td>
@@ -352,76 +349,6 @@
         });
     });
     
-    $(function() {
-
-        $('.add-cart').bind('click', function () {
-        
-            var $this       = $(this),
-                goodsId       = $this.attr("goods-id");
-                
-            $.post('/sample/cart_goods_join.php', {
-                goods_id             : goodsId,
-                '__output_format'   : 'JSON'
-            }, function (response) {
-
-                if (0 != response.code) {
-
-                    alert(response.message);
-
-                    return  ;
-                }
-
-                $("#number").html(" 样板库 "+response.data.count);
-                $this.removeClass("btn-primary");
-                $this.addClass("btn-default");
-                $this.addClass("disabled");
-            }, 'json');
-        });
-        
-        $('#addMulti').click(function(){
-
-            var chk_value =[]; 
-            $('input[name="goods_id[]"]:checked').each(function(){ 
-            
-                chk_value.push($(this).val()); 
-            });
-            
-            if(chk_value.length==0){
-                
-                alert("请选择SKU");
-                
-                return false; 
-            }
-
-            $.post('/sample/ajax_cart_goods_add.php', {
-                goods_id              : chk_value,
-                '__output_format'   : 'JSON'
-            }, function (response) {
-
-                if (0 != response.code) {
-
-                    //showMessage('错误', response.message);
-                    alert(response.message);
-
-                    return  ;
-                }else{
-                
-                    $("#number").html(" 样板库 "+response.data.count);
-                    for(var i=0;i<chk_value.length;i++){
-                                
-                        $("#goods_"+chk_value[i]).attr('disabled', true);
-                        $("#goods_"+chk_value[i]).removeClass("btn-primary");
-                        $("#goods_"+chk_value[i]).addClass("btn-default");                          
-                    }
-                }
-                
-            }, 'json');  
-        })            
-        $('input[name="check-all"]').click(function () {
-
-            $('input[name="spu_id[]"]').prop('checked', $(this).prop('checked'));
-        });
-    });
     // 日期选择
     $('#date_start').datetimepicker({
         format: 'yyyy-mm-dd hh:ii',

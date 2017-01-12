@@ -4,6 +4,7 @@
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
 ignore_user_abort();
+
 // php 锁文件路径
 define('LOCK_FILE', TEMP . '/upload_image_unzip.lock');
 
@@ -297,7 +298,6 @@ $listSpuSn      = array();
 if( !empty($files) && is_array($files) ){
     foreach($files as $fileSavePath){
 
-		deleteByDirFile(SPU_IMAGE_TMP,SPU_IMAGE_TMP);
         //若文件存在，则进行数据库查询操作
         if( !file_exists($fileSavePath) ){
             continue;
