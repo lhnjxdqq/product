@@ -24,6 +24,7 @@ return  array(
         'Spu.getByMultiSn',
         'Spu.getSkuMulti',
         'Sku.getBySourceCodeByMultiSn',
+        'Sku.getByMultiSn',
         'SalesOrder.getByMultiSn',
         'Spec.getSpecValueAll',
     ),
