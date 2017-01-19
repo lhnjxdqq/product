@@ -73,7 +73,7 @@ foreach ($data as $offsetRow => $row) {
             'create_time'       => date('Y-m-d H:i:s'),
             'sample_type'       => $sampleInfo['supplier_id'],
        ));
-	   echo "添加spuID为". $val ."的spu到样板\n"
+	   echo "添加spuID为". $val ."的spu到样板成功\n";
    }
 }
 $countSample =  Sample_Storage_Spu_Info::countByCondition(array('sample_storage_id'=>$info['sample_storage_id']));

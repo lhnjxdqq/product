@@ -44,5 +44,5 @@ if($count>0){
         'sample_storage_id'       => $data['sample_storage_id'],
         'status_id'               => Sample_Status::DELETED,
     ));
-    Utility::notice('样板中已经没有产品,删除完成','/update_cost/index.php');
+    Utility::notice('样板中已经没有产品,删除完成','/sample/storage/index.php');
 }
