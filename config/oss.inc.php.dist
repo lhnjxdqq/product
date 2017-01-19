@@ -2,8 +2,8 @@
 return  array(
     'images-spu'    => array(
         //OssClient的配置参数
-        'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
-        'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
+        'accessKeyId'       => '**********',//OSS的访问签名ID
+        'accessKeySecret'   => '***********',//OSS的访问签名KEY
         'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
         'endpointInternal'  => 'oss-cn-beijing.aliyuncs.com',//内网域名
         'thumbEndpoint'     => 'img-cn-beijing.aliyuncs.com',//显示配置域名
@@ -19,8 +19,8 @@ return  array(
     ),
     'images-sku'    => array(
         //OssClient的配置参数
-        'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
-        'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
+        'accessKeyId'       => '**********',//OSS的访问签名ID
+        'accessKeySecret'   => '***********',//OSS的访问签名KEY
         'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
         'endpointInternal'  => 'oss-cn-beijing.aliyuncs.com',//内网域名
         'thumbEndpoint'     => 'img-cn-beijing.aliyuncs.com',//显示配置域名
@@ -37,8 +37,8 @@ return  array(
 
     'images-product'    => array(
         //OssClient的配置参数
-        'accessKeyId'       => 'Xst92iLWipQJ7FhA',//OSS的访问签名ID
-        'accessKeySecret'   => 'ylgNNthsTZmgbDywUwBYIYz4hwPmc7',//OSS的访问签名KEY
+        'accessKeyId'       => '***********',//OSS的访问签名ID
+        'accessKeySecret'   => '**************',//OSS的访问签名KEY
         'endpoint'          => 'oss-cn-beijing.aliyuncs.com',//OSS访问域名
         'endpointInternal'  => 'oss-cn-beijing.aliyuncs.com',//内网域名
         'thumbEndpoint'     => 'img-cn-beijing.aliyuncs.com',//显示配置域名

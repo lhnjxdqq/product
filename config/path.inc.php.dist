@@ -9,4 +9,5 @@ return  array(
     // 销售订单导出路径
     'sales_order_export'        => '/home/dalei/project/dalei.product.kuandd.com/data/sales_order/',
     'borrow_export'             => '/home/dev/qa.product.kuandd.com/data/borrow/',
+    'sample_storage_import'     => '/home/shuishou/project/product.kuandd.com/data/sample_storage/',
 );
