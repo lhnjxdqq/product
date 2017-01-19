@@ -29,7 +29,7 @@ $objPHPExcel        = ExcelFile::load($filePath);
 $sheet              = $objPHPExcel->getActiveSheet(); 
 $rowIterator        = $sheet->getRowIterator(1);
 
-$excelHead1         = array(
+$csvHead         = array(
     '买款ID'            => 'sku_code',
     '产品名称'          => 'product_name',
     '三级分类'          => 'categoryLv3',
@@ -44,44 +44,50 @@ $excelHead1         = array(
     '计价类型'          => 'valuation_data',
 );
 
-$mapColumnField     = array();
-$mapColumnColor     = array();
 $list               = array();
-
+$csv                = CSVIterator::load($filePath, $options);
 setlocale(LC_ALL, array('zh_CN.gbk','zh_CN.gb2312','zh_CN.gb18030'));
-foreach ($rowIterator as $offsetRow => $excelRow) {
-    
-    if (1 == $offsetRow) {
-        
-        $cellIterator   = $excelRow->getCellIterator();
-        
-        foreach ($cellIterator as $offsetCell => $cell) {
-            
-            $headText   = $cell->getValue();
-            
-            if (isset($excelHead1[$headText])) {
-            
-                $mapColumnField[$offsetCell]    = $excelHead1[$headText];
+$reportNumber   = 0;
+
+foreach ($csv as $lineNumber => $line) {
+
+    if (0 == $lineNumber) {
+
+        $format = array();
+
+        foreach ($line as $offset => $cellValue) {
+
+            $head   = Utility::GbToUtf8(trim($cellValue));
+
+            if (isset($csvHead[$head])) {
+
+                $format[$offset]    = $csvHead[$head];
             }
         }
 
-        if (count($mapColumnField) != count($excelHead1)) {
+        if (count($format) != count($csvHead)) {
 
             throw   new ApplicationException('无法识别表头');
         }
-        
+
+        $csv->setFormat($format);
         continue;
     }
-   
-    $data   = array();
-    
-    foreach ($mapColumnField as $offsetColumn => $fieldName) {
 
-        $data[$fieldName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
+    if (empty($line)) {
+
+        continue;
     }
 
-    $list[] = $data;
+    ++ $reportNumber;
+    
+    foreach($line as &$info){
+        $info = Utility::GbToUtf8(trim($info));
+    }
+    $list[] = $line;
 }
+setlocale(LC_ALL,NULL);
+
 $listSkuCode    = ArrayUtility::listField($list,'sku_code');
 $skuCodeCount   = array_count_values($listSkuCode);
 
@@ -100,6 +106,7 @@ $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
 $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
 $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
+
 Validate::testNull($listGoodsType, "表中无匹配产品类型,请修改后重新上传");
 $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
 $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
@@ -135,7 +142,6 @@ foreach ($list as $offsetRow => $row) {
         continue;
     }
 }
-setlocale(LC_ALL,NULL);
 
 $template           = Template::getInstance();
 $template->assign('mainMenu', $mainMenu);
@@ -155,7 +161,7 @@ if(!is_dir($uploadPath)) {
 
     mkdir($uploadPath,0777,true);
 }
-$fileName           = $time.".xlsx";
+$fileName           = $time.".csv";
 $quotationFilePath  = $uploadPath.$fileName;
 $fileStoragePath    = $floderPath . $fileName;
 rename($filePath,$quotationFilePath);

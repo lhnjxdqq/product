@@ -31,6 +31,7 @@ class Sample_Status {
 
         return  array(
             self::IMPORT_SUCCESS   => '上传成功',
+            self::RUNNING          => '运行中',
             self::WAIT_AUDIT       => '待审核',
             self::WAIT_UPDATE      => '待生成',
             self::UPDATE           => '生成中',

@@ -95,7 +95,7 @@
                                         <td>
                                             <{if $item.status_id eq 2}><a href="/sample/storage/reviewed.php?sample_id=<{$item.sample_storage_id}>" class='btn btn-xs btn-primary'>审核</a><{/if}>
                                             <{if $sampleStatus[$item.status_id] eq "上传成功"}><a href='/sample/storage/do_delete.php?sample_id=<{$item.sample_storage_id}>' class='delete-confirm btn btn-xs btn-warning'>删除</a><{/if}>
-                                            <a href="/common/download.php?file=<{$item.file_path}>&module=sample_storage_import&file_name=sample_storage<{$item.sample_storage_id}>" class='btn btn-xs btn-info'>下载</a>
+                                            <a href="/common/downloadCsv.php?file=<{$item.file_path}>&module=sample_storage_import&file_name=sample_storage<{$item.sample_storage_id}>" class='btn btn-xs btn-info'>下载</a>
                                             <{if $sampleStatus[$item.status_id] eq "已完成"}><a href="/sample/storage/detail.php?sample_id=<{$item.sample_storage_id}>" class='btn btn-xs btn-info'>查看详情</a><{/if}>
                                         </td>
                                     </tr>

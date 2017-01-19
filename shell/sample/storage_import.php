@@ -38,7 +38,7 @@ $objPHPExcel        = ExcelFile::load($excelFile);
 $sheet              = $objPHPExcel->getActiveSheet(); 
 $rowIterator        = $sheet->getRowIterator(1);
 
-$excelHead1         = array(
+$csvHead            = array(
     '买款ID'            => 'sku_code',
     '产品名称'          => 'product_name',
     '三级分类'          => 'categoryLv3',
@@ -53,44 +53,49 @@ $excelHead1         = array(
     '计价类型'          => 'valuation_data',
 );
 
-$mapColumnField     = array();
-$mapColumnColor     = array();
 $list               = array();
-
+$csv                = CSVIterator::load($excelFile, $options);
 setlocale(LC_ALL, array('zh_CN.gbk','zh_CN.gb2312','zh_CN.gb18030'));
-foreach ($rowIterator as $offsetRow => $excelRow) {
-    
-    if (1 == $offsetRow) {
-        
-        $cellIterator   = $excelRow->getCellIterator();
-        
-        foreach ($cellIterator as $offsetCell => $cell) {
-            
-            $headText   = $cell->getValue();
-            
-            if (isset($excelHead1[$headText])) {
-            
-                $mapColumnField[$offsetCell]    = $excelHead1[$headText];
+$reportNumber   = 0;
+
+foreach ($csv as $lineNumber => $line) {
+
+    if (0 == $lineNumber) {
+
+        $format = array();
+
+        foreach ($line as $offset => $cellValue) {
+
+            $head   = Utility::GbToUtf8(trim($cellValue));
+
+            if (isset($csvHead[$head])) {
+
+                $format[$offset]    = $csvHead[$head];
             }
         }
 
-        if (count($mapColumnField) != count($excelHead1)) {
+        if (count($format) != count($csvHead)) {
 
             throw   new ApplicationException('无法识别表头');
         }
-        
+
+        $csv->setFormat($format);
         continue;
     }
-   
-    $data   = array();
-    
-    foreach ($mapColumnField as $offsetColumn => $fieldName) {
 
-        $data[$fieldName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
+    if (empty($line)) {
+
+        continue;
     }
 
-    $list[] = $data;
+    ++ $reportNumber;
+    
+    foreach($line as &$val){
+        $val = Utility::GbToUtf8(trim($val));
+    }
+    $list[] = $line;
 }
+setlocale(LC_ALL,NULL);
 
 $mapEnumeration = array();
 
@@ -135,7 +140,6 @@ foreach ($list as $offsetRow => $row) {
         continue;
     }
 }
-setlocale(LC_ALL,NULL);
 
 foreach($datas as $info){
     
@@ -145,6 +149,7 @@ foreach($datas as $info){
         
         $listSpuId  = array_unique(ArrayUtility::listField($mapSpuInfo,'spu_id'));
     }
+
     Sample_Storage_Cart_Info::create(array(
         'sample_storage_id'     => $sampleInfo['sample_storage_id'],
         'source_code'           => $info['sku_code'],
@@ -157,3 +162,4 @@ Sample_Storage_Info::update(array(
     'sample_storage_id' => $sampleInfo['sample_storage_id'],
     'status_id'         => Sample_Status::WAIT_AUDIT,
 ));
+echo "导入完成\n";
