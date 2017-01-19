@@ -6,7 +6,7 @@ require_once    dirname(__FILE__) . '/../../../init.inc.php';
 
 $condition  = empty($_GET) ? array() : $_GET ;
 $orderBy    = array(
-    'create_time' => 'DESC',
+    'sample_storage_id' => 'DESC',
 );
 
 $mapSalesperson = ArrayUtility::indexByField(ArrayUtility::searchBy(Salesperson_Info::listAll(),array('delete_status'=>0)),'salesperson_id');

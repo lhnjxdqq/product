@@ -63,7 +63,7 @@ $mapEnumeration =array(
 foreach ($data as $offsetRow => $row) {
 
    $spuId = Quotation::createSampleQuotation($row,$mapEnumeration,$sampleInfo['supplier_id']);
-   
+
    foreach($spuId as $val){
        
        Sample_Storage_Spu_Info::create(array(
@@ -73,12 +73,14 @@ foreach ($data as $offsetRow => $row) {
             'create_time'       => date('Y-m-d H:i:s'),
             'sample_type'       => $sampleInfo['supplier_id'],
        ));
+	   echo "添加spuID为". $val ."的spu到样板\n"
    }
 }
-
+$countSample =  Sample_Storage_Spu_Info::countByCondition(array('sample_storage_id'=>$info['sample_storage_id']));
 Sample_Storage_Info::update(array(
     'sample_storage_id' => $sampleInfo['sample_storage_id'],
     'status_id'         => Sample_Status::FINISHED,
+    'sample_quantity'   => $countSample,
 ));
 
 echo "执行完成";

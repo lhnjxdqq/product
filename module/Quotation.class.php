@@ -458,7 +458,7 @@ class   Quotation {
         }
         Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
         
-        return $spuGoodsInfo;
+        return array($spuGoodsInfo['spu_id']['spu_id']);
     }
     
     /**
