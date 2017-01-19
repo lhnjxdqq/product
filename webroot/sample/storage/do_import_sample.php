@@ -18,7 +18,7 @@ if($_POST['sample_type_id'] == Sample_Type::OWN){
     
     Validate::testNull($_POST['return_sample_time'],'预计还板时间不能为空');
 }
-
+Quotation::getColorBySupplierId($_POST['supplier_id']);
 $filePath           = $_FILES['quotation']['tmp_name'];
 
 if($_FILES['quotation']['error'] != UPLOAD_ERR_OK) {
