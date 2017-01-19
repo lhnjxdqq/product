@@ -62,6 +62,20 @@ class   Goods_Type_Spec_Value_Relationship {
 
         return  self::_getStore()->fetchAll($sql);
     }
+	
+    /**
+     * 根据商品类型ID与规格Id获取该商品类型的规格值
+     *
+     * @param $goodsTypeId
+     * @param $specId
+     * @return array
+     */
+    static public function getSpecValueByGoodsTypeIdAndSpecId ($goodsTypeId,$specId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `goods_type_id`="' . (int) $goodsTypeId . '" AND `spec_id`='.(int) $specId;
+
+        return  self::_getStore()->fetchAll($sql);
+    }
 
     /**
      * 根据一组商品类型ID获取规格信息

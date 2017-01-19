@@ -26,6 +26,7 @@ class   Quotation {
         Validate::testNull($data['categoryLv3'],'三级分类不能为空');
         Validate::testNull($data['material_main_name'],'主料材质不能为空');
         Validate::testNull($data['weight_name'],'规格重量不能为空');
+        Validate::testNull($data['valuation_data'],'计价类型不能为空');
 
         foreach (self::$_unusualCharacter as $unusalCharacter) {
 
@@ -80,10 +81,10 @@ class   Quotation {
         
         $mapSizeSpecValue    = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$sizeSpecId));
 
-		if(!empty($data['assistant_material'])){
-			
-			$data['assistant_material_id']	= self::_getSpecValueId($data['assistant_material'],$mapAssistantMaterialValue,"辅料材质不正确",$mapEnumeration);
-		}
+        if(!empty($data['assistant_material'])){
+            
+            $data['assistant_material_id']  = self::_getSpecValueId($data['assistant_material'],$mapAssistantMaterialValue,"辅料材质不正确",$mapEnumeration);
+        }
         $data['material_id'] = trim($data['material_id']);
         $data['weight_id']   = trim($data['weight_id']);
         $data['material_id'] = self::_getSpecValueId($data['material_main_name'],$mapMaterialSpecValue,"主料材质不正确",$mapEnumeration);
@@ -99,19 +100,20 @@ class   Quotation {
             }
             $data['size'] = array_unique($data['size']);
         }
-        
-        foreach($data['price'] as $key=>$val){
-            
-            if(!empty($val)){
-            
-                $colorId = self::_getSpecValueId($key,$mapColorSpecValue,$key."颜色工费不正确",$mapEnumeration);
-                if(!is_numeric($val)){
+       
+        if(!is_numeric($data['cost']) || empty($data['cost'])){
                 
-                    throw   new ApplicationException($key."颜色工费不正确");
-                }
-                $data['cost'][$colorId] = $val;
-            }
-        }        
+                    throw   new ApplicationException("颜色工费不正确");
+        }
+        
+        if(!in_array($data['valuation_data'],$mapEnumeration['mapValuation']) || empty($data['valuation_data'])){
+        
+            throw   new ApplicationException("计价类型不正确");   
+        }else{
+            $valuationValue             = array_flip($mapEnumeration['mapValuation']);
+            $data['valuation_type']     = $valuationValue[$data['valuation_data']];
+        }
+        
         if(!empty($data['style_two_level'] && !empty($data['style_one_level']))){
             
             $styleOneLevelInfo  = ArrayUtility::searchBy($mapEnumeration['mapStyle'],array('style_name'=>$data['style_one_level'],'style_level'=>0));
@@ -301,6 +303,164 @@ class   Quotation {
     }
     
     /**
+     *  根据供应商ID获取相应的的颜色
+     *
+     *  $param  int  $supplierId  供应商ID
+     *
+     *  @return  array            该供应商所支持的颜色
+     */
+    static public function getColorBySupplierId($supplierId){
+        
+        Validate::testNull($supplierId,'供应商不能为空');
+
+        $supplierInfo       = Supplier_Info::getById($supplierId);
+        $colorInfo          = json_decode($supplierInfo["price_plus_data"],true);
+        
+        return $colorInfo;
+    }
+    
+    /**
+     *  根据颜色，工费获取相应的的颜色对应的工费
+     *
+     *  $param  float  $cost        工费
+     *  $param  array  $listColor   颜色
+     *
+     *  @return  array            该供应商所支持的颜色
+     */
+    static public function getColorCostByCostAndlistColor($cost,$listColor){
+
+        $mainColorId        = $listColor["base_color_id"];
+        $listColorCost[$mainColorId] = $cost;
+   
+        foreach($listColor['product_color'] as $key => $info){
+            
+            foreach($info as $colorId => $colorCostPlus){
+                
+                $listColorCost[$colorId] =  $cost+$colorCostPlus;
+            }
+        }
+        $listColorCost[$mainColorId] = (int) $cost;
+        return $listColorCost;
+    }
+    
+    /**
+     * 根据商品三级分类获取商品的对应的尺寸
+     *
+     * @param   int  $categoryId   三级分类
+     * 
+     * @return  array              尺寸
+     */
+    static public function getSizeByCategory($categoryId){
+        
+        Validate::testNull($categoryId,'分类ID不能为空');
+        
+        $categoryInfo = Category_Info::getByCategoryId($categoryId);
+        $goodsTypeId      = $categoryInfo['goods_type_id'];
+        $listSpecInfo     = Spec_Info::listAll();
+        $listSpecInfo     = ArrayUtility::searchBy($listSpecInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+        $specSizeInfo     = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'size')),'spec_alias','spec_id');
+        $goodsTypApecValueInfo = Goods_Type_Spec_Value_Relationship::getSpecValueByGoodsTypeIdAndSpecId($goodsTypeId,$specSizeInfo['size']);
+        $listSpecValueId  = ArrayUtility::listField(Spec_Value_Info::getByMulitId(ArrayUtility::listField($goodsTypApecValueInfo,'spec_value_id')),'spec_value_id');
+
+        return $listSpecValueId;
+    }
+    
+    /**
+     *  修改新报价导入报价单
+     *
+     * @param   array   $data             数据 
+     * @param   array   $mapEnumeration   枚举数据
+     * @param   string  $isSkuCode        是否忽略买款ID重复
+     *
+     * @return  array                     验证后的数据
+     */
+    static public function createSampleQuotation(array $data, array $mapEnumeration,$supplierId) {
+        
+        $listSupplierColorInfo    = self::getColorBySupplierId($supplierId);
+        $colorCostInfo            = self::getColorCostByCostAndlistColor($data['cost'],$listSupplierColorInfo);
+        $listSizeInfo             = self::getSizeByCategory($data['category_id']);
+
+        $data['cost']             = $colorCostInfo;
+
+        $content['suppplier_id'] = $supplierId;
+
+        foreach($colorCostInfo as $colorId=>$price) {
+            
+            if(!empty($listSizeInfo)) {
+                
+                foreach($listSizeInfo as $key=>$sizeId){
+                    
+                    $goodsInfo[] = self::_createGoods($data,$sizeId,$colorId,$mapEnumeration,$supplierId);
+                }
+                
+            }else{
+                
+                    $goodsInfo[] = self::_createGoods($data,$sizeId,$colorId,$mapEnumeration,$supplierId);
+            }
+        }
+        //生成SPU SKU关系
+        $goodsId = ArrayUtility::listField($goodsInfo, 'goods_id');
+        $spuGoodsInfo           = Spu_Goods_RelationShip::getByMultiGoodsId($goodsId);
+        if(!empty($data['list_spu_id'])){
+            
+            foreach($data['list_spu_id'] as $spuId){
+ 
+                foreach($goodsInfo as $key=>$info) {
+                    
+                    $content =array(
+                        'spu_id'            => $spuId,
+                        'goods_id'          => $info['goods_id'],
+                        'valuation_type'    => $data['valuation_type'],
+                        'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
+                    );
+                    Spu_Goods_RelationShip::create($content);
+                }
+
+                foreach($goodsInfo as $key=>$info) {
+                    
+                    Sync::queueSkuData($info['goods_id']);
+                }               
+            }
+            return $data['list_spu_id'];
+        }
+        if(empty($spuGoodsInfo)){
+            
+            $indexCategoryId    = ArrayUtility::indexByField($mapEnumeration['mapCategory'], 'category_id');
+            
+            $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
+            $spu['spu_remark']  = $data['remark'];
+            $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
+
+            $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
+            Sync::queueSpuData($spuGoodsInfo['spu_id']['spu_id']);
+            $paramsTagApi       = array(
+                'spuList'   => array($spu['spu_sn']),
+            );
+            TagApi::getInstance()->Spu_addSpuData($paramsTagApi)->call();
+        }
+        foreach($spuGoodsInfo as $mapSpuGoods=>$spuInfo) {
+            
+            foreach($goodsInfo as $key=>$info) {
+                
+                $content =array(
+                    'spu_id'            => $spuInfo['spu_id'],
+                    'goods_id'          => $info['goods_id'],
+                    'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
+                );
+                Spu_Goods_RelationShip::create($content);
+            }
+            foreach($goodsInfo as $key=>$info) {
+                
+                Sync::queueSkuData($info['goods_id']);
+            }
+            
+        }
+        Common_Product::createImportSpuData($spuGoodsInfo['spu_id']['spu_id']);
+        
+        return $spuGoodsInfo;
+    }
+    
+    /**
      * 添加产品
      *  
      * @param   array   $data             数据 
@@ -339,10 +499,10 @@ class   Quotation {
             $mapEnumeration['mapIndexSpecAlias']['weight']      => $data['weight_id'],
             $mapEnumeration['mapIndexSpecAlias']['color']       => $colorId,    
         );
-		if(!empty($data['assistant_material_id'])){
-			
-			$specInfo[$mapEnumeration['mapIndexSpecAlias']['assistant_material']] = $data['assistant_material_id'];
-		}
+        if(!empty($data['assistant_material_id'])){
+            
+            $specInfo[$mapEnumeration['mapIndexSpecAlias']['assistant_material']] = $data['assistant_material_id'];
+        }
         $specValueList  = array();
         foreach($specInfo as $specId=>$specName){
             if(empty($specName)){
@@ -355,7 +515,6 @@ class   Quotation {
             );   
         }
         
-
         $goodsId = Goods_Spec_Value_RelationShip::validateGoods($specValueList, $data['style_id'], $data['category_id']);
 
         if ($goodsId) {
@@ -365,7 +524,7 @@ class   Quotation {
                 'goods_id'      => $goodsId,
                 'online_status' => Goods_OnlineStatus::ONLINE,
             ));
-			Goods_Push::linePushByMultiSkuId('online',array($goodsId));
+            Goods_Push::linePushByMultiSkuId('online',array($goodsId));
 
             $spuGoodsInfo = Spu_Goods_RelationShip::getByGoodsId($goodsId);
 
@@ -387,6 +546,7 @@ class   Quotation {
                 'goods_name'    => $content['product_name'],
                 'goods_type_id' => $data['goods_type_id'],
                 'category_id'   => $data['category_id'],
+                'valuation_type'=> $data['valuation_type'],
                 'self_cost'     => $productData['product_cost']+PLUS_COST,
                 'sale_cost'     => $productData['product_cost']+PLUS_COST,
                 'style_id'      => $data['style_id'] ? $data['style_id'] : 0,
