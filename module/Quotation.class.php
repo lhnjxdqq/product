@@ -315,7 +315,7 @@ class   Quotation {
 
         $supplierInfo       = Supplier_Info::getById($supplierId);
         $colorInfo          = json_decode($supplierInfo["price_plus_data"],true);
-        Validate::testNull($colorInfo,'该供应商下没有对应加价逻辑，请去供应商下编辑加价逻辑');
+        Validate::testNull($colorInfo,'该供应商下没有不同颜色的加价逻辑');
         
         return $colorInfo;
     }
@@ -328,7 +328,7 @@ class   Quotation {
      *
      *  @return  array            该供应商所支持的颜色
      */
-    static public function getColorCostByCostAndlistColor($cost,$listColor){
+    static public function getColorCostByCostAndlistColor($cost,array $listColor){
 
         $mainColorId        = $listColor["base_color_id"];
         $listColorCost[$mainColorId] = $cost;
