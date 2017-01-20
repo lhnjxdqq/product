@@ -44,9 +44,10 @@ $excelHead1         = array(
     '产品名称'          => 'product_name',
     '三级分类'          => 'categoryLv3',
     '主料材质'          => 'material_main_name',
-    '规格尺寸'          => 'size_name',
+    '辅料材质'          => 'assistant_material',
     '规格重量'          => 'weight_name',
     '备注'              => 'remark',
+    '计价类型'          => 'valuation_data',
     '款式'              => 'style_one_level',
     '子款式'            => 'style_two_level',
     '进货工费'          => 'cost',
@@ -81,37 +82,20 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
         continue;
     }
     
-    if (2 == $offsetRow) {
-        
-        $mapFieldColumn = array_flip($mapColumnField);
-        $cellIterator   = $excelRow->getCellIterator();
-        
-        foreach ($cellIterator as $offsetCell => $cell) {
-            
-            if ($offsetCell >= $mapFieldColumn['cost'] && !empty($cell->getValue())) {
-            
-                $mapColumnColor[$offsetCell]    = $cell->getValue();
-            }
-        }
-        continue;
-    }
-   
     $data   = array();
     
     foreach ($mapColumnField as $offsetColumn => $fieldName) {
 
-        $data[$fieldName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+        $data[$fieldName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
     }
 
     foreach ($mapColumnColor as $offsetColumn => $colorName) {
 
-        $data['price'][$colorName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+        $data['price'][$colorName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
     }
     
-    unset($data['cost']);
     $list[] = $data;
 }
-
 $listSkuCode    = ArrayUtility::listField($list,'sku_code');
 $urlPath        = '/product/spu/index.php?search_type=source_code&search_value_list='.urlencode(implode(" ",$listSkuCode))."&category_id=";
 

@@ -19,7 +19,7 @@ $listSupplier   = Supplier_Info::listAll();
 validate::testNull(ArrayUtility::searchBy($listSupplier,array('supplier_id'=>$_POST['supplier_id'])),"所选供应商不存在");
 $mainMenu   = Menu_Info::getMainMenu();
 $filePath           = $_FILES['quotation']['tmp_name'];
-
+Quotation::getColorBySupplierId($_POST['supplier_id']);
 if($_FILES['quotation']['error'] != UPLOAD_ERR_OK) {
     
     throw   new ApplicationException('文件未上传成功');
@@ -33,10 +33,10 @@ $excelHead1         = array(
     '产品名称'          => 'product_name',
     '三级分类'          => 'categoryLv3',
     '主料材质'          => 'material_main_name',
-    '规格尺寸'          => 'size_name',
-	'辅料材质'			=> 'assistant_material',
+    '辅料材质'          => 'assistant_material',
     '规格重量'          => 'weight_name',
     '备注'              => 'remark',
+    '计价类型'          => 'valuation_data',
     '款式'              => 'style_one_level',
     '子款式'            => 'style_two_level',
     '进货工费'          => 'cost',
@@ -71,26 +71,6 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
         continue;
     }
     
-    if (2 == $offsetRow) {
-        
-        $mapFieldColumn = array_flip($mapColumnField);
-        $cellIterator   = $excelRow->getCellIterator();
-        
-        foreach ($cellIterator as $offsetCell => $cell) {
-            
-            if ($offsetCell >= $mapFieldColumn['cost'] && !empty($cell->getValue())) {
-            
-                $mapColumnColor[$offsetCell]    = $cell->getValue();
-            }
-        }
-        $mapColorSpecValueInfo = Spec_Value_Info::getByMultiValueData($mapColumnColor);
-        if( count($mapColorSpecValueInfo) != count($mapColumnColor)){
-            
-            throw   new ApplicationException('表头中颜色工费表头有误,请检查');
-        }
-        continue;
-    }
-   
     $data   = array();
     
     foreach ($mapColumnField as $offsetColumn => $fieldName) {
@@ -103,7 +83,6 @@ foreach ($rowIterator as $offsetRow => $excelRow) {
         $data['price'][$colorName] = trim('' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue());
     }
     
-    unset($data['cost']);
     $list[] = $data;
 }
 
@@ -123,6 +102,7 @@ if(empty($_POST['is_table_sku_code'])){
 $mapEnumeration = array();
 
 $addNums = 1;
+$mapValuation       = Valuation_TypeInfo::getValuationType();
 $listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
 $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
@@ -141,11 +121,12 @@ $mapEnumeration =array(
    'mapSizeId'            => $mapSizeId,
    'mapStyle'             => $mapStyleInfo,
    'mapSpecInfo'          => $mapSpecInfo,
+   'mapValuation'         => $mapValuation,
 );
 
 foreach ($list as $offsetRow => $row) {
     
-    $line  = $offsetRow+3;
+    $line  = $offsetRow+2;
     try{
         
         $datas[] = Quotation::testQuotation($row,$mapEnumeration, $_POST['is_sku_code'], $_POST['supplier_id']);

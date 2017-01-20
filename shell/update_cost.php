@@ -184,7 +184,7 @@ foreach($mapUpdateCost as $key=>$info){
     }else{
 
         $mapEnumeration = array();
-
+		$mapValuation       = Valuation_TypeInfo::getValuationType();
         $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
         $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
         $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
@@ -205,6 +205,7 @@ foreach($mapUpdateCost as $key=>$info){
             'mapSizeId'            => $mapSizeId,
             'mapStyle'             => $mapStyleInfo,
             'mapSpecInfo'          => $mapSpecInfo,
+			'mapValuation'         => $mapValuation,
         );
 
         foreach ($data as $offsetRow => $row) {

@@ -142,12 +142,17 @@ class   Quotation {
 
         $data = self::testQuotation($data, $mapEnumeration, $isSkuCode, $supplierId);
         $content['suppplier_id'] = $supplierId;
+        $listSupplierColorInfo    = self::getColorBySupplierId($supplierId);
+        $colorCostInfo            = self::getColorCostByCostAndlistColor($data['cost'],$listSupplierColorInfo);
+        $listSizeInfo             = self::getSizeByCategory($data['category_id']);
         
-        foreach($data['cost'] as $colorId=>$price) {
+        $data['cost']             = $colorCostInfo;
+
+        foreach($colorCostInfo as $colorId=>$price) {
             
-            if(!empty($data['size_name'])) {
+            if(!empty($listSizeInfo)) {
                 
-                foreach($data['size'] as $key=>$sizeId){
+                foreach($listSizeInfo as $key=>$sizeId){
                     
                     $goodsInfo[] = self::_createGoods($data,$sizeId,$colorId,$mapEnumeration,$supplierId);
                 }
@@ -187,6 +192,7 @@ class   Quotation {
             
             $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
             $spu['spu_remark']  = $data['remark'];
+            $spu['valuation_type']= $data['valuation_type'];
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
@@ -273,6 +279,7 @@ class   Quotation {
             
             $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
             $spu['spu_remark']  = $data['remark'];
+            $spu['valuation_type']= $data['valuation_type'];
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
@@ -411,7 +418,6 @@ class   Quotation {
                     $content =array(
                         'spu_id'            => $spuId,
                         'goods_id'          => $info['goods_id'],
-                        'valuation_type'    => $data['valuation_type'],
                         'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                     );
                     Spu_Goods_RelationShip::create($content);
@@ -430,6 +436,7 @@ class   Quotation {
             
             $spu['spu_sn']      = Spu_Info::createSpuSn($indexCategoryId[$data['category_id']]['category_sn']);
             $spu['spu_remark']  = $data['remark'];
+            $spu['valuation_type']= $data['valuation_type'];
             $spu['spu_name']    = $data['weight_name']."g".$data['material_main_name'].$data['categoryLv3'].$data['style_two_level'];
 
             $spuGoodsInfo['spu_id']['spu_id'] = Spu_Info::create($spu);
@@ -1112,6 +1119,17 @@ class   Quotation {
         $data = self::testQuotation($data, $mapEnumeration, $isSkuCode, $supplierId);
         $sourceInfo  = Source_Info::getBySourceCodeAndSupplierId($data['sku_code'],$supplierId);
         $sourceId    = $sourceInfo['source_id'];
+
+        $listSupplierColorInfo    = self::getColorBySupplierId($supplierId);
+        $colorCostInfo            = self::getColorCostByCostAndlistColor($data['cost'],$listSupplierColorInfo);
+        $listSizeInfo             = self::getSizeByCategory($data['category_id']);
+        if(!empty($listSizeInfo)){
+        
+            $data['size_name']        = implode(",",ArrayUtility::listField(Spec_Value_Info::getByMulitId($listSizeInfo),'spec_value_data'));  
+        }
+        $data['cost']             = $colorCostInfo;
+        $data['size']             = $listSizeInfo;
+
         if(!empty($sourceId)){
             
             $productInfo    = Product_Info::getByMultiSourceId(array($sourceId));
