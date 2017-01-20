@@ -14,3 +14,5 @@ shell/test.php
 .idea
 .gitignore
 webroot/demo.php
+.tags
+.tags_sorted_by_file
