@@ -40,7 +40,7 @@ if (empty($price)) {
 
     exit('金价获取失败!' . PHP_EOL);
 }
-echo $price;
+
 Au_Price_Log::create(array('au_price'=>$price));
 
 echo '金价获取完成!' . PHP_EOL;
