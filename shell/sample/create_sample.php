@@ -73,6 +73,7 @@ foreach ($data as $offsetRow => $row) {
             'quantity'          => $row['quantity'],
             'create_time'       => date('Y-m-d H:i:s'),
             'sample_type'       => $sampleInfo['supplier_id'],
+            'estimate_return_time'  => $sampleInfo['return_sample_time'],
        ));
        echo "添加spuID为". $val ."的spu到样板成功\n";
    }
