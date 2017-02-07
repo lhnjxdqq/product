@@ -105,6 +105,21 @@ class Api_Controller_Sku {
         $goodsSourceInfo        = Common_Goods::getGoodsSourceCodeList($listGoodsId);
         $indexGoodsSnSource     = ArrayUtility::indexByField($goodsSourceInfo,'goods_sn','source_code');
         
-		return   array('listSource'	=> $indexGoodsSnSource);
+        return   array('listSource' => $indexGoodsSnSource);
+    }
+        
+    /**
+     * 根据一组sku ID获取计价类型
+     *
+     * @param  array $listGoodsId     一组SpuId
+     * @return array                对应的计价类型
+     */
+    static public function getValuationTypeByListGoodsId (array $listGoodsId) {
+    
+        Validate::testNull($listGoodsId,'SkuID不能为空');
+        
+        $listSkuInfo =  Goods_Info::getByMultiId($listGoodsId);
+        
+        return array('SkuInfo'=> ArrayUtility::indexByField($listSkuInfo,'goods_id','valuation_type'));
     }
 }

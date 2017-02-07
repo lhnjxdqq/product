@@ -416,7 +416,7 @@ class   Api_Controller_Spu {
     }
 
     /**
-     * 获取多个SPU赌赢的SKU id
+     * 获取多个SPU对应的SKU id
      *
      * @param   array   $listSpuId  一组SPU id列表
      * @return  array               一组SPU和SKU的关系数据
@@ -522,5 +522,20 @@ class   Api_Controller_Spu {
         self::$_bufferSpuInfo   = self::$_bufferSpuInfo + ArrayUtility::indexByField($listSpuInfo, 'spu_sn');
 
         return          $result + $listSpuInfo;
+    }
+    
+    /**
+     * 根据一组spu ID获取计价类型
+     *
+     * @param  array $listSpuId     一组SpuId
+     * @return array                对应的计价类型
+     */
+    static public function getValuationTypeByListSpuId (array $listSpuId) {
+    
+        Validate::testNull($listSpuId,'spuID不能为空');
+        
+        $listSpuInfo =  Spu_Info::getByMultiId($listSpuId);
+        
+        return array('spuInfo'=> ArrayUtility::indexByField($listSpuInfo,'spu_id','valuation_type'));
     }
 }
