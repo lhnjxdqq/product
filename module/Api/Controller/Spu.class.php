@@ -527,15 +527,15 @@ class   Api_Controller_Spu {
     /**
      * 根据一组spu ID获取计价类型
      *
-     * @param  array $listSpuId     一组SpuId
+     * @param  array $listSpuSn     一组SpuSn
      * @return array                对应的计价类型
      */
-    static public function getValuationTypeByListSpuId (array $listSpuId) {
+    static public function getValuationTypeByListSpuSn (array $listSpuSn) {
     
-        Validate::testNull($listSpuId,'spuID不能为空');
+        Validate::testNull($listSpuSn,'spuID不能为空');
         
-        $listSpuInfo =  Spu_Info::getByMultiId($listSpuId);
+        $listSpuInfo =  Spu_Info::getByMultiId($listSpuSn);
         
-        return array('spuInfo'=> ArrayUtility::indexByField($listSpuInfo,'spu_id','valuation_type'));
+        return array('spuInfo'=> ArrayUtility::indexByField($listSpuInfo,'spu_sn','valuation_type'));
     }
 }

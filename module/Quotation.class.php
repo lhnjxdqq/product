@@ -1370,6 +1370,7 @@ class   Quotation {
                 $listSpuInfo[$key]['goods'][$goodsId]['style_id']       = $mapAllGoodsInfo[$goodsId]['style_id'];
                 $listSpuInfo[$key]['goods'][$goodsId]['category_id']    = $mapAllGoodsInfo[$goodsId]['category_id'];
                 $listSpuInfo[$key]['goods'][$goodsId]['remark']         = $mapAllGoodsInfo[$goodsId]['goods_remark'];
+                $listSpuInfo[$key]['goods'][$goodsId]['valuation_type'] = $mapAllGoodsInfo[$goodsId]['valuation_type'];
                 
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['material']['spec_value_id']     = $mapGoodsValueMaterialId[$goodsId];
                 $listSpuInfo[$key]['goods'][$goodsId]['spec']['material']['spec_value_data']   = $mapGoodsValue[$goodsId]['spec_material'];

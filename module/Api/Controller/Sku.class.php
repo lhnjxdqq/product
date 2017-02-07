@@ -111,15 +111,15 @@ class Api_Controller_Sku {
     /**
      * 根据一组sku ID获取计价类型
      *
-     * @param  array $listGoodsId     一组SpuId
+     * @param  array $listGoodsSn     一组SpuSn
      * @return array                对应的计价类型
      */
-    static public function getValuationTypeByListGoodsId (array $listGoodsId) {
+    static public function getValuationTypeByListGoodsSn (array $listGoodsSn) {
     
-        Validate::testNull($listGoodsId,'SkuID不能为空');
+        Validate::testNull($listGoodsSn,'SkuSn不能为空');
         
-        $listSkuInfo =  Goods_Info::getByMultiId($listGoodsId);
+        $listSkuInfo =  Goods_Info::getByMultiGoodsSn($listGoodsSn);
         
-        return array('SkuInfo'=> ArrayUtility::indexByField($listSkuInfo,'goods_id','valuation_type'));
+        return array('SkuInfo'=> ArrayUtility::indexByField($listGoodsSn,'goods_sn','valuation_type'));
     }
 }
