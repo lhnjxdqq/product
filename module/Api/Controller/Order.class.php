@@ -312,4 +312,28 @@ class Api_Controller_Order {
         $redis->set(self::salesAsssignQuantity.$salesAssignGoods,json_encode($sumGoods));
         return $sumGoods;
     }
+    
+    /**
+     * 修改订单状态
+     *
+     * @param  	array  $orderInfo     订单信息
+     *
+     * @rerurn  array  结果
+     */
+     static public function  editOrderStatus (array $orderInfo) {
+        
+        Validate::testNull($orderInfo['orderId'], '参数 orderId 不能为空');
+        Validate::testNull($orderInfo['statusCode'], '参数状态代码不能为空');
+        
+        $listOrder                  = Sales_Order_Info::getByMultiId(array($orderInfo['orderId']));
+        Validate::testNull($listOrder, '订单不存在');
+        
+        Sales_Order_Info::update(array(
+            'sales_order_id'        => $orderInfo['orderId'],
+            'sales_order_status'    => $orderInfo['statusCode'],
+        ));
+        
+        return "OK";
+
+     }
 }
