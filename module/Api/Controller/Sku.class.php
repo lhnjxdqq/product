@@ -120,6 +120,6 @@ class Api_Controller_Sku {
         
         $listSkuInfo =  Goods_Info::getByMultiGoodsSn($listGoodsSn);
         
-        return array('SkuInfo'=> ArrayUtility::indexByField($listGoodsSn,'goods_sn','valuation_type'));
+        return array('SkuInfo'=> ArrayUtility::indexByField($listSkuInfo,'goods_sn','valuation_type'));
     }
 }
