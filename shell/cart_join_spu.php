@@ -55,11 +55,11 @@ foreach($standby as $key=>$info){
                                       ? Search_Spu::countByCondition($condition)
                                       : Spu_List::countByCondition($condition);
 
-            for($row=0; $row<=$countSpuTotal; $row+= 100 ){
+            for($offset=0; $offset<=$countSpuTotal; $offset+= 100 ){
         
                 $listSpuInfo            = isset($condition['category_id'])
-                                         ? Search_Spu::listByCondition($condition, array(), $row, 100)
-                                         : Spu_List::listByCondition($condition, array(), $row, 100);
+                                         ? Search_Spu::listByCondition($condition, array(), $offset, 100)
+                                         : Spu_List::listByCondition($condition, array(), $offset, 100);
                                          
                 $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
@@ -232,7 +232,7 @@ foreach($standby as $key=>$info){
             }
         }
     }
-    
+  
     Cart_Join_Spu_Task::update(array(
         'task_id'       => $info['task_id'],
         'run_status'    => Cart_Join_Spu_RunStatus::FINISH,
