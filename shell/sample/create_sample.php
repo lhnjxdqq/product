@@ -67,14 +67,17 @@ foreach ($data as $offsetRow => $row) {
 
    foreach($spuId as $val){
        
-       Sample_Storage_Spu_Info::create(array(
+       $smapleSpuInfo   = array(
             'sample_storage_id' => $sampleInfo['sample_storage_id'],
             'spu_id'            => $val,
             'quantity'          => $row['quantity'],
             'create_time'       => date('Y-m-d H:i:s'),
             'sample_type'       => $sampleInfo['supplier_id'],
-            'estimate_return_time'  => $sampleInfo['return_sample_time'],
-       ));
+       );
+       if(!empty($sampleInfo['return_sample_time'])){
+           $smapleSpuInfo['estimate_return_time'] = $sampleInfo['return_sample_time'];
+       }
+       Sample_Storage_Spu_Info::create($smapleSpuInfo);
        echo "添加spuID为". $val ."的spu到样板成功\n";
    }
 }

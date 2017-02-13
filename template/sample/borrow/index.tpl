@@ -94,7 +94,7 @@
                                             <td><{$item.sample_quantity}></td>
                                             <td><{$customerInfo[$item.customer_id]['customer_name']}></td>
                                             <td><{$borrowStatusInfo[$item.status_id]['status_name']}></td>
-                                            <td><{$item.estimate_return_time}></td>
+                                            <td><{$item.end_time}></td>
                                             <td><{$item.return_time}></td>
                                             <td><{$item.remark}></td>
                                             <td>
@@ -103,7 +103,7 @@
                                                 <a href="/sample/borrow/issue.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>出库</a>
                                                 <a href="/sample/borrow/delete.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>删除</a>
                                                 <{else}>
-                                                <a href="/sample/borrow/delete.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>查看销售报价单</a>
+                                                <a href="/sample/borrow/delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class='btn btn-primary btn-xs'>查看销售报价单</a>
                                                 <{/if}>
                                                 <{if $item.status_id == 2 || $item.status_id == 3}>
                                                 <a href="/sample/borrow/detail.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>查看</a>

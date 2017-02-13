@@ -14,6 +14,6 @@ if($borrowInfo['status_id'] != Borrow_Status::NEW_BORROW){
 }
 
 Borrow_Info::delete($_GET['borrow_id']);
-Borrow_Goods_Info::delete($_GET['borrow_id']);
+Borrow_Spu_Info::deleteByborrowId($_GET['borrow_id']);
 
 Utility::notice('删除成功','/sample/borrow/index.php');

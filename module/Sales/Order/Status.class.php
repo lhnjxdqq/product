@@ -19,11 +19,7 @@ class   Sales_Order_Status extends SplEnum {
     const   PARTIALLY_OUT_OF_STOCK  = 7;     //部分缺货
     
     const   CANCEL                  = 8;     //已取消
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> dev
     /**
      * 获取状态
      *
