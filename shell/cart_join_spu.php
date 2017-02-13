@@ -5,6 +5,12 @@ ignore_user_abort();
 require_once dirname(__FILE__) . '/../init.inc.php';
 
 // 获取未处理的记录
+$running = Cart_Join_Spu_Task::getByRunStatus(Cart_Join_Spu_RunStatus::RUNNING);
+//判断是否有命令在运行
+if(!empty($running)){
+    
+    return ;
+}
 $standby = Cart_Join_Spu_Task::getByRunStatus(Cart_Join_Spu_RunStatus::STANDBY);
 if(empty($standby)){
     return ;
@@ -26,91 +32,205 @@ foreach($standby as $key=>$info){
         'run_status'    => Cart_Join_Spu_RunStatus::RUNNING,
         'run_time'      => date('Y-m-d H:i:s', time()),
     ));
-    
+
     $condition                      = json_decode($info['condition_data'],true);
-    
-    $condition['online_status']     = Spu_OnlineStatus::ONLINE;
-    $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
-    $listSpuInfo            = isset($condition['category_id'])
-                             ? Search_Spu::listByCondition($condition, array(), 0, 1000)
-                             : Spu_List::listByCondition($condition, array(), 0, 1000);
-    
-    $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
-    // 查询SPU下的商品
-    $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($spuIds);
-    $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
-    $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
+    $explodeKeyword = array();
 
-    // 查所当前所有SPU的商品 商品信息 规格和规格值
-    $allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
-    $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
-    $allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listAllGoodsId);
-    $mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
+    if(!empty($condition['search_value_list'])){
+        
+        $explodeKeyword = explode(" ",$condition['search_value_list']); 
+        
+        for($row=0; $row<=count($explodeKeyword); $row+= 10 ){
+            
+            $searchValuelist    = array();
+            for($key = $row ; $key < $row+10 ; $key++){
+                
+                $searchValuelist[] = $explodeKeyword[$key];
+            }
+            $condition['search_value_list'] = implode(" " , array_unique(array_filter(($searchValuelist))));
+            $condition['online_status']     = Spu_OnlineStatus::ONLINE;
+            $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
+            $countSpuTotal              = isset($condition['category_id'])
+                                      ? Search_Spu::countByCondition($condition)
+                                      : Spu_List::countByCondition($condition);
 
-    // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
-    $mapSpuGoods    = ArrayUtility::indexByField($listSpuGoods, 'spu_id', 'goods_id');
-    $listGoodsId    = array_values($mapSpuGoods);
-    $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
-    $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+            for($row=0; $row<=$countSpuTotal; $row+= 100 ){
+        
+                $listSpuInfo            = isset($condition['category_id'])
+                                         ? Search_Spu::listByCondition($condition, array(), $row, 100)
+                                         : Spu_List::listByCondition($condition, array(), $row, 100);
+                                         
+                $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
-    // 根据商品查询品类
-    $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
-    $listCategory   = Category_Info::getByMultiId($listCategoryId);
-    $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+                // 查询SPU下的商品
+                $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($spuIds);
+                $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
+                $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
 
-    // 根据商品查询规格重量
-    $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
+                // 查所当前所有SPU的商品 商品信息 规格和规格值
+                $allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
+                $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
+                $allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listAllGoodsId);
+                $mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
 
-    //获取颜色的属性ID
-    $specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
-    $specColorId          = $specColorInfo['color'];
+                // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
+                $mapSpuGoods    = ArrayUtility::indexByField($listSpuGoods, 'spu_id', 'goods_id');
+                $listGoodsId    = array_values($mapSpuGoods);
+                $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
+                $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 
-    $spuCost    = array();
-    $mapSpuSalerCostByColor = array();
+                // 根据商品查询品类
+                $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
+                $listCategory   = Category_Info::getByMultiId($listCategoryId);
+                $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 
-    foreach ($groupSpuGoods as $spuId => $spuGoods) {
+                // 根据商品查询规格重量
+                $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
 
-        $mapColor   = array();
-        foreach ($spuGoods as $goods) {
+                //获取颜色的属性ID
+                $specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+                $specColorId          = $specColorInfo['color'];
 
-            $goodsId        = $goods['goods_id'];
-            $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+                $spuCost    = array();
+                $mapSpuSalerCostByColor = array();
 
-            foreach ($goodsSpecValue as $key => $val) {
+                foreach ($groupSpuGoods as $spuId => $spuGoods) {
 
-                $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
+                    $mapColor   = array();
+                    foreach ($spuGoods as $goods) {
 
-                if($val['spec_id'] == $specColorId) {
+                        $goodsId        = $goods['goods_id'];
+                        $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+
+                        foreach ($goodsSpecValue as $key => $val) {
+
+                            $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
+
+                            if($val['spec_id'] == $specColorId) {
+                                
+                                $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+                            }
+                        }
+                    }
                     
-                    $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+                    foreach($mapColor as $spuIdKey => $colorInfo){
+
+                        foreach($colorInfo as $colorId => $cost){
+                            
+                            rsort($cost);
+                            $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+                        }
+                    }
+                }
+                $indexSpuIdRemark   = ArrayUtility::indexByField($listSpuInfo,'spu_id','spu_remark');
+
+                foreach($spuIds as $id){
+                    $cartSpuInfo        = array();
+                    $cartSpuInfo        = $mapColorInfo[$id];
+                    $cartSpuInfo        = json_encode($cartSpuInfo);
+
+                    $data       = array(
+                        'user_id'               => $info['user_id'],
+                        'spu_id'                => $id,
+                        'spu_color_cost_data'   => $cartSpuInfo,
+                        'remark'                => $indexSpuIdRemark[$id],
+                    );
+                    Cart_Spu_Info::create($data);
                 }
             }
         }
+    }else{
+        $condition['online_status']     = Spu_OnlineStatus::ONLINE;
+        $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
+        $countSpuTotal              = isset($condition['category_id'])
+                                  ? Search_Spu::countByCondition($condition)
+                                  : Spu_List::countByCondition($condition);
         
-        foreach($mapColor as $spuIdKey => $colorInfo){
+        for($row=0; $row<=$countSpuTotal; $row+= 100 ){
+    
+            $listSpuInfo            = isset($condition['category_id'])
+                                     ? Search_Spu::listByCondition($condition, array(), $row, 100)
+                                     : Spu_List::listByCondition($condition, array(), $row, 100);
+                                     
+            $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
-            foreach($colorInfo as $colorId => $cost){
+            // 查询SPU下的商品
+            $listSpuGoods   = Spu_Goods_RelationShip::getByMultiSpuId($spuIds);
+            $groupSpuGoods  = ArrayUtility::groupByField($listSpuGoods, 'spu_id');
+            $listAllGoodsId = ArrayUtility::listField($listSpuGoods, 'goods_id');
+
+            // 查所当前所有SPU的商品 商品信息 规格和规格值
+            $allGoodsInfo           = Goods_Info::getByMultiId($listAllGoodsId);
+            $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
+            $allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listAllGoodsId);
+            $mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
+
+            // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
+            $mapSpuGoods    = ArrayUtility::indexByField($listSpuGoods, 'spu_id', 'goods_id');
+            $listGoodsId    = array_values($mapSpuGoods);
+            $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
+            $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+
+            // 根据商品查询品类
+            $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
+            $listCategory   = Category_Info::getByMultiId($listCategoryId);
+            $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+
+            // 根据商品查询规格重量
+            $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
+
+            //获取颜色的属性ID
+            $specColorInfo        = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+            $specColorId          = $specColorInfo['color'];
+
+            $spuCost    = array();
+            $mapSpuSalerCostByColor = array();
+
+            foreach ($groupSpuGoods as $spuId => $spuGoods) {
+
+                $mapColor   = array();
+                foreach ($spuGoods as $goods) {
+
+                    $goodsId        = $goods['goods_id'];
+                    $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+
+                    foreach ($goodsSpecValue as $key => $val) {
+
+                        $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
+
+                        if($val['spec_id'] == $specColorId) {
+                            
+                            $mapColor[$spuId][$val['spec_value_id']][]    = $mapAllGoodsInfo[$goodsId]['sale_cost'];
+                        }
+                    }
+                }
                 
-                rsort($cost);
-                $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+                foreach($mapColor as $spuIdKey => $colorInfo){
+
+                    foreach($colorInfo as $colorId => $cost){
+                        
+                        rsort($cost);
+                        $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+                    }
+                }
+            }
+            $indexSpuIdRemark   = ArrayUtility::indexByField($listSpuInfo,'spu_id','spu_remark');
+
+            foreach($spuIds as $id){
+                $cartSpuInfo        = array();
+                $cartSpuInfo        = $mapColorInfo[$id];
+                $cartSpuInfo        = json_encode($cartSpuInfo);
+
+                $data       = array(
+                    'user_id'               => $info['user_id'],
+                    'spu_id'                => $id,
+                    'spu_color_cost_data'   => $cartSpuInfo,
+                    'remark'                => $indexSpuIdRemark[$id],
+                );
+                Cart_Spu_Info::create($data);
             }
         }
-    }
-    $indexSpuIdRemark   = ArrayUtility::indexByField($listSpuInfo,'spu_id','spu_remark');
-
-    foreach($spuIds as $id){
-        $cartSpuInfo        = array();
-        $cartSpuInfo        = $mapColorInfo[$id];
-        $cartSpuInfo        = json_encode($cartSpuInfo);
-
-        $data       = array(
-            'user_id'               => $info['user_id'],
-            'spu_id'                => $id,
-            'spu_color_cost_data'   => $cartSpuInfo,
-            'remark'                => $indexSpuIdRemark[$id],
-        );
-        Cart_Spu_Info::create($data);
     }
     
     Cart_Join_Spu_Task::update(array(
@@ -118,4 +238,5 @@ foreach($standby as $key=>$info){
         'run_status'    => Cart_Join_Spu_RunStatus::FINISH,
         'finish_time'   => date('Y-m-d H:i:s', time()),
     ));
+    exit;
 }
