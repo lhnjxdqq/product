@@ -11,6 +11,7 @@ return  array(
     'white_list_api'    => array(
         'SaleMan.getAll',
         'AuPrice.getNewPrice',
+        'AuPrice.getAuPriceByDate',
         'Customer.getAll',
         'Category.getAll',
         'Style.getAll',
