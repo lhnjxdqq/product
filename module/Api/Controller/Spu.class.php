@@ -534,7 +534,7 @@ class   Api_Controller_Spu {
     
         Validate::testNull($listSpuSn,'spuID不能为空');
         
-        $listSpuInfo =  Spu_Info::getByMultiId($listSpuSn);
+        $listSpuInfo =  Spu_Info::getByMultiSpuSn($listSpuSn);
         
         return array('spuInfo'=> ArrayUtility::indexByField($listSpuInfo,'spu_sn','valuation_type'));
     }
