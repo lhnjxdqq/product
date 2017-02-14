@@ -30,37 +30,26 @@
             </div>
             <div class="box">
     <div class="box-header with-border">
+                        <div class='col-md-5'>
+                            <label>
+                                <input type="checkbox" name='check-all'> 全选
+                            </label>
+                        <button class="btn btn-primary btn-sm" id="delMultiBorrowSpu" style="margin-left: 10px;">批量删除</button>
+                        <button class="btn btn-primary btn-sm" id="delMultiBorrowSpu" style="margin-left: 10px;">共计<{$borrowInfo.sample_quantity}>件</button>
+                        </div>
                     <form class="form-inline" action="/sample/borrow/index.php" method="get">
-                        <div class="col-md-4">
-                            <div class="input-daterange input-group input-group-sm">
-                                <span class="input-group-addon" style="border-width:1px 0 1px 1px;">借板时间:</span>
-                                <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
-                                <span class="input-group-addon">到</span>
-                                <input type="text" name="date_end" readonly class="form-control" value="<{$condition.date_end}>">
-                            </div>
-                        </div>
                         <div class="col-md-3">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-addon">销售员:</span>
+                                <span class="input-group-addon">品类:</span>
                                     <select class="form-control select-multiple" name="salesperson_id">
-                                            <option value="0">请选择</option>
-<{foreach from=$salespersonInfo item=item}>
-                                            <option value="<{$item.salesperson_id}>" <{if $item.salesperson_id eq $condition.salesperson_id}> selected = "selected" <{/if}>><{$item.salesperson_name}></option>
+                                            <option value="0">全部</option>
+<{foreach from=$data['mapCategoryInfoLv3'] item=item}>
+                                            <option value="<{$item.category_id}>" <{if $item.category_id eq $condition.category_id}> selected = "selected" <{/if}>><{$item.category_name}></option>
 <{/foreach}>
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">状态:</span>
-                                    <select class="form-control select-multiple" name="status_id">
-                                            <option value="0">请选择</option>
-<{foreach from=$borrowStatusInfo item=item}>
-                                            <option value="<{$item.status_id}>" <{if $item.status_id eq $condition.status_id}> selected = "selected" <{/if}>><{$item.status_name}></option>
-<{/foreach}>
-                                    </select>
-                            </div>
-                        </div>
+                        <input type="hidden" value='<{$smarty.get.borrow_id}>'>
                         <div class="col-md-1" >
                             <div class="input-group input-group-sm">
                                     <button class="btn btn-sm btn-primary pull-left" type="submit">搜索</button>
@@ -68,7 +57,7 @@
                         </div>
                         <div class="col-md-1" >
                             <div class="input-group input-group-sm">
-                                    <a href='/sample/borrow/pick_sample.php' class="btn btn-sm btn-primary pull-right" type="submit">去挑板</a>
+                                    <a href='/sample/borrow/pick_sample.php' class="btn btn-sm btn-primary pull-right" type="submit">保存本页数据</a>
                             </div>
                         </div>
                     </form>
@@ -93,12 +82,13 @@
                                     <th>计价类型</th>
                                     <th>样板数量</th>
                                     <th>备注</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                            
                                 <tr>
-                                    <td><input type='checkbox'></td>
+                                    <td><input type='checkbox' name='borrow_spu[]' value='<{$item.spu_id}>-<{$item.sample_storage_id}>'></td>
                                     <td><{$item.source_code}></td>
                                     <td><{$item.spu_sn}></td>
                                     <td>                                    
@@ -114,6 +104,7 @@
                                     <td><{$valuationType[$item.valuation_type]}></td>
                                     <td><{$item.borrow_quantity}></td>
                                     <td><{$item.spu_remark}></td>
+                                    <td><a class='btn btn-warning btn-sm ' href='borrow_spu_delete.php?borrow_id=<{$smarty.get.borrow_id}>&spu_id=<{$item.spu_id}>&sample_storage_id=<{$item.sample_storage_id}>'><i class='fa fa-trash'></i></a></td>
                                 </tr>
 <{/foreach}>                     
                             </tbody>
@@ -149,6 +140,29 @@
 <!-- ./wrapper -->
 
 <{include file="section/foot.tpl"}>
+<script>
 
+$('input[name="check-all"]').click(function () {
+
+    $('input[name="borrow_spu[]"]').prop('checked', $(this).prop('checked'));
+});
+$('#delMultiBorrowSpu').click(function(){
+
+    var chk_value =[]; 
+    $('input[name="borrow_spu[]"]:checked').each(function(){ 
+
+        chk_value.push($(this).val()); 
+    });
+
+    if(chk_value.length==0){
+        
+        alert("请选择SPU");
+        
+        return false; 
+    }
+    location.href='/sample/borrow/del_multi_spu.php?multi_spu='+chk_value+'&borrow_id=<{$smarty.get.borrow_id}>';
+});
+
+</script>
 </body>
 </html>

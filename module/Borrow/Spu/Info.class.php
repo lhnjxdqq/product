@@ -79,21 +79,35 @@ class   Borrow_Spu_Info {
     }
     
     /**
-     * 根据借版ID样与板Id删除
+     * 根据借版获取借版数量
      *
-     * @param   array   $ids   借版ID与产品ID
+     * @param   int $borrowId  借版id
+     * @return  int            数量
+     */
+    static  public  function countByBorrowQuantity ($borrowId) {
 
-    static  public  function deleteByborrowIdAndGoodsId ($ids) {
+        $sql    = 'SELECT COUNT(borrow_quantity) AS `total` FROM `' . self::_tableName() . "` WHERE `borrow_id` = '" . (int) $borrowId . "'";
+        $row    = self::_getStore()->fetchOne($sql);
 
-        if(empty($ids['goods_id']) || empty($ids['borrow_id'])){
+        return  $row['total'];
+    }
+    
+    /**
+     * 根据借版ID样与spuId与入库单Id删除
+     *
+     * @param   array   $ids   借版ID与spuID与入库单Id
+     */
+    static  public  function deleteByborrowIdAndSpuIdAndSampleBorrowId ($ids) {
+
+        if(empty($ids['spu_id']) || empty($ids['borrow_id']) || empty($ids['sample_storage_id'])){
             
             throw   new ApplicationException('借版ID与产品ID不能为空');
         }
         
-        $condition  = "`goods_id`=" . $ids['goods_id'] . " AND `borrow_id` = " . $ids['borrow_id'];
+        $condition  = "`spu_id`=" . $ids['spu_id'] . " AND `borrow_id` = " . $ids['borrow_id'] ." AND `sample_storage_id` = " . $ids['sample_storage_id'];
         
         self::_getStore()->delete(self::_tableName(), $condition);
-    }     */
+    }
 	
     /**
      * 根据借版ID样删除记录

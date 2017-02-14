@@ -6,7 +6,6 @@ $borrowId   = $_GET['borrow_id'];
 
 Validate::testNull($borrowId,'样板ID不能为空');
 
-$borrowInfo                 = Borrow_Info::getByBorrowId($borrowId);
 $condition                  = $_GET;
 
 $borrowInfo                 = Borrow_Info::getByBorrowId($borrowId);
@@ -47,7 +46,7 @@ $page                       = new PageList(array(
 ));
 
 $listSpuInfo                = Borrow_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
-Utility::dump($listSpuInfo);
+
 $listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
 $listMaterialValueId          = ArrayUtility::listField($listSpuInfo,'material_value_id');
 $listAssistantMaterialValueId = ArrayUtility::listField($listSpuInfo,'assistant_material_value_id');
@@ -120,7 +119,6 @@ $data['mapSampleType']      = $mapSampleType;
 $data['searchType']                 = Search_Spu::getSearchType();
 $data['mapCategoryInfoLv3']         = $mapCategoryInfoLv3;
 $data['mapSupplierInfo']            = $mapSupplierInfo;
-$data['pageViewData']               = $page->getViewData();
 $data['groupStyleInfo']             = $groupStyleInfo;
 
 $template = Template::getInstance();
@@ -128,9 +126,11 @@ $template = Template::getInstance();
 $template->assign('mainMenu', Menu_Info::getMainMenu());
 $template->assign('data',$data);
 $template->assign('condition',$condition);
+$template->assign('borrowInfo',$borrowInfo);
 $template->assign('countSpuBorrow',$countSpuBorrow);
 $template->assign('valuationType',$valuationType);
 $template->assign('mapStyleId',$mapStyleId);
+$template->assign('pageViewData',$page->getViewData());
 $template->assign('indexSpecValueId',$indexSpecValueId);
 $template->assign('indexSupplierId',$indexSupplierId);
 $template->assign('listSpuInfo',$listSpuInfo);
