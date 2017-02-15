@@ -23,18 +23,4 @@ Borrow_Info::update(array(
     'return_time'   => date('Y-m-d')
 ));
 
-$taskInfo   = Borrow_Export_Task::getByBorrowId($_GET['borrow_id']);
-if(empty($taskInfo)){
-            
-    Borrow_Export_Task::create(array(
-        'borrow_id'       => $_GET['borrow_id'],
-        'export_status'   => Product_Export_RunStatus::STANDBY,
-    ));
-}else{
-     
-    Borrow_Export_Task::update(array(
-        'task_id'         => $taskInfo['task_id'],
-        'export_status'   => Product_Export_RunStatus::STANDBY,
-    ));   
-}
 Utility::notice('操作成功','/sample/borrow/index.php');

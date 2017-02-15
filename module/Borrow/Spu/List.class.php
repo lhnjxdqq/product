@@ -299,7 +299,7 @@ class Borrow_Spu_List {
         $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
         return  array(
-			'`sample_storage_info` AS `ssi` ON `ssi`.`sample_storage_id` = `bsi`.`sample_storage_id`',
+            '`sample_storage_info` AS `ssi` ON `ssi`.`sample_storage_id` = `bsi`.`sample_storage_id`',
             '`spu_info` AS `spu_info` ON `bsi`.`spu_id`=`spu_info`.`spu_id`',
             '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
             '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
@@ -351,5 +351,32 @@ class Borrow_Spu_List {
             'goods_sn'      => 'SKU编号',
             'spu_sn'        => 'SPU编号'
         );
+    }
+    
+    /**
+     * 根据借版ID获取分类数据
+     *
+     * @param string $borrowId  借版ID
+     */
+    static public function getCategoryDataByborrowId($borrowId){
+        
+        Validate::testNull($borrowId,"借板ID不能为空");
+        $sql = 'SELECT
+                `bsi`.`spu_id`,
+                `bsi`.`borrow_quantity`,
+                `goods_info`.`category_id`
+            FROM
+                `borrow_spu_info` AS `bsi`
+            LEFT JOIN `spu_info` AS `spu_info` ON `bsi`.`spu_id` = `spu_info`.`spu_id`
+            LEFT JOIN `spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id` = `spu_info`.`spu_id`
+            LEFT JOIN `goods_info` AS `goods_info` ON `goods_info`.`goods_id` = `sgr`.`goods_id`
+            WHERE
+                `spu_info`.`delete_status` = "0"
+            AND `bsi`.`borrow_id` = "'. $borrowId .'"
+            GROUP BY
+                `bsi`.`spu_id`,
+                `bsi`.`sample_storage_id`';
+
+        return  Spu_Info::query($sql);
     }
 }

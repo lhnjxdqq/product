@@ -83,7 +83,7 @@
                                         <th>预计归还时间</th>
                                         <th>归还时间</th>
                                         <th>备注</th>
-                                        <th style='text-align:center;width:200px'>操作</th>
+                                        <th style='text-align:center;'>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -103,7 +103,7 @@
                                                 <a href="/sample/borrow/issue.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>出库</a>
                                                 <a href="/sample/borrow/delete.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>删除</a>
                                                 <{else}>
-                                                <a href="/sample/borrow/delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class='btn btn-primary btn-xs'>查看销售报价单</a>
+                                                <!-- <a href="/sample/borrow/delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class='btn btn-primary btn-xs'>查看销售报价单</a> -->
                                                 <{/if}>
                                                 <{if $item.status_id == 2 || $item.status_id == 3}>
                                                 <a href="/sample/borrow/detail.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>查看</a>

@@ -19,7 +19,7 @@ class   Borrow_Spu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'borrow_id,spu_id,sample_storage_id,borrow_quantity,is_return,estimate_time,borrow_status,shipment_cost';
+    const   FIELDS      = 'borrow_id,spu_id,sample_storage_id,borrow_quantity,start_time,is_return,estimate_time,borrow_status,shipment_cost';
     /**
      * 新增
      *
@@ -86,7 +86,7 @@ class   Borrow_Spu_Info {
      */
     static  public  function countByBorrowQuantity ($borrowId) {
 
-        $sql    = 'SELECT COUNT(borrow_quantity) AS `total` FROM `' . self::_tableName() . "` WHERE `borrow_id` = '" . (int) $borrowId . "'";
+        $sql    = 'SELECT SUM(borrow_quantity) AS `total` FROM `' . self::_tableName() . "` WHERE `borrow_id` = '" . (int) $borrowId . "'";
         $row    = self::_getStore()->fetchOne($sql);
 
         return  $row['total'];

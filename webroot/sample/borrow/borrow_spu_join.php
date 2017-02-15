@@ -29,7 +29,7 @@ if(empty($data['sample_storage_id'])){
         'code'      =>1,
         'message'   => '样板入库ID不能为空',
         'data'      => array(
-        ),	
+        ),  
     ));
     
     exit;
@@ -52,6 +52,7 @@ Borrow_Spu_Info::create(array(
     'sample_storage_id' => $data['sample_storage_id'],
     'estimate_time'     => $borrowInfo['end_time'],
     'shipment_cost'     => $data['sale_cost'],
+    'start_time'        => $borrowInfo['start_time'],
 ));
 $countSpu = Borrow_Spu_Info::countByBorrowQuantity($data['borrow_id']);
 
@@ -66,4 +67,3 @@ echo    json_encode(array(
         'count' => $countSpu,
     ),
 ));
-    

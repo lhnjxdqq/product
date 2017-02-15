@@ -1,58 +1,18 @@
-<?php 
+<?php
 
-/**
- * 查看
- */
-require_once  dirname(__FILE__) .'/../../../init.inc.php';
+require_once dirname(__FILE__).'/../../../init.inc.php';
 
-$borrowId       = $_GET['borrow_id'];
-Validate::testNull($borrowId,'借版ID不存在,重新提交','/sample/borrow/index.php');
+$borrowId   = $_GET['borrow_id'];
 
-$borrowInfo     = Borrow_Info::getByBorrowId($borrowId);
+Validate::testNull($borrowId,'样板ID不能为空');
 
-Validate::testNull($borrowInfo,'借版记录不存在,重新提交','/sample/borrow/index.php');
+$condition                  = $_GET;
 
-if($borrowInfo['status_id'] == Borrow_Status::NEW_BORROW){
-    
-    throw   new ApplicationException('该借版记录是新建状态,无法查看');
-}
+$borrowInfo                 = Borrow_Info::getByBorrowId($borrowId);
+$borrowSpuInfo              = Borrow_Spu_Info::getByBorrowId($borrowId);
+$countSpuBorrow             = count($borrowSpuInfo);
 
-$condition['borrow_id']       = $borrowId;
-$orderBy                    = array();
-$countGoods                 = Borrow_Goods_Info::countByCondition($condition);
-$page                       = new PageList(array(
-    PageList::OPT_TOTAL     => $countGoods,
-    PageList::OPT_URL       => '/sample/borrow/detail.php',
-    PageList::OPT_PERPAGE   => 20,
-));
-$listBorrowGoodsInfo        = Borrow_Goods_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
-$listGoodsId                = ArrayUtility::listField($listBorrowGoodsInfo,'goods_id');
-
-$listSampleType = Sample_Type::getSampleType();
-
-foreach($listSampleType as $key=>$val){
-    $sampleType[$key]['type_name']    =  $val;
-}
-
-$condition['list_goods_id'] = $listGoodsId;         
-$listgoodsInfo              = Goods_List::listByCondition($condition);
-
-$listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
-$listSourceId   = ArrayUtility::listField($listGoodsProductInfo,'source_id');
-$mapSourceInfo  = Source_Info::getByMultiId($listSourceId);
-$indexSourceInfo= ArrayUtility::indexByField($mapSourceInfo,'source_id','source_code');
-$groupSkuSourceId   = ArrayUtility::groupByField($listGoodsProductInfo,'goods_id','source_id');
-$groupProductIdSourceId = array();
-foreach($groupSkuSourceId as $productId => $sourceIdInfo){
-    
-    $groupProductIdSourceId[$productId]    = array();
-    foreach($sourceIdInfo as $key=>$sourceId){
-
-        $groupProductIdSourceId[$productId][] = $indexSourceInfo[$sourceId];   
-    }
-}
 $listCategoryInfo           = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
-$mapCategoryInfo            = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
 $listCategoryInfoLv3        = ArrayUtility::searchBy($listCategoryInfo, array('category_level'=>2));
 $mapCategoryInfoLv3         = ArrayUtility::indexByField($listCategoryInfoLv3, 'category_id');
 
@@ -61,110 +21,143 @@ $mapSupplierInfo            = ArrayUtility::indexByField($listSupplierInfo, 'sup
 
 $listStyleInfo              = Style_Info::listAll();
 $listStyleInfo              = ArrayUtility::searchBy($listStyleInfo, array('delete_status'=>Style_DeleteStatus::NORMAL));
+$mapStyleId                 = ArrayUtility::indexByField($listStyleInfo,'style_id');
 $groupStyleInfo             = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
+$sampleType = Sample_Type::getSampleType();
 
-$weightSpecInfo             = Spec_Info::getByAlias('weight');
-$listWeightSpecValue        = Goods_Type_Spec_Value_Relationship::getBySpecId($weightSpecInfo['spec_id']);
-$listWeightSpecValueId      = array_unique(ArrayUtility::listField($listWeightSpecValue, 'spec_value_id'));
-$listWeightSpecValueInfo    = Spec_Value_Info::getByMulitId($listWeightSpecValueId);
-$mapWeightSpecValueInfo     = ArrayUtility::indexByField($listWeightSpecValueInfo, 'spec_value_id');
+//计价类型
+$valuationType      = Valuation_TypeInfo::getValuationType();
 
-$sizeSpecInfo               = Spec_Info::getByAlias('size');
-$listSizeSpecValue          = Goods_Type_Spec_Value_Relationship::getBySpecId($sizeSpecInfo['spec_id']);
-$listSizeSpecValueId        = array_unique(ArrayUtility::listField($listSizeSpecValue, 'spec_value_id'));
-$listSizeSpecValueInfo      = Spec_Value_Info::getByMulitId($listSizeSpecValueId);
-$mapSizeSpecValueInfo       = ArrayUtility::indexByField($listSizeSpecValueInfo, 'spec_value_id');
-
-$colorSpecInfo              = Spec_Info::getByAlias('color');
-$listColorSpecValue         = Goods_Type_Spec_Value_Relationship::getBySpecId($colorSpecInfo['spec_id']);
-$listColorSpecValueId       = array_unique(ArrayUtility::listField($listColorSpecValue, 'spec_value_id'));
-$listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorSpecValueId);
-$mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo, 'spec_value_id');
-
-$materialSpecInfo           = Spec_Info::getByAlias('material');
-$listMaterialSpecValue      = Goods_Type_Spec_Value_Relationship::getBySpecId($materialSpecInfo['spec_id']);
-$listMaterialSpecValueId    = array_unique(ArrayUtility::listField($listMaterialSpecValue, 'spec_value_id'));
-$listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecValueId);
-$mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
-
-$listGoodsInfo              = $countGoods <= 0 ? array() : Goods_List::listByCondition($condition, array(), $page->getOffset(), 20);
-$listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
-$mapGoodsImages             = ArrayUtility::groupByField($listGoodsImages, 'goods_id');
-$listGoodsProductInfo       = Product_Info::getByMultiGoodsId($listGoodsId);
-$groupGoodsProductInfo      = ArrayUtility::groupByField($listGoodsProductInfo, 'goods_id');
-$mapGoodsProductMinCost     = array();
-foreach ($groupGoodsProductInfo as $goodsId => $goodsProductList) {
-
-    $goodsProductList   = ArrayUtility::sortMultiArrayByField($goodsProductList, 'product_cost');
-    $goodsProductInfo   = current($goodsProductList);
-    $mapGoodsProductMinCost[$goodsId]   = $goodsProductInfo['product_cost'];
+foreach($sampleType as $typeId=>$typeName){
+    
+    $mapSampleType[$typeId] = array(
+        
+        'sample_type_id'     => $typeId,
+        'sample_type_name'   => $typeName,
+    );
 }
 
-$listMaterialValueId        = ArrayUtility::listField($listGoodsInfo, 'material_value_id');
-$listSizeValueId            = ArrayUtility::listField($listGoodsInfo, 'size_value_id');
-$listColorValueId           = ArrayUtility::listField($listGoodsInfo, 'color_value_id');
-$listWeightValueId          = ArrayUtility::listField($listGoodsInfo, 'weight_value_id');
-$listSpecValueId            = array_unique(array_merge(
-    $listMaterialValueId,
-    $listSizeValueId,
-    $listColorValueId,
-    $listWeightValueId
-));
-$listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
-$mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
-$mapSampleInfo              = Sample_Info::getByMultiId($listGoodsId);
-$indexGoodsIdType           = ArrayUtility::indexByField($mapSampleInfo,'goods_id','sample_type');
+$perpage                    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
+$countSpuTotal              = Borrow_Spu_List::countByCondition($condition);
 
-foreach ($listGoodsInfo as &$goodsInfo) {
-
-    $goodsId    = $goodsInfo['goods_id'];
-    $imageKey   = $mapGoodsImages[$goodsId]['image_key'];
+if(empty($countSpuTotal)){
     
-    if(!empty($mapGoodsImages[$goodsId])){
+    Utility::notice('板单目前没有商品，添加后在查看');
+    exit;
+}
+
+$page                       = new PageList(array(
+    PageList::OPT_TOTAL     => $countSpuTotal,
+    PageList::OPT_URL       => '/sample/borrow/borrow_spu_list.php',
+    PageList::OPT_PERPAGE   => $perpage,
+));
+
+$listSpuInfo                = Borrow_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
+
+$listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
+$listMaterialValueId          = ArrayUtility::listField($listSpuInfo,'material_value_id');
+$listAssistantMaterialValueId = ArrayUtility::listField($listSpuInfo,'assistant_material_value_id');
+$listSupplierId             = ArrayUtility::listField($listSpuInfo,'supplier_id');
+$listSpecId                 = array_merge($listWeightValueId,$listMaterialValueId,$listAssistantMaterialValueId);
+$listSpuId                  = ArrayUtility::listField($listSpuInfo, 'spu_id');
+$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+$mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
+
+$listSpuImages              = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+$groupSpuIdImages           = ArrayUtility::groupByField($listSpuImages, 'spu_id');
+$supplierInfo               = Supplier_Info::getByMultiId($listSupplierId);
+$indexSupplierId            = ArrayUtility::indexByField($supplierInfo,'supplier_id');
+foreach($indexSupplierId as $supplierId => $info){
+    
+    $plusData       = json_decode($info['price_plus_data'],true);
+    if(!empty($plusData)){
+    
+        $suppluerIdColor[$supplierId]   = $plusData['base_color_id'];   
+    }
+}
+$indexSpecValueId              = ArrayUtility::indexByField(Spec_Value_Info::getByMulitId($listSpecId),'spec_value_id');
+
+foreach ($listSpuInfo as $key => $spuInfo) {
+
+    $spuId              = $spuInfo['spu_id'];
+    $listSpuGoodsInfo   = Spu_List::listSpuGoodsInfo($spuId);
+
+    foreach ($listSpuGoodsInfo as $spuGoods) {
+
+        $specValueId    = $spuGoods['spec_value_id'];
+        $supplierId     = $spuGoods['supplier_id'];
+        if ($specValueId ==  $suppluerIdColor[$spuInfo['supplier_id']]) {
+
+            $listSpuInfo[$key]['sale_cost']  = $spuGoods['sale_cost'] - PLUS_COST;
+        }
+    }
+    if(!empty(ArrayUtility::searchBy($borrowSpuInfo,array('spu_id'=>$info['spu_id'],'sample_storage_id'=>$info['sample_storage_id'])))){
+
+        $listSpuInfo[$key]['is_join']   = 1;
+    }else{
+    
+        $listSpuInfo[$key]['is_join']   = 0;
+    }
+    $imageInfo          = array();  
+    $imageInfo          = $groupSpuIdImages[$spuId];
+    
+    $firstImageInfo = array();
+    if(!empty($imageInfo)){
         
-        $firstImageInfo = ArrayUtility::searchBy($mapGoodsImages[$goodsId],array('is_first_picture' => 1));
+        $firstImageInfo = ArrayUtility::searchBy($imageInfo,array('is_first_picture' => 1));
     }
     if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
         
         $info = current($firstImageInfo);
-        $goodsInfo['image_url']     = !empty($info)
-            ? AliyunOSS::getInstance('images-sku')->url($info['image_key'])
+        $listSpuInfo[$key]['image_url']  = !empty($info)
+            ? AliyunOSS::getInstance('images-spu')->url($info['image_key'])
             : '';       
     }else{
 
-        $info = Sort_Image::sortImage($mapGoodsImages[$goodsId]);
-
-        $goodsInfo['image_url']     = !empty($info)
-            ? AliyunOSS::getInstance('images-sku')->url($info[0]['image_key'])
+        $info = Sort_Image::sortImage($imageInfo);
+        $listSpuInfo[$key]['image_url']  = !empty($info)
+            ? AliyunOSS::getInstance('images-spu')->url($info[0]['image_key'])
             : '';     
     }
-    $goodsInfo['product_cost']  = $mapGoodsProductMinCost[$goodsId];
-    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
-    $goodsInfo['sample_type']   = $indexGoodsIdType[$goodsId];
+
 }
 
-$template = Template::getInstance();
+$borrowCategoryInfo = Borrow_Spu_List::getCategoryDataByborrowId($borrowId);
+$groupCategory      = ArrayUtility::groupByField($borrowCategoryInfo,'category_id');
+$categoryData       = array();
+foreach($groupCategory as $key => $info){
 
-$data['mapCategoryInfo']            = $mapCategoryInfo;
+    $arrayCategory =array();
+    
+    foreach($info as $val){
+        
+        $arrayCategory[]    = $val['borrow_quantity'];
+    }
+    $categoryData[] = array('value'=> array_sum($arrayCategory),'name' => $mapCategoryInfoLv3[$key]['category_name']);
+    $categoryQuantity[] =  array_sum($arrayCategory);
+    $categoryName[]     =  $mapCategoryInfoLv3[$key]['category_name'];
+}
+
+$data['mapSampleType']      = $mapSampleType; 
+$data['searchType']                 = Search_Spu::getSearchType();
 $data['mapCategoryInfoLv3']         = $mapCategoryInfoLv3;
 $data['mapSupplierInfo']            = $mapSupplierInfo;
 $data['groupStyleInfo']             = $groupStyleInfo;
-$data['mapWeightSpecValueInfo']     = $mapWeightSpecValueInfo;
-$data['mapSizeSpecValueInfo']       = $mapSizeSpecValueInfo;
-$data['mapColorSpecValueInfo']      = $mapColorSpecValueInfo;
-$data['mapMaterialSpecValueInfo']   = $mapMaterialSpecValueInfo;
-$data['searchType']                 = Search_Sku::getSearchType();
-$data['mapSpecValueInfo']           = $mapSpecValueInfo;
-$data['listGoodsInfo']              = $listGoodsInfo;
-$data['pageViewData']               = $page->getViewData();
-$data['mainMenu']                   = Menu_Info::getMainMenu();
-$data['onlineStatus']               = array(
-    'online'    => Goods_OnlineStatus::ONLINE,
-    'offline'   => Goods_OnlineStatus::OFFLINE,
-);
 
 $template = Template::getInstance();
-$template->assign('data', $data);
-$template->assign('sampleType', $sampleType);
-$template->assign('countGoods', $countGoods);
+
+$template->assign('mainMenu', Menu_Info::getMainMenu());
+$template->assign('data',$data);
+$template->assign('condition',$condition);
+$template->assign('borrowInfo',$borrowInfo);
+$template->assign('countSpuBorrow',$countSpuBorrow);
+$template->assign('valuationType',$valuationType);
+$template->assign('categoryQuantity',json_encode($categoryQuantity));
+$template->assign('categoryName',json_encode($categoryName));
+$template->assign('mapStyleId',$mapStyleId);
+$template->assign('categoryData',json_encode($categoryData));
+$template->assign('pageViewData',$page->getViewData());
+$template->assign('indexSpecValueId',$indexSpecValueId);
+$template->assign('indexSupplierId',$indexSupplierId);
+$template->assign('listSpuInfo',$listSpuInfo);
 $template->display('sample/borrow/detail.tpl');

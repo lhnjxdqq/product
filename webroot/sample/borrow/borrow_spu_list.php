@@ -45,6 +45,12 @@ $page                       = new PageList(array(
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
+if(empty($countSpuTotal)){
+    
+    Utility::notice('板单目前没有商品，添加后在查看','/sample/borrow/spu_list.php?borrow_id='.$borrowId);
+    exit;
+}
+
 $listSpuInfo                = Borrow_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
 $listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
@@ -81,7 +87,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
         $supplierId     = $spuGoods['supplier_id'];
         if ($specValueId ==  $suppluerIdColor[$spuInfo['supplier_id']]) {
 
-            $listSpuInfo[$key]['sale_cost']  = $spuGoods['sale_cost'];
+            $listSpuInfo[$key]['sale_cost']  = $spuGoods['sale_cost'] - PLUS_COST;
         }
     }
     if(!empty(ArrayUtility::searchBy($borrowSpuInfo,array('spu_id'=>$info['spu_id'],'sample_storage_id'=>$info['sample_storage_id'])))){
@@ -115,6 +121,22 @@ foreach ($listSpuInfo as $key => $spuInfo) {
 
 }
 
+$borrowCategoryInfo = Borrow_Spu_List::getCategoryDataByborrowId($borrowId);
+$groupCategory      = ArrayUtility::groupByField($borrowCategoryInfo,'category_id');
+$categoryData       = array();
+foreach($groupCategory as $key => $info){
+
+    $arrayCategory =array();
+    
+    foreach($info as $val){
+        
+        $arrayCategory[]    = $val['borrow_quantity'];
+    }
+    $categoryData[] = array('value'=> array_sum($arrayCategory),'name' => $mapCategoryInfoLv3[$key]['category_name']);
+    $categoryQuantity[] =  array_sum($arrayCategory);
+    $categoryName[]     =  $mapCategoryInfoLv3[$key]['category_name'];
+}
+
 $data['mapSampleType']      = $mapSampleType; 
 $data['searchType']                 = Search_Spu::getSearchType();
 $data['mapCategoryInfoLv3']         = $mapCategoryInfoLv3;
@@ -129,7 +151,10 @@ $template->assign('condition',$condition);
 $template->assign('borrowInfo',$borrowInfo);
 $template->assign('countSpuBorrow',$countSpuBorrow);
 $template->assign('valuationType',$valuationType);
+$template->assign('categoryQuantity',json_encode($categoryQuantity));
+$template->assign('categoryName',json_encode($categoryName));
 $template->assign('mapStyleId',$mapStyleId);
+$template->assign('categoryData',json_encode($categoryData));
 $template->assign('pageViewData',$page->getViewData());
 $template->assign('indexSpecValueId',$indexSpecValueId);
 $template->assign('indexSupplierId',$indexSupplierId);

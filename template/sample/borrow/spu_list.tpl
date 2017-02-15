@@ -113,7 +113,7 @@
                       <input type="checkbox" name='check-all'> 全选
                     </label>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="addMulti" style="margin-left: 10px;">选择产品 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
-                    <a href="/product/borrow/search_spu_join_cart.php?<{$smarty.get|http_build_query}>" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                    <!-- <a href="/product/borrow/search_spu_join_cart.php?<{$smarty.get|http_build_query}>" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a> -->
                     <a href="/sample/borrow/borrow_spu_list.php?borrow_id=<{$smarty.get.borrow_id}>" class="btn btn-primary btn-sm pull-right"><i  id="number" class="fa fa-shopping-cart"> 挑板 <{if $countSpuBorrow!=""}><{$countSpuBorrow}><{else}>0<{/if}></i></a>
                 </div>
                 <div class="box-body">
@@ -121,7 +121,7 @@
                         <{foreach from=$listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
                                 <div class="thumbnail"<{if $item.online_status eq $data.onlineStatus.offline}> style="border:1px solid #e08e0b;"<{/if}>>
-                                    <input type="checkbox" name="spu_id[]" style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" />
+                                    <input type="checkbox" name="spu_id[]" value='<{$item.spu_id}>-<{$item.sample_storage_id}>-<{$item.sale_cost}>' style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" />
                                     <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!thumb<{else}>/images/spu_default.png<{/if}>" alt="..."></a>
                                     <div class="caption">
                                         <p><{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}>,<{$indexWeightId[$item.weight_value_id]['spec_value_data']}>g, <{$item.spu_sn}></p>
@@ -333,6 +333,23 @@
             $('input[name="spu_id[]"]').prop('checked', $(this).prop('checked'));
         });
     });
+    
+    $('#addMulti').click(function(){
+
+    var chk_value =[]; 
+    $('input[name="spu_id[]"]:checked').each(function(){
+
+        chk_value.push($(this).val()); 
+    });
+
+    if(chk_value.length==0){
+        
+        alert("请选择SPU");
+        
+        return false; 
+    }
+    location.href='/sample/borrow/add_multi_spu.php?multi_spu='+chk_value+'&borrow_id=<{$smarty.get.borrow_id}>';
+});
 </script>
 </body>
 </html>

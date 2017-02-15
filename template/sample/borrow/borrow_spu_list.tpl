@@ -17,7 +17,7 @@
             <h1>样板详情</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="/sample/storagey/index.php">样板记录</a></li>
+                <li><a href="/sample/borrow/index.php">样板记录</a></li>
                 <li><a href="?">样板详情</a></li>
             </ol>
         </section>
@@ -27,39 +27,37 @@
             <!-- Default box -->
             <div class="box">
                 <!-- /.box-body -->
+                <div class="row">
+                    <div id="cir_category" class="col-xs-6" style="height:300px;"></div>
+                    <div id="bar_category" class="col-xs-6" style="height:300px;"></div>
+                </div>
             </div>
             <div class="box">
+                                            
     <div class="box-header with-border">
-                        <div class='col-md-5'>
+                        <div class='col-md-4'>
                             <label>
                                 <input type="checkbox" name='check-all'> 全选
                             </label>
                         <button class="btn btn-primary btn-sm" id="delMultiBorrowSpu" style="margin-left: 10px;">批量删除</button>
-                        <button class="btn btn-primary btn-sm" id="delMultiBorrowSpu" style="margin-left: 10px;">共计<{$borrowInfo.sample_quantity}>件</button>
+                        <button class="btn btn-primary btn-sm" id="totalQuantity" style="margin-left: 10px;">共计<{$borrowInfo.sample_quantity}>件</button>
                         </div>
-                    <form class="form-inline" action="/sample/borrow/index.php" method="get">
-                        <div class="col-md-3">
+                    <form class="form-inline" action="/sample/borrow/borrow_spu_list.php" method="get">
+                        <div class="col-md-4">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">品类:</span>
-                                    <select class="form-control select-multiple" name="salesperson_id">
+                                    <select class="form-control select-multiple" name="category_id">
                                             <option value="0">全部</option>
 <{foreach from=$data['mapCategoryInfoLv3'] item=item}>
                                             <option value="<{$item.category_id}>" <{if $item.category_id eq $condition.category_id}> selected = "selected" <{/if}>><{$item.category_name}></option>
 <{/foreach}>
                                     </select>
                             </div>
-                        </div>
-                        <input type="hidden" value='<{$smarty.get.borrow_id}>'>
-                        <div class="col-md-1" >
-                            <div class="input-group input-group-sm">
-                                    <button class="btn btn-sm btn-primary pull-left" type="submit">搜索</button>
+                             <div class="input-group input-group-sm">
+                                    <button class="btn btn-sm btn-primary pull-left" type="submit">筛选</button>
                             </div>
                         </div>
-                        <div class="col-md-1" >
-                            <div class="input-group input-group-sm">
-                                    <a href='/sample/borrow/pick_sample.php' class="btn btn-sm btn-primary pull-right" type="submit">保存本页数据</a>
-                            </div>
-                        </div>
+                        <input type="hidden" value='<{$smarty.get.borrow_id}>' name="borrow_id">
                     </form>
                 </div>
             
@@ -78,10 +76,10 @@
                                     <th>规格重量(g)</th>
                                     <th>主料材质</th>
                                     <th>辅料材质</th>
-                                    <th>进货工费</th>
                                     <th>计价类型</th>
-                                    <th>样板数量</th>
-                                    <th>备注</th>
+                                    <th>借板数量</th>
+                                    <th>基本成本工费</th>
+                                    <th>出货工费</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -100,10 +98,20 @@
                                     <td><{$indexSpecValueId[$item.weight_value_id]['spec_value_data']}></td>
                                     <td><{$indexSpecValueId[$item.material_value_id]['spec_value_data']}></td>
                                     <td><{$indexSpecValueId[$item.assistant_material_value_id]['spec_value_data']}></td>
-                                    <td><{$item.sale_cost}></td>
                                     <td><{$valuationType[$item.valuation_type]}></td>
-                                    <td><{$item.borrow_quantity}></td>
-                                    <td><{$item.spu_remark}></td>
+                                    <td>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default reduce-quantity"><i class="fa fa-minus"></i></button>
+                                            </span>
+                                            <input type="text" class="form-control borrow_quantity" name="quantity" sample-storage-id=<{$item.sample_storage_id}> spu-id=<{$item.spu_id}> value="<{$item.borrow_quantity}>" style="width: 40px;text-align: center;">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default increase increase-quantity"><i class="fa fa-plus"></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td><{$item.sale_cost}></td>
+                                    <td><input type='text' size='3' class='update-cost' sample-storage-id=<{$item.sample_storage_id}> spu-id=<{$item.spu_id}> value='<{$item.shipment_cost}>'></td>
                                     <td><a class='btn btn-warning btn-sm ' href='borrow_spu_delete.php?borrow_id=<{$smarty.get.borrow_id}>&spu_id=<{$item.spu_id}>&sample_storage_id=<{$item.sample_storage_id}>'><i class='fa fa-trash'></i></a></td>
                                 </tr>
 <{/foreach}>                     
@@ -115,12 +123,18 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
+                <div class="box-footer">
+                    <a href="/sample/borrow/spu_list.php?borrow_id=<{$smarty.get.borrow_id}>" type="button" class="btn btn-primary pull-left">添加产品</a>
+                    <a href="/sample/borrow/submit.php" pe='submit' class="btn btn-primary pull-right"> 提交</a>
+                </div>
             </div>
             <!-- /.box -->
         </section>
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+    
+    
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -162,6 +176,175 @@ $('#delMultiBorrowSpu').click(function(){
     }
     location.href='/sample/borrow/del_multi_spu.php?multi_spu='+chk_value+'&borrow_id=<{$smarty.get.borrow_id}>';
 });
+
+// ajax更该数量 统计款数 件数 重量
+$(document).delegate('.reduce-quantity, .increase-quantity', 'click', function () {
+    var self            = $(this);
+    var input           = $(this).parent().siblings('input[name="quantity"]');
+    var quantity        = parseInt(input.val());
+    var sampleStorageId = parseInt(input.attr("sample-storage-id"));
+    var spuId           = parseInt(input.attr("spu-id"));
+    var quantity        = parseInt(input.val());
+    var borrowId        = <{$smarty.get.borrow_id|default:0}>;
+    
+    if ($(this).hasClass('reduce-quantity')) {
+
+        quantity--;
+    }
+    if ($(this).hasClass('increase-quantity')) {
+
+        quantity++;
+    }
+    if (quantity < 1) {
+
+        alert('数量不能小于1');
+        return;
+    }
+    $.ajax({
+        url: '/sample/borrow/ajax_change_borrow_spu.php',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {
+            spu_id              : spuId,
+            borrow_id           : borrowId,
+            sample_storage_id   : sampleStorageId,
+            borrow_quantity     :quantity,
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                alert('操作失败');
+                return false;
+            }
+
+            input.val(quantity);
+            $("#totalQuantity").html("共计"+ data.data.sample_quantity +"件");
+        }
+    });
+});
+
+//ajax修改出货工费
+$(".update-cost").blur(function(){
+
+    var borrowId        =   <{$smarty.get.borrow_id|default:0}>,
+        spuId           =  $(this).attr("spu-id"),
+        cost            =  $(this).val(), 
+        sampleStorageId =  $(this).attr("sample-storage-id");
+    if(cost <= 0){
+    
+        alert('出货工费必须大于0');
+        return false;
+    }
+    $.ajax({
+        url: '/sample/borrow/ajax_change_borrow_cost.php',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {
+            spu_id              : spuId,
+            borrow_id           : borrowId,
+            sample_storage_id   : sampleStorageId,
+            shipment_cost       : cost,
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                alert('操作失败');
+                return false;
+            }
+        }
+    });
+});
+
+//blur修改数量
+$(".borrow_quantity").blur(function(){
+
+    var borrowId        =   <{$smarty.get.borrow_id|default:0}>,
+        spuId           =  $(this).attr("spu-id"),
+        borrowQuantity  =  $(this).val(), 
+        sampleStorageId =  $(this).attr("sample-storage-id");
+
+    $.ajax({
+        url: '/sample/borrow/ajax_change_borrow_spu.php',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {
+            spu_id              : spuId,
+            borrow_id           : borrowId,
+            sample_storage_id   : sampleStorageId,
+            borrow_quantity     : borrowQuantity,
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                alert('操作失败');
+                return false;
+            }
+
+            $("#totalQuantity").html("共计"+ data.data.sample_quantity +"件");
+        }
+    });
+});
+
+var cirCategory     = echarts.init($('#cir_category').get(0)),
+    barCategory     = echarts.init($('#bar_category').get(0));
+var dataObj = <{$categoryData}> ;
+var dataArr = [] ;
+for(var prop in dataObj){
+    dataArr.push(dataObj[prop]);    
+}
+console.log(dataArr);
+/*
+    dataArr = [
+        {
+            value: 123 ,
+            name : 'qwe'
+        }
+    ]
+*/
+
+var option = {
+
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    series : [
+        {
+            name: '品类',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data: dataArr,
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+cirCategory.setOption(option);
+
+var baroption = {
+
+    tooltip: {
+        trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+
+    xAxis: {
+        data: <{$categoryName}>
+    },
+    yAxis: {},
+    series: [{
+        name: '数量',
+        type: 'bar',
+        data: <{$categoryQuantity}>
+    }]
+};
+barCategory.setOption(baroption);
 
 </script>
 </body>
