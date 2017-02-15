@@ -61,7 +61,11 @@ foreach($mapUpdateCost as $key=>$info){
                 $data[] = $jsonData;
                 continue;
             }
+<<<<<<< HEAD
 			
+=======
+            
+>>>>>>> sample
             foreach($productCost as $colorId=>$colorPrice){
                 
                 if(!empty($productSize)){
@@ -75,7 +79,7 @@ foreach($mapUpdateCost as $key=>$info){
                             $size[] = $sizeId;
                             unset($jsonData['size'][$key]);
                             
-                        }else{    
+                        }else{
                             
                             $updateGoodsId  = ArrayUtility::listField(ArrayUtility::searchBy($listGoodsInfo,array('color_value_id'=>$colorId,'size_value_id'=>$sizeId)),'goods_id');
                             
