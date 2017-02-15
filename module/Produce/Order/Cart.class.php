@@ -126,6 +126,7 @@ class   Produce_Order_Cart {
         $sql[]      = self::_conditionBySalesOrderId($condition);
         $sql[]      = self::_conditionBySupplierId($condition);
         $sql[]      = self::_conditionBySpuDeleteStatus($condition);
+        $sql[]      = self::_conditionBySpuOnlineStatus($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter)
@@ -166,6 +167,19 @@ class   Produce_Order_Cart {
         return  empty($condition['delete_status']) 
         ? '`product_info`.`delete_status` = '. Produce_Order_DeleteStatus::NORMAL
         : '`product_info`.`delete_status` = '.$condition['delete_status'];
+    }
+
+    /**
+     * 按产品状态拼接WHERE子句
+     *
+     * @param array $condition
+     * @return string
+     */
+    static private function _conditionBySpuOnlineStatus (array $condition) {
+
+        return  empty($condition['delete_status']) 
+        ? '`product_info`.`online_status` = '. Product_OnlineStatus::ONLINE
+        : '`product_info`.`online_status` = '.$condition['online_status'];
     }
 
     /**

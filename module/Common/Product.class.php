@@ -198,6 +198,10 @@ WHERE
   `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
 AND
   `source_info`.`supplier_id`="{$supplierId}"
+AND
+  `product_info`.`delete_status`= 0
+AND
+  `product_info`.`online_status` = 1
 SQL;
 
         return              self::_query($sql);

@@ -124,6 +124,10 @@ LEFT JOIN
   `goods_info` ON `goods_info`.`goods_id`=`product_info`.`goods_id`
 WHERE
   `goods_info`.`goods_id` IN ("{$multiGoodsIdStr}")
+AND
+   `goods_info`.`delete_status` = 0
+AND
+   `goods_info`.`online_status` = 1
 ORDER BY
   `supplier_info`.`supplier_sort` DESC
 SQL;
