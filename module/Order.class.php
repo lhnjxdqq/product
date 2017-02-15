@@ -512,7 +512,7 @@ class   Order {
                 $estimatedCost+= $info['cost']*((int) $info['quantity']);
             }
             
-            $referenceAmount+= ($auPrice+$info['cost'])*((int) $info['quantity']) * $info['specWeight'];
+            $referenceAmount+= (($auPrice * 0.75)+$info['cost'])*((int) $info['quantity']) * $info['specWeight'];
             Sales_Order_Goods_Info::create($content);
            
         }     
