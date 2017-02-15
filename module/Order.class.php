@@ -487,10 +487,7 @@ class   Order {
         ));
         $referenceAmount            = 0;
         $estimatedCost              = 0;
-        $listGoodsId                = ArrayUtility::listField($orderInfo,'goods_id');
-        $listGoodsInfo              = Goods_Info::getByMultiId($listGoodsId);
-        $indexGoodsIdInfo           = ArrayUtility::indexByField($listGoodsInfo,'goods_id');
-        
+
         foreach($orderInfo as $key => $info) {
              
             $content    = array(
@@ -504,10 +501,10 @@ class   Order {
                 'remark'            => $info['remark'],
             );
             
-            if($indexGoodsIdInfo[$info['goodsId']]['valuation_type'] == Valuation_TypeInfo::GRAMS){//克
+            if($indexGoodsId[$info['goodsId']]['valuation_type'] == Valuation_TypeInfo::GRAMS){//克
                 
                 $estimatedCost+= $info['cost']*((int) $info['quantity']) * $info['specWeight'];
-            }else if($indexGoodsIdInfo[$info['goodsId']]['valuation_type'] == Valuation_TypeInfo::PIECE){//件
+            }else if($indexGoodsId[$info['goodsId']]['valuation_type'] == Valuation_TypeInfo::PIECE){//件
                 
                 $estimatedCost+= $info['cost']*((int) $info['quantity']);
             }
