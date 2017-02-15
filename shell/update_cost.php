@@ -61,6 +61,7 @@ foreach($mapUpdateCost as $key=>$info){
                 $data[] = $jsonData;
                 continue;
             }
+            Spu_Push::pushListSpuSn(ArrayUtility::listField($mapSpuInfo,'spu_sn'));
 
             foreach($productCost as $colorId=>$colorPrice){
                 
@@ -184,7 +185,7 @@ foreach($mapUpdateCost as $key=>$info){
     }else{
 
         $mapEnumeration = array();
-		$mapValuation       = Valuation_TypeInfo::getValuationType();
+        $mapValuation       = Valuation_TypeInfo::getValuationType();
         $listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
         $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
         $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
@@ -205,7 +206,7 @@ foreach($mapUpdateCost as $key=>$info){
             'mapSizeId'            => $mapSizeId,
             'mapStyle'             => $mapStyleInfo,
             'mapSpecInfo'          => $mapSpecInfo,
-			'mapValuation'         => $mapValuation,
+            'mapValuation'         => $mapValuation,
         );
 
         foreach ($data as $offsetRow => $row) {
