@@ -61,8 +61,7 @@ foreach($mapUpdateCost as $key=>$info){
                 $data[] = $jsonData;
                 continue;
             }
-            Spu_Push::pushListSpuSn(ArrayUtility::listField($mapSpuInfo,'spu_sn'));
-
+			
             foreach($productCost as $colorId=>$colorPrice){
                 
                 if(!empty($productSize)){
