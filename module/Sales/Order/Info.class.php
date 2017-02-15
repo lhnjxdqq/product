@@ -19,7 +19,7 @@ class   Sales_Order_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sales_order_id,sales_order_sn,sales_order_status,sales_quotation_id,quantity_total,create_order_au_price,count_goods,order_amount,create_user_id,salesperson_id,order_time,create_time,update_time,transaction_amount,reference_amount,prepaid_amount,order_type_id,audit_person_id,order_remark,reference_weight,actual_weight,customer_id,order_file_status,import_error_log';
+    const   FIELDS      = 'sales_order_id,sales_order_sn,sales_order_status,estimated_cost,sales_quotation_id,quantity_total,create_order_au_price,count_goods,order_amount,create_user_id,salesperson_id,order_time,create_time,update_time,transaction_amount,reference_amount,prepaid_amount,order_type_id,audit_person_id,order_remark,reference_weight,actual_weight,customer_id,order_file_status,import_error_log';
     /**
      * 新增
      *

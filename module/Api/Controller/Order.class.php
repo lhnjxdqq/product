@@ -76,6 +76,7 @@ class Api_Controller_Order {
                 'orderSalesStatus'  => $info['sales_order_status'],
                 'transactionAmount' => $info['transaction_amount'],
                 'totalWeight'       => $info['actual_weight'],
+                'estimatedCost'     => $info['estimated_cost'],
                 'completeTime'      => $completeTime, 
             );
             
@@ -172,6 +173,7 @@ class Api_Controller_Order {
                 'completeGold'      => $info['create_order_au_price'],
                 'orderSalesStatus'  => $info['sales_order_status'],
                 'transactionAmount' => $info['transaction_amount'],
+                'estimatedCost'     => $info['estimated_cost'],
                 'totalWeight'       => $info['actual_weight'],
                 'completeTime'      => $completeTime, 
             );
@@ -218,6 +220,7 @@ class Api_Controller_Order {
                 'completeGold'      => $info['create_order_au_price'],
                 'orderSalesStatus'  => $info['sales_order_status'],
                 'transactionAmount' => $info['transaction_amount'],
+                'estimatedCost'     => $info['estimated_cost'],
                 'totalWeight'       => $info['actual_weight'],
                 'completeTime'      => $completeTime, 
             );
@@ -316,7 +319,7 @@ class Api_Controller_Order {
     /**
      * 修改订单状态
      *
-     * @param  	array  $orderInfo     订单信息
+     * @param   array  $orderInfo     订单信息
      *
      * @rerurn  array  结果
      */
