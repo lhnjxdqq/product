@@ -34,18 +34,7 @@
                                 <input type="text" name="date_end" readonly class="form-control" value="<{$condition.date_end}>">
                             </div>
                         </div>
-                        <div class="col-md-3" style="">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">客户名称:</span>
-                                    <select class="form-control select-multiple" name="customer_id">
-                                            <option value="0">请选择</option>
-<{foreach from=$customerInfo item=item}>
-                                            <option value="<{$item.customer_id}>" <{if $item.customer_id eq $condition.customer_id}> selected = "selected" <{/if}>><{$item.customer_name}></option>
-<{/foreach}>
-                                    </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">销售员:</span>
                                     <select class="form-control select-multiple" name="salesperson_id">
@@ -56,7 +45,7 @@
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">状态:</span>
                                     <select class="form-control select-multiple" name="status_id">
@@ -69,7 +58,12 @@
                         </div>
                         <div class="col-md-1" >
                             <div class="input-group input-group-sm">
-                                    <button class="btn btn-primary form-control" type="submit">搜索</button>
+                                    <button class="btn btn-sm btn-primary pull-left" type="submit">搜索</button>
+                            </div>
+                        </div>
+                        <div class="col-md-1" >
+                            <div class="input-group input-group-sm">
+                                    <a href='/sample/borrow/pick_sample.php' class="btn btn-sm btn-primary pull-right" type="submit">去挑板</a>
                             </div>
                         </div>
                     </form>
@@ -89,18 +83,18 @@
                                         <th>预计归还时间</th>
                                         <th>归还时间</th>
                                         <th>备注</th>
-                                        <th style='text-align:center;width:250px'>操作</th>
+                                        <th style='text-align:center;'>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <{foreach from=$listBorrowInfo item=item}>
                                         <tr>
                                             <td><{$salespersonInfo[$item.salesperson_id]['salesperson_name']}></td>
-                                            <td><{$item.borrow_time}></td>
+                                            <td><{$item.start_time}></td>
                                             <td><{$item.sample_quantity}></td>
                                             <td><{$customerInfo[$item.customer_id]['customer_name']}></td>
                                             <td><{$borrowStatusInfo[$item.status_id]['status_name']}></td>
-                                            <td><{$item.estimate_return_time}></td>
+                                            <td><{$item.end_time}></td>
                                             <td><{$item.return_time}></td>
                                             <td><{$item.remark}></td>
                                             <td>
@@ -108,6 +102,8 @@
                                                 <a href="/sample/borrow/edit.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>编辑</a>
                                                 <a href="/sample/borrow/issue.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>出库</a>
                                                 <a href="/sample/borrow/delete.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>删除</a>
+                                                <{else}>
+                                                <!-- <a href="/sample/borrow/delete.php?sales_quotation_id=<{$item.sales_quotation_id}>" class='btn btn-primary btn-xs'>查看销售报价单</a> -->
                                                 <{/if}>
                                                 <{if $item.status_id == 2 || $item.status_id == 3}>
                                                 <a href="/sample/borrow/detail.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>查看</a>
@@ -115,7 +111,6 @@
                                                 <{if $item.status_id ==2 }>
                                                 <a href="/sample/borrow/return.php?borrow_id=<{$item.borrow_id}>" class='btn btn-primary btn-xs'>归还</a>
                                                 <{/if}>
-                                                <{if $taskInfo[$item.borrow_id]['export_filepath'] != '' && $taskInfo[$item.borrow_id]['export_status'] == 3}><a href='/sample/borrow/download.php?borrow_id=<{$item.borrow_id}>' class='btn btn-primary btn-xs'>下载</a><{else}>文件正在生成中<{/if}>
                                             </td>
                                         </tr>
                                     <{/foreach}>

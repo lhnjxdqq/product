@@ -1,6 +1,6 @@
 <?php
 /**
- * 样本清单
+ * 样板清单
  */
 require_once    dirname(__FILE__) . '/../../../init.inc.php';
 

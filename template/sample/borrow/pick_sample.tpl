@@ -14,7 +14,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>挑板参数编辑</h1>
+            <h1>挑板参数</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
                 <li><a href="/sample/borrow/index.php">借板</a></li>
@@ -29,14 +29,14 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <form action="/sample/borrow/do_edit.php" method="post" enctype="multipart/form-data" onsubmit="return disableForm()">
+                            <form action="/sample/borrow/do_pick_sample.php" method="post" enctype="multipart/form-data" onsubmit="return disableForm()">
 
                                 <div class="form-group">
                                     <label>销售员: </label>
                                     <select class="form-control select-multiple" name="salesperson_id">
                                             <option value="0">请选择销售员</option>
 <{foreach from=$salespersonInfo item=item}>
-                                            <option value="<{$item.salesperson_id}>" <{if $item.salesperson_id eq $borrowInfo.salesperson_id}> selected = "selected" <{/if}>><{$item.salesperson_name}></option>
+                                            <option value="<{$item.salesperson_id}>" <{if $item.salesperson_id eq $condition.salesperson_id}> selected = "selected" <{/if}>><{$item.salesperson_name}></option>
 <{/foreach}>
                                     </select>
                                 </div>
@@ -45,22 +45,21 @@
                                     <select class="form-control select-multiple" name="customer_id">
                                             <option value="0">请选择客户</option>
 <{foreach from=$customerInfo item=item}>
-                                            <option value="<{$item.customer_id}>" <{if $item.customer_id eq $borrowInfo.customer_id}> selected = "selected" <{/if}>><{$item.customer_name}></option>
+                                            <option value="<{$item.customer_id}>" <{if $item.customer_id eq $condition.customer_id}> selected = "selected" <{/if}>><{$item.customer_name}></option>
 <{/foreach}>
                                     </select>
                                 </div>
-								<input type='hidden' value='<{$borrowInfo.borrow_id}>' name='borrow_id'>
                                 <div class="form-group">
                                     <label>用板时间：</label>
                                     <div class="input-daterange input-group input-group-sm">
-                                        <input type="text" name="date_start" readonly class="form-control" value="<{$borrowInfo.start_time}>">
+                                        <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
                                         <span class="input-group-addon">到</span>
-                                        <input type="text" name="date_end" readonly class="form-control" value="<{$borrowInfo.end_time	}>">
+                                        <input type="text" name="date_end" readonly class="form-control" value="<{$condition.date_end}>">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label>备注: </label>
-                                    <textarea name='remark' class="form-control"><{$borrowInfo.remark}></textarea>
+                                    <textarea name='remark' class="form-control"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-primary"> 下一步</button>

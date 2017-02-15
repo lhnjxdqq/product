@@ -19,7 +19,7 @@ class   Borrow_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'borrow_id,salesperson_id,create_time,estimate_return_time,borrow_time,return_time,sample_quantity,customer_id,status_id,remark';
+    const   FIELDS      = 'borrow_id,salesperson_id,create_time,end_time,start_time,return_time,sample_quantity,customer_id,status_id,remark,sales_quotation_id';
     /**
      * 新增
      *
@@ -90,7 +90,7 @@ class   Borrow_Info {
         $sql[]          = self::_conditionByStatusId($condition);
         $sql[]      = self::_conditionrange(
             array(
-                'fieldCondition'    => 'borrow_time',
+                'fieldCondition'    => 'create_time',
                 'paramA'            => 'date_start',
                 'paramB'            => 'date_end',
                 'condition'         => $condition,

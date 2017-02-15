@@ -39,18 +39,17 @@ foreach($sampleType as $typeId=>$typeName){
 
 $perpage                    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countSpuTotal              = Borrow_Spu_List::countByCondition($condition);
-
-if(empty($countSpuTotal)){
-    
-    Utility::notice('板单目前没有商品，添加后在查看');
-    exit;
-}
-
 $page                       = new PageList(array(
     PageList::OPT_TOTAL     => $countSpuTotal,
     PageList::OPT_URL       => '/sample/borrow/borrow_spu_list.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
+
+if(empty($countSpuTotal)){
+    
+    Utility::notice('板单目前没有商品，添加后在查看','/sample/borrow/spu_list.php?borrow_id='.$borrowId);
+    exit;
+}
 
 $listSpuInfo                = Borrow_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
@@ -160,4 +159,4 @@ $template->assign('pageViewData',$page->getViewData());
 $template->assign('indexSpecValueId',$indexSpecValueId);
 $template->assign('indexSupplierId',$indexSupplierId);
 $template->assign('listSpuInfo',$listSpuInfo);
-$template->display('sample/borrow/detail.tpl');
+$template->display('sample/borrow/borrow_spu_list.tpl');

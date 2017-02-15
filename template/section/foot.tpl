@@ -28,6 +28,8 @@
 <script src="/js/select2.full.min.js"></script>
 <!-- SlimScroll 1.3.0 -->
 <script src="/js/jquery.slimscroll.min.js"></script>
+<!-- echarts -->
+<script src="/js/echarts.common.min.js"></script>
 
 <!-- jQuery Knob -->
 <script src="/js/jquery.knob.js"></script>

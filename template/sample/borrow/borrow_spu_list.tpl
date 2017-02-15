@@ -35,7 +35,30 @@
             <div class="box">
                                             
     <div class="box-header with-border">
-                        
+                        <div class='col-md-4'>
+                            <label>
+                                <input type="checkbox" name='check-all'> 全选
+                            </label>
+                        <button class="btn btn-primary btn-sm" id="delMultiBorrowSpu" style="margin-left: 10px;">批量删除</button>
+                        <button class="btn btn-primary btn-sm" id="totalQuantity" style="margin-left: 10px;">共计<{$borrowInfo.sample_quantity}>件</button>
+                        </div>
+                    <form class="form-inline" action="/sample/borrow/borrow_spu_list.php" method="get">
+                        <div class="col-md-4">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon">品类:</span>
+                                    <select class="form-control select-multiple" name="category_id">
+                                            <option value="0">全部</option>
+<{foreach from=$data['mapCategoryInfoLv3'] item=item}>
+                                            <option value="<{$item.category_id}>" <{if $item.category_id eq $condition.category_id}> selected = "selected" <{/if}>><{$item.category_name}></option>
+<{/foreach}>
+                                    </select>
+                            </div>
+                             <div class="input-group input-group-sm">
+                                    <button class="btn btn-sm btn-primary pull-left" type="submit">筛选</button>
+                            </div>
+                        </div>
+                        <input type="hidden" value='<{$smarty.get.borrow_id}>' name="borrow_id">
+                    </form>
                 </div>
             
                 <div class="box-body  col-xls-12" <{if $listSpuInfo}><{else}>style="display:none<{/if}>">
@@ -43,6 +66,7 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                                 <tr class="info">
+                                    <th>选择</th>
                                     <th>买款ID</th>
                                     <th>SPU编号</th>
                                     <th>产品图片</th>
@@ -56,11 +80,13 @@
                                     <th>借板数量</th>
                                     <th>基本成本工费</th>
                                     <th>出货工费</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                            
                                 <tr>
+                                    <td><input type='checkbox' name='borrow_spu[]' value='<{$item.spu_id}>-<{$item.sample_storage_id}>'></td>
                                     <td><{$item.source_code}></td>
                                     <td><{$item.spu_sn}></td>
                                     <td>                                    
@@ -73,9 +99,20 @@
                                     <td><{$indexSpecValueId[$item.material_value_id]['spec_value_data']}></td>
                                     <td><{$indexSpecValueId[$item.assistant_material_value_id]['spec_value_data']}></td>
                                     <td><{$valuationType[$item.valuation_type]}></td>
-                                    <td><{$item.borrow_quantity}></td>
+                                    <td>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default reduce-quantity"><i class="fa fa-minus"></i></button>
+                                            </span>
+                                            <input type="text" class="form-control borrow_quantity" name="quantity" sample-storage-id=<{$item.sample_storage_id}> spu-id=<{$item.spu_id}> value="<{$item.borrow_quantity}>" style="width: 40px;text-align: center;">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default increase increase-quantity"><i class="fa fa-plus"></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
                                     <td><{$item.sale_cost}></td>
-                                    <td><{$item.shipment_cost}></td>
+                                    <td><input type='text' size='3' class='update-cost' sample-storage-id=<{$item.sample_storage_id}> spu-id=<{$item.spu_id}> value='<{$item.shipment_cost}>'></td>
+                                    <td><a class='btn btn-warning btn-sm ' href='borrow_spu_delete.php?borrow_id=<{$smarty.get.borrow_id}>&spu_id=<{$item.spu_id}>&sample_storage_id=<{$item.sample_storage_id}>'><i class='fa fa-trash'></i></a></td>
                                 </tr>
 <{/foreach}>                     
                             </tbody>
@@ -87,7 +124,8 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <a href="/sample/borrow/index.php" type="button" class="btn btn-primary pull-left">返回</a>
+                    <a href="/sample/borrow/spu_list.php?borrow_id=<{$smarty.get.borrow_id}>" type="button" class="btn btn-primary pull-left">添加产品</a>
+                    <a href="/sample/borrow/submit.php" pe='submit' class="btn btn-primary pull-right"> 提交</a>
                 </div>
             </div>
             <!-- /.box -->

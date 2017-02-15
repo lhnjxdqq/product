@@ -4,6 +4,8 @@
  */
 require_once    dirname(__FILE__) . '/../../init.inc.php';
 
+set_time_limit(300);
+
 $quotationData              = $_POST;
 
 //保存购物车数据

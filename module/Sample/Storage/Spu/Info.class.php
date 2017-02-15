@@ -19,7 +19,7 @@ class   Sample_Storage_Spu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sample_storage_id,spu_id,quantity,create_time,sample_status,sample_type';
+    const   FIELDS      = 'sample_storage_id,spu_id,quantity,create_time,sample_status,sample_type,return_time,estimate_return_time';
     /**
      * 新增
      *
