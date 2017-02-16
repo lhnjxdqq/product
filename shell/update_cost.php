@@ -61,11 +61,7 @@ foreach($mapUpdateCost as $key=>$info){
                 $data[] = $jsonData;
                 continue;
             }
-<<<<<<< HEAD
-			
-=======
-            
->>>>>>> sample
+
             foreach($productCost as $colorId=>$colorPrice){
                 
                 if(!empty($productSize)){
