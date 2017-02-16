@@ -103,7 +103,7 @@ class Search_BorrowSample {
         
         $sql .= self::_subqueryCondition($condition);
 
-        return 'AND `stsi`.`spu_id` IN('. $sql .')';
+        return ' AND `stsi`.`spu_id` IN('. $sql .')';
     }
     
     /**
@@ -127,9 +127,15 @@ class Search_BorrowSample {
      */
     static private function _conditionBySampleType (array $condition) {
 
-        return  $condition['sample_type']
-                ? '`stsi`.`sample_type` <= "' . (int) $condition['sample_type']. '"'
-                : '';
+        if(empty($condition['sample_type'])){
+            
+            return ;
+        }
+        if($condition['sample_type'] == 2){
+            
+            return '`stsi`.`sample_type` = ' . (int) $condition['sample_type'];
+        }
+        return '`stsi`.`sample_type` != 2';
     }
 
     /**

@@ -84,18 +84,18 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $spuId              = $spuInfo['spu_id'];
     $listSpuGoodsInfo   = Spu_List::listSpuGoodsInfo($spuId);
 
-	$spuCost			= array();
+    $spuCost            = array();
     foreach ($listSpuGoodsInfo as $spuGoods) {
 
         $listSpuInfo[$key]['category_id'] = $spuGoods['category_id'];
         $listSpuInfo[$key]['weight_value_id']  = $spuGoods['weight_id'];
         $specValueId    = $spuGoods['spec_value_id'];
         $supplierId     = $spuGoods['supplier_id'];
-		$spuCost[]		= $spuGoods['sale_cost'];
+        $spuCost[]      = $spuGoods['sale_cost'];
     }
 
-	 $listSpuInfo[$key]['sale_cost']  = max($spuCost);
-    if(!empty(ArrayUtility::searchBy($borrowSpuInfo,array('spu_id'=>$info['spu_id'],'sample_storage_id'=>$info['sample_storage_id'])))){
+     $listSpuInfo[$key]['sale_cost']  = max($spuCost);
+    if(!empty(ArrayUtility::searchBy($borrowSpuInfo,array('spu_id'=>$spuId,'sample_storage_id'=>$spuInfo['sample_storage_id'])))){
 
         $listSpuInfo[$key]['is_join']   = 1;
     }else{
@@ -106,6 +106,7 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $sourceCodeList                         = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
     $listSpuInfo[$key]['source_code_list']  = implode(',', array_unique($sourceCodeList));
     $listSpuInfo[$key]['spu_sn']            = $mapIndexSpuId[$spuId]['spu_sn'];
+    $listSpuInfo[$key]['valuation_type']    = $mapIndexSpuId[$spuId]['valuation_type'];
     $imageInfo          = array();  
     $imageInfo          = $groupSpuIdImages[$spuId];
     

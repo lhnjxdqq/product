@@ -130,7 +130,7 @@
                                         <p>到货时间: <{$item.create_time|date_format:"%Y-%m-%d"}></p>
                                         <p><{if $data.mapSampleType[$item.sample_type]['sample_type_name'] == '外协'}>外协<{else}>自有<{/if}>,库存<{$item.quantity - $item.sum_borrow_quantity}></if>
                                             <span class="pull-right act-cart-add" sale-cost=<{$item.sale_cost}> sample-storage-id="<{$item.sample_storage_id}>" spu-id="<{$item.spu_id}>">
-                                                <a href="javascript:void(0);" class="btn btn-<{if $item.is_join eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
+                                                <a href="javascript:void(0);" class="btn btn-<{if $item.is_join eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_join eq 1}>check<{else}>plus<{/if}>"></i></a>
                                             </span>
                                         </p>
                                         <p class="clearfix"></p>
