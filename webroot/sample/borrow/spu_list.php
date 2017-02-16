@@ -53,15 +53,18 @@ $page                       = new PageList(array(
     PageList::OPT_URL       => '/sample/borrow/spu_list.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
+$listSpecInfo   = Spec_Info::listAll();
+$mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
 $listSpuInfo                = Search_BorrowSample::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
-$listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
 $listSupplierId             = ArrayUtility::listField($listSpuInfo,'supplier_id');
 
 $listSpuId                  = ArrayUtility::listField($listSpuInfo, 'spu_id');
-$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList($listSpuId);
+$listSpuSourceCode          = Common_Spu::getSpuSourceCodeList(array_unique($listSpuId));
 $mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'spu_id');
+$mapSpuInfo                 = Spu_Info::getByMultiId($listSpuId);
+$mapIndexSpuId              = ArrayUtility::indexByField($mapSpuInfo,'spu_id');
 
 $listSpuImages              = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
 $groupSpuIdImages           = ArrayUtility::groupByField($listSpuImages, 'spu_id');
@@ -75,22 +78,23 @@ foreach($indexSupplierId as $supplierId => $info){
         $suppluerIdColor[$supplierId]   = $plusData['base_color_id'];   
     }
 }
-$indexWeightId              = ArrayUtility::indexByField(Spec_Value_Info::getByMulitId($listWeightValueId),'spec_value_id');
 
 foreach ($listSpuInfo as $key => $spuInfo) {
 
     $spuId              = $spuInfo['spu_id'];
     $listSpuGoodsInfo   = Spu_List::listSpuGoodsInfo($spuId);
 
+	$spuCost			= array();
     foreach ($listSpuGoodsInfo as $spuGoods) {
 
+        $listSpuInfo[$key]['category_id'] = $spuGoods['category_id'];
+        $listSpuInfo[$key]['weight_value_id']  = $spuGoods['weight_id'];
         $specValueId    = $spuGoods['spec_value_id'];
         $supplierId     = $spuGoods['supplier_id'];
-        if ($specValueId ==  $suppluerIdColor[$spuInfo['supplier_id']]) {
-
-            $listSpuInfo[$key]['sale_cost']  = $spuGoods['sale_cost'];
-        }
+		$spuCost[]		= $spuGoods['sale_cost'];
     }
+
+	 $listSpuInfo[$key]['sale_cost']  = max($spuCost);
     if(!empty(ArrayUtility::searchBy($borrowSpuInfo,array('spu_id'=>$info['spu_id'],'sample_storage_id'=>$info['sample_storage_id'])))){
 
         $listSpuInfo[$key]['is_join']   = 1;
@@ -98,6 +102,10 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     
         $listSpuInfo[$key]['is_join']   = 0;
     }
+    
+    $sourceCodeList                         = ArrayUtility::listField($mapSpuSourceCode[$spuId], 'source_code');
+    $listSpuInfo[$key]['source_code_list']  = implode(',', array_unique($sourceCodeList));
+    $listSpuInfo[$key]['spu_sn']            = $mapIndexSpuId[$spuId]['spu_sn'];
     $imageInfo          = array();  
     $imageInfo          = $groupSpuIdImages[$spuId];
     
@@ -121,6 +129,8 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     }
 
 }
+$listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
+$indexWeightId              = ArrayUtility::indexByField(Spec_Value_Info::getByMulitId($listWeightValueId),'spec_value_id');
 
 $data['mapSampleType']      = $mapSampleType; 
 $data['searchType']                 = Search_Spu::getSearchType();

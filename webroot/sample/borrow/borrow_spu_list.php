@@ -45,12 +45,6 @@ $page                       = new PageList(array(
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
-if(empty($countSpuTotal)){
-    
-    Utility::notice('板单目前没有商品，添加后在查看','/sample/borrow/spu_list.php?borrow_id='.$borrowId);
-    exit;
-}
-
 $listSpuInfo                = Borrow_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
 $listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
