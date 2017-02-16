@@ -70,9 +70,10 @@ class Spu_List {
         $listSpecInfo   = Spec_Info::listAll();
         $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
-        $fields         = '`gi`.`goods_id`,`color_info`.`spec_value_id`,`gi`.`sale_cost`,`si`.`supplier_id`';
+        $fields         = '`gi`.`goods_id`,`color_info`.`spec_value_id`,`weight_info`.`spec_value_id` as `weight_id`,`gi`.`category_id`,`gi`.`sale_cost`,`si`.`supplier_id`';
         $sql            = 'SELECT ' . $fields . ' FROM `goods_info` AS `gi` '
                         . 'LEFT JOIN `goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`gi`.`goods_id` AND `color_info`.`spec_id`=' . $mapSpecInfo['color']['spec_id'] . ' '
+                        . 'LEFT JOIN `goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`gi`.`goods_id` AND `weight_info`.`spec_id`=' . $mapSpecInfo['weight']['spec_id'] . ' '
                         . 'LEFT JOIN `product_info` AS `pi` ON `gi`.`goods_id`=`pi`.`goods_id` '
                         . 'LEFT JOIN `source_info` AS `si` ON `si`.`source_id`=`pi`.`source_id` '
                         . 'WHERE `gi`.`goods_id` IN ("' . implode('","', $spuGoodsIdList) . '")';

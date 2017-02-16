@@ -120,15 +120,15 @@
                     <div class="row" id="spu-list">
                         <{foreach from=$listSpuInfo item=item name=foo}>
                             <div class="col-sm-6 col-md-3 spu-single">
-                                <div class="thumbnail"<{if $item.online_status eq $data.onlineStatus.offline}> style="border:1px solid #e08e0b;"<{/if}>>
+                                <div class="thumbnail">
                                     <input type="checkbox" name="spu_id[]" value='<{$item.spu_id}>-<{$item.sample_storage_id}>-<{$item.sale_cost}>' style="position:absolute;top:5px;left:25px" <{if $item.is_cart eq 1}>checked=checked<{/if}> value="<{$item.spu_id}>" />
                                     <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/spu_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!thumb<{else}>/images/spu_default.png<{/if}>" alt="..."></a>
                                     <div class="caption">
                                         <p><{$data.mapCategoryInfoLv3[$item.category_id]['category_name']}>,<{$indexWeightId[$item.weight_value_id]['spec_value_data']}>g, <{$item.spu_sn}></p>
-                                        <p><{$item.source_code}></p>
+                                        <p><{$item.source_code_list}></p>
                                         <p><{$indexSupplierId[$item.supplier_id]['supplier_code']}>出货工费: <{$item.sale_cost}>元/<{$valuationType[$item.valuation_type]}></p>
                                         <p>到货时间: <{$item.create_time|date_format:"%Y-%m-%d"}></p>
-                                        <p><{if $data.mapSampleType[$item.sample_type]['sample_type_name'] == '外协'}>外协<{else}>自有<{/if}>,库存<if $surplus_quantity == 0><{$item.quantity}><else><{$surplus_quantity}></if>
+                                        <p><{if $data.mapSampleType[$item.sample_type]['sample_type_name'] == '外协'}>外协<{else}>自有<{/if}>,库存<{$item.quantity - $item.sum_borrow_quantity}></if>
                                             <span class="pull-right act-cart-add" sale-cost=<{$item.sale_cost}> sample-storage-id="<{$item.sample_storage_id}>" spu-id="<{$item.spu_id}>">
                                                 <a href="javascript:void(0);" class="btn btn-<{if $item.is_join eq 1}>success disabled<{else}>primary<{/if}> btn-xs"><i id=spu_<{$item.spu_id}> class="fa fa-<{if $item.is_cart eq 1}>check<{else}>plus<{/if}>"></i></a>
                                             </span>

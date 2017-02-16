@@ -12,14 +12,14 @@ class Search_BorrowSample {
      */
     static public function listByCondition (array $condition, $orderBy = array(), $offset = null, $limit = null) {
 
-        $fields         = implode(',', self::_getQueryFields());
+        $fields         = implode(',', self::_getQueryFields($condition));
         $sqlBase        = 'SELECT ' . $fields . ' FROM `sample_storage_spu_info` AS `stsi` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlGroup       = self::_group();
-        $sqlOrder       = self::_order($orderBy,$condition);
         $sqlLimit       = self::_limit($offset, $limit);
-        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup . $sqlOrder . $sqlLimit;
+        $sqlHaving      = ' HAVING (`stsi`.`quantity` > sum_borrow_quantity OR sum_borrow_quantity IS NULL) ';
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . self::_subqueryByCondition($condition) . $sqlGroup . $sqlHaving . $sqlLimit;
 
         return          Spu_Info::query($sql);
     }
@@ -52,14 +52,6 @@ class Search_BorrowSample {
 
         $sql        = array();
         $sql[]      = self::_conditionByBorrowTime($condition);
-        $sql[]      = self::_conditionByCategoryId($condition);
-        $sql[]      = self::_conditionByStyleId($condition);
-        $sql[]      = self::_conditionBySupplierId($condition);
-        $sql[]      = self::_conditionByWeightRange($condition);
-        $sql[]      = self::_conditionBySearchType($condition);
-        $sql[]      = self::_conditionByDeleteStatus($condition);
-        $sql[]      = self::_conditionByOnlineStatus($condition);
-        $sql[]      = self::_conditionByBorrowId($condition);
         $sql[]      = self::_conditionByStartTime($condition);
         $sql[]      = self::_conditionByEndTime($condition);
         $sql[]      = self::_conditionBySampleType($condition);
@@ -68,6 +60,52 @@ class Search_BorrowSample {
         return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
     }
 
+    /**
+     * 根据条件拼接WHERE语句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _subqueryCondition (array $condition) {
+
+        $sql        = array();
+        $sql[]      = self::_conditionByCategoryId($condition);
+        $sql[]      = self::_conditionByStyleId($condition);
+        $sql[]      = self::_conditionBySupplierId($condition);
+        $sql[]      = self::_conditionByWeightRange($condition);
+        $sql[]      = self::_conditionBySearchType($condition);
+        $sql[]      = self::_conditionByDeleteStatus($condition);
+        $sql[]      = self::_conditionByOnlineStatus($condition);
+        $sqlFilter  = array_filter($sql);
+
+        return      empty($sqlFilter) ? '' : ' WHERE ' . implode(' AND ', $sqlFilter);
+    }
+
+    /**
+     * 根据分类ID条件拼接WHERE子句
+     *
+     * @param   array $condition sql子条件
+     * @return  string      
+     */
+    static private function _subqueryByCondition(array $condition){
+        
+        
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
+
+        $sql = 'SELECT DISTINCT(`sgr`.`spu_id`)
+            FROM `spu_goods_relationship` `sgr`
+         LEFT JOIN `spu_info` AS `spu_info` ON `sgr`.`spu_id`=`spu_info`.`spu_id`
+         LEFT JOIN `goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`
+         LEFT JOIN `goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id` = ' . $mapSpecInfo["weight"]["spec_id"] . '
+         LEFT JOIN `product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`
+         LEFT JOIN `source_info` AS `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`';
+        
+        $sql .= self::_subqueryCondition($condition);
+
+        return 'AND `stsi`.`spu_id` IN('. $sql .')';
+    }
+    
     /**
      * 根据分类ID条件拼接WHERE子句
      *
@@ -142,28 +180,7 @@ class Search_BorrowSample {
     static private function _conditionByBorrowTime (array $condition) {
 
         return  '(`stsi`.`estimate_return_time` > 
-                    "'. $condition['end_time'] .'" OR `stsi`.`estimate_return_time` IS NULL) AND (
-                            (
-                                `bsi`.`estimate_time` < "'. $condition['start_time'] .'"
-                                AND (
-                                    `stsi`.`quantity` - `bsi`.`borrow_quantity`
-                                ) > 0
-                            )
-                            OR `bsi`.`spu_id` IS NULL
-                        )';
-    }
-
-    /**
-     * 根据样借板ID拼接WHERE子句
-     *
-     * @param array $condition  条件
-     * @return string
-     */
-    static private function _conditionByBorrowId (array $condition) {
-
-        return  $condition['borrow_id']
-                ? '(`bsi`.`borrow_id` != "' . (int) $condition['borrow_id'] . '" OR `bsi`.`borrow_id` IS NULL)'
-                : '';
+                    "'. $condition['end_time'] .'" OR `stsi`.`estimate_return_time` IS NULL)';
     }
 
     /**
@@ -283,27 +300,6 @@ class Search_BorrowSample {
     }
 
     /**
-     * 按SPU有无图片状态拼接WHERE子句
-     *
-     * @param array $condition  条件
-     * @return string
-     */
-    static private function _conditionByImageStatus (array $condition) {
-
-        if(empty($condition['image_status'])){
-            
-            return ;
-        }
-        if( $condition['image_status'] == 1 ){
-            
-            return ' `spu_info`.`image_total` > 0 ';
-        }else{
-
-            return  '`spu_info`.`image_total` = 0 ';  
-        }
-    }
-
-    /**
      * 拼接ORDER BY 子句
      *
      * @param $order
@@ -358,18 +354,9 @@ class Search_BorrowSample {
      */
     static private function _getJoinTables () {
 
-        $listSpecInfo   = Spec_Info::listAll();
-        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
-
         return  array(
             '`sample_storage_info` AS `ssi` ON `ssi`.`sample_storage_id` = `stsi`.`sample_storage_id`',
-            '`borrow_spu_info` AS `bsi` ON `bsi`.`spu_id` = `stsi`.`spu_id`',
-            '`spu_info` AS `spu_info` ON `stsi`.`spu_id`=`spu_info`.`spu_id`',
-            '`spu_goods_relationship` AS `sgr` ON `sgr`.`spu_id`=`spu_info`.`spu_id`',
-            '`goods_info` AS `goods_info` ON `goods_info`.`goods_id`=`sgr`.`goods_id`',
-            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id` = ' . $mapSpecInfo['weight']['spec_id'],
-            '`product_info` AS `product_info` ON `product_info`.`goods_id`=`goods_info`.`goods_id`',
-            '`source_info` AS `source_info` ON `source_info`.`source_id`=`product_info`.`source_id`',
+            '`borrow_spu_info` AS `bsi` ON `bsi`.`spu_id` = `stsi`.`spu_id`  AND `stsi`.`sample_storage_id`=`bsi`.`sample_storage_id`',
         );
     }
 
@@ -378,26 +365,34 @@ class Search_BorrowSample {
      *
      * @return array
      */
-    static private function _getQueryFields () {
+    static private function _getQueryFields (array $condition) {
 
         return  array(
             '`stsi`.`spu_id`',
             '`stsi`.create_time',
             '`stsi`.`sample_type`',
             '`stsi`.`quantity`',
-            '(`stsi`.`quantity` - `bsi`.`borrow_quantity`) as `surplus_quantity`',
             '`bsi`.`borrow_quantity`',
             '`stsi`.`sample_storage_id`',
+            /*
             '`spu_info`.`spu_sn`',
             '`spu_info`.`valuation_type`',
             '`spu_info`.`spu_name`',
             '`spu_info`.`spu_remark`',
-            '`spu_info`.`online_status`',
             '`goods_info`.`goods_id`',
             '`goods_info`.`category_id`',
             '`source_info`.`source_code`',
             '`weight_info`.`spec_value_id` AS `weight_value_id`',
-            '`ssi`.`supplier_id`'
+            */
+            '`ssi`.`supplier_id`',
+            ' SUM(
+                IF (
+                    `bsi`.`start_time` <= "'. $condition['end_time'] .'"
+                    AND `bsi`.`estimate_time` >= " '.$condition['start_time'].'",
+                    `bsi`.`borrow_quantity`,
+                    0
+                )
+            ) AS sum_borrow_quantity ',
         );
     }
 
