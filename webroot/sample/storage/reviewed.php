@@ -45,7 +45,7 @@ $countSampleStorage   = Sample_Storage_Cart_Info::countByCondition($condition);
 
 $page           = new PageList(array(
     PageList::OPT_TOTAL     => $countSampleStorage,
-    PageList::OPT_URL       => '/sample/storage/review.php',
+    PageList::OPT_URL       => '/sample/storage/reviewed.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 

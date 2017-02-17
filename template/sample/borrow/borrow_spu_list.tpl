@@ -100,7 +100,7 @@
                                     <td><{$indexSpecValueId[$item.assistant_material_value_id]['spec_value_data']}></td>
                                     <td><{$valuationType[$item.valuation_type]}></td>
                                     <td>
-                                        <div class="input-group input-group-sm">
+                                        <div class="input-group width-100 input-group-sm">
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default reduce-quantity"><i class="fa fa-minus"></i></button>
                                             </span>
