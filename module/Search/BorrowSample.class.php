@@ -380,16 +380,6 @@ class Search_BorrowSample {
             '`stsi`.`quantity`',
             '`bsi`.`borrow_quantity`',
             '`stsi`.`sample_storage_id`',
-            /*
-            '`spu_info`.`spu_sn`',
-            '`spu_info`.`valuation_type`',
-            '`spu_info`.`spu_name`',
-            '`spu_info`.`spu_remark`',
-            '`goods_info`.`goods_id`',
-            '`goods_info`.`category_id`',
-            '`source_info`.`source_code`',
-            '`weight_info`.`spec_value_id` AS `weight_value_id`',
-            */
             '`ssi`.`supplier_id`',
             ' SUM(
                 IF (

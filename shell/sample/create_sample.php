@@ -72,7 +72,7 @@ foreach ($data as $offsetRow => $row) {
             'spu_id'            => $val,
             'quantity'          => $row['quantity'],
             'create_time'       => date('Y-m-d H:i:s'),
-            'sample_type'       => $sampleInfo['supplier_id'],
+            'sample_type'       => $sampleInfo['sample_type'],
        );
        if(!empty($sampleInfo['return_sample_time'])){
            $smapleSpuInfo['estimate_return_time'] = $sampleInfo['return_sample_time'];
