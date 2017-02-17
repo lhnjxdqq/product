@@ -1,21 +1,21 @@
 <?php
 
-//金价列表
+//閲戜环鍒楄〃
 require_once dirname(__FILE__) . '/../../../init.inc.php';
 
-// 排序
+// 鎺掑簭
 $sortby     = isset($_GET['au_price_id']) ? $_GET['au_price_id'] : 'au_price_id';
 $direction  = isset($_GET['direction']) ? $_GET['direction'] : 'DESC';
 $orderBy    = array(
     $sortby => $direction,
 );
 $condition  = array();
-// 分页
+// 鍒嗛〉
 $perpage    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : '20';
 $count      = Au_Price_Log::countByCondition($condition);
 $page       = new PageList(array(
     PageList::OPT_TOTAL     => $count,
-    PageList::OPT_URL       => '/system/au/index.php',
+    PageList::OPT_URL       => '/system/au_price/index.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
