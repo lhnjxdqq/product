@@ -7,36 +7,71 @@ $supplierType       = (int) $_POST['supplier-type'];
 $areaId             = (int) $_POST['area-id'];
 $supplierAddress    = trim($_POST['supplier-address']);
 
-$valueColorId       = $_POST['color_value_id'];
-
-$plusColor	= !empty($_POST['plus_color']) ? $_POST['plus_color'] : array() ;
-if(in_array($valueColorId,$plusColor)){
-    Utility::notice("可生产颜色中包含了基价颜色");
-    exit;
-}
-if(count($plusColor) != count(array_unique($plusColor))){
-    Utility::notice("可生产颜色有重复");
-    exit;
-}
-
-if(count($plusColor) != count($_POST['price_plus'])){
+$plusColor  = $_POST['plus_rules'];
+Validate::testNull($plusColor,'计价不能为空');
+$supplierMarkupInfo = Supplier_Markup_Rule_Info::getBySupplierId($supplierId);
+$listRuleId         = ArrayUtility::listField($supplierMarkupInfo,'supplier_markup_rule_id');
+foreach($plusColor as $info){
     
-    Utility::notice('颜色和工费不匹配');
-    exit;
-}
-$productColor       = array();
-if(!empty($_POST['plus_color'])){
-    
-    foreach($_POST['plus_color'] as $key => $val){
+    $markupLogic    = array();
+    Validate::testNull($info['name'],'计价规则名称不能为空');
+    Validate::testNull((int) $info['base_color_id'],'基价颜色不能为空');
+    Validate::testNull($info['corlor_price'],'可生产颜色不能为空不能为空');
+    $baseColorId    = $info['base_color_id'];
+    $rulesColor     = $info['corlor_price'];
+    $listColorId    = ArrayUtility::listField($rulesColor,'id');
+    $listColorCost  = ArrayUtility::listField($rulesColor,'price');
+    if(in_array($baseColorId,$listColorId)){
+        
+        Utility::notice("可生产颜色中包含了基价颜色");
+        exit;
+    }
+    if(count($listColorId) != count(array_unique($listColorId))){
+        
+        Utility::notice("可生产颜色有重复");
+        exit;
+    }
 
-        $productColor[][$val]   = (int) $_POST['price_plus'][$key];
+    if(count($listColorId) != count($listColorCost)){
+        
+        Utility::notice('颜色和工费不匹配');
+        exit;
+    }
+
+    foreach($info['corlor_price'] as $ruleInfo){
+        
+        $markupLogic[$ruleInfo['id']]  = $ruleInfo['price'];
+    }
+    $supplierMarkId[]   = $info['supplier_markup_rule_id'];
+    
+    if(empty($info['supplier_markup_rule_id'])){
+        
+        Supplier_Markup_Rule_Info::create(array(
+            'supplier_id'   => $supplierId,
+            'markup_name'   => $info['name'],
+            'base_color_id' => $info['base_color_id'],
+            'markup_logic'  => json_encode($markupLogic),
+        ));
+    }else{
+        Supplier_Markup_Rule_Info::update(array(
+            'supplier_markup_rule_id'   => $info['supplier_markup_rule_id'],
+            'supplier_id'               => $supplierId,
+            'markup_name'               => $info['name'],
+            'base_color_id'             => $info['base_color_id'],
+            'markup_logic'              => json_encode($markupLogic),
+        ));
     }
 }
+$diffRuleId = array_diff($listRuleId,$supplierMarkId);
+if(!empty($diffRuleId)){
 
-$colorPrice = array(
-    'base_color_id' => $valueColorId,
-    'product_color' => $productColor,
-);
+    foreach($diffRuleId as $id){
+        Supplier_Markup_Rule_Info::update(array(
+            'supplier_markup_rule_id'   => $id,
+            'delete_status'             => 1,
+        )); 
+    }
+}
 
 if (!$areaId) {
 
@@ -56,7 +91,6 @@ $data   = array(
     'supplier_type'     => $supplierType,
     'area_id'           => $areaId,
     'supplier_address'  => $supplierAddress,
-    'price_plus_data'   => json_encode($colorPrice),
 );
 
 if (Supplier_Info::update($data)) {

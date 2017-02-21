@@ -24,25 +24,32 @@ $data['supplierInfo']       = $supplierInfo;
 $data['mainMenu']           = Menu_Info::getMainMenu();
 $data['listSupplierType']   = Supplier_Type::getSupplierType();
 $data['listProvince']       = $listProvince;
-$pricePlusData              = json_decode($data['supplierInfo']['price_plus_data'],true);
 $plusPrice                  = array();
 
-if(!empty($pricePlusData['product_color'])){
-
-    foreach($pricePlusData['product_color'] as $key => $info){
-        foreach($info as $plus => $val){
-        
+$supplierMarkupInfo     = Supplier_Markup_Rule_Info::getBySupplierId($supplierId);
+$countRules            = count($supplierMarkupInfo);
+foreach($supplierMarkupInfo as &$info){
+   
+    $rulePlus   = json_decode($info['markup_logic'],true);
+    $plusPrice  = array();
+    
+    if(!empty($rulePlus)){
+        foreach($rulePlus as $colorId => $cost){
+            
             $plusPrice[] = array(
-                'color_id'      => $plus,
-                'plus_price'    => $val,
-            );  
+                'color_id'  => $colorId,
+                'plus_price'=> $cost,
+            );
         }
     }
+    $info['markup_logic']   = $plusPrice;
 }
 
 $template = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('pricePlusData', $pricePlusData);
 $template->assign('plusPrice', $plusPrice);
+$template->assign('countRules', $countRules);
+$template->assign('supplierMarkupInfo', $supplierMarkupInfo);
 $template->assign('mapColorSpecValueInfo', $mapColorSpecValueInfo);
 $template->display('system/supplier/edit.tpl');
