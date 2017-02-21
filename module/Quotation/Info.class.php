@@ -20,7 +20,7 @@ class   Quotation_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'quotation_id,quotation_name,model_num,quotation_supplier_id,quotation_path,supplier_id,ignore_existed_sourceid,ignore_repeat_sourceid,status_code,create_time,update_time';
+    const   FIELDS      = 'quotation_id,quotation_name,model_num,quotation_supplier_id,quotation_path,supplier_id,ignore_existed_sourceid,ignore_repeat_sourceid,status_code,create_time,update_time,supplier_markup_rule_id';
     /**
      * 获取全部
      *

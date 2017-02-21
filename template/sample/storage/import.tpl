@@ -46,12 +46,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label>选择工厂: </label>
-                                    <select class="form-control select-multiple" name="supplier_id">
+                                    <select class="form-control select-multiple" id='supplier' name="supplier_id">
                                             <option value="0">请选择供应商</option>
 <{foreach from=$mapSupplier item=item}>
                                             <option value="<{$item.supplier_id}>" <{if $item.supplier_id eq $condition.supplier_id}> selected = "selected" <{/if}>><{$item.supplier_code}></option>
 <{/foreach}>
                                     </select>
+                                </div>
+                                <div class="form-group hidden plus-color-rules">
+                                    <label>选择加价规则：</label>
+                                    <div class="clearfix"></div>
                                 </div>
                                 <div class="form-group">
                                     <label>样板类型: </label>
@@ -142,6 +146,41 @@
             $('.parent_own_id').addClass('hidden');
         }
     });
+    $("#supplier").change(function(){
+
+        var supplierId  = $(this).val();
+
+        if(supplierId <= 0){
+        
+            $(".plus-color-rules").addClass("hidden");
+            $('.clearfix').html("");
+            return false;
+        }
+        $.ajax({
+            url: '/ajax/get_supplier_markup_rules.php',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {supplier_id: supplierId},
+            async: false,
+            success: function (data) {
+                if (data.statusCode == 'success') {
+                
+                    $(".plus-color-rules").removeClass("hidden");
+                    var areaString = '<select name="supplier_markup_rule_id" class="form-control"><option value="0">请选择</option>';
+                    $.each(data.resultData, function (index, val) {
+                        areaString += '<option value="' + val.supplier_markup_rule_id + '">' + val.markup_name + '</option>';
+                    });
+                    areaString += '</select>';
+                    $('.clearfix').html(areaString);
+                }else{
+                            
+                    $(".plus-color-rules").addClass("hidden");
+                    $('.clearfix').html("");
+                    alert("该供应商报价规则缺失,请补全后再操作");
+                }
+            }
+        });
+    }); 
 </script>
 </body>
 </html>

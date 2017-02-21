@@ -39,12 +39,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label>选择供应商: </label>
-                                    <select name="supplier_id" class="form-control">
+                                    <select name="supplier_id" id='supplier' class="form-control">
                                         <option value="0">选择供应商</option>
                                         <{foreach from=$listSupplier item=item}>
                                         <option value="<{$item.supplier_id}>"><{$item.supplier_code}></option>
                                         <{/foreach}>
                                     </select>
+                                </div>
+                                <div class="form-group hidden plus-color-rules">
+                                    <label>选择加价规则：</label>
+                                    <div class="clearfix"></div>
                                 </div>
                                 <div class="form-group">
                                     <label>是否忽略生产系统中已存在买款ID: </label>
@@ -101,7 +105,13 @@
 function disableForm(){
 
     quotationName = $("[name=quotation_name]").val();
-
+    supplierMarkupRuleId    = $("[name=supplier_markup_rule_id]").val();  
+    if(!supplierMarkupRuleId){
+        
+        alert("报价规则不能为空");
+        return false;
+    }
+    
     if(quotationName.length>0){
        
         return true;
@@ -110,7 +120,42 @@ function disableForm(){
         alert("工厂报价单名称不能为空");
         return false;
     }
-} 
+}
+$("#supplier").change(function(){
+
+    var supplierId  = $(this).val();
+
+    if(supplierId <= 0){
+    
+        $(".plus-color-rules").addClass("hidden");
+        $('.clearfix').html("");
+        return false;
+    }
+    $.ajax({
+        url: '/ajax/get_supplier_markup_rules.php',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {supplier_id: supplierId},
+        async: false,
+        success: function (data) {
+            if (data.statusCode == 'success') {
+            
+                $(".plus-color-rules").removeClass("hidden");
+                var areaString = '<select name="supplier_markup_rule_id" class="form-control" style="width:300px;float:left;margin-right:10px;"><option value="0">请选择</option>';
+                $.each(data.resultData, function (index, val) {
+                    areaString += '<option value="' + val.supplier_markup_rule_id + '">' + val.markup_name + '</option>';
+                });
+                areaString += '</select>';
+                $('.clearfix').html(areaString);
+            }else{
+                        
+                $(".plus-color-rules").addClass("hidden");
+                $('.clearfix').html("");
+                alert("该供应商报价规则缺失,请补全后再操作");
+            }
+        }
+    });
+});
 </script>
 </body>
 </html>

@@ -2,13 +2,13 @@
 set_time_limit(0);
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
+Validate::testNull($_POST['supplier_markup_rule_id'], "供应商加价逻辑必选");
 Validate::testNull($_POST['supplier_id'], "供应商不能为空");
 Validate::testNull($_POST['quotation_name'], "报价单名称不能为空");
 $listSupplier   = Supplier_Info::listAll();
 validate::testNull(ArrayUtility::searchBy($listSupplier,array('supplier_id'=>$_POST['supplier_id'])),"所选供应商不存在");
 $mainMenu   = Menu_Info::getMainMenu();
 $filePath           = $_FILES['quotation']['tmp_name'];
-Quotation::getColorBySupplierId($_POST['supplier_id']);
 if($_FILES['quotation']['error'] != UPLOAD_ERR_OK) {
     
     throw   new ApplicationException('文件未上传成功');
@@ -158,6 +158,7 @@ Update_Cost_Info::create(array(
     'create_user_id'          => $_SESSION['user_id'],
     'supplier_id'             => (int) $_POST['supplier_id'],
     'auditor_user_id'         => 0,
+    'supplier_markup_rule_id'   => (int) $_POST['supplier_markup_rule_id'],
     'status_id'               => Update_Cost_Status::IMPORTING,
 ));
 

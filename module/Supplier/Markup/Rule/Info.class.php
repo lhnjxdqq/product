@@ -68,9 +68,25 @@ class   Supplier_Markup_Rule_Info {
      */
     static public function getBySupplierId ($supplierId) {
 
+
+        Validate::testNull($supplierId, "供应商不能为空");
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_id` = "' . (int) $supplierId . '" AND `delete_status` = 0';
 
         return  self::_getStore()->fetchAll($sql);
+    }
+    /**
+     * 根据规则ID查询加价信息
+     *
+     * @param $productId    产品ID
+     * @return array        产品信息
+     */
+    static public function getById ($supplierMarkupRuleId) {
+
+
+        Validate::testNull($supplierMarkupRuleId, "规则ID不能为空");
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `supplier_markup_rule_id` = ' . (int) $supplierMarkupRuleId;
+
+        return  self::_getStore()->fetchOne($sql);
     }
     /**
      * 根据供应商ID 获取供应商信息

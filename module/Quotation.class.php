@@ -142,8 +142,8 @@ class   Quotation {
 
         $data = self::testQuotation($data, $mapEnumeration, $isSkuCode, $supplierId);
         $content['suppplier_id'] = $supplierId;
-        $listSupplierColorInfo    = self::getColorBySupplierId($supplierId);
-        $colorCostInfo            = self::getColorCostByCostAndlistColor($data['cost'],$listSupplierColorInfo);
+
+        $colorCostInfo            = self::getColorCostByCostAndsupplierMarkupRuleId($data['cost'],$mapEnumeration['supplierMarkupRuleId']);
         $listSizeInfo             = self::getSizeByCategory($data['category_id']);
         
         $data['cost']             = $colorCostInfo;
@@ -310,24 +310,6 @@ class   Quotation {
     }
     
     /**
-     *  根据供应商ID获取相应的的颜色
-     *
-     *  $param  int  $supplierId  供应商ID
-     *
-     *  @return  array            该供应商所支持的颜色
-     */
-    static public function getColorBySupplierId($supplierId){
-        
-        Validate::testNull($supplierId,'供应商不能为空');
-
-        $supplierInfo       = Supplier_Info::getById($supplierId);
-        $colorInfo          = json_decode($supplierInfo["price_plus_data"],true);
-        Validate::testNull($colorInfo,'该供应商下没有不同颜色的加价逻辑');
-        
-        return $colorInfo;
-    }
-    
-    /**
      *  根据颜色，工费获取相应的的颜色对应的工费
      *
      *  $param  float  $cost        工费
@@ -335,18 +317,19 @@ class   Quotation {
      *
      *  @return  array            该供应商所支持的颜色
      */
-    static public function getColorCostByCostAndlistColor($cost,array $listColor){
+    static public function getColorCostByCostAndsupplierMarkupRuleId($cost,$supplierMarkupRuleId){
 
-        $mainColorId        = $listColor["base_color_id"];
+        $ruleInfo           = Supplier_Markup_Rule_Info::getById($supplierMarkupRuleId);
+        $colorInfo          = json_decode($ruleInfo["markup_logic"],true);
+
+        $mainColorId        = $ruleInfo["base_color_id"];
         $listColorCost[$mainColorId] = $cost;
-   
-        foreach($listColor['product_color'] as $key => $info){
+
+        foreach($colorInfo as $colorId => $colorCostPlus){
             
-            foreach($info as $colorId => $colorCostPlus){
-                
-                $listColorCost[$colorId] =  $cost+$colorCostPlus;
-            }
+            $listColorCost[$colorId] =  $cost+$colorCostPlus;
         }
+
         $listColorCost[$mainColorId] = (int) $cost;
         return $listColorCost;
     }
@@ -384,8 +367,7 @@ class   Quotation {
      */
     static public function createSampleQuotation(array $data, array $mapEnumeration,$supplierId) {
         
-        $listSupplierColorInfo    = self::getColorBySupplierId($supplierId);
-        $colorCostInfo            = self::getColorCostByCostAndlistColor($data['cost'],$listSupplierColorInfo);
+        $colorCostInfo            = self::getColorCostByCostAndsupplierMarkupRuleId($data['cost'],$mapEnumeration['supplierMarkupRuleId']);
         $listSizeInfo             = self::getSizeByCategory($data['category_id']);
 
         $data['cost']             = $colorCostInfo;
@@ -1120,8 +1102,7 @@ class   Quotation {
         $sourceInfo  = Source_Info::getBySourceCodeAndSupplierId($data['sku_code'],$supplierId);
         $sourceId    = $sourceInfo['source_id'];
 
-        $listSupplierColorInfo    = self::getColorBySupplierId($supplierId);
-        $colorCostInfo            = self::getColorCostByCostAndlistColor($data['cost'],$listSupplierColorInfo);
+        $colorCostInfo            = self::getColorCostByCostAndsupplierMarkupRuleId($data['cost'],$mapEnumeration['supplierMarkupRuleId']);
         $listSizeInfo             = self::getSizeByCategory($data['category_id']);
         if(!empty($listSizeInfo)){
         

@@ -114,6 +114,7 @@ $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInf
 $mapEnumeration =array(
    'mapCategory'          => $mapCategoryName,
    'mapTypeSpecValue'     => $mapTypeSpecValue,
+   'supplierMarkupRuleId' => $sampleInfo['supplier_markup_rule_id'],
    'mapIndexSpecAlias'    => $mapIndexSpecAlias,
    'mapSpecValue'         => $mapSpecValue,
    'mapSizeId'            => $mapSizeId,

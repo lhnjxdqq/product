@@ -52,6 +52,7 @@ $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($map
 $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
 $mapEnumeration =array(
     'mapCategory'          => $mapCategoryName,
+    'supplierMarkupRuleId' => $sampleInfo['supplier_markup_rule_id'],
     'mapTypeSpecValue'     => $mapTypeSpecValue,
     'mapIndexSpecAlias'    => $mapIndexSpecAlias,
     'mapSpecValue'         => $mapSpecValue,

@@ -19,7 +19,7 @@ class   Sample_Storage_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'sample_storage_id,supplier_id,create_time,arrive_time,examine_time,status_id,sample_type,sample_quantity,return_sample_time,arrive_user,examine_user,buyer,remark,file_path';
+    const   FIELDS      = 'sample_storage_id,supplier_id,create_time,arrive_time,examine_time,status_id,sample_type,sample_quantity,return_sample_time,arrive_user,examine_user,buyer,remark,file_path,supplier_markup_rule_id';
     /**
      * 新增
      *
