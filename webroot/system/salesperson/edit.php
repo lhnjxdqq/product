@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 if (!isset($_GET['salesperson_id'])) {
 
-    Utility::notice('销售员ID不存在');
+    Utility::notice('渠道拓展ID不存在');
 }
 
 $salespersonId     = (int) $_GET['salesperson_id'];
@@ -12,7 +12,7 @@ $listUserInfo      = ArrayUtility::searchBy(User_Info::listAll(),array('enable_s
 
 if (!$salespersonInfo) {
 
-    Utility::notice('销售员不存在');
+    Utility::notice('渠道拓展不存在');
 }
 
 $data['mainMenu']   = Menu_Info::getMainMenu();

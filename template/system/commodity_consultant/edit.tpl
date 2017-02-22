@@ -14,11 +14,11 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>渠道拓展管理</h1>
+            <h1>商品顾问管理</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="/system/salesperson/index.php">渠道拓展管理</a></li>
-                <li class="active">修改渠道拓展</li>
+                <li><a href="/system/commodity_consultant/index.php">商品顾问管理</a></li>
+                <li class="active">修改商品顾问</li>
             </ol>
         </section>
 
@@ -27,18 +27,18 @@
             <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">修改渠道拓展信息</h3>
+                    <h3 class="box-title">修改商品顾问信息</h3>
                     <div class="pull-right">
-                        <a href="/system/salesperson/do_edit.php" class="btn btn-primary btn-xs"><i class="fa fa-list"></i> 渠道拓展列表</a>
+                        <a href="/system/commodity_consultant/index.php" class="btn btn-primary btn-xs"><i class="fa fa-list"></i> 商品顾问列表</a>
                     </div>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form action="/system/salesperson/do_edit.php" method="post">
+                            <form action="/system/commodity_consultant/do_edit.php" method="post">
                                 <div class="form-group">
-                                    <label>渠道拓展花名: </label>
-                                    <input type="text" name="salesperson_name" value='<{$salespersonInfo.salesperson_name}>' class="form-control" placeholder="请输入花名">
+                                    <label>商品顾问花名: </label>
+                                    <input type="text" name="commodity_consultant_name" value='<{$commodityConsultantInfo.commodity_consultant_name}>' class="form-control" placeholder="请输入花名">
                                 </div>
                                 <div class="form-group">
                                         <label>系统用户:</label>
@@ -46,16 +46,16 @@
                                             <select name="user_id" class="form-control">
                                                 <option value='0'>请选择</option>
                                                 <{foreach from=$listUserInfo item=item}>
-                                                    <option value="<{$item.user_id}>" <{if $salespersonInfo.user_id eq $item.user_id}>selected<{/if}>><{$item.username}></option>
+                                                    <option value="<{$item.user_id}>" <{if $commodityConsultantInfo.user_id eq $item.user_id}>selected<{/if}>><{$item.username}></option>
                                                 <{/foreach}>
                                             </select>
                                         </div>
                                 </div>
                                 <div class="form-group">
                                     <label>联系电话: </label>
-                                    <input type="text" name="telephone" value='<{$salespersonInfo.telephone}>' class="form-control" placeholder="请输入电话号码">
+                                    <input type="text" name="telephone" value='<{$commodityConsultantInfo.telephone}>' class="form-control" placeholder="请输入电话号码">
                                 </div>
-                                <input type='hidden' value='<{$salespersonInfo.salesperson_id}>' name='salesperson_id'>
+                                <input type='hidden' value='<{$commodityConsultantInfo.commodity_consultant_id}>' name='commodity_consultant_id'>
                                 <div class="form-group">
                                     <button class="btn btn-primary"><i class="fa fa-save"></i> 保存</button>
                                 </div>
