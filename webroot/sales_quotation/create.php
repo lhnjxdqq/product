@@ -209,15 +209,15 @@ foreach ($listSpuInfo as $key => $spuInfo) {
     $listSpuInfo[$key]['color'] = array();
     $listSpuInfo[$key]['is_exist']  = 0; 
     
-    $costNumber = array_unique($mapSpuColorCost[$spuInfo['spu_id']]);
-        
-    if(count($costNumber)>1){
+    $costNumber = empty($mapSpuColorCost[$spuInfo['spu_id']])? array() : array_unique($mapSpuColorCost[$spuInfo['spu_id']]);
+
+    if(count($costNumber)>1 || count($costNumber)==0){
         
             $unifiedCost  = '';
         }else{
-            
+
             $unifiedCost  = end($costNumber);
-    }
+        }
     $listSpuInfo[$key]['unified_cost']   = $unifiedCost;
     foreach($mapSpecColorId as $colorId=>$colorName){
         
