@@ -21,9 +21,9 @@ Sample_Storage_Info::update(array(
 ));
 $excelFile          = Config::get('path|PHP', 'sample_storage_import') . $sampleInfo['file_path'];
 
-$supplierInfo       = Supplier_Info::getById($sampleInfo['supplier_id']);
-$colorInfo          = json_decode($supplierInfo["price_plus_data"],true);
-$mainColorId        = $colorInfo["base_color_id"];
+$supplierMarkupRuleInfo = Supplier_Markup_Rule_Info::getById($sampleInfo['supplier_markup_rule_id']);
+$colorInfo          = json_decode($supplierMarkupRuleInfo["markup_logic"],true);
+$mainColorId        = $supplierMarkupRuleInfo["base_color_id"];
 $listColorId        = array((int)$mainColorId);
 
 foreach($colorInfo['product_color'] as $key => $info){
@@ -129,7 +129,7 @@ foreach ($list as $offsetRow => $row) {
     try{
         
         Validate::testNull($row['quantity'],'样板数量不能为空');
-        $datas[] = Quotation::testQuotation($row,$mapEnumeration, $_POST['is_sku_code'], $_POST['supplier_id']);
+        $datas[] = Quotation::testQuotation($row,$mapEnumeration, $_POST['is_sku_code'], $sampleInfo['supplier_id']);
         $addNums++;
 
     }catch(ApplicationException $e){
