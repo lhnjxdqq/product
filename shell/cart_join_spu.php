@@ -48,7 +48,7 @@ foreach($standby as $key=>$info){
                 
                 $searchValuelist[] = $explodeKeyword[$key];
             }
-            $condition['search_value_list'] = implode(" " , array_unique(array_filter(($searchValuelist))));
+            $condition['search_value_list'] = implode(" " , array_unique(array_filter($searchValuelist)));
             $condition['online_status']     = Spu_OnlineStatus::ONLINE;
             $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
             $countSpuTotal              = Search_Spu::countByCondition($condition);
