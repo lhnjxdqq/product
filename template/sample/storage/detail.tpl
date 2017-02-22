@@ -98,7 +98,7 @@
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                            
-                                <tr class="<{if ($item.source_row)%2 eq 1 && $item.is_new !=2 }>bg-success<{/if}><{if ($item.source_row)%2 eq 0 && $item.is_new !=2 }>bg-danger<{/if}><{if $item.is_new eq 2}>bg-warning<{/if}>">
+                                <tr>
                                     <td><{$item.source_code_list}></td>
                                     <td><{$item.spu_sn}></td>
                                     <td>                                    

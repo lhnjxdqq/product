@@ -106,7 +106,7 @@
                             </thead>
                             <tbody>
 <{foreach from=$listSpuInfo item=item name=foo}>                               
-                                <tr class="<{if ($item.source_row)%2 eq 1 && $item.is_new !=2 }>bg-success<{/if}><{if ($item.source_row)%2 eq 0 && $item.is_new !=2 }>bg-danger<{/if}><{if $item.is_new eq 2}>bg-warning<{/if}>">
+                                <tr class="<{if ($item.source_row)%2 eq 1 && $item.is_new !=2 }>bg-success<{/if}><{if ($item.source_row)%2 eq 0 && $item.is_new !=2 }>bg-warning<{/if}>">
                                     <td><input type="checkbox" name="source_code[]" value="<{$item.sku_code}>&<{$item.spu_id}>" /></td>
                                     <td><{$item.sku_code}></td>
                                     <td><{$item.spu_sn}></td>
