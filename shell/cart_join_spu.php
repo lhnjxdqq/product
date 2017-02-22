@@ -41,7 +41,7 @@ foreach($standby as $key=>$info){
         
         $explodeKeyword = explode(" ",$condition['search_value_list']); 
         
-        for($row=0; $row<=count($explodeKeyword); $row+= 10 ){
+        for($row=0; $row<count($explodeKeyword); $row+= 10 ){
             
             $searchValuelist    = array();
             for($key = $row ; $key < $row+10 ; $key++){
@@ -51,15 +51,11 @@ foreach($standby as $key=>$info){
             $condition['search_value_list'] = implode(" " , array_unique(array_filter(($searchValuelist))));
             $condition['online_status']     = Spu_OnlineStatus::ONLINE;
             $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
-            $countSpuTotal              = isset($condition['category_id'])
-                                      ? Search_Spu::countByCondition($condition)
-                                      : Spu_List::countByCondition($condition);
+            $countSpuTotal              = Search_Spu::countByCondition($condition);
 
             for($offset=0; $offset<=$countSpuTotal; $offset+= 100 ){
         
-                $listSpuInfo            = isset($condition['category_id'])
-                                         ? Search_Spu::listByCondition($condition, array(), $offset, 100)
-                                         : Spu_List::listByCondition($condition, array(), $offset, 100);
+                $listSpuInfo            = Search_Spu::listByCondition($condition, array());
                                          
                 $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
