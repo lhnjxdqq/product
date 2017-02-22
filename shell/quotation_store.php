@@ -101,6 +101,7 @@ foreach ($listInfo as $info) {
     $mapEnumeration =array(
         'mapCategory'          => $mapCategoryName,
         'mapTypeSpecValue'     => $mapTypeSpecValue,
+		'supplierMarkupRuleId' => $info['supplier_markup_rule_id'],
         'mapIndexSpecAlias'    => $mapIndexSpecAlias,
         'mapSpecValue'         => $mapSpecValue,
         'mapSizeId'            => $mapSizeId,
