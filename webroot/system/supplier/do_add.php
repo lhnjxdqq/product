@@ -6,14 +6,19 @@ $supplierType       = (int) $_POST['supplier-type'];
 $areaId             = (int) $_POST['area-id'];
 $supplierAddress    = trim($_POST['supplier-address']);
 
+if(strlen($supplierCode)>4){
+    
+    throw  new ApplicationException("供应商名称长度最多四位");
+}
+
 if ('' == $supplierCode) {
 
-    Utility::notice('供应商名称不能为空');
+    throw  new ApplicationException("供应商名称不能为空");
 }
 
 if (!$areaId) {
 
-    Utility::notice('请选择地区');
+    throw  new ApplicationException("请选择地区");
 }
 
 $data   = array(
@@ -43,13 +48,14 @@ foreach($plusColor as $info){
     }
     if(count($listColorId) != count(array_unique($listColorId))){
         
-        Utility::notice("可生产颜色有重复");
+        throw  new ApplicationException("可生产颜色有重复");
         exit;
     }
 
     if(count($listColorId) != count($listColorCost)){
-        
-        Utility::notice('颜色和工费不匹配');
+       
+        throw  new ApplicationException("颜色和工费不匹配");
+
         exit;
     }
 
@@ -82,7 +88,8 @@ if ($supplierInfo) {
 
     if ($supplierInfo['delete_status'] == Supplier_DeleteStatus::NORMAL) {
 
-        Utility::notice('供应商已存在');
+        throw  new ApplicationException("供应商已存在");
+
     } else {
 
         $update = Supplier_Info::update(array(
@@ -115,7 +122,8 @@ if ($supplierInfo) {
             Utility::notice('新增成功', '/system/supplier/index.php');
         } else {
 
-            Utility::notice('新增失败');
+            throw  new ApplicationException("新增失败");
+
         }
     }
 }
@@ -149,6 +157,6 @@ if ($supplierId) {
     }    
     Utility::notice('新增供应商成功', '/system/supplier/index.php');
 } else {
-
-    Utility::notice('新增失败');
+    throw  new ApplicationException("新增失败");
+    
 }

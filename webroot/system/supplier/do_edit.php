@@ -7,6 +7,11 @@ $supplierType       = (int) $_POST['supplier-type'];
 $areaId             = (int) $_POST['area-id'];
 $supplierAddress    = trim($_POST['supplier-address']);
 
+if(strlen($supplierCode)>4){
+    
+    throw  new ApplicationException("供应商名称长度最多四位");
+}
+
 $plusColor  = $_POST['plus_rules'];
 Validate::testNull($plusColor,'计价不能为空');
 $supplierMarkupInfo = Supplier_Markup_Rule_Info::getBySupplierId($supplierId);
@@ -23,18 +28,20 @@ foreach($plusColor as $info){
     $listColorCost  = ArrayUtility::listField($rulesColor,'price');
     if(in_array($baseColorId,$listColorId)){
         
-        Utility::notice("可生产颜色中包含了基价颜色");
+        throw  new ApplicationException("可生产颜色中包含了基价颜色");
         exit;
     }
     if(count($listColorId) != count(array_unique($listColorId))){
         
-        Utility::notice("可生产颜色有重复");
+        throw  new ApplicationException("可生产颜色有重复");
+        
         exit;
     }
 
     if(count($listColorId) != count($listColorCost)){
         
-        Utility::notice('颜色和工费不匹配');
+        throw  new ApplicationException("颜色和工费不匹配");
+        
         exit;
     }
 
@@ -75,13 +82,15 @@ if(!empty($diffRuleId)){
 
 if (!$areaId) {
 
-    Utility::notice('请选择地区');
+    throw  new ApplicationException("请选择地区");
+        
     exit;
 }
 
 if ($supplierCode == '') {
 
-    Utility::notice('请填写供应商名称');
+    throw  new ApplicationException("请填写供应商名称");
+        
     exit;
 }
 
@@ -98,5 +107,6 @@ if (Supplier_Info::update($data)) {
     Utility::notice('编辑成功', '/system/supplier/index.php');
 } else {
 
-    Utility::notice('编辑失败');
+    throw  new ApplicationException("编辑失败");
+        
 }
