@@ -125,4 +125,20 @@ class   Sales_Order_Goods_Info {
 
         self::_getStore()->delete(self::_tableName(), $condition);
     }
+
+    /**
+     * 根据goodsIdList查询数据
+     * 
+     * @param   array   $listGoodsId    SKUID
+     * @return  array
+     */
+    static public function getBySkuId ($listGoodsId) {
+
+        Validate::testNull($listGoodsId, 'skuId不能为空!');
+
+        $listGoodsId = array_map('intval', array_filter(array_unique($listGoodsId)));
+        $sql         = 'SELECT ' . self::FIELDS . ' FROM `' . self::TABLE_NAME . '` WHERE `goods_id` IN (' . implode(',', $listGoodsId) . ')';
+
+        return self::_getStore()->fetchAll($sql);
+    }
 }
