@@ -20,14 +20,20 @@ $data           = array(
     'user_id'                   => $_POST['user_id'],
 );
 
+$getByUserIdInfo        = Commodity_Consultant_Info::getByUserId($_POST['user_id']);
+
 if ($commodityConsultantInfo = Commodity_Consultant_Info::getByCommodityConsultantName($commodityConsultantName)) {
 
     if ($commodityConsultantInfo['delete_status'] == DeleteStatus::DELETED) {
 
         $data['commodity_consultant_id']        = $commodityConsultantInfo['commodity_consultant_id'];
         $data['detele_status']         = DeleteStatus::NORMAL;
-
-        Salesperson_Info::update($data);
+        
+        if(!empty($getByUserIdInfo) && $getByUserIdInfo['commodity_consultant_id'] != $commodityConsultantInfo['commodity_consultant_id']){
+            
+            throw  new ApplicationException("系统用户名已被占用");
+        }  
+        Commodity_Consultant_Info::update($data);
         Utility::notice('添加商品顾问成功', '/system/commodity_consultant/index.php');
         exit;
     } else {
@@ -35,5 +41,10 @@ if ($commodityConsultantInfo = Commodity_Consultant_Info::getByCommodityConsulta
         throw  new ApplicationException("商品顾问已存在");
     }
 }
+if(!empty($getByUserIdInfo)){
+    
+    throw  new ApplicationException("系统用户名已被占用");
+}
+
 Commodity_Consultant_Info::create($data);
 Utility::notice('添加商品顾问成功', '/system/commodity_consultant/index.php');

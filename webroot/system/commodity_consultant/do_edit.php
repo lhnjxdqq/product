@@ -10,6 +10,14 @@ if (empty($_POST['commodity_consultant_name']) || empty($_POST['telephone'])) {
 
     throw  new ApplicationException("商品顾问名称和联系电话均不能为空");
 }
+
+$getByUserIdInfo        = Commodity_Consultant_Info::getByUserId($_POST['user_id']);
+
+if(!empty($getByUserIdInfo) && $getByUserIdInfo['commodity_consultant_id'] != $_POST['commodity_consultant_id']){
+    
+    throw  new ApplicationException("系统用户名已被占用");
+}
+   
 Validate::testNull($_POST['user_id'],'系统用户不能为空');
 Validate::testNull($_POST['commodity_consultant_id'],'提交不合法');
 $data   = array(

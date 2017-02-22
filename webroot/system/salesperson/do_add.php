@@ -20,13 +20,19 @@ $data           = array(
     'user_id'                   => $_POST['user_id'],
 );
 
+$getByUserIdInfo        = Salesperson_Info::getByUserId($_POST['user_id']);
+
 if ($salespersonInfo = Salesperson_Info::getBySalespersonName($salespersonName)) {
 
     if ($salespersonInfo['delete_status'] == DeleteStatus::DELETED) {
 
         $data['salesperson_id']        = $salespersonInfo['salesperson_id'];
         $data['detele_status']         = DeleteStatus::NORMAL;
-
+        
+        if(!empty($getByUserIdInfo) && $getByUserIdInfo['salesperson_id'] != $salespersonInfo['salesperson_id']){
+            
+            throw  new ApplicationException("系统用户名已被占用");
+        }            
         Salesperson_Info::update($data);
         Utility::notice('添加渠道拓展成功', '/system/salesperson/index.php');
         exit;
@@ -34,6 +40,11 @@ if ($salespersonInfo = Salesperson_Info::getBySalespersonName($salespersonName))
 
         throw  new ApplicationException("渠道拓展已存在");
     }
+}
+
+if(!empty($getByUserIdInfo)){
+    
+    throw  new ApplicationException("系统用户名已被占用");
 }
 Salesperson_Info::create($data);
 Utility::notice('添加渠道拓展成功', '/system/salesperson/index.php');

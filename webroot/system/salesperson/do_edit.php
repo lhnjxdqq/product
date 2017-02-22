@@ -10,6 +10,15 @@ if (empty($_POST['salesperson_name']) || empty($_POST['telephone'])) {
 
     throw  new ApplicationException("渠道拓展名称和联系电话均不能为空");
 }
+
+$getByUserIdInfo        = Salesperson_Info::getByUserId($_POST['user_id']);
+Validate::testNull($_POST['salesperson_id'],'提交不合法');
+
+if(!empty($getByUserIdInfo) && $getByUserIdInfo['salesperson_id'] != $_POST['salesperson_id']){
+    
+    throw  new ApplicationException("系统用户名已被占用");
+}
+   
 Validate::testNull($_POST['user_id'],'系统用户不能为空');
 $data   = array(
     'salesperson_id'    => (int) trim($_POST['salesperson_id']),

@@ -36,7 +36,7 @@ class Search_BorrowSample {
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlGroup       = self::_group();
-        $sql            = $sqlBase . $sqlJoin . $sqlCondition . $sqlGroup;
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . self::_subqueryByCondition($condition) . $sqlGroup;
         $data           = Spu_Info::query($sql);
 
         return          count($data);

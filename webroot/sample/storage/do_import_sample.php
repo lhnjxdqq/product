@@ -4,7 +4,6 @@ set_time_limit(300);
 
 require_once dirname(__FILE__).'/../../../init.inc.php';
 
-
 Validate::testNull($_POST['supplier_markup_rule_id'], "供应商加价逻辑必选");
 Validate::testNull($_POST['order_time'], "到板时间不能为空");
 Validate::testNull($_POST['buyerId'], "买手不能为空");

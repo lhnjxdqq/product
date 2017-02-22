@@ -39,8 +39,8 @@
                                 <div class="form-group">
                                     <label>选择买手: </label>
                                         <select class="form-control select-multiple" name="buyerId[]" multiple="multiple">
-<{foreach from=$mapUser item=item}>
-                                            <option value="<{$item.user_id}>"><{$item.username}></option>
+<{foreach from=$listAllCommodityConsultant item=item}>
+                                            <option value="<{$item.commodity_consultant_id}>"><{$item.commodity_consultant_name}></option>
 <{/foreach}>
                                         </select>
                                 </div>
