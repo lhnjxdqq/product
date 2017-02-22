@@ -26,7 +26,7 @@ $colorInfo          = json_decode($supplierMarkupRuleInfo["markup_logic"],true);
 $mainColorId        = $supplierMarkupRuleInfo["base_color_id"];
 $listColorId        = array((int)$mainColorId);
 
-foreach($colorInfo['product_color'] as $key => $info){
+foreach($colorInfo as $info){
     
     foreach($info as $colorId => $colorCostPlus){
         
