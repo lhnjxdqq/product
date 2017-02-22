@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
-$listSupplier   = Supplier_Info::listAll();
+$listSupplier   = ArrayUtility::searchBy(Supplier_Info::listAll(),array('delete_status'=>0));
 
 $template       = Template::getInstance();
 

@@ -2,7 +2,7 @@
 
 require dirname(__FILE__). '/../../init.inc.php';
 
-$listSupplierInfo   = Supplier_Info::listAll();
+$listSupplierInfo   = ArrayUtility::searchBy(Supplier_Info::listAll(),array('delete_status'=>0));
 $mapSupplierInfo    = ArrayUtility::indexByField($listSupplierInfo, 'supplier_id');
 $mapStatusCode      = Quotation_StatusCode::getStatusCode();
 
