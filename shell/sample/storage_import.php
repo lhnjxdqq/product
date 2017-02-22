@@ -126,7 +126,7 @@ foreach ($list as $offsetRow => $row) {
     try{
         
         Validate::testNull($row['quantity'],'样板数量不能为空');
-        $datas[] = Quotation::testQuotation($row,$mapEnumeration, $_POST['is_sku_code'], $sampleInfo['supplier_id']);
+        $datas[] = Quotation::testQuotation($row,$mapEnumeration, 1, $sampleInfo['supplier_id']);
         $addNums++;
 
     }catch(ApplicationException $e){

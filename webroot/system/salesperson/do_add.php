@@ -3,20 +3,21 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 
-    Utility::notice('体检方式错误');
+    throw  new ApplicationException("提交方式错误");
 }
 
 if (empty($_POST['salesperson_name']) || empty($_POST['telephone'])) {
 
-    Utility::notice('销售员名称和联系电话均不能为空');
+    throw  new ApplicationException("渠道拓展名称和联系电话均不能为空");
 }
-
+Validate::testNull($_POST['user_id'],'系统用户不能为空');
 $salespersonName        = trim($_POST['salesperson_name']);
 $telephone              = trim($_POST['telephone']);
 
 $data           = array(
     'salesperson_name'          => $salespersonName,
     'telephone'                 => $telephone,
+    'user_id'                   => $_POST['user_id'],
 );
 
 if ($salespersonInfo = Salesperson_Info::getBySalespersonName($salespersonName)) {
@@ -27,12 +28,12 @@ if ($salespersonInfo = Salesperson_Info::getBySalespersonName($salespersonName))
         $data['detele_status']         = DeleteStatus::NORMAL;
 
         Salesperson_Info::update($data);
-        Utility::notice('添加销售员成功', '/system/salesperson/index.php');
+        Utility::notice('添加渠道拓展成功', '/system/salesperson/index.php');
         exit;
     } else {
 
-        Utility::notice('销售员已存在');
+        throw  new ApplicationException("渠道拓展已存在");
     }
 }
 Salesperson_Info::create($data);
-Utility::notice('添加用户成功', '/system/salesperson/index.php');
+Utility::notice('添加渠道拓展成功', '/system/salesperson/index.php');

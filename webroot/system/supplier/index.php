@@ -17,7 +17,7 @@ $orderBy    = array(
     $sortby         => $direction,
     'supplier_id'   => 'ASC',
 );
-
+$listUserInfo		= ArrayUtility::indexByField(User_Info::listAll(),'user_id');
 $listSupplierInfo   = Supplier_Info::listByCondition($condition, $orderBy, $page->getOffset(), $perpage);
 $listAreaId         = ArrayUtility::listField($listSupplierInfo, 'area_id');
 $mapAreaFullName    = Area_Info::getFullAreaName($listAreaId);
@@ -35,4 +35,5 @@ $data['pageViewData']       = $page->getViewData();
 
 $template = Template::getInstance();
 $template->assign('data', $data);
+$template->assign('listUserInfo', $listUserInfo);
 $template->display('system/supplier/index.tpl');

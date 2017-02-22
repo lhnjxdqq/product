@@ -41,6 +41,17 @@
                                     <input type="text" name="salesperson_name" value='<{$salespersonInfo.salesperson_name}>' class="form-control" placeholder="请输入花名">
                                 </div>
                                 <div class="form-group">
+                                        <label>系统用户:</label>
+                                        <div>
+                                            <select name="user_id" class="form-control">
+                                                <option value='0'>请选择</option>
+                                                <{foreach from=$listUserInfo item=item}>
+                                                    <option value="<{$item.user_id}>" <{if $salespersonInfo.user_id eq $item.user_id}>selected<{/if}>><{$item.username}></option>
+                                                <{/foreach}>
+                                            </select>
+                                        </div>
+                                </div>
+                                <div class="form-group">
                                     <label>联系电话: </label>
                                     <input type="text" name="telephone" value='<{$salespersonInfo.telephone}>' class="form-control" placeholder="请输入电话号码">
                                 </div>

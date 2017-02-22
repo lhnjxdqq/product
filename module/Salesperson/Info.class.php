@@ -19,7 +19,7 @@ class   Salesperson_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'salesperson_id,salesperson_name,create_time,delete_status,update_time,telephone';
+    const   FIELDS      = 'salesperson_id,salesperson_name,create_time,delete_status,update_time,telephone,user_id';
     /**
      * 新增
      *

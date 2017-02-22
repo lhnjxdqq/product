@@ -14,11 +14,10 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>销售员管理</h1>
+            <h1>渠道拓展</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li><a href="/system/user/index.php">销售员管理</a></li>
-                <li class="active">销售员列表</li>
+                <li><a href="/system/user/index.php">渠道拓展</a></li>
             </ol>
         </section>
 
@@ -40,8 +39,8 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">
-                        <span style="margin-right: 10px;">销售员列表</span>
-                        <a href="/system/salesperson/add.php" class="btn btn-success btn-xs"><i class="fa fa-plus"></i> 新增销售员</a>
+                        <span style="margin-right: 10px;">渠道拓展列表</span>
+                        <a href="/system/salesperson/add.php" class="btn btn-success btn-xs"><i class="fa fa-plus"></i> 新增渠道拓展</a>
                     </h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip">
@@ -53,8 +52,8 @@
                         <table class="table table-hover table-bordered" id="user-list">
                             <thead>
                                 <tr>
-                                    <th>销售ID</th>
-                                    <th>销售员花名</th>
+                                    <th>用户名称</th>
+                                    <th>渠道拓展花名</th>
                                     <th>联系电话</th>
                                     <th>创建时间</th>
                                     <th style="width: 200px;">操作</th>
@@ -63,7 +62,7 @@
                             <tbody>
                                 <{foreach from=$listAllSalesperson item=item}>
                                     <tr>
-                                        <td><{$item.salesperson_id}></td>
+                                        <td><{$listUserInfo[$item.user_id]['username']}></td>
                                         <td><{$item.salesperson_name}></td>
                                         <td><{$item.telephone}></td>
                                         <td><{$item.create_time}></td>
