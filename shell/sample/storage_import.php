@@ -14,11 +14,11 @@ if(empty($mapSampleInfo)){
     exit;
 }
 $sampleInfo         = $mapSampleInfo[0];
-
+/*
 Sample_Storage_Info::update(array(
     'sample_storage_id' => $sampleInfo['sample_storage_id'],
     'status_id'         => Sample_Status::RUNNING,
-));
+));*/
 $excelFile          = Config::get('path|PHP', 'sample_storage_import') . $sampleInfo['file_path'];
 
 $supplierMarkupRuleInfo = Supplier_Markup_Rule_Info::getById($sampleInfo['supplier_markup_rule_id']);
@@ -26,12 +26,9 @@ $colorInfo          = json_decode($supplierMarkupRuleInfo["markup_logic"],true);
 $mainColorId        = $supplierMarkupRuleInfo["base_color_id"];
 $listColorId        = array((int)$mainColorId);
 
-foreach($colorInfo as $info){
-    
-    foreach($info as $colorId => $colorCostPlus){
-        
-        $listColorId[]  = $colorId;
-    }
+foreach($colorInfo as $colorId => $colorCostPlus){
+
+    $listColorId[]  = $colorId;
 }
 
 $objPHPExcel        = ExcelFile::load($excelFile);
