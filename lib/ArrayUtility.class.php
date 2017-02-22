@@ -8,6 +8,7 @@ class ArrayUtility {
 
     const   SRCH_LOGIC_AND_EQU  = 'searchAndEquHandler';
     const   SRCH_LOGIC_AND_NEQU = 'searchAndNotEquHandler';
+    const   SRCH_LOGIC_AND_IN   = 'searchAndInHandler';
     const   ASC                 = 'ASC';
     const   DESC                = 'DESC';
 
@@ -222,6 +223,27 @@ class ArrayUtility {
         }
 
         return  true;
+    }
+
+    /**
+     * 根据IN逻辑过滤数组句柄
+     *
+     * @static
+     * @access  public
+     * @param   array   $element    数组元素
+     * @return  bool                判断结果
+     */
+    static  public  function searchAndInHandler ($element) {
+
+        foreach (self::$arraySearchOptions as $fieldName => $value) {
+
+            if (isset($element[$fieldName]) && in_array($element[$fieldName], $value)) {
+
+                return  true;
+            }
+        }
+
+        return  false;
     }
 
     /**
