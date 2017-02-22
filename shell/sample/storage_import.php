@@ -14,11 +14,11 @@ if(empty($mapSampleInfo)){
     exit;
 }
 $sampleInfo         = $mapSampleInfo[0];
-/*
+
 Sample_Storage_Info::update(array(
     'sample_storage_id' => $sampleInfo['sample_storage_id'],
     'status_id'         => Sample_Status::RUNNING,
-));*/
+));
 $excelFile          = Config::get('path|PHP', 'sample_storage_import') . $sampleInfo['file_path'];
 
 $supplierMarkupRuleInfo = Supplier_Markup_Rule_Info::getById($sampleInfo['supplier_markup_rule_id']);
