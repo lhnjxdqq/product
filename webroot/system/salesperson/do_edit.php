@@ -20,4 +20,4 @@ $data   = array(
 
 Salesperson_Info::update($data);
 
-Utility::notice('编辑销售员成功', '/system/salesperson/index.php');
+Utility::notice('编辑渠道拓展成功', '/system/salesperson/index.php');

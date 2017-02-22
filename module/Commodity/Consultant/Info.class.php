@@ -32,6 +32,8 @@ class   Commodity_Consultant_Info {
             'filter'    => 'commodity_consultant_id',
         );
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData['create_time'] = date('Y-m-d H:i:s');
+        $newData['update_time'] = date('Y-m-d H:i:s');
         self::_getStore()->insert(self::_tableName(), $newData);
     }
 
@@ -48,6 +50,7 @@ class   Commodity_Consultant_Info {
         );
         $condition  = "`commodity_consultant_id` = '" . addslashes($data['commodity_consultant_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
+        $newData['update_time'] = date('Y-m-d H:i:s');
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
     
@@ -55,9 +58,9 @@ class   Commodity_Consultant_Info {
      * 根据名称获取数据
      *
      * @param   string  $commodityConsultantName    商品顾问名
-     * @return  array                       		数据
+     * @return  array                               数据
      */
-    static  public  function getBySalespersonName ($commodityConsultantName) {
+    static  public  function getByCommodityConsultantName ($commodityConsultantName) {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `commodity_consultant_name` = '" . addslashes($commodityConsultantName) . "'";
 
