@@ -21,11 +21,13 @@ $mainColorId        = $colorInfo["base_color_id"];
 
 //用户
 $mapUser        = ArrayUtility::indexByField(ArrayUtility::searchBy(User_Info::listAll(),array('enable_status'=>1)),'user_id');
-
+$listAllCommodityConsultant     = ArrayUtility::searchBy(Commodity_Consultant_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
+$mapCommodityConsultant         = ArrayUtility::indexByField($listAllCommodityConsultant,'commodity_consultant_id');
 $buyer          = explode(",",$sampleStorageInfo['buyer']);
-foreach($buyer as $key => $userId){
+
+foreach($buyer as $key => $commodityConsultantId){
     
-    $buyerUser[] =  $mapUser[$userId]['username'];
+    $buyerUser[] =  $mapCommodityConsultant[$commodityConsultantId]['commodity_consultant_name'];
 }
 $sampleStorageInfo['buyerName'] = implode(",",$buyerUser);
 //样版类型
@@ -226,9 +228,9 @@ foreach($mapSpuInfo as $source=>$listSpu){
             if(!empty($sampleSpu)){
                 $listSampleType = array_unique(ArrayUtility::listField($sampleSpu,'sample_type'));
                 foreach($listSampleType as $spuSampleType){
-                    $typeName[]	= $allSample[$spuSampleType];
+                    $typeName[] = $allSample[$spuSampleType];
                 }
-				$info['sample_type_name'] = implode(",",array_unique($typeName));
+                $info['sample_type_name'] = implode(",",array_unique($typeName));
             }
             // 品类名 && 规格重量
             $goodsId    = $mapSpuGoods[$info['sku_code']][$info['spu_id']];
