@@ -57,6 +57,10 @@
                             <td><{$data.produceOrderInfo.create_time}></td>
                         </tr>
                         <tr>
+                            <th>工厂批次号</th>
+                            <td><{$data.produceOrderInfo.batch_code}></td>
+                        </tr>
+                        <tr>
                             <th>预计到货时间</th>
                             <td><{$data.produceOrderInfo.arrival_date}></td>
                         </tr>
