@@ -51,6 +51,11 @@ class   Commodity_Consultant_Info {
         $condition  = "`commodity_consultant_id` = '" . addslashes($data['commodity_consultant_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData['update_time'] = date('Y-m-d H:i:s');
+        
+        if(empty($newData['delete_status'])){
+            
+            $newData['delete_status']   = DeleteStatus::NORMAL;
+        }
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
     
@@ -76,6 +81,19 @@ class   Commodity_Consultant_Info {
     static  public  function getById ($commodityConsultantId) {
 
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `commodity_consultant_id` = '" . addslashes($commodityConsultantId) . "'";
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+    
+    /**
+     * 根据用户ID获取数据
+     *
+     * @param   string  $userId      销售ID
+     * @return  array                       数据
+     */
+    static  public  function getByUserId ($userId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `user_id` = '" . addslashes($userId) . "' AND `delete_status` = 0";
 
         return  self::_getStore()->fetchOne($sql);
     }

@@ -84,4 +84,17 @@ class   Salesperson_Info {
 
         return  self::_getStore()->fetchOne($sql);
     }
+    
+    /**
+     * 根据用户ID获取数据
+     *
+     * @param   string  $userId      销售ID
+     * @return  array                       数据
+     */
+    static  public  function getByUserId ($userId) {
+
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . "` WHERE `user_id` = '" . addslashes($userId) . "' AND `delete_status` = 0";
+
+        return  self::_getStore()->fetchOne($sql);
+    }
 }

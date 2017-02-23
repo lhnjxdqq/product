@@ -6,6 +6,7 @@ $mapSupplier    = ArrayUtility::indexByField(ArrayUtility::searchBy(Supplier_Inf
 $sampleType 	= Sample_Type::getSampleType();
 $parentOwnType 	= Sample_Type::getOwnType();
 $mapUser        = ArrayUtility::indexByField(ArrayUtility::searchBy(User_Info::listAll(),array('enable_status'=>1)),'user_id');
+$listAllCommodityConsultant     = ArrayUtility::searchBy(Commodity_Consultant_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
 
 foreach($sampleType as $typeId=>$typeName){
     
@@ -29,6 +30,7 @@ $template = Template::getInstance();
 $template->assign('mainMenu', Menu_Info::getMainMenu());
 $template->assign('mapSupplier',$mapSupplier);
 $template->assign('mapOwnType',$mapOwnType);
+$template->assign('listAllCommodityConsultant',$listAllCommodityConsultant);
 $template->assign('mapUser',$mapUser);
 $template->assign('mapSampleType',$mapSampleType);
 $template->display('sample/storage/import.tpl');

@@ -21,11 +21,13 @@ $mainColorId        = $colorInfo["base_color_id"];
 
 //用户
 $mapUser        = ArrayUtility::indexByField(ArrayUtility::searchBy(User_Info::listAll(),array('enable_status'=>1)),'user_id');
-
+$listAllCommodityConsultant     = ArrayUtility::searchBy(Commodity_Consultant_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
+$mapCommodityConsultant         = ArrayUtility::indexByField($listAllCommodityConsultant,'commodity_consultant_id');
 $buyer          = explode(",",$sampleStorageInfo['buyer']);
-foreach($buyer as $key => $userId){
+
+foreach($buyer as $key => $commodityConsultantId){
     
-    $buyerUser[] =  $mapUser[$userId]['username'];
+    $buyerUser[] =  $mapCommodityConsultant[$commodityConsultantId]['commodity_consultant_name'];
 }
 $sampleStorageInfo['buyerName'] = implode(",",$buyerUser);
 //样版类型

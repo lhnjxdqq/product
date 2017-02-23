@@ -52,7 +52,7 @@
                         <table class="table table-hover table-bordered" id="user-list">
                             <thead>
                                 <tr>
-                                    <th>用户名称</th>
+                                    <th>登录账号</th>
                                     <th>渠道拓展花名</th>
                                     <th>联系电话</th>
                                     <th>创建时间</th>
