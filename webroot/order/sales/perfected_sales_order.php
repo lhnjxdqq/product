@@ -5,11 +5,18 @@ require_once dirname(__FILE__) . '/../../../init.inc.php';
 $salesOderData              = $_POST;
 
 $salesOrderId       = $_POST['sales_order_id'];
+
+if(empty($salesOrderId)){
+
+    $salesOderData      = array();
+    $salesOrderId       = $_GET['sales_order_id'];
+}
 Validate::testNull($salesOrderId,'销售订单ID不能为空');
 $salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
 Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
 $json                       = json_decode($salesOderData['sales_order_data'], true);
+$json                       = !empty($json) ? $json : array() ;
 $data                       = array();
 foreach ($json as $key => $item) {
     
@@ -53,19 +60,16 @@ Sales_Order_Info::update(array(
     )
 );
 
-$salesOrderId       = $_POST['sales_order_id'];
-Validate::testNull($salesOrderId,'销售订单ID不能为空');
-$salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
-Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
-
 if($salesOrderInfo['order_time'] == "0000-00-00"){
     
     $salesOrderInfo['order_time'] = date('Y-m-d',time());
 }
 
-$listAllSalesperson   = ArrayUtility::searchBy(Salesperson_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
+$listAllSalesperson         = ArrayUtility::searchBy(Salesperson_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
+$listCommodityConsultantInfo = ArrayUtility::searchBy(Commodity_Consultant_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
 
-$mapSalesperson = ArrayUtility::indexByField($listAllSalesperson,'salesperson_id');
+$mapSalesperson             = ArrayUtility::indexByField($listAllSalesperson,'salesperson_id');
+$mapCommodityConsultantInfo = ArrayUtility::indexByField($listCommodityConsultantInfo,'commodity_consultant_id');
 
 $orderTypeInfo = Sales_Order_Type::getOrderType();
 
@@ -82,6 +86,7 @@ $template           = Template::getInstance();
 $template->assign('salesOrderId', $salesOrderId);
 $template->assign('mapSalesperson', $mapSalesperson);
 $template->assign('salesOrderInfo', $salesOrderInfo);
+$template->assign('mapCommodityConsultantInfo', $mapCommodityConsultantInfo);
 $template->assign('mapOrderStyle', $mapOrderStyle);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
 $template->display('order/sales/perfected_sales_order.tpl');

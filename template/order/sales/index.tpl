@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-md-3" style="">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-addon">销售员:</span>
+                                <span class="input-group-addon">渠道拓展:</span>
                                     <select class="form-control select-multiple" name="salesperson_id">
                                             <option value="0">请选择</option>
 <{foreach from=$mapSalesperson item=item}>
@@ -94,7 +94,7 @@
                                     <th>重量</th>
                                     <th>订单金额</th>
                                     <th>客户名称</th>
-                                    <th>销售员</th>
+                                    <th>渠道拓展</th>
                                     <th>订单状态</th>
                                     <th>下单日期</th>
                                     <th>创建时间</th>

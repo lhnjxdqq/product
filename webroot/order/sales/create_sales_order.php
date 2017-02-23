@@ -24,22 +24,27 @@ if ( count($customerId) > 1 ) {
 
     Validate::testNull(false, '客户不一致');
 }
+$customerId             = current($customerId);
+$customeInfo            = Customer_Info::getById($customerId);
 
+Validate::testNull($customeInfo['salesperson_id'], '客户渠道拓展未补全');
+Validate::testNull($customeInfo['commodity_consultant_id'], '客户商品顾问未补全');
 
 $ListSalesQuotationId   = implode(',', $ListSalesQuotationId);
 
 $content = array(
-    'sales_order_sn'        => Sales_Order_Info::createOrderSn(),
-    'sales_order_status'    => Sales_Order_Status::NEWS,
-    'sales_quotation_id'    => $ListSalesQuotationId,
-    'create_user_id'        => $_SESSION['user_id'],
-    'salesperson_id'        => '0',
-    'order_time'            => date('Y-m-d',time()),
-    'create_time'           => date('Y-m-d H:i:s',time()),
-    'update_time'           => date('Y-m-d H:i:s',time()),
-    'order_type_id'         => Sales_Order_Type::ORDERED,
-    'audit_person_id'       => $_SESSION['user_id'],
-    'customer_id'           => array_values($customerId)[0],
+    'sales_order_sn'            => Sales_Order_Info::createOrderSn(),
+    'sales_order_status'        => Sales_Order_Status::NEWS,
+    'sales_quotation_id'        => $ListSalesQuotationId,
+    'create_user_id'            => $_SESSION['user_id'],
+    'salesperson_id'            => $customeInfo['salesperson_id'],
+    'commodity_consultant_id'   => $customeInfo['commodity_consultant_id'],
+    'order_time'                => date('Y-m-d',time()),
+    'create_time'               => date('Y-m-d H:i:s',time()),
+    'update_time'               => date('Y-m-d H:i:s',time()),
+    'order_type_id'             => Sales_Order_Type::ORDERED,
+    'audit_person_id'           => $_SESSION['user_id'],
+    'customer_id'               => $customerId,
 );
 
 $salesOrderId    = Sales_Order_Info::create($content);
