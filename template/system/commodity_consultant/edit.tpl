@@ -41,7 +41,7 @@
                                     <input type="text" name="commodity_consultant_name" value='<{$commodityConsultantInfo.commodity_consultant_name}>' class="form-control" placeholder="请输入花名">
                                 </div>
                                 <div class="form-group">
-                                        <label>系统用户:</label>
+                                        <label>登录账号:</label>
                                         <div>
                                             <select name="user_id" class="form-control">
                                                 <option value='0'>请选择</option>
