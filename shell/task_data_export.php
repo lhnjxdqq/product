@@ -7,7 +7,7 @@ require_once    dirname(__FILE__) . '/../init.inc.php';
 if(empty($argv[1])) {
 
     echo '任务参数缺失!执行任务命令为:php task_data_export.php 参数' . PHP_EOL;
-    echo '参数为:getRepeatSkuSn(提取系统中重复的SKU编号),getDefectSize(提取缺失尺寸),getDefectSize(提取缺失尺寸),all(前面三个全部获取)' . PHP_EOL;
+    echo '参数为:getRepeatSkuSn(提取系统中重复的SKU编号),getDefectColor(提取缺失颜色),getDefectSize(提取缺失尺寸),all(前面三个全部获取)' . PHP_EOL;
 } else {
 
     $taskName = $argv[1];
@@ -70,12 +70,14 @@ function getGoodsData () {
     $count = Goods_Info::countByCondition(array());
     echo "sku数据共{$count}条" . PHP_EOL;
     echo '下面开始查询sku数据,每次查询500条,查询到的数据更新到tmp表中,供分组查询' . PHP_EOL;
+    Tmp::truncate();
     for($offset=0, $limit=500; $offset * $limit < $count;) {
 
         $listGoodsInfo = Goods_Info::listByCondition(array(), array(), ($offset * $limit), $limit);
         getGoodsRelationData($listGoodsInfo);
         echo '第' . ++$offset . '次更新数据完成!' . PHP_EOL;
     }
+    Tmp::addIndex();
     echo '下面开始分组数据' . PHP_EOL;
     $groupTmpData = Tmp::groupData();
     $data   = getRepeatGoodsId($groupTmpData);
@@ -127,7 +129,7 @@ function fileWriteData($data, $filePath) {
  * 获取重复sku数据
  */
 function getRepeatGoodsId($groupTmpData) {
-    
+
     $listGoodsId = array();
     foreach ($groupTmpData as $data) {
 
@@ -143,9 +145,9 @@ function getRepeatGoodsId($groupTmpData) {
         $tmpData    = array();
         $tmpGoodsId = array();
         $tmpData    = Tmp::listByCondition($condition, array());
-        $tmpGoodsId = ArrayUtility::listField($tmpData, 'goods_id');
-        $listGoodsId[] = $tmpGoodsId;
+        $listGoodsId[] = ArrayUtility::listField($tmpData, 'goods_id');
     }
+
     $goodsIdList    = convertArray($listGoodsId);
     $mapGoodsInfo   = ArrayUtility::indexByField(Goods_Info::getByMultiId($goodsIdList), 'goods_id');
     $groupGoodsSpuRelation  = Common_Spu::getGoodsSpu($goodsIdList);
@@ -303,7 +305,7 @@ function getDefectData ($specAlias) {
     $data   = array();
     $flag   = true;
     echo '开始查询spu数据,每次查询50条' . PHP_EOL;
-    for($offset=0, $limit=50; $offset * $limit < $count; ) {
+    for($offset=122, $limit=50; $offset * $limit < $count; ) {
 
         $listSpuInfo = Spu_Info::listByCondition(array(), array(), $offset * $limit, $limit);
         echo '这是第' . ++$offset . '次查询!' . PHP_EOL;
@@ -345,7 +347,6 @@ function getDefectData ($specAlias) {
  */
 function getData ($listSpuInfo, $enum) {
 
-
     $listSpuId  = ArrayUtility::listField($listSpuInfo, 'spu_id');
     $mapSpuInfo = ArrayUtility::indexByField($listSpuInfo, 'spu_id');
     $listSpuGoodsRelation = Spu_Goods_RelationShip::getByMultiSpuId($listSpuId);
@@ -354,13 +355,17 @@ function getData ($listSpuInfo, $enum) {
     $listGSVRelation    = ArrayUtility::searchBy($listGSVRelation, array('spec_id' => $enum));
     $mapGSVRelation     = ArrayUtility::indexByField($listGSVRelation, 'spec_value_id');
 
-    $groupSpuGoodsRelation  = ArrayUtility::groupByField($listSpuGoodsRelation, 'spu_id', 'goods_id');
+    $groupSpuGoodsRelation  = array_filter(ArrayUtility::groupByField($listSpuGoodsRelation, 'spu_id', 'goods_id'));
     $listMinGoodsId         = array();
     foreach ($listSpuId as $spuId) {
 
         $tmpGoodsId = $groupSpuGoodsRelation[$spuId];
+        if (empty($tmpGoodsId)) {
+
+            continue;
+        }
         $minGoodsId = min($tmpGoodsId);
-        $listMinGoodsId[$spuId] = $minGoodsId;    
+        $listMinGoodsId[$spuId] = $minGoodsId;
     }
     $listGoodsInfo  = Goods_Info::getByMultiId($listGoodsId);
     $mapGoodsInfo   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
@@ -378,6 +383,10 @@ function getData ($listSpuInfo, $enum) {
     $result = array();
     foreach ($listSpuId as $spuId) {
 
+        if (empty($groupSpuGoodsRelation[$spuId])) {
+
+            continue;
+        }
         $listRelation   = ArrayUtility::searchBy($listGSVRelation, array('goods_id' => $groupSpuGoodsRelation[$spuId]), 'searchAndInHandler');
         $listSpecValueIdA = array_map('intval', array_filter(array_unique(ArrayUtility::listField($listRelation, 'spec_value_id'))));
 
