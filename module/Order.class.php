@@ -470,7 +470,7 @@ class   Order {
         $goodsInfo      = Goods_Info::getByMultiId($mapGoodsId);
         $indexGoodsId   = ArrayUtility::indexByField($goodsInfo,'goods_id');
         $auPrice        = Au_Price_Log::getNewsPrice();
-        $customeInfo            = Customer_Info::getById($customerId);
+        $customeInfo    = Customer_Info::getById($customerId);
         Validate::testNull($customeInfo['salesperson_id'], '客户渠道拓展未补全');
         Validate::testNull($customeInfo['commodity_consultant_id'], '客户商品顾问未补全');
 
