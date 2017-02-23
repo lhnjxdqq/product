@@ -164,4 +164,24 @@ class   Tmp {
         return          $row['total'];
     }
 
+    /**
+     * 数据清空
+     */
+    static public function truncate () {
+
+        $sql = 'TRUNCATE TABLE `' . self::TABLE_NAME . '`';
+
+        self::_getStore()->execute($sql);
+    }
+
+    /**
+     * 添加索引
+     */
+    static public function addIndex () {
+
+        $sql = 'ALTER TABLE `' . self::TABLE_NAME . '` ADD KEY index_union(category_id,style_id,spec_size_id,spec_weight_id,spec_color_id,spec_material_id,spec_assistant_material_id)';
+
+        self::_getStore()->execute($sql);
+    }
+
 }
