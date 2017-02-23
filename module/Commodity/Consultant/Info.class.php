@@ -51,6 +51,11 @@ class   Commodity_Consultant_Info {
         $condition  = "`commodity_consultant_id` = '" . addslashes($data['commodity_consultant_id']) . "'";
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         $newData['update_time'] = date('Y-m-d H:i:s');
+        
+        if(empty($newData['delete_status'])){
+            
+            $newData['delete_status']   = DeleteStatus::NORMAL;
+        }
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
     

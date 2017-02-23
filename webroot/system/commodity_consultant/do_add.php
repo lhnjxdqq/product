@@ -21,8 +21,9 @@ $data           = array(
 );
 
 $getByUserIdInfo        = Commodity_Consultant_Info::getByUserId($_POST['user_id']);
+$commodityConsultantInfo = Commodity_Consultant_Info::getByCommodityConsultantName($commodityConsultantName);
 
-if ($commodityConsultantInfo = Commodity_Consultant_Info::getByCommodityConsultantName($commodityConsultantName)) {
+if (!empty($commodityConsultantInfo)) {
 
     if ($commodityConsultantInfo['delete_status'] == DeleteStatus::DELETED) {
 
