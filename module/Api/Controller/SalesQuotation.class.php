@@ -13,26 +13,34 @@ class Api_Controller_SalesQuotation {
         $stream     = Config::get('path|PHP', 'sales_quotation_product');
 
         foreach($taskInfo as $info){
-/*
-            Sales_Quotation_Task::update(array(
-                'task_id'   => $info['task_id'],
-                'is_push'   => Sales_Quotation_IsPush::RUNNING,
-            ));
-*/
+
             $filePath[]     = $stream.$info['log_file'];
         }
         return $filePath;
     }
     
+    /**
+     * 根据销售订单ID获取路径
+     *
+     * @param $salesOrderId   销售订单ID
+     * @return                销售订单路径
+     */
+    static public function getLogPathBySalesOrderId($salesOrderId){
+        
+        $result         = array();
+        $salesQuotationInfo = Sales_Quotation_Task::getBySalesQuotationId($salesOrderId);
+        $stream     = Config::get('path|PHP', 'sales_quotation_product');
+        
+        if(!empty($salesQuotationInfo)){
+            
+            $result['log_file'] = $stream.$salesQuotationInfo['log_file'];
+        }
+        return $result;
+    }
+     
     static public function success($salesQuotationId) {
     
         $taskInfo   = Sales_Quotation_Task::getBySalesQuotationId($salesQuotationId);
-        /*
-        Sales_Quotation_Task::update(array(
-                'task_id'   => $taskInfo['task_id'],
-                'is_push'   => Sales_Quotation_IsPush::FINISH,
-        ));
-        */
     }
 
 }
