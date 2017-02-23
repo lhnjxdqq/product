@@ -69,9 +69,10 @@ function getGoodsData () {
     echo '任务开始执行了' . PHP_EOL;
     $count = Goods_Info::countByCondition(array());
     echo "sku数据共{$count}条" . PHP_EOL;
-    echo '下面开始查询sku数据,每次查询500条,查询到的数据更新到tmp表中,供分组查询' . PHP_EOL;
+    $limit = 100;
+    echo '下面开始查询sku数据,每次查询' . $limit . '条,查询到的数据更新到tmp表中,供分组查询' . PHP_EOL;
     Tmp::truncate();
-    for($offset=0, $limit=500; $offset * $limit < $count;) {
+    for($offset=0; $offset * $limit < $count;) {
 
         $listGoodsInfo = Goods_Info::listByCondition(array(), array(), ($offset * $limit), $limit);
         getGoodsRelationData($listGoodsInfo);
@@ -304,8 +305,9 @@ function getDefectData ($specAlias) {
     $count  = Spu_Info::countByCondition(array());
     $data   = array();
     $flag   = true;
-    echo '开始查询spu数据,每次查询50条' . PHP_EOL;
-    for($offset=122, $limit=50; $offset * $limit < $count; ) {
+    $limit=50;
+    echo '开始查询spu数据,每次查询' . $limit . '条' . PHP_EOL;
+    for($offset=0; $offset * $limit < $count; ) {
 
         $listSpuInfo = Spu_Info::listByCondition(array(), array(), $offset * $limit, $limit);
         echo '这是第' . ++$offset . '次查询!' . PHP_EOL;
