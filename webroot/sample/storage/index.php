@@ -25,7 +25,7 @@ foreach($sampleType as $typeId=>$typeName){
 }
 
 $condition['creare_time_start']    = isset($_GET['creare_time_start']) ? $_GET['creare_time_start'] : date('Y-m-d', strtotime('-30 day'));
-$condition['create_time_end']      = isset($_GET['create_time_end']) ? date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime($_GET['create_time_end']))) + 3600 * 24 - 1) : date('Y-m-d H:i:s', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
+$condition['create_time_end']      = isset($_GET['create_time_end']) ? date('Y-m-d', strtotime(date('Y-m-d', strtotime($_GET['create_time_end']))) + 3600 * 24 - 1) : date('Y-m-d', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
 
 $perpage        = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countOrder     = Sample_Storage_Info::countByCondition($condition);

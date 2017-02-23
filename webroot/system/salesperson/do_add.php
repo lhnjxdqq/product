@@ -10,7 +10,7 @@ if (empty($_POST['salesperson_name']) || empty($_POST['telephone'])) {
 
     throw  new ApplicationException("渠道拓展名称和联系电话均不能为空");
 }
-Validate::testNull($_POST['user_id'],'系统用户不能为空');
+Validate::testNull($_POST['user_id'],'登录账号不能为空');
 $salespersonName        = trim($_POST['salesperson_name']);
 $telephone              = trim($_POST['telephone']);
 
@@ -31,7 +31,7 @@ if ($salespersonInfo = Salesperson_Info::getBySalespersonName($salespersonName))
         
         if(!empty($getByUserIdInfo) && $getByUserIdInfo['salesperson_id'] != $salespersonInfo['salesperson_id']){
             
-            throw  new ApplicationException("系统用户名已被占用");
+            throw  new ApplicationException("登录账号已被占用");
         }            
         Salesperson_Info::update($data);
         Utility::notice('添加渠道拓展成功', '/system/salesperson/index.php');
@@ -44,7 +44,7 @@ if ($salespersonInfo = Salesperson_Info::getBySalespersonName($salespersonName))
 
 if(!empty($getByUserIdInfo)){
     
-    throw  new ApplicationException("系统用户名已被占用");
+    throw  new ApplicationException("登录账号已被占用");
 }
 Salesperson_Info::create($data);
 Utility::notice('添加渠道拓展成功', '/system/salesperson/index.php');
