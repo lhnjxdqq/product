@@ -412,8 +412,8 @@ function getData ($listSpuInfo, $enum) {
         }
         $result[] = array(
             $mapSpuInfo[$spuId]['spu_sn'],
-            implode('/', $categoryName),
-            implode('/', $specValueName),
+            implode('/', array_unique($categoryName)),
+            implode('/', array_unique($specValueName)),
             );
     }
 
