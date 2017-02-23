@@ -43,6 +43,32 @@
                             </div>                
                         </div>
                         <div class="form-group">
+                                <div class="row">                 
+                                    <label for="salesperson_id" class="col-sm-2 control-label">渠道拓展</label>
+                                    <div class="col-sm-4">
+                                        <select name="salesperson_id" class="form-control">
+                                            <option value='0'>请选择</option>
+                                            <{foreach from=$listSalesPerson item=item}>
+                                                <option value="<{$item.salesperson_id}>"><{$item.salesperson_name}></option>
+                                            <{/foreach}>
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                                <div class="row">                 
+                                    <label for="commodity_consultant_id" class="col-sm-2 control-label">商品顾问</label>
+                                    <div class="col-sm-4">
+                                        <select name="commodity_consultant_id" class="form-control">
+                                            <option value='0'>请选择</option>
+                                            <{foreach from=$listCommodityConsultantInfo item=item}>
+                                                <option value="<{$item.commodity_consultant_id}>"><{$item.commodity_consultant_name}></option>
+                                            <{/foreach}>
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="form-group">
                             <div class='row'>                       
                             <label for="customer_code" class="col-sm-2 control-label">客户代码</label>
                                 <div class="col-sm-4">

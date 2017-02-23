@@ -5,6 +5,8 @@ require_once dirname(__FILE__).'./../../../init.inc.php';
 $data   = $_POST;
 
 Validate::testNull($data['customer_name'], '客户名称不能为空');
+Validate::testNull($data['salesperson_id'], '渠道拓展不能为空');
+Validate::testNull($data['commodity_consultant_id'], '商品顾问不能为空');
 
 $data['plus_price']     = empty($data['plus_price']) ? 0 : $data['plus_price'] ;
 $data['district_id']    = empty($data['district_id']) ? 0 : $data['district_id'] ;
