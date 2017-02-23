@@ -305,7 +305,7 @@ function getDefectData ($specAlias) {
     $count  = Spu_Info::countByCondition(array());
     $data   = array();
     $flag   = true;
-    $limit=50;
+    $limit  = 50;
     echo '开始查询spu数据,每次查询' . $limit . '条' . PHP_EOL;
     for($offset=0; $offset * $limit < $count; ) {
 
@@ -355,7 +355,6 @@ function getData ($listSpuInfo, $enum) {
     $listGoodsId        = ArrayUtility::listField($listSpuGoodsRelation, 'goods_id');
     $listGSVRelation    = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
     $listGSVRelation    = ArrayUtility::searchBy($listGSVRelation, array('spec_id' => $enum));
-    $mapGSVRelation     = ArrayUtility::indexByField($listGSVRelation, 'spec_value_id');
 
     $groupSpuGoodsRelation  = array_filter(ArrayUtility::groupByField($listSpuGoodsRelation, 'spu_id', 'goods_id'));
     $listMinGoodsId         = array();
@@ -403,16 +402,14 @@ function getData ($listSpuInfo, $enum) {
             continue;
         }
         $specValueName  = array();
-        $categoryName   = array();
         foreach ($listSpecValueId as $specValueId) {
 
             $specValueName[]    = $mapSpecValueInfo[$specValueId]['spec_value_data'];
-            $goodsId            = $mapGSVRelation[$specValueId]['goods_id'];
-            $categoryName[]     = $mapCategoryInfo[$mapGoodsInfo[$goodsId]['category_id']]['category_name'];
         }
+        $categoryName   = $mapCategoryInfo[$categoryId]['category_name'];
         $result[] = array(
             $mapSpuInfo[$spuId]['spu_sn'],
-            implode('/', array_unique($categoryName)),
+            implode('/', $categoryName),
             implode('/', array_unique($specValueName)),
             );
     }
