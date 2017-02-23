@@ -478,6 +478,7 @@ class   Order {
             'sales_order_sn'            => Sales_Order_Info::createOrderSn(),
             'sales_order_status'        => Sales_Order_Status::NEWS,
             'sales_quotation_id'        => $listSalesQuotationId,
+			'create_user_id'			=> 0,
             'salesperson_id'            => $customeInfo['salesperson_id'],
             'commodity_consultant_id'   => $customeInfo['commodity_consultant_id'],
             'salesperson_id'            => $salespersonId,
