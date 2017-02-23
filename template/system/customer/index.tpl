@@ -55,12 +55,13 @@
                                 <tr>
                                     <th>客户名称</th>
                                     <th>联系人</th>
+                                    <th>渠道拓展</th>
+                                    <th>商品顾问</th>
                                     <th>联系电话</th>
                                     <th>商圈</th>
                                     <th>省</th>
                                     <th>市</th>
                                     <th>区</th>
-                                    <th>创建时间</th>
                                     <th style="width: 200px;">操作</th>
                                 </tr>
                             </thead>
@@ -69,12 +70,13 @@
                                     <tr>
                                         <td><{$item.customer_name}></td>
                                         <td><{$item.contact}></td>
+                                        <td><{$listSalesPerson[$item.salesperson_id]['salesperson_name']}></td>
+                                        <td><{$listCommodityConsultantInfo[$item.commodity_consultant_id]['commodity_consultant_name']}></td>
                                         <td><{$item.telephone}></td>
                                         <td><{$item.trading_area}></td>
                                         <td><{$areaInfo[$item.province_id]['area_name']}></td>
                                         <td><{$areaInfo[$item.city_id]['area_name']}></td>
                                         <td><{$areaInfo[$item.district_id]['area_name']}></td>
-                                        <td><{$item.create_time}></td>
                                         <td>
                                             <a href="/system/customer/edit.php?customer_id=<{$item.customer_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <a href="/system/customer/delete.php?customer_id=<{$item.customer_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
