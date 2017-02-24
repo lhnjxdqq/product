@@ -53,6 +53,7 @@ class Produce_Order_Product_List {
         $sql[]      = self::_conditionByProduceOrderId($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sql[]      = self::_conditionByMultiProductId($condition);
+        $sql[]      = self::_conditionByMultiProduceOrderId($condition);
         $sqlFilter  = array_filter($sql);
 
         return      empty($sqlFilter)
@@ -88,6 +89,23 @@ class Produce_Order_Product_List {
         $multiProductId = array_map('intval', array_unique(array_filter($condition['list_product_id'])));
         
         return '`pi`.`product_id` IN ("' . implode('","', $multiProductId) . '")';
+    }
+
+    /**
+     * 根据生产订单ID拼接WHERE子句
+     *
+     * @param array $condition  条件
+     * @return string
+     */
+    static private function _conditionByMultiProduceOrderId (array $condition) {
+
+        if(empty($condition['list_produce_order_id'])){
+            
+            return ;
+        }
+        $multiProduceOrderId = array_map('intval', array_unique(array_filter($condition['list_produce_order_id'])));
+        
+        return '`popi`.`produce_order_id` IN ("' . implode('","', $multiProduceOrderId) . '")';
     }
 
     /**
@@ -157,6 +175,7 @@ class Produce_Order_Product_List {
             '`gi`.`goods_name`',
             '`gi`.`category_id`',
             '`gi`.`style_id`',
+            '`popi`.`produce_order_id`',
             '`popi`.`remark`',
             '`popi`.`quantity`',
         );
