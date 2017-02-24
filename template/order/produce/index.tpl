@@ -137,8 +137,6 @@
                                             <{if $item.status_code <= $data.listStatusCode.confirmed}>
                                             <a href="/order/produce/edit.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i> 编辑</a>
                                             <{/if}>
-                                            <{if $item.status_code >= $data.listStatusCode.confirmed}>
-                                                <!-- 生产订单审核后才可导出 -->
                                             <div class="btn-group">
                                                 <{if !$item.export_status}>
                                                     <a href="/order/produce/create_export_task.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出</a>
@@ -163,7 +161,6 @@
                                                     <li><a href="javascript:reExport(<{$item.produce_order_id}>);">重新导出</a></li>
                                                 </ul>
                                             </div>
-                                            <{/if}>
                                         </td>
                                     </tr>
                                 <{/foreach}>
