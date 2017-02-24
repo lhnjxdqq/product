@@ -50,12 +50,23 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">销售员: </label>
+                                    <label class="col-sm-2 control-label">渠道拓展: </label>
                                     <div class="col-sm-3">
                                         <select name="salesperson_id" class="form-control">
                                             <option value=''>请选择</option>
 <{foreach from=$mapSalesperson item=item}>
                                             <option value="<{$item.salesperson_id}>" <{if $item.salesperson_id eq $salesOrderInfo.salesperson_id}> selected = "selected" <{/if}>><{$item.salesperson_name}></option>
+<{/foreach}>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">商品顾问: </label>
+                                    <div class="col-sm-3">
+                                        <select name="commodity_consultant_id" class="form-control">
+                                            <option value=''>请选择</option>
+<{foreach from=$mapCommodityConsultantInfo item=item}>
+                                            <option value="<{$item.commodity_consultant_id}>" <{if $item.commodity_consultant_id eq $salesOrderInfo.commodity_consultant_id}> selected = "selected" <{/if}>><{$item.commodity_consultant_name}></option>
 <{/foreach}>
                                         </select>
                                     </div>

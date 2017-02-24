@@ -463,27 +463,30 @@ class   Order {
     static public function apiCreate(array $orderInfo) {
 
         $customerId     = $orderInfo['customerId'];
-        $salespersonId  = $orderInfo['salemanId'];
         $orderInfo      = $orderInfo['orderGoodsList'];
         $mapGoodsId     = ArrayUtility::listField($orderInfo,'goodsId');
         $listSalesQuotationId     = implode(",",array_unique(ArrayUtility::listField($orderInfo,'quotationId')));
         $goodsInfo      = Goods_Info::getByMultiId($mapGoodsId);
         $indexGoodsId   = ArrayUtility::indexByField($goodsInfo,'goods_id');
         $auPrice        = Au_Price_Log::getNewsPrice();
-        
+        $customeInfo    = Customer_Info::getById($customerId);
+        Validate::testNull($customeInfo['salesperson_id'], '客户渠道拓展未补全');
+        Validate::testNull($customeInfo['commodity_consultant_id'], '客户商品顾问未补全');
+
         $salesOrderId    = Sales_Order_Info::create(array(
-            'sales_order_sn'        => Sales_Order_Info::createOrderSn(),
-            'sales_order_status'    => Sales_Order_Status::NEWS,
-            'sales_quotation_id'    => $listSalesQuotationId,
-            'create_user_id'        => '0',
-            'salesperson_id'        => $salespersonId,
-            'order_time'            => date('Y-m-d',time()),
-            'create_time'           => date('Y-m-d H:i:s',time()),
-            'update_time'           => date('Y-m-d H:i:s',time()),
-            'order_type_id'         => Sales_Order_Type::ORDERED,
-            'audit_person_id'       => 0,
-            'customer_id'           => $customerId,
-            'create_order_au_price' => $auPrice,
+            'sales_order_sn'            => Sales_Order_Info::createOrderSn(),
+            'sales_order_status'        => Sales_Order_Status::NEWS,
+            'sales_quotation_id'        => $listSalesQuotationId,
+            'create_user_id'            => 0,
+            'salesperson_id'            => $customeInfo['salesperson_id'],
+            'commodity_consultant_id'   => $customeInfo['commodity_consultant_id'],
+            'order_time'                => date('Y-m-d',time()),
+            'create_time'               => date('Y-m-d H:i:s',time()),
+            'update_time'               => date('Y-m-d H:i:s',time()),
+            'order_type_id'             => Sales_Order_Type::ORDERED,
+            'audit_person_id'           => 0,
+            'customer_id'               => $customerId,
+            'create_order_au_price'     => $auPrice,
         ));
         $referenceAmount            = 0;
         $estimatedCost              = 0;

@@ -207,6 +207,7 @@ SQL;
 
         return  array(
             '`poi`.`produce_order_id`',
+            '`poi`.`batch_code`',
             '`poi`.`produce_order_sn`',
             '`poi`.`supplier_id`',
             '`poi`.`status_code`',
