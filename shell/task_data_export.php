@@ -71,7 +71,7 @@ function getGoodsData () {
     echo '任务开始执行了' . PHP_EOL;
     $count = Goods_Info::countByCondition(array());
     echo "sku数据共{$count}条" . PHP_EOL;
-    $limit = 500;
+    $limit = 200;
     echo '下面开始查询sku数据,每次查询' . $limit . '条,查询到的数据更新到tmp表中,供分组查询' . PHP_EOL;
     Tmp::truncate();
     if (ArrayUtility::searchBy(Tmp::showIndex(), array('Key_name' => 'index_condition'))) {
@@ -94,7 +94,7 @@ function getGoodsData () {
  */
 function getRepeatSkuInit () {
 
-    // getGoodsData();
+    getGoodsData();
     exportRepeatData();
 }
 
