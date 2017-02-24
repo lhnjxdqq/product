@@ -103,6 +103,7 @@
                                     <th>下单重量</th>
                                     <th>供应商</th>
                                     <th>订单状态</th>
+                                    <th>工厂批次号</th>
                                     <th>下单时间</th>
                                     <th>操作</th>
                                 </tr>
@@ -117,13 +118,14 @@
                                         <td><{$item.count_weight}></td>
                                         <td><{$item.supplier_code}></td>
                                         <td><{$data.mapStatusCode[$item.status_code]}></td>
+                                        <td><{$item.batch_code}></td>
                                         <td><{$item.create_time}></td>
                                         <td>
                                             <a href="/order/produce/detail.php?produce_order_id=<{$item.produce_order_id}>" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-info-circle"></i> 查看清单</a>
                                             <{if $item.status_code != 6}>
-											<a href="/order/produce/delete.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
+                                            <a href="/order/produce/delete.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-danger btn-xs delete-confirm"><i class="fa fa-trash"></i> 删除</a>
                                             <{/if}>
-											<{if $item.status_code == $data.listStatusCode.new_built}>
+                                            <{if $item.status_code == $data.listStatusCode.new_built}>
                                             <a href="/order/produce/order_verify.php?produce_order_id=<{$item.produce_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-retweet"></i> 审核</a>
                                             <{/if}>
                                             <{if $item.status_code == $data.listStatusCode.confirmed}>
