@@ -121,6 +121,7 @@
                                             <{if $item.sales_order_status != 2}>
                                             <a href='/order/sales/delete_sales_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs delete-confirm" type='button'>删除</a>
                                             <{/if}>
+                                            <{if $statusList[$item.sales_order_status]['status_name'] != '删除' && $statusList[$item.sales_order_status]['status_name'] != '已取消'}><a href='/order/sales/confirm_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a><{/if}>
                                             <{if $item.order_file_status eq 0 || $item.order_file_status eq 3 || $item.order_file_status eq 4}>
                                                 <{if $item.sales_order_status != 1 && $item.sales_order_status != 2}>
                                                     <a href='/order/sales/produce_advice.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>采购管理</a>
@@ -128,7 +129,6 @@
                                                 <a href='/order/sales/sales_order_detail.php?sales_order_id=<{$item.sales_order_id}>' target='_blank' class="btn btn-primary btn-xs" type='button'>查看清单</a>
                                                 <{if $item.sales_order_status eq 1}>
                                                     <a href='/order/sales/audit_order.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>审核订单</a>
-                                                    <a href='/order/sales/confirm_goods.php?sales_order_id=<{$item.sales_order_id}>' class="btn btn-primary btn-xs" type='button'>编辑</a>
                                                 <{/if}>
                                                 <{if  $item.order_file_status eq 4}>
                                                     <a href="/order/sales/import_error_log.php?sales_order_id=<{$item.sales_order_id}>" style="color:red;text-decoration:underline;">错误报告</a>

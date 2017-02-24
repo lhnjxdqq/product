@@ -11,6 +11,32 @@ $content    = array(
     'reference_weight'  => ((int) $_POST['quantity']) * $_POST['weight'],
     'remark'            => $_POST['remark'],
 );
+
+$listProductInfo    = Product_Info::getByMultiGoodsId(array($_POST['goods_id']));
+Validate::testNull($listProductInfo, "参数错误");
+$listProductId      = ArrayUtility::listField($listProductInfo,'product_id');
+$listProduceOrderInfo       = Produce_Order_Info::getBySalesOrderId($_POST['sales_order_id']);
+
+if(!empty($listProduceOrderInfo)){
+    
+    $condition['list_product_id']   = $listProductId;
+    $condition['list_produce_order_id'] = ArrayUtility::listField($listProduceOrderInfo,'produce_order_id');
+    $produceOrderProductInfo = Produce_Order_Product_List::listByCondition($condition,array(),0,1);
+    
+    if(!empty($produceOrderProductInfo)){
+        $produceOrderId = $produceOrderProductInfo[0]['produce_order_id'];
+        $indexProduceOrderId    = ArrayUtility::indexByField($listProduceOrderInfo,'produce_order_id');
+
+        echo    json_encode(array(
+            'code'      => 1,
+            'message'   => "本产品已创建生产订单，无法删除。关联生产订单编号：". $indexProduceOrderId[$produceOrderId]['produce_order_sn'] ."，请将产品从生产订单中删除，或删除生产订单",
+            'data'      => array(
+            ),
+        ));
+        exit;
+    }
+}
+
 if (isset($_POST['cost'])) {
 
     $content['cost']    = sprintf('%.2f', (float) trim($_POST['cost']));
