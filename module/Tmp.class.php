@@ -18,7 +18,7 @@ class   Tmp {
     /**
      * 字段
      */
-    const   FIELDS      = 'goods_id,category_id,style_id,spec_size_id,spec_weight_id,spec_color_id,spec_material_id,spec_assistant_material_id';
+    const   FIELDS      = 'goods_id,goods_condition';
 
     /**
      * 新增
@@ -38,17 +38,33 @@ class   Tmp {
     /**
      * 数据分组
      */
-    static public function groupData () {
+    static public function groupData ($offset=0, $limit=1) {
 
         $sqlBase    = 'SELECT count(1) as count, ' . self::FIELDS . ' FROM `' . self::TABLE_NAME . '` ';
-        $sqlGroup   = ' GROUP BY `category_id`,`style_id`,`spec_size_id`,`spec_weight_id`,`spec_color_id`,`spec_material_id`,`spec_assistant_material_id`';
-        $sqlHaving  = ' HAVING count>1';
+        $sqlGroup   = ' GROUP BY `goods_condition` ';
+        $sqlHaving  = ' HAVING count>1 limit ' . $offset . ',' . $limit;
         $sql = $sqlBase . $sqlGroup . $sqlHaving;
 
         return self::_getStore()->fetchAll($sql);
     }
 
+    /**
+     * 查询索引
+     */
+    static public function showIndex () {
 
+        $sql = 'SHOW INDEX FROM ' . self::TABLE_NAME;
+        return self::_getStore()->fetchAll($sql);
+    }
+
+    /**
+     * 删除索引
+     */
+    static public function dropIndex () {
+
+        $sql = 'ALTER TABLE ' . self::TABLE_NAME . ' DROP INDEX index_condition';
+        self::_getStore()->execute($sql);
+    }
     /**
      * 根据条件获取数据
      *
@@ -78,16 +94,29 @@ class   Tmp {
     static private function _condition (array $condition) {
 
         $sql            = array();
-        $sql[]          = self::_conditionEqIsExistField($condition, 'category_id');
-        $sql[]          = self::_conditionEqIsExistField($condition, 'style_id');
-        $sql[]          = self::_conditionEqIsExistField($condition, 'spec_size_id');
-        $sql[]          = self::_conditionEqIsExistField($condition, 'spec_weight_id');
-        $sql[]          = self::_conditionEqIsExistField($condition, 'spec_color_id');
-        $sql[]          = self::_conditionEqIsExistField($condition, 'spec_material_id');
-        $sql[]          = self::_conditionEqIsExistField($condition, 'spec_assistant_material_id');
+        $sql[]          = self::_conditionInJoinField($condition, 'goods_condition');
         $sqlFiltered    = array_filter($sql);
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
+    }
+
+    /**
+     * 根据条件获取SQL子句
+     * @desc 以id组合 in查询
+     * @param   array   $condition  条件
+     * @param   string  $field      字段名
+     * @return  string              条件SQL子句
+     */
+    static  private function _conditionInJoinField (array $condition,$field) {
+    
+        if(empty($condition[$field])) {
+             
+            return '';
+        }
+        
+        $ids    = array_map('trim', array_filter(array_unique($condition[$field])));
+    
+        return  "`{$field}` IN ('" . implode("','", $ids) . "')";
     }
 
     /**
@@ -179,7 +208,7 @@ class   Tmp {
      */
     static public function addIndex () {
 
-        $sql = 'ALTER TABLE `' . self::TABLE_NAME . '` ADD KEY index_union(category_id,style_id,spec_size_id,spec_weight_id,spec_color_id,spec_material_id,spec_assistant_material_id)';
+        $sql = 'ALTER TABLE `' . self::TABLE_NAME . '` ADD KEY index_condition(`goods_condition`)';
 
         self::_getStore()->execute($sql);
     }
