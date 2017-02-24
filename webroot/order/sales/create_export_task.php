@@ -30,7 +30,7 @@ if ($func == 'update') {
 
 if (Sales_Order_Export_Task::$func($data)) {
 
-    Utility::notice('创建导出任务成功, 请稍后下载', '/order/sales/index.php');
+    Utility::notice('创建导出任务成功, 请稍后下载');
 } else {
 
     Utility::notice('操作失败');
