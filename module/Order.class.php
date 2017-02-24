@@ -463,7 +463,6 @@ class   Order {
     static public function apiCreate(array $orderInfo) {
 
         $customerId     = $orderInfo['customerId'];
-        $salespersonId  = $orderInfo['salemanId'];
         $orderInfo      = $orderInfo['orderGoodsList'];
         $mapGoodsId     = ArrayUtility::listField($orderInfo,'goodsId');
         $listSalesQuotationId     = implode(",",array_unique(ArrayUtility::listField($orderInfo,'quotationId')));
@@ -478,10 +477,9 @@ class   Order {
             'sales_order_sn'            => Sales_Order_Info::createOrderSn(),
             'sales_order_status'        => Sales_Order_Status::NEWS,
             'sales_quotation_id'        => $listSalesQuotationId,
-			'create_user_id'			=> 0,
+            'create_user_id'            => 0,
             'salesperson_id'            => $customeInfo['salesperson_id'],
             'commodity_consultant_id'   => $customeInfo['commodity_consultant_id'],
-            'salesperson_id'            => $salespersonId,
             'order_time'                => date('Y-m-d',time()),
             'create_time'               => date('Y-m-d H:i:s',time()),
             'update_time'               => date('Y-m-d H:i:s',time()),
