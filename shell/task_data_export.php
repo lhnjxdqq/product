@@ -29,12 +29,14 @@ function selectTask ($taskName) {
 
     switch ($taskName) {
         case 'all':
-            getGoodsData();
+            getRepeatSkuInit();
+            sleep(2);
             getDefectData('color');
+            sleep(2);
             getDefectData('size');
             break;
         case 'getRepeatSkuSn':
-            getGoodsData();
+            getRepeatSkuInit();
             break;
         case 'getDefectColor':
             getDefectData('color');
@@ -69,26 +71,64 @@ function getGoodsData () {
     echo '任务开始执行了' . PHP_EOL;
     $count = Goods_Info::countByCondition(array());
     echo "sku数据共{$count}条" . PHP_EOL;
-    $limit = 100;
+    $limit = 200;
     echo '下面开始查询sku数据,每次查询' . $limit . '条,查询到的数据更新到tmp表中,供分组查询' . PHP_EOL;
     Tmp::truncate();
+    if (ArrayUtility::searchBy(Tmp::showIndex(), array('Key_name' => 'index_condition'))) {
+
+        Tmp::dropIndex();
+    }
     for($offset=0; $offset * $limit < $count;) {
 
         $listGoodsInfo = Goods_Info::listByCondition(array(), array(), ($offset * $limit), $limit);
         getGoodsRelationData($listGoodsInfo);
         echo '第' . ++$offset . '次更新数据完成!' . PHP_EOL;
+        sleep(1);
     }
     Tmp::addIndex();
     echo '下面开始分组数据' . PHP_EOL;
-    $groupTmpData = Tmp::groupData();
-    $data   = getRepeatGoodsId($groupTmpData);
-    $header = array('序号', 'SKU编号', 'SPU编号', '订单号');
-    array_unshift($data, $header);
-    $filePath = TEMP;
-    is_dir($filePath) || mkdir($filePath, 0777, true);
-    $fileName = $filePath . date('YmdHis') . '重复的sku编号.csv';
+}
 
-    if (fileWriteData($data, $fileName)) {
+/**
+ * 数据执行
+ */
+function getRepeatSkuInit () {
+
+    getGoodsData();
+    exportRepeatData();
+}
+
+/**
+ * 导出数据
+ */
+function exportRepeatData () {
+
+    $offset = 0;
+    $limit  = 500;
+    $flag   = false;
+    while ($groupTmpData = Tmp::groupData($offset * $limit, $limit) ) {
+
+        $data   = getRepeatGoodsId($groupTmpData);
+        if (!$fileName) {
+
+            $header = array('序号', 'SKU编号', 'SPU编号', '订单号');
+            array_unshift($data, $header);
+            $filePath = TEMP;
+            is_dir($filePath) || mkdir($filePath, 0777, true);
+            $fileName = $filePath . date('YmdHis') . '重复的sku编号.csv';
+        }
+
+        $offset++;
+        if (!fileWriteData($data, $fileName)) {
+
+            break;
+        } else {
+
+            $flag = true;
+        }
+    }
+
+    if ($flag) {
 
         echo '重复的sku编号导出成功!' . PHP_EOL;
     } else {
@@ -131,36 +171,25 @@ function fileWriteData($data, $filePath) {
  */
 function getRepeatGoodsId($groupTmpData) {
 
-    $listGoodsId = array();
-    foreach ($groupTmpData as $data) {
-
-        $condition = array(
-            'category_id'       => (int)$data['category_id'],
-            'style_id'          => (int)$data['style_id'],
-            'spec_material_id'  => (int)$data['spec_material_id'],
-            'spec_size_id'      => (int)$data['spec_size_id'],
-            'spec_color_id'     => (int)$data['spec_color_id'],
-            'spec_weight_id'    => (int)$data['spec_weight_id'],
-            'spec_assistant_material_id' => (int)$data['spec_assistant_material_id'],
-            );
-        $tmpData    = array();
-        $tmpGoodsId = array();
-        $tmpData    = Tmp::listByCondition($condition, array());
-        $listGoodsId[] = ArrayUtility::listField($tmpData, 'goods_id');
+    $listCondition  = ArrayUtility::listField($groupTmpData, 'goods_condition');
+    $tmpData        = Tmp::listByCondition(array('goods_condition' => $listCondition), array());
+    $listGoodsId    = ArrayUtility::listField($tmpData, 'goods_id');
+    $groupTmpData   = ArrayUtility::groupByField($tmpData, 'goods_condition', 'goods_id');
+    $mapGoodsInfo   = ArrayUtility::indexByField(Goods_Info::getByMultiId($listGoodsId), 'goods_id');
+    $groupGoodsSpuRelation  = Common_Spu::getGoodsSpu($listGoodsId);
+    $listOrderGoodsInfo     = Sales_Order_Goods_Info::getBySkuId($listGoodsId);
+    if (!$listOrderGoodsInfo) {
+        
+        $groupOrderGoodsInfo    = ArrayUtility::groupByField($listOrderGoodsInfo, 'goods_id', 'sales_order_id');
+        $listOrderId    = ArrayUtility::listField($listOrderGoodsInfo, 'sales_order_id');
+        $listOrderInfo  = Sales_Order_Info::getByMultiId($listOrderId);
     }
 
-    $goodsIdList    = convertArray($listGoodsId);
-    $mapGoodsInfo   = ArrayUtility::indexByField(Goods_Info::getByMultiId($goodsIdList), 'goods_id');
-    $groupGoodsSpuRelation  = Common_Spu::getGoodsSpu($goodsIdList);
-    $listOrderGoodsInfo     = Sales_Order_Goods_Info::getBySkuId($goodsIdList);
-    $groupOrderGoodsInfo    = ArrayUtility::groupByField($listOrderGoodsInfo, 'goods_id', 'sales_order_id');
-    $listOrderId    = ArrayUtility::listField($listOrderGoodsInfo, 'sales_order_id');
-    $listOrderInfo  = Sales_Order_Info::getByMultiId($listOrderId);
     $result = array();
     $i      = 1;
-    foreach ($listGoodsId as $group) {
+    foreach ($groupTmpData as $condition => $listGoodsId) {
 
-        foreach ($group as $goodsId) {
+        foreach ($listGoodsId as $goodsId) {
 
             if ($groupGoodsSpuRelation[$goodsId]) {
 
@@ -204,6 +233,8 @@ function getGoodsRelationData ($listGoodsInfo) {
         $goodsId = $goodsInfo['goods_id'];
         $newData = array(
             'goods_id'          => $goodsId,
+            );
+        $condition = array(
             'category_id'       => $goodsInfo['category_id'],
             'style_id'          => $goodsInfo['style_id'],
             'spec_material_id'  => 0,
@@ -216,24 +247,26 @@ function getGoodsRelationData ($listGoodsInfo) {
 
             switch ((int)$data['spec_id']) {
                 case 1:
-                    $newData['spec_material_id'] = $data['spec_value_id'];
+                    $condition['spec_material_id'] = $data['spec_value_id'];
                     break;
                 case 2:
-                    $newData['spec_size_id'] = $data['spec_value_id'];
+                    $condition['spec_size_id'] = $data['spec_value_id'];
                     break;
                 case 3:
-                    $newData['spec_color_id'] = $data['spec_value_id'];
+                    $condition['spec_color_id'] = $data['spec_value_id'];
                     break;
                 case 4:
-                    $newData['spec_weight_id'] = $data['spec_value_id'];
+                    $condition['spec_weight_id'] = $data['spec_value_id'];
                     break;
                 case 5:
-                    $newData['spec_assistant_material_id'] = $data['spec_value_id'];
+                    $condition['spec_assistant_material_id'] = $data['spec_value_id'];
                     break;
                 default :
                     continue;
             }
         }
+        $newData['goods_condition'] = implode('_', $condition);
+        // print_r($newData);exit;
         Tmp::create($newData);
     }
 }
@@ -330,6 +363,7 @@ function getDefectData ($specAlias) {
             $flag = false;
             break;
         }
+        sleep(1);
     }
 
     if ($flag) {
