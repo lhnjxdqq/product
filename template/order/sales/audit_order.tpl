@@ -49,7 +49,7 @@
                             <td><{$mapUser[$salesOrderInfo.create_user_id]['username']}></td>
                         </tr>
                         <tr>
-                            <th>销售员</th>
+                            <th>渠道拓展</th>
                             <td><{$mapSalesperson[$salesOrderInfo.salesperson_id]['salesperson_name']}></td>
                             <th>下单时间</th>
                             <td><{$salesOrderInfo.order_time}></td>
