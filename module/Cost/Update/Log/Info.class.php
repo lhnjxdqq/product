@@ -53,4 +53,20 @@ class   Cost_Update_Log_Info {
         $newData    = array_map('addslashes', Model::create($options, $data)->getData());
         self::_getStore()->update(self::_tableName(), $newData, $condition);
     }
+
+    /**
+     * 根据一组产品ID查询产品信息
+     *
+     * @param $multiProductId   一组产品ID
+     * @return array            产品信息
+     */
+    static public function getByMultiProductId ($multiProductId) {
+
+        $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
+
+        $sql            = 'SELECT `product_id`,MAX(`update_time`) as update_time FROM `' . self::_tableName() . '` WHERE `product_id` IN ("' . implode('","', $multiProductId) . '") GROUP BY `product_id`';
+
+        return          self::_getStore()->fetchAll($sql);
+    }
+
 }

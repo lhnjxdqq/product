@@ -88,7 +88,7 @@
                                     <th>样板数量</th>
                                     <th>状态</th>
                                     <th>创建时间</th>
-                                    <th width="200px" style='text-align:center'>操作</th>
+                                    <th style='text-align:center'>操作</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -737,7 +737,7 @@ class   Quotation {
             $mapProductId[$source_code]             = explode(',',$info['relationship_product_id']);
             $mapProductInfo[$source_code]           = Product_Info::getByMultiId($mapProductId[$source_code]);
             $mapGoodsId[$source_code]               = ArrayUtility::listField($mapProductInfo[$source_code],'goods_id');
-            $indexGoodsIdCost[$source_code]         = ArrayUtility::indexByField($mapProductInfo[$source_code],'goods_id','product_cost');
+            $indexGoodsId[$source_code]             = ArrayUtility::indexByField($mapProductInfo[$source_code],'goods_id');
             //所有skuId集合
             $mapGoodsIdSpuId[$source_code]          = Spu_Goods_RelationShip::getByMultiGoodsId($mapGoodsId[$source_code]);
             $mapGroupSpuId[$source_code]            = ArrayUtility::groupByField($mapGoodsIdSpuId[$source_code],'spu_id');
@@ -758,6 +758,10 @@ class   Quotation {
             // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
             $mapSpuGoods[$source_code]    = ArrayUtility::indexByField($mapGoodsIdSpuId[$source_code], 'spu_id', 'goods_id');
             $listGoodsId                  = array_values($mapSpuGoods[$source_code]);
+
+            $libProductId[$source_code]   = $indexGoodsId[$source_code][$listGoodsId[0]]['product_id'];
+            $listProductId[]        = $libProductId[$source_code];
+
             $listGoodsInfo                = Goods_Info::getByMultiId($listGoodsId);
             $mapGoodsInfo[$source_code]   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
 
@@ -819,28 +823,27 @@ class   Quotation {
 
                         $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
 
-                        if($val['spec_id'] == $specColorId) {
+                        if($val['spec_id'] == $specColorId && $val['spec_value_id'] == $specRedColorId) {
 
-                            $mapColor[$spuId][$val['spec_value_id']][]    = $indexGoodsIdCost[$source_code][$goodsId];
+                            $mapColor[$spuId][]    = $indexGoodsId[$source_code][$goodsId]['product_cost'];
                         }
                     }
                 }
 
-                foreach($mapColor as $spuIdKey => $colorInfo){
+                foreach($mapColor as $spuId => $colorInfo){
 
-                    foreach($colorInfo as $colorId => $cost){
-                        
-                        if($colorId == $specRedColorId){
-                            
-                            $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
-                        }
-                    }
+                    $mapColorInfo[$spuId] = array_shift($colorInfo);
                 }
+                //var_dump($mapColorInfo);die; 
             }           
         }
+        $costUpdateLog  = Cost_Update_Log_Info::getByMultiProductId($listProductId);
+        $indexUpdateproductId   = ArrayUtility::indexByField($costUpdateLog,'product_id','update_time');
+        
         if(empty($mapSpuInfo)){
             return ;
         }
+        
         foreach($mapSpuInfo as $source => $listSpu){
 
             $row            = ++$row;
@@ -882,20 +885,19 @@ class   Quotation {
                         $info['category_name'] = $mapCategory[$categoryId]['category_name'];
                         $info['weight_value']  = $mapWeightSpecValue[$info['sku_code']][$goodsId];
                     }
-                 
-                    $info['color']             = array();
+                    $info['update_time']       = $indexUpdateproductId[$libProductId[$info['sku_code']]];
                     $info['source_row']        = $row;  
-                    $info['color'] = !empty($mapColorInfo[$info['spu_id']][$specRedColorId]) ? $mapColorInfo[$info['spu_id']][$specRedColorId] : "-";
+                    $info['color'] = !empty($mapColorInfo[$info['spu_id']]) ? $mapColorInfo[$info['spu_id']] : "-";
 
                     $info['image_url'] = $mapSpuImages[$info['sku_code']][$info['spu_id']]['image_url'];       
                     $listSpuInfo[] = $info;
                 }
             }
         }
-		$fileName = 'diff-cost' . $updateCostId . '.xlsx';
+        $fileName = 'diff-cost' . $updateCostId . '.xlsx';
         $filePath = Config::get('path|PHP', 'diff_cost_export').$fileName;
         $groupSourceCode =  ArrayUtility::groupByField($listSpuInfo,'sku_code');
-        
+
         $offsetInfo = 0;
         foreach ($groupSourceCode as $sourceCode => $info) {
             
@@ -945,7 +947,7 @@ class   Quotation {
             'old_category_name' => $oldInfo['category_name'],
             'weight_name'       => $oldInfo['weight_value'],
             'old_cost'          => $oldInfo['color'],
-            'update_time'       => date('Y-m-d H:i:s'),
+            'update_time'       => $oldInfo['update_time'],
         );
 
         return $row;
