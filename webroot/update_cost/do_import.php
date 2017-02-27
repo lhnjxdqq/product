@@ -2,6 +2,19 @@
 set_time_limit(0);
 require_once dirname(__FILE__) . '/../../init.inc.php';
 
+$condition  = array(
+    'status_id'    => Update_Cost_Status::IMPORTING,
+);
+$order      = array(
+    'create_time'   => 'DESC',
+);
+$listInfo   = Update_Cost_Info::listByCondition($condition, $order, 0, 100);
+
+if(!empty($listInfo)){
+
+    throw   new ApplicationException('有未处理的报价单，请稍后重新操作');
+}
+
 Validate::testNull($_POST['supplier_markup_rule_id'], "供应商加价逻辑必选");
 Validate::testNull($_POST['supplier_id'], "供应商不能为空");
 Validate::testNull($_POST['quotation_name'], "报价单名称不能为空");

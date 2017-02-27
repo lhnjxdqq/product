@@ -12,6 +12,10 @@ $order      = array(
 );
 $listInfo   = Update_Cost_Info::listByCondition($condition, $order, 0, 100);
 
+if(empty($listInfo)){
+    
+    return ;
+}
 foreach ($listInfo as $info) {
 
     $excelFile        = Config::get('path|PHP', 'quotation_import') . $info['file_path'];

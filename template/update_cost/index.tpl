@@ -110,7 +110,7 @@
                                             <a href="/common/download.php?file=<{$item.file_path|urlencode}>&module=quotation_import&file_name=<{$item.update_cost_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载报价表</a>
                                             <{/if}>
                                             <{if $item.diff_file_path != ''}>
-                                            <a href="/common/download.php?file=<{$item.diff_file_path|urlencode}>&module=diff_cost_export&file_name=<{$item.update_cost_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载报价表</a>
+                                            <a href="/common/download.php?file=<{$item.diff_file_path|urlencode}>&module=diff_cost_export&file_name=<{$item.update_cost_name}>" class="btn btn-primary btn-xs"><i class="fa fa-download"></i> 下载差价表</a>
                                             <{/if}>
                                         </td>
                                     </tr>
