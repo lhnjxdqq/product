@@ -16,8 +16,10 @@ $customerInfo       = ArrayUtility::indexByField(ArrayUtility::searchBy(Customer
 $salespersonInfo    = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');
 
 $condition['date_start']    = isset($_GET['date_start']) ? $_GET['date_start'] : date('Y-m-d', strtotime('-30 day'));
-$condition['date_end']      = isset($_GET['date_end']) ? date('Y-m-d', strtotime(date('Y-m-d', strtotime($_GET['date_start']))) + 3600 * 24 - 1) : date('Y-m-d', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
+$condition['date_end']      = isset($_GET['date_end']) ? date('Y-m-d', strtotime(date('Y-m-d', strtotime($_GET['date_end']))) + 3600 * 24 - 1) : date('Y-m-d', strtotime(date('Y-m-d', strtotime('+1 day'))) - 1);
 
+$condition['create_date_start']	= $condition['date_start'].' 00:00:00';
+$condition['create_date_end']	= $condition['date_end'].' 23:59:59';
 $perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countBorrow        = Borrow_Info::countByCondition($condition);
 

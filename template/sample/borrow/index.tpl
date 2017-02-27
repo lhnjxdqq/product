@@ -28,7 +28,7 @@
                     <form class="form-inline" action="/sample/borrow/index.php" method="get">
                         <div class="col-md-4">
                             <div class="input-daterange input-group input-group-sm">
-                                <span class="input-group-addon" style="border-width:1px 0 1px 1px;">借板时间:</span>
+                                <span class="input-group-addon" style="border-width:1px 0 1px 1px;">创建时间:</span>
                                 <input type="text" name="date_start" readonly class="form-control" value="<{$condition.date_start}>">
                                 <span class="input-group-addon">到</span>
                                 <input type="text" name="date_end" readonly class="form-control" value="<{$condition.date_end}>">

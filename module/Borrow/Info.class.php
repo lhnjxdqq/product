@@ -91,8 +91,8 @@ class   Borrow_Info {
         $sql[]      = self::_conditionrange(
             array(
                 'fieldCondition'    => 'create_time',
-                'paramA'            => 'date_start',
-                'paramB'            => 'date_end',
+                'paramA'            => 'create_date_start',
+                'paramB'            => 'create_date_end',
                 'condition'         => $condition,
             )
         );
