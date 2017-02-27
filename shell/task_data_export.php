@@ -179,14 +179,14 @@ function getRepeatGoodsId($groupTmpData) {
     $groupGoodsSpuRelation  = Common_Spu::getGoodsSpu($listGoodsId);
     $listOrderGoodsInfo     = Sales_Order_Goods_Info::getBySkuId($listGoodsId);
     if (!$listOrderGoodsInfo) {
-        
+
         $groupOrderGoodsInfo    = ArrayUtility::groupByField($listOrderGoodsInfo, 'goods_id', 'sales_order_id');
         $listOrderId    = ArrayUtility::listField($listOrderGoodsInfo, 'sales_order_id');
         $listOrderInfo  = Sales_Order_Info::getByMultiId($listOrderId);
     }
 
     $result = array();
-    $i      = 1;
+    static $i      = 1;
     foreach ($groupTmpData as $condition => $listGoodsId) {
 
         foreach ($listGoodsId as $goodsId) {
@@ -428,8 +428,14 @@ function getData ($listSpuInfo, $enum) {
         $minGoodsId     = $listMinGoodsId[$spuId];
         $categoryId     = $mapGoodsInfo[$minGoodsId]['category_id'];
         $goodsTypeId    = $mapCategoryInfo[$categoryId]['goods_type_id'];
-        $listSpecValueIdB   = array_map('intval', array_filter(array_unique($groupGTSVR[$goodsTypeId])));
-        $listSpecValueId    = array_diff($listSpecValueIdA, $listSpecValueIdB);
+        if ($groupGTSVR[$goodsTypeId]) {
+
+            $listSpecValueIdB   = array_map('intval', array_filter(array_unique($groupGTSVR[$goodsTypeId])));
+            $listSpecValueId    = array_diff($listSpecValueIdA, $listSpecValueIdB);
+        } else {
+
+            $listSpecValueId = $listSpecValueIdA;
+        }
 
         if (empty($listSpecValueId)) {
 
