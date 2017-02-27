@@ -19,7 +19,7 @@ class   Update_Cost_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'update_cost_id,update_cost_name,file_path,supplier_id,create_user_id,status_id,auditor_user_id,create_time,sample_quantity,supplier_markup_rule_id';
+    const   FIELDS      = 'update_cost_id,update_cost_name,file_path,supplier_id,create_user_id,status_id,auditor_user_id,create_time,sample_quantity,supplier_markup_rule_id,diff_file_path';
     /**
      * 新增
      *

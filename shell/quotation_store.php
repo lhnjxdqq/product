@@ -1,6 +1,6 @@
 <?php
 /**
- * 导出excel
+ * 导入excel
  */
 require_once    dirname(__FILE__) . '/../init.inc.php';
 
@@ -101,7 +101,7 @@ foreach ($listInfo as $info) {
     $mapEnumeration =array(
         'mapCategory'          => $mapCategoryName,
         'mapTypeSpecValue'     => $mapTypeSpecValue,
-		'supplierMarkupRuleId' => $info['supplier_markup_rule_id'],
+        'supplierMarkupRuleId' => $info['supplier_markup_rule_id'],
         'mapIndexSpecAlias'    => $mapIndexSpecAlias,
         'mapSpecValue'         => $mapSpecValue,
         'mapSizeId'            => $mapSizeId,
@@ -123,11 +123,13 @@ foreach ($listInfo as $info) {
 
     foreach ($list as $offsetRow => $row) {
 
-        Quotation::updateCostStore($row, $mapEnumeration, 1, $info['update_cost_id'], $info['supplier_id']);
+       // Quotation::updateCostStore($row, $mapEnumeration, 1, $info['update_cost_id'], $info['supplier_id']);
          
     }
+	Quotation::diffCostExplodeExcel($info['update_cost_id']);
+	/*
     Update_Cost_Info::update(array(
         'update_cost_id'       => $info['update_cost_id'],
         'status_id'            => Update_Cost_Status::WAIT_AUDIT,
-    ));
+    ));*/
 }

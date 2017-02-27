@@ -692,6 +692,265 @@ class   Quotation {
     }
     
     /**
+     *  生成差价表
+     *  
+     *  @param $updateCostId    成本更新记录Id
+     */
+    static  public function diffCostExplodeExcel ($updateCostId) {
+    
+        $tableHead = "买款ID,三级分类,规格重量,最新K红价格,SPU编号,图片,三级分类,规格重量,K红进货工费,报价时间";
+        $tableHead          = explode(",",$tableHead);
+        $listUpdateCostProductInfo  = Update_Cost_Source_Info::getByUpdateCostId($updateCostId);
+        $indexSourceCode            = ArrayUtility::indexByField($listUpdateCostProductInfo,'source_code');
+        //属性列表
+        $listSpecInfo       = Spec_Info::listAll();
+        $listSpecInfo       = ArrayUtility::searchBy($listSpecInfo, array('delete_status'=>Spec_DeleteStatus::NORMAL));
+        $mapSpecInfo        = ArrayUtility::indexByField($listSpecInfo, 'spec_id');
+
+        $excel              = ExcelFile::create();
+        $sheet              = $excel->getActiveSheet();
+        self::_saveExcelRow($sheet, 1, $tableHead);
+
+        //获取属性值
+        $listSpecValueInfo  = ArrayUtility::searchBy(Spec_Value_Info::listAll(), array('delete_status'=>Spec_DeleteStatus::NORMAL));
+        $mapSpecValueInfo   = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+
+        //获取规格尺寸和主料材质的属性ID
+        $specColorInfo      = ArrayUtility::indexByField(ArrayUtility::searchBy($listSpecInfo, array('spec_alias'=>'color')),'spec_alias','spec_id');
+        $specColorId        = $specColorInfo['color'];
+        $specRedColorInfo   = Spec_Value_Info::getBySpecValueData('K红');
+        $specRedColorId     = $specRedColorInfo['spec_value_id'];
+
+        $listGoodsId            = array();
+
+        foreach($indexSourceCode as $source_code => $info){
+            
+            if(empty($info['relationship_product_id'])){
+                
+                continue;
+            }
+
+            $mapSpuInfo[$source_code][0]            = $info;
+            $data                                   = json_decode($info['json_data'],true);
+            $mapColorInfo[$source_code] = $data['cost'];
+
+            $mapProductId[$source_code]             = explode(',',$info['relationship_product_id']);
+            $mapProductInfo[$source_code]           = Product_Info::getByMultiId($mapProductId[$source_code]);
+            $mapGoodsId[$source_code]               = ArrayUtility::listField($mapProductInfo[$source_code],'goods_id');
+            $indexGoodsIdCost[$source_code]         = ArrayUtility::indexByField($mapProductInfo[$source_code],'goods_id','product_cost');
+            //所有skuId集合
+            $mapGoodsIdSpuId[$source_code]          = Spu_Goods_RelationShip::getByMultiGoodsId($mapGoodsId[$source_code]);
+            $mapGroupSpuId[$source_code]            = ArrayUtility::groupByField($mapGoodsIdSpuId[$source_code],'spu_id');
+            $mapSpuId[$source_code]                 = ArrayUtility::listField($mapGoodsIdSpuId[$source_code],'spu_id');
+            //所有SPU
+            $mapSpuInfo[$source_code][1]            = ArrayUtility::searchBy(Spu_Info::getByMultiId($mapSpuId[$source_code]),array('delete_status'=>0));
+
+            if(empty($mapSpuInfo[$source_code][1])){
+                
+                continue;
+            }
+            // 查所当前所有SPU的商品 商品信息 规格和规格值
+            $allGoodsInfo           = Goods_Info::getByMultiId($mapGoodsId[$source_code]);
+            $mapAllGoodsInfo        = ArrayUtility::indexByField($allGoodsInfo, 'goods_id');
+            $allGoodsSpecValue      = Goods_Spec_Value_RelationShip::getByMultiGoodsId($mapGoodsId[$source_code]);
+            $mapAllGoodsSpecValue   = ArrayUtility::groupByField($allGoodsSpecValue, 'goods_id');
+
+            // SPU取其中一个商品 取品类和规格重量 (品类和规格重量相同 才能加入同一SPU)
+            $mapSpuGoods[$source_code]    = ArrayUtility::indexByField($mapGoodsIdSpuId[$source_code], 'spu_id', 'goods_id');
+            $listGoodsId                  = array_values($mapSpuGoods[$source_code]);
+            $listGoodsInfo                = Goods_Info::getByMultiId($listGoodsId);
+            $mapGoodsInfo[$source_code]   = ArrayUtility::indexByField($listGoodsInfo, 'goods_id');
+
+            //获取SPU数量
+
+            $listSpuImages  = Spu_Images_RelationShip::getByMultiSpuId(array_unique($mapSpuId[$source_code]));
+            $mapSpuImages[$source_code]   = ArrayUtility::groupByField($listSpuImages, 'spu_id');
+
+            foreach ($mapSpuImages[$source_code] as $spuId => $spuImage) {
+
+            
+                if(!empty($spuImage)){
+                    
+                    $firstImageInfo = ArrayUtility::searchBy($spuImage,array('is_first_picture' => 1));
+                }
+                if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+                    
+                    $info = current($firstImageInfo);
+                    $mapSpuImages[$source_code][$spuId]['image_url']  = !empty($info)
+                        ? AliyunOSS::getInstance('images-spu')->url($info['image_key'])
+                        : '';       
+                }else{
+
+                    $info = Sort_Image::sortImage($spuImage);
+
+                    $mapSpuImages[$source_code][$spuId]['image_url']  = !empty($info)
+                        ? AliyunOSS::getInstance('images-spu')->url($info[0]['image_key'])
+                        : '';     
+                }
+            }
+
+            // 根据商品查询品类
+            $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
+            $listCategory   = Category_Info::getByMultiId($listCategoryId);
+            $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+
+            // 根据商品查询规格重量
+            $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
+
+            foreach ($listSpecValue as $specValue) {
+
+                $specName       = $mapSpecInfo[$specValue['spec_id']]['spec_name'];
+                $specValueData  = $mapSpecValueInfo[$specValue['spec_value_id']]['spec_value_data'];
+                if ($specName == '规格重量') {
+
+                    $mapWeightSpecValue[$source_code][$specValue['goods_id']] = $specValueData;
+                }
+            }
+            
+            foreach ($mapGroupSpuId[$source_code] as $spuId => $spuGoods) {
+
+                $mapColor   = array();
+                foreach ($spuGoods as $goods) {
+
+                    $goodsId        = $goods['goods_id'];
+                    $goodsSpecValue = $mapAllGoodsSpecValue[$goodsId];
+
+                    foreach ($goodsSpecValue as $key => $val) {
+
+                        $specValueData  = $mapSpecValueInfo[$val['spec_value_id']]['spec_value_data'];
+
+                        if($val['spec_id'] == $specColorId) {
+
+                            $mapColor[$spuId][$val['spec_value_id']][]    = $indexGoodsIdCost[$source_code][$goodsId];
+                        }
+                    }
+                }
+
+                foreach($mapColor as $spuIdKey => $colorInfo){
+
+                    foreach($colorInfo as $colorId => $cost){
+                        
+                        if($colorId == $specRedColorId){
+                            
+                            $mapColorInfo[$spuIdKey][$colorId] = array_shift($cost);
+                        }
+                    }
+                }
+            }           
+        }
+        if(empty($mapSpuInfo)){
+            return ;
+        }
+        foreach($mapSpuInfo as $source => $listSpu){
+
+            $row            = ++$row;
+
+            $productInfo    = json_decode($mapSpuInfo[$source][0]['json_data'],true);
+
+            $productInfo['color'] = !empty($mapColorInfo[$productInfo['sku_code']][$specRedColorId]) ? $mapColorInfo[$productInfo['sku_code']][$specRedColorId] : "-"; 
+            $productInfo['category_name']       = $productInfo['categoryLv3'];
+            $productInfo['material_name']       = $productInfo['material_main_name'];
+            $productInfo['weight_value']        = $productInfo['weight_name'];
+            $productInfo['source_row']          = $row;  
+            unset($productInfo['price']);
+            unset($productInfo['cost']);
+            if(empty($mapSpuInfo[$source][1])){
+             
+                $productInfo['is_new']  = 2;
+                $listSpuInfo[]  = $productInfo;
+                continue;
+            }else{
+                $productInfo['is_new']  = 1;
+                $listSpuInfo[]  = $productInfo;
+            }
+            unset($listSpu[0]);
+            foreach($listSpu as $spuInfo){
+                
+                foreach($spuInfo as $key=>$info){
+                
+                    $info['sku_code'] = $productInfo['sku_code'];
+                    // 品类名 && 规格重量
+                    
+                    $goodsId    = $mapSpuGoods[$info['sku_code']][$info['spu_id']];
+                    if (!$goodsId) {
+
+                        $info['category_name'] = '';
+                        $info['weight_value']  = '';
+                    } else {
+
+                        $categoryId = $mapGoodsInfo[$info['sku_code']][$goodsId]['category_id'];
+                        $info['category_name'] = $mapCategory[$categoryId]['category_name'];
+                        $info['weight_value']  = $mapWeightSpecValue[$info['sku_code']][$goodsId];
+                    }
+                 
+                    $info['color']             = array();
+                    $info['source_row']        = $row;  
+                    $info['color'] = !empty($mapColorInfo[$info['spu_id']][$specRedColorId]) ? $mapColorInfo[$info['spu_id']][$specRedColorId] : "-";
+
+                    $info['image_url'] = $mapSpuImages[$info['sku_code']][$info['spu_id']]['image_url'];       
+                    $listSpuInfo[] = $info;
+                }
+            }
+        }
+		$fileName = 'diff-cost' . $updateCostId . '.xlsx';
+        $filePath = Config::get('path|PHP', 'diff_cost_export').$fileName;
+        $groupSourceCode =  ArrayUtility::groupByField($listSpuInfo,'sku_code');
+        
+        $offsetInfo = 0;
+        foreach ($groupSourceCode as $sourceCode => $info) {
+            
+            $newInfo    = $info[0];
+            unset($info[0]);
+            foreach($info as $key => $oldInfo){
+                
+                $row        = self::_getUpdateCostRow($newInfo,$oldInfo);
+
+                $numberRow  = $offsetInfo + 2;
+                $offsetInfo++;
+                self::_saveExcelRow($sheet, $numberRow, array_values($row));
+                $draw       = self::_appendExcelImage($sheet, 5, $numberRow, $row, $oldInfo['image_url']);
+
+                if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
+                    
+                    $imageWidth = $draw->getWidth();
+                    $maxWidth   = $maxWidth < $imageWidth   ? $imageWidth   : $maxWidth; 
+                    $sheet->getRowDimension($numberRow)->setRowHeight($draw->getHeight() * (3 / 4));
+                    $listDraw[] = $draw;
+                }
+            }
+        }
+
+        if ($maxWidth > 0) {
+
+            $sheet->getColumnDimension('F')->setWidth($maxWidth / 7.2);
+        }
+
+        $writer   = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $writer->save($filePath);
+        Update_Cost_Info::update(array(
+            'update_cost_id'       => $updateCostId,
+            'diff_file_path'       => $fileName,
+        ));
+    }
+    
+    static private function _getUpdateCostRow(array $newInfo,array $oldInfo){
+        
+        $row = array(
+            'source_code'       => $newInfo['sku_code'],
+            'category_name'     => $newInfo['categoryLv3'],
+            'spec_weight'       => $newInfo['weight_name'],
+            'new_cost'          => $newInfo['color'],
+            'spu_sn'            => $oldInfo['spu_sn'],
+            'image'             => '',
+            'old_category_name' => $oldInfo['category_name'],
+            'weight_name'       => $oldInfo['weight_value'],
+            'old_cost'          => $oldInfo['color'],
+            'update_time'       => date('Y-m-d H:i:s'),
+        );
+
+        return $row;
+    }
+    /**
      * 输出到流 excel格式
      */
      
@@ -916,7 +1175,7 @@ class   Quotation {
 
                 $numberRow  = $offsetInfo + 3;
                 self::_saveExcelRow($sheet, $numberRow, array_values($row));
-                $draw       = self::_appendExcelImage($sheet, $numberRow, $row, $mapSpuImages[$info['spu_id']]['image_url']);
+                $draw       = self::_appendExcelImage($sheet,2, $numberRow, $row, $mapSpuImages[$info['spu_id']]['image_url']);
 
                 if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
                     
@@ -988,7 +1247,7 @@ class   Quotation {
         return $spuInfo;
     }
         
-    static private function _appendExcelImage ($sheet, $numberRow, array $row, $imagePath) {
+    static private function _appendExcelImage ($sheet, $column, $numberRow, array $row, $imagePath) {
 
         if (empty($imagePath)) {
 
@@ -1000,7 +1259,7 @@ class   Quotation {
             return ;
         }
 
-        $coordinate = $sheet->getCellByColumnAndRow(2, $numberRow)->getCoordinate();
+        $coordinate = $sheet->getCellByColumnAndRow($column, $numberRow)->getCoordinate();
         $draw       = self::_loadImage($imagePath);
 
         if ($draw instanceof PHPExcel_Worksheet_MemoryDrawing) {
