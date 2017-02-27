@@ -123,13 +123,13 @@ foreach ($listInfo as $info) {
 
     foreach ($list as $offsetRow => $row) {
 
-       // Quotation::updateCostStore($row, $mapEnumeration, 1, $info['update_cost_id'], $info['supplier_id']);
+        Quotation::updateCostStore($row, $mapEnumeration, 1, $info['update_cost_id'], $info['supplier_id']);
          
     }
-	Quotation::diffCostExplodeExcel($info['update_cost_id']);
-	/*
+    Quotation::diffCostExplodeExcel($info['update_cost_id']);
+    
     Update_Cost_Info::update(array(
         'update_cost_id'       => $info['update_cost_id'],
         'status_id'            => Update_Cost_Status::WAIT_AUDIT,
-    ));*/
+    ));
 }
