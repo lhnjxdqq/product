@@ -147,7 +147,7 @@
                                                     <a href="javascript:alert('正在导出中, 请稍等几分钟...');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 正在导出</a>
                                                 <{/if}>
                                                 <{if $item.export_status == 3}>
-                                                    <a href="/order/sales/export_file_download.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 下载</a>
+                                                    <a href="/order/sales/export_file_download.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出</a>
                                                 <{/if}>
                                                 <{if $item.export_status == 4}>
                                                     <a href="javascript:alert('导出失败');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出失败</a>
