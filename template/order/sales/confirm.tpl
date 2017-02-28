@@ -54,6 +54,7 @@
                                     <th>数量</th>
                                     <th>款式</th>
                                     <th>子款式</th>
+                                    <th>辅料材质</th>
                                     <th>主料材质</th>
                                     <th>SKU编号</th>
                                     <th>SKU名称</th>
@@ -100,6 +101,7 @@
                                         </td>
                                         <td><{$data.indexStyleId[$data.indexStyleId[$item.style_id]['parent_id']]['style_name']}></td>
                                         <td><{$data.indexStyleId[$item.style_id]['style_name']}></td>
+                                        <td><{$data.mapSpecValueInfo[$item.assistant_material_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
                                         <td><{$item.goods_sn}></td>
                                         <td><{$item.goods_name}></td>

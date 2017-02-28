@@ -76,30 +76,6 @@ $listStyleInfo              = ArrayUtility::searchBy($listStyleInfo, array('dele
 $indexStyleId               = ArrayUtility::indexByField($listStyleInfo,'style_id');
 $groupStyleInfo             = ArrayUtility::groupByField($listStyleInfo, 'parent_id');
 
-$weightSpecInfo             = Spec_Info::getByAlias('weight');
-$listWeightSpecValue        = Goods_Type_Spec_Value_Relationship::getBySpecId($weightSpecInfo['spec_id']);
-$listWeightSpecValueId      = array_unique(ArrayUtility::listField($listWeightSpecValue, 'spec_value_id'));
-$listWeightSpecValueInfo    = Spec_Value_Info::getByMulitId($listWeightSpecValueId);
-$mapWeightSpecValueInfo     = ArrayUtility::indexByField($listWeightSpecValueInfo, 'spec_value_id');
-
-$sizeSpecInfo               = Spec_Info::getByAlias('size');
-$listSizeSpecValue          = Goods_Type_Spec_Value_Relationship::getBySpecId($sizeSpecInfo['spec_id']);
-$listSizeSpecValueId        = array_unique(ArrayUtility::listField($listSizeSpecValue, 'spec_value_id'));
-$listSizeSpecValueInfo      = Spec_Value_Info::getByMulitId($listSizeSpecValueId);
-$mapSizeSpecValueInfo       = ArrayUtility::indexByField($listSizeSpecValueInfo, 'spec_value_id');
-
-$colorSpecInfo              = Spec_Info::getByAlias('color');
-$listColorSpecValue         = Goods_Type_Spec_Value_Relationship::getBySpecId($colorSpecInfo['spec_id']);
-$listColorSpecValueId       = array_unique(ArrayUtility::listField($listColorSpecValue, 'spec_value_id'));
-$listColorSpecValueInfo     = Spec_Value_Info::getByMulitId($listColorSpecValueId);
-$mapColorSpecValueInfo      = ArrayUtility::indexByField($listColorSpecValueInfo, 'spec_value_id');
-
-$materialSpecInfo           = Spec_Info::getByAlias('material');
-$listMaterialSpecValue      = Goods_Type_Spec_Value_Relationship::getBySpecId($materialSpecInfo['spec_id']);
-$listMaterialSpecValueId    = array_unique(ArrayUtility::listField($listMaterialSpecValue, 'spec_value_id'));
-$listMaterialSpecValueInfo  = Spec_Value_Info::getByMulitId($listMaterialSpecValueId);
-$mapMaterialSpecValueInfo   = ArrayUtility::indexByField($listMaterialSpecValueInfo, 'spec_value_id');
-
 $listGoodsInfo              = Goods_List::listByCondition($condition);
 $listGoodsId                = ArrayUtility::listField($listGoodsInfo, 'goods_id');
 $listGoodsImages            = Goods_Images_RelationShip::getByMultiGoodsId($listGoodsId);
@@ -131,11 +107,13 @@ $listMaterialValueId        = ArrayUtility::listField($listGoodsInfo, 'material_
 $listSizeValueId            = ArrayUtility::listField($listGoodsInfo, 'size_value_id');
 $listColorValueId           = ArrayUtility::listField($listGoodsInfo, 'color_value_id');
 $listWeightValueId          = ArrayUtility::listField($listGoodsInfo, 'weight_value_id');
+$listAssistantMaterialValueId          = ArrayUtility::listField($listGoodsInfo, 'assistant_material_value_id');
 $listSpecValueId            = array_unique(array_merge(
     $listMaterialValueId,
     $listSizeValueId,
     $listColorValueId,
-    $listWeightValueId
+    $listWeightValueId,
+    $listAssistantMaterialValueId
 ));
 $listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
 $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
@@ -187,11 +165,7 @@ $data['mapCategoryInfo']            = $mapCategoryInfo;
 $data['mapCategoryInfoLv3']         = $mapCategoryInfoLv3;
 $data['mapSupplierInfo']            = $mapSupplierInfo;
 $data['groupStyleInfo']             = $groupStyleInfo;
-$data['mapWeightSpecValueInfo']     = $mapWeightSpecValueInfo;
-$data['mapSizeSpecValueInfo']       = $mapSizeSpecValueInfo;
 $data['indexStyleId']               = $indexStyleId;
-$data['mapColorSpecValueInfo']      = $mapColorSpecValueInfo;
-$data['mapMaterialSpecValueInfo']   = $mapMaterialSpecValueInfo;
 $data['searchType']                 = Search_Sku::getSearchType();
 $data['mapSpecValueInfo']           = $mapSpecValueInfo;
 $data['listGoodsInfo']              = $listGoodsInfo;

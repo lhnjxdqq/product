@@ -129,11 +129,15 @@ class Goods_List {
      */
     static private function _getJoinTables () {
 
+        $listSpecInfo   = Spec_Info::listAll();
+        $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
+
         return  array(
-            '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id`=1',
-            '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id`=2',
-            '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id`=3',
-            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id`=4',
+            '`goods_spec_value_relationship` AS `material_info` ON `material_info`.`goods_id`=`goods_info`.`goods_id` AND `material_info`.`spec_id`='.$mapSpecInfo['material']['spec_id'],
+            '`goods_spec_value_relationship` AS `size_info` ON `size_info`.`goods_id`=`goods_info`.`goods_id` AND `size_info`.`spec_id`='.$mapSpecInfo['size']['spec_id'],
+            '`goods_spec_value_relationship` AS `color_info` ON `color_info`.`goods_id`=`goods_info`.`goods_id` AND `color_info`.`spec_id`=' . $mapSpecInfo['color']['spec_id'],
+            '`goods_spec_value_relationship` AS `weight_info` ON `weight_info`.`goods_id`=`goods_info`.`goods_id` AND `weight_info`.`spec_id`=' . $mapSpecInfo['weight']['spec_id'],
+            '`goods_spec_value_relationship` AS `assistant_matetial_info` ON `assistant_matetial_info`.`goods_id`=`goods_info`.`goods_id` AND `assistant_matetial_info`.`spec_id`=' . $mapSpecInfo['assistant_material']['spec_id'] ,
         );
     }
 
@@ -152,6 +156,7 @@ class Goods_List {
             '`size_info`.`spec_value_id` AS `size_value_id`',
             '`color_info`.`spec_value_id` AS `color_value_id`',
             '`weight_info`.`spec_value_id` AS `weight_value_id`',
+            '`assistant_matetial_info`.`spec_value_id` AS `assistant_material_value_id`',
             '`goods_info`.`category_id`',
             '`goods_info`.`self_cost`',
             '`goods_info`.`sale_cost`',
