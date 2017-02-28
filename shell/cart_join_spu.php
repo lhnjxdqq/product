@@ -136,11 +136,11 @@ foreach($standby as $key=>$info){
     }else{
         $condition['online_status']     = Spu_OnlineStatus::ONLINE;
         $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
-        $countSpuTotal              = Spu_List::countByCondition($condition);
+        $countSpuTotal              = Search_Spu::countByCondition($condition);
         
         for($row=0; $row<=$countSpuTotal; $row+= 1 ){
     
-            $listSpuInfo            = Spu_List::listByCondition($condition, array(), $row, 1);
+            $listSpuInfo            = Search_Spu::listByCondition($condition, array(), $row, 1);
                                      
             $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
