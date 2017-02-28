@@ -12,6 +12,25 @@ Validate::testNull($listProductInfo, "参数错误");
 $listProductId      = ArrayUtility::listField($listProductInfo,'product_id');
 $listProduceOrderInfo       = Produce_Order_Info::getBySalesOrderId($data['sales_order_id']);
 
+$status = Sales_Order_ExportStatus::GENERATING;
+$taskInfo   = Sales_Order_Export_Task::getBySalesOrderId($data['sales_order_id']);
+if (!empty($taskInfo) && $taskInfo['export_status'] == $status) {
+        
+    echo    json_encode(array(
+        'code'      => 1,
+        'message'   => "该订单正在生成下载文件，无法操作",
+        'data'      => array(
+        ),
+    ));
+    exit;
+
+}else if(!empty($taskInfo)){
+    Sales_Order_Export_Task::update(array(
+        'task_id'           => $taskInfo['task_id'],
+        'export_status'     => Sales_Order_ExportStatus::WAITING,
+    ));
+}
+
 if(!empty($listProduceOrderInfo)){
     
     $condition['list_product_id']   = $listProductId;
@@ -28,7 +47,7 @@ if(!empty($listProduceOrderInfo)){
             'data'      => array(
             ),
         ));
-		exit;
+        exit;
     }
 }
 

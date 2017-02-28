@@ -195,9 +195,11 @@ $(function () {
 
                     alert(response.message);
                     return;
+                }else{
+            
+                    alert('更新工费成功');
+                    updateBtn.removeClass('btn-info').addClass('btn-default').attr('disabled', true);               
                 }
-                alert('更新工费成功');
-                updateBtn.removeClass('btn-info').addClass('btn-default').attr('disabled', true);
             }
         });
     });

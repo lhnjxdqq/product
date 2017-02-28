@@ -136,7 +136,6 @@
                                                 <{else}>
                                                 订单合同中的产品正在生成中,请稍等...
                                             <{/if}>
-                                                <!-- 销售订单审核后才可导出 -->
                                             <div class="btn-group">
                                                 <{if !$item.export_status}>
                                                     <a href="/order/sales/create_export_task.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出</a>

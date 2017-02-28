@@ -7,6 +7,19 @@ $data      = $_GET;
 Validate::testNull($data['sales_order_id'], "销售订单ID不能为空");
 Validate::testNull($data['goods_id'], "skuId不能为空");
 
+$status = Sales_Order_ExportStatus::GENERATING;
+$taskInfo   = Sales_Order_Export_Task::getBySalesOrderId($data['sales_order_id']);
+if (!empty($taskInfo) && $taskInfo['export_status'] == $status) {
+
+        throw new ApplicationException("该订单正在生成下载文件，无法操作");
+
+}else if(!empty($taskInfo)){
+    Sales_Order_Export_Task::update(array(
+        'task_id'           => $taskInfo['task_id'],
+        'export_status'     => Sales_Order_ExportStatus::WAITING,
+    ));
+}
+
 $listProductInfo    = Product_Info::getByMultiGoodsId(array($data['goods_id']));
 Validate::testNull($listProductInfo, "参数错误");
 $listProductId      = ArrayUtility::listField($listProductInfo,'product_id');

@@ -368,9 +368,9 @@
 
                 if (0 != response.code) {
 
-                    showMessage('错误', response.message);
+                    alert(response.message);
 
-                    return  ;
+                    return  false;
                 }else{
 
                     // 更新SPU数量
@@ -383,6 +383,7 @@
                 }
 
             }, 'json');
+
             $(this).removeClass('btn-primary');
             $(this).removeClass('btn-success');
             $(this).addClass('btn-default');
