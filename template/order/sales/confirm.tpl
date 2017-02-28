@@ -33,6 +33,7 @@
                 <div class="box-header with-border">
                     <input type="checkbox" name="select-all"> 全选
                     <button class='btn btn-primary' type='button' id='delMulti'><i class='fa fa-trash'></i>批量删除</button>
+                    <a href="/order/sales/add_goods.php?sales_order_id=<{$salesOrderId}>" type="button" class="btn btn-primary">添加产品</a>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
@@ -40,44 +41,41 @@
                             <thead>
                                 <tr>
                                     <th>选择</th>
-                                    <th>SKU编号</th>
+                                    <th>操作</th>
                                     <th>关联SPU</th>
                                     <th>买款ID</th>
                                     <th>产品图片</th>
-                                    <th>SKU名称</th>
                                     <th>三级分类</th>
-                                    <th>款式</th>
-                                    <th>子款式</th>
                                     <th>规格重量</th>
                                     <th>规格尺寸</th>
                                     <th>颜色</th>
-                                    <th>主料材质</th>
                                     <th>出货工费</th>
                                     <th>备注</th>
                                     <th>数量</th>
-                                    <th>操作</th>
+                                    <th>款式</th>
+                                    <th>子款式</th>
+                                    <th>主料材质</th>
+                                    <th>SKU编号</th>
+                                    <th>SKU名称</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <{foreach from=$data.listGoodsInfo item=item}>
                                     <tr <{if $item.online_status eq $data.onlineStatus.offline}> class="danger"<{/if}>>
                                         <td><input type="checkbox" name="goods_id[]" value="<{$item.goods_id}>" /></td>
-                                        <td><{$item.goods_sn}></td>
+                                        <td>
+                                            <a href="/order/sales/delete_sku.php?sales_order_id=<{$salesOrderId}>&goods_id=<{$item.goods_id}>" class="btn btn-danger btn-xs delete-goods"><i class="fa fa-trash"></i> </a>
+                                        </td>
                                         <td><{$item.spu_sn_list}></td>
                                         <td><{$item.source}></td>
                                         <td>
                                             <a href="<{if $item.image_url !=''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target='_blank'>
                                                 <img src="<{if $item.image_url !=''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60">
                                             </a>
-                                        </td>
-                                        <td><{$item.goods_name}></td>
-                                        <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>                                            
-                                        <td><{$data.indexStyleId[$data.indexStyleId[$item.style_id]['parent_id']]['style_name']}></td>
-                                        <td><{$data.indexStyleId[$item.style_id]['style_name']}></td>
+                                        </td>                                        <td><{$data.mapCategoryInfo[$item.category_id]['category_name']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.size_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
-                                        <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
                                         <td class="item-cost">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" value="<{$indexSales[$item.goods_id]['cost']}>" name="cost" style="width:66px;" goodsid="<{$item.goods_id}>">
@@ -100,9 +98,11 @@
                                                 </span>
                                             </div>
                                         </td>
-                                        <td>
-                                            <a href="/order/sales/delete_sku.php?sales_order_id=<{$salesOrderId}>&goods_id=<{$item.goods_id}>" class="btn btn-danger btn-xs delete-goods"><i class="fa fa-trash"></i> </a>
-                                        </td>
+                                        <td><{$data.indexStyleId[$data.indexStyleId[$item.style_id]['parent_id']]['style_name']}></td>
+                                        <td><{$data.indexStyleId[$item.style_id]['style_name']}></td>
+                                        <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
+                                        <td><{$item.goods_sn}></td>
+                                        <td><{$item.goods_name}></td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>

@@ -40,7 +40,7 @@ foreach ($listExportTask as $exportTask) {
     );
 
     // 修改状态为正在执行
-    Produce_Order_Export_Task::update($data);
+    Sales_Order_Export_Task::update($data);
 
     echo "生成销售订单开始!\n";
     echo "订单号为{$salesOrderId}\n";
