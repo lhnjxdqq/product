@@ -14,6 +14,22 @@ $produceOrderId = (int) $_POST['produce_order_id'];
 $productId      = (int) $_POST['product_id'];
 $quantity       = (int) $_POST['quantity'];
 
+$status = Produce_Order_ExportStatus::GENERATING;
+$taskInfo   = Produce_Order_Export_Task::getByProduceOrderId($produceOrderId);
+if (!empty($taskInfo) && $taskInfo['export_status'] == $status) {
+    
+    echo json_encode(array(
+        'statusCode'    => 1,
+        'statusInfo'    => '该订单正在生成下载文件，无法操作',
+    ));
+    exit;
+}else if(!empty($taskInfo)){
+    Produce_Order_Export_Task::update(array(
+        'task_id'           => $taskInfo['task_id'],
+        'export_status'     => Sales_Order_ExportStatus::WAITING,
+    ));
+}
+
 if (!$produceOrderId || !$productId || $quantity <= 0) {
 
     echo json_encode(array(

@@ -14,6 +14,19 @@ if (!$produceOrderInfo || $produceOrderInfo['delete_status'] == Produce_Order_De
     Utility::notice('订单不存在或已删除');
 }
 
+$status = Produce_Order_ExportStatus::GENERATING;
+$taskInfo   = Produce_Order_Export_Task::getByProduceOrderId($produceOrderId);
+if (!empty($taskInfo) && $taskInfo['export_status'] == $status) {
+    
+    Utility::notice("该订单正在生成下载文件，无法操作",'/order/produce/index.php');
+    exit;
+}else if(!empty($taskInfo)){
+    Produce_Order_Export_Task::update(array(
+        'task_id'           => $taskInfo['task_id'],
+        'export_status'     => Sales_Order_ExportStatus::WAITING,
+    ));
+}
+
 $condition['produce_order_id']  = $produceOrderId;
 $condition['delete_status']     = Produce_Order_Product_DeleteStatus::NORMAL;
 
