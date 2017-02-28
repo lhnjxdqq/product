@@ -134,11 +134,11 @@ class   Sales_Order_Info {
 
         $sales_order_id = $row['sales_order_id']+1;
 
-		$length	= 7;
-		$idLength	= strlen($sales_order_id);
-		$randNumber	= $length - $idLength;
-		
-		return  date('Ymd',time()).$sales_order_id.rand(pow(10,$randNumber-1),pow(10,$randNumber));
+        $length = 7;
+        $idLength   = strlen($sales_order_id);
+        $randNumber = $length - $idLength;
+        
+        return  date('Ymd',time()).$sales_order_id.rand(pow(10,$randNumber-1),pow(10,$randNumber));
     }
     /**
      * 根据条件获取数据列表
@@ -272,11 +272,14 @@ class   Sales_Order_Info {
      */ 
     static  private function _conditionOrderStatusId (array $condition) {
 
-        if (empty($condition['sales_order_status'])) {
+        if (!isset($condition['sales_order_status'])) {
 
-            return  '';
+            return  "`sales_order_status` != " . Sales_Order_Status::DELETE;;
         }
-
+        if(empty($condition['sales_order_status'])){
+            
+            return ;
+        }
         return  "`sales_order_status` = " . (int) $condition['sales_order_status'];
     }
     

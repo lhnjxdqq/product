@@ -96,9 +96,15 @@ class Produce_Order_List {
      */
     static private function _conditionByStatusCode (array $condition) {
 
-        return  !$condition['order_status_code']
-                ? ''
-                : '`poi`.`status_code` = "' . (int) $condition['order_status_code'] . '"';
+        if (!isset($condition['order_status_code'])) {
+
+            return  " `poi`.`status_code` != " . Produce_Order_StatusCode::DELETED;;
+        }
+        if(empty($condition['order_status_code'])){
+            
+            return ;
+        }
+        return  " `poi`.`status_code` = " . (int) $condition['order_status_code'];
     }
 
     /**

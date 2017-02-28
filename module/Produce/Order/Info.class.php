@@ -110,11 +110,11 @@ class   Produce_Order_Info {
         $data       = self::_getStore()->fetchOne($sql);
         $insertId   = $data['Auto_increment'];
 
-		$length	= 7;
-		$idLength	= strlen($insertId);
-		$randNumber	= $length - $idLength;
-		
-		return  'P' . date('Ymd',time()) . $insertId . rand(pow(10,$randNumber-1),pow(10,$randNumber));
+        $length = 7;
+        $idLength   = strlen($insertId);
+        $randNumber = $length - $idLength;
+        
+        return  'P' . date('Ymd',time()) . $insertId . rand(pow(10,$randNumber-1),pow(10,$randNumber));
     }
 
     /**
