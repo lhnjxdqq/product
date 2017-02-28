@@ -4,6 +4,8 @@ ignore_user_abort();
 
 require_once dirname(__FILE__) . '/../init.inc.php';
 
+$searchOffset = 10;
+
 // 获取未处理的记录
 $running = Cart_Join_Spu_Task::getByRunStatus(Cart_Join_Spu_RunStatus::RUNNING);
 //判断是否有命令在运行
@@ -39,23 +41,18 @@ foreach($standby as $key=>$info){
 
     if(!empty($condition['search_value_list'])){
         
-        $explodeKeyword = explode(" ",$condition['search_value_list']); 
-        
-        for($row=0; $row<count($explodeKeyword); $row+= 10 ){
-            
-            $searchValuelist    = array();
-            for($key = $row ; $key < $row+10 ; $key++){
-                
-                $searchValuelist[] = $explodeKeyword[$key];
-            }
+        $explodeKeyword = array_filter(array_values(explode(" ",$condition['search_value_list']))); 
+
+        foreach(array_chunk($explodeKeyword,$searchOffset) as $searchValuelist){
+     
             $condition['search_value_list'] = implode(" " , array_unique(array_filter($searchValuelist)));
             $condition['online_status']     = Spu_OnlineStatus::ONLINE;
             $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
             $countSpuTotal              = Search_Spu::countByCondition($condition);
 
-            for($offset=0; $offset<=$countSpuTotal; $offset+= 100 ){
+            for($offset=0; $offset<=$countSpuTotal; $offset++ ){
         
-                $listSpuInfo            = Search_Spu::listByCondition($condition, array());
+                $listSpuInfo            = Search_Spu::listByCondition($condition, array(),$offset,1);
                                          
                 $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
@@ -139,15 +136,11 @@ foreach($standby as $key=>$info){
     }else{
         $condition['online_status']     = Spu_OnlineStatus::ONLINE;
         $condition['delete_status']     = Spu_DeleteStatus::NORMAL;
-        $countSpuTotal              = isset($condition['category_id'])
-                                  ? Search_Spu::countByCondition($condition)
-                                  : Spu_List::countByCondition($condition);
+        $countSpuTotal              = Spu_List::countByCondition($condition);
         
-        for($row=0; $row<=$countSpuTotal; $row+= 100 ){
+        for($row=0; $row<=$countSpuTotal; $row+= 1 ){
     
-            $listSpuInfo            = isset($condition['category_id'])
-                                     ? Search_Spu::listByCondition($condition, array(), $row, 100)
-                                     : Spu_List::listByCondition($condition, array(), $row, 100);
+            $listSpuInfo            = Spu_List::listByCondition($condition, array(), $row, 1);
                                      
             $spuIds         = ArrayUtility::listField($listSpuInfo,'spu_id');
 
