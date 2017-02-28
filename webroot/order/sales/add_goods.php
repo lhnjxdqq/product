@@ -12,6 +12,19 @@ Validate::testNull($salesOrderId,'销售订单ID不能为空');
 $salesOrderInfo             = Sales_Order_Info::getById($salesOrderId);
 Validate::testNull($salesOrderInfo ,'不存在的销售订单ID');
 
+$status = Sales_Order_ExportStatus::GENERATING;
+$taskInfo   = Sales_Order_Export_Task::getBySalesOrderId($salesOrderId);
+if (!empty($taskInfo) && $taskInfo['export_status'] == $status) {
+    
+    Utility::notice("该订单正在生成下载文件，无法操作",'/order/sales/index.php');
+    exit;
+}else if(!empty($taskInfo)){
+    Sales_Order_Export_Task::update(array(
+        'task_id'           => $taskInfo['task_id'],
+        'export_status'     => Sales_Order_ExportStatus::WAITING,
+    ));
+}
+
 //获取对应销售报价单中的所有SPU
 $salesQuotationId           = explode(',', $salesOrderInfo['sales_quotation_id']);
 
