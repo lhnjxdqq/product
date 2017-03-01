@@ -32,10 +32,18 @@ class Search_BorrowSample {
      */
     static public function countByCondition (array $condition) {
 
-        $sqlBase        = 'SELECT `stsi`.`spu_id` AS `cnt` FROM `sample_storage_spu_info` AS `stsi` LEFT JOIN ';
+        $sqlBase        = 'SELECT `stsi`.`spu_id` AS `cnt`, SUM(
+                IF (
+                    `bsi`.`start_time` <= "'. $condition['end_time'] .'"
+                    AND `bsi`.`estimate_time` >= " '.$condition['start_time'].'",
+                    `bsi`.`borrow_quantity`,
+                    0
+                )
+            ) AS sum_borrow_quantity ,`stsi`.`quantity` FROM `sample_storage_spu_info` AS `stsi` LEFT JOIN ';
         $sqlJoin        = implode(' LEFT JOIN ', self::_getJoinTables());
         $sqlCondition   = self::_condition($condition);
         $sqlGroup       = self::_group();
+        $sqlHaving      = ' HAVING (`stsi`.`quantity` > sum_borrow_quantity OR sum_borrow_quantity IS NULL) ';
         $sql            = $sqlBase . $sqlJoin . $sqlCondition . self::_subqueryByCondition($condition) . $sqlGroup;
         $data           = Spu_Info::query($sql);
 

@@ -65,7 +65,7 @@ class Search_Spu_Cart{
 
         foreach($standby as $key=>$info){
 
-            echo "正在执行借版ID为" . $condition['borrow_id'] . "的任务\n";
+            echo "正在执行借版ID为" . $info['borrow_id'] . "的任务\n";
             $condition                      = json_decode($info['condition_data'],true);
 
             if(!empty($condition['search_value_list'])){
