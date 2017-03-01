@@ -111,7 +111,7 @@ class   Spu_Info {
 
         return          empty($sqlFiltered) ? '' : ' WHERE ' . implode(' AND ', $sqlFiltered);
     }
-	
+    
     /**
      * 根据是否有图片条件拼接WHERE子句
      *
@@ -122,7 +122,7 @@ class   Spu_Info {
 
         return  !isset($condition['image_status']) ? '' : '`image_total` > 0';
     }
-	
+    
     /**
      * 根据删除条件拼接WHERE子句
      *
@@ -303,6 +303,21 @@ class   Spu_Info {
         return          self::_getStore()->execute($sql);
     }
 
+    /**
+     * 根据spuId获取sqp的最高工费
+     *
+     * @param int   $spuId spuId
+     * return float 
+     */
+    static public function getMaxCostBySpuId($spuId){
+        
+        Validate::testNull($spuId , 'spuId不能为空');
+        $listSpuGoodsInfo   = Spu_List::listSpuGoodsInfo($spuId);
+        $spuSpuInfo = ArrayUtility::listField($listSpuGoodsInfo,'sale_cost');
+
+        return  max($spuSpuInfo);
+    }
+    
     static public function query ($sql) {
 
         return  self::_getStore()->fetchAll($sql);

@@ -148,8 +148,7 @@
                 <div class="box-header with-border">
                     <label>
                       <input type="checkbox" name='select-all'> 全选
-                    </label> 
-                    <a href="/sample/search_sku_join_cart.php?<{$smarty.get|http_build_query}>" class="btn btn-primary btn-sm" id="searchAddMulti" style="margin-left: 10px;">搜索结果 <i class='fa fa-plus'></i> <i class="fa fa-shopping-cart"></i></a>
+                    </label>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="createSpu" style="margin-left: 10px;"><i class="fa fa-paper-plane-o"></i> 创建SPU</a>
                 </div>
                 <div class="box-body">

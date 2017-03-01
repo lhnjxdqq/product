@@ -1,28 +1,28 @@
 <?php
 /**
- * Ä£ÐÍ ¹ºÎï³µ¼ÓSPUÈÎÎñ
+ * æ¨¡åž‹ è´­ç‰©è½¦åŠ SPUä»»åŠ¡
  */
 class   Cart_Join_Sample_Task {
 
     use Base_Model;
     /**
-     * Êý¾Ý¿âÅäÖÃ
+     * æ•°æ®åº“é…ç½®
      */
     const   DATABASE    = 'product';
 
     /**
-     * ±íÃû
+     * è¡¨å
      */
     const   TABLE_NAME  = 'cart_join_sample_task';
 
     /**
-     * ×Ö¶Î
+     * å­—æ®µ
      */
-    const   FIELDS      = 'task_id,user_id,condition_data,run_status,create_time,run_time,finish_time';
+    const   FIELDS      = 'task_id,borrow_id,condition_data,run_status,create_time,run_time,finish_time';
     /**
-     * ÐÂÔö
+     * æ–°å¢ž
      *
-     * @param   array   $data   Êý¾Ý
+     * @param   array   $data   æ•°æ®
      */
     static  public  function create (array $data) {
 
@@ -39,9 +39,9 @@ class   Cart_Join_Sample_Task {
     }
 
     /**
-     * ¸üÐÂ
+     * æ›´æ–°
      *
-     * @param   array   $data   Êý¾Ý
+     * @param   array   $data   æ•°æ®
      */
     static  public  function update (array $data) {
 
@@ -56,32 +56,32 @@ class   Cart_Join_Sample_Task {
     }
     
     /**
-     * ¸ù¾Ý×´Ì¬»ñÈ¡Êý¾Ý
+     * æ ¹æ®çŠ¶æ€èŽ·å–æ•°æ®
      *
-     * @param  int  $runStatus  ×´Ì¬
-     * @return array            Êý¾Ý
+     * @param  int  $runStatus  çŠ¶æ€
+     * @return array            æ•°æ®
      */
     static  public function getByRunStatus($runStatus = null){
         
-        Validate::testNull($runStatus,'×´Ì¬²»ÄÜÎª¿Õ');
+        Validate::testNull($runStatus,'çŠ¶æ€ä¸èƒ½ä¸ºç©º');
         $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `run_status` = ' . $runStatus;
         
         return self::_getStore()->fetchAll($sql);
     }
     
     /**
-     * ¸ù¾ÝÓÃ»§²éÑ¯ÈÎÎñ
+     * æ ¹æ®å€Ÿæ¿IdæŸ¥è¯¢ä»»åŠ¡
      * 
-     *  @param  $userId     ÓÃ»§ID
-     *  @return array       Êý¾Ý    
+     *  @param  $userId     ç”¨æˆ·ID
+     *  @return array       æ•°æ®    
      */
-    static  public function getByUserIdAndRunStatus($userId){
+    static  public function getByBorrowIdAndRunStatus($borrowId){
         
-        if(empty($userId)){
+        if(empty($borrowId)){
             
-            throw  new ApplicationException('ÓÃ»§Id²»ÄÜÎª¿Õ');
+            throw  new ApplicationException('å€Ÿæ¿Idä¸èƒ½ä¸ºç©º');
         }
-        $sql ='SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `user_id`=' . $userId .' order by `task_id` DESC' ;
+        $sql ='SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `borrow_id`=' . $borrowId .' order by `task_id` DESC' ;
 
         return self::_getStore()->fetchOne($sql);
     }
