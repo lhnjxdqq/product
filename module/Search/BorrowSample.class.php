@@ -44,7 +44,7 @@ class Search_BorrowSample {
         $sqlCondition   = self::_condition($condition);
         $sqlGroup       = self::_group();
         $sqlHaving      = ' HAVING (`stsi`.`quantity` > sum_borrow_quantity OR sum_borrow_quantity IS NULL) ';
-        $sql            = $sqlBase . $sqlJoin . $sqlCondition . self::_subqueryByCondition($condition) . $sqlGroup;
+        $sql            = $sqlBase . $sqlJoin . $sqlCondition . self::_subqueryByCondition($condition) . $sqlGroup . $sqlHaving;
         $data           = Spu_Info::query($sql);
 
         return          count($data);
