@@ -392,7 +392,8 @@ class Search_BorrowSample {
             ' SUM(
                 IF (
                     `bsi`.`start_time` <= "'. $condition['end_time'] .'"
-                    AND `bsi`.`estimate_time` >= " '.$condition['start_time'].'",
+                    AND `bsi`.`estimate_time` >= " '.$condition['start_time'].'"
+                    AND `bsi`.`borrow_id` != "'.$condition['borrow_id'] .'",
                     `bsi`.`borrow_quantity`,
                     0
                 )
