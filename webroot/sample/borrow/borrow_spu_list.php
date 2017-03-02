@@ -46,6 +46,24 @@ $page                       = new PageList(array(
 ));
 
 $listSpuInfo                = Borrow_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
+$listSpuSn                  = implode(" ",array_unique(ArrayUtility::listField($listSpuInfo,'spu_sn')));
+$condition['search_type']       = 'spu_sn';
+$condition['search_value_list'] = $listSpuSn;
+$condition['borrow_id']         = $borrowId;
+$condition['start_time']    = $borrowInfo['start_time'];
+$condition['end_time']      = $borrowInfo['end_time'];
+$condition['online_status'] = Spu_OnlineStatus::ONLINE;
+$condition['delete_status'] = Spu_DeleteStatus::NORMAL;
+$condition['is_delete']     = Spu_DeleteStatus::NORMAL;
+
+$listBorrowSpuInfo          = Search_BorrowSample::listByCondition($condition, array());
+$mapGroupSpuId              = ArrayUtility::groupByField($listBorrowSpuInfo,'spu_id');
+
+$spuSampleStorageInfo       = array();
+foreach($mapGroupSpuId as $spuId => $indexSpuIdInfo){
+
+    $spuSampleStorageInfo[$spuId]  = ArrayUtility::indexByField($indexSpuIdInfo,'sample_storage_id'); 
+}
 
 $listWeightValueId          = ArrayUtility::listField($listSpuInfo,'weight_value_id');
 $listMaterialValueId          = ArrayUtility::listField($listSpuInfo,'material_value_id');
@@ -143,6 +161,7 @@ $template->assign('mainMenu', Menu_Info::getMainMenu());
 $template->assign('data',$data);
 $template->assign('condition',$condition);
 $template->assign('borrowInfo',$borrowInfo);
+$template->assign('spuSampleStorageInfo',$spuSampleStorageInfo);
 $template->assign('countSpuBorrow',$countSpuBorrow);
 $template->assign('valuationType',$valuationType);
 $template->assign('categoryQuantity',json_encode($categoryQuantity));
