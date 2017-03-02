@@ -24,7 +24,7 @@ if (!empty($taskInfo) && $taskInfo['export_status'] == $status) {
         'export_status'     => Sales_Order_ExportStatus::WAITING,
     ));
 }
-
+$listValuatimType = Valuation_TypeInfo::getValuationType();
 //获取对应销售报价单中的所有SPU
 $salesQuotationSpuInfo = Sales_Quotation_Spu_Info::getBySalesQuotationId(array($salesOrderInfo['sales_quotation_id']));
 $groupSpuInfo       = ArrayUtility::groupByField($salesQuotationSpuInfo,'spu_id');
@@ -157,7 +157,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['remark']        = $indexSales[$goodsId]['remark'];
     $goodsInfo['quantity']      = $indexSales[$goodsId]['goods_quantity'];
     $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
-    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
+    $goodsInfo['source']        = implode(',', array_unique($groupProductIdSourceId[$goodsId]));
 
 }
 
@@ -177,6 +177,7 @@ $data['onlineStatus']               = array(
 
 $template = Template::getInstance();
 $template->assign('data', $data);
+$template->assign('listValuatimType', $listValuatimType);
 $template->assign('indexSales', $indexSales);
 $template->assign('salesOrderId', $salesOrderId);
 $template->assign('salesOrderInfo', $salesOrderInfo);

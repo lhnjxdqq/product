@@ -159,6 +159,7 @@ class Goods_List {
             '`assistant_matetial_info`.`spec_value_id` AS `assistant_material_value_id`',
             '`goods_info`.`category_id`',
             '`goods_info`.`self_cost`',
+            '`goods_info`.`valuation_type`',
             '`goods_info`.`sale_cost`',
             '`goods_info`.`goods_remark`',
             '`goods_info`.`online_status`',

@@ -104,6 +104,7 @@
                                     <th>颜色</th>
                                     <th>主料材质</th>
                                     <th>出货工费</th>
+                                    <th>计价类型</th>
                                     <th>备注</th>
                                     <th>下单件数</th>
                                     <th>出货件数</th>
@@ -128,6 +129,7 @@
                                         <td><{$data.mapSpecValueInfo[$item.color_value_id]['spec_value_data']}></td>
                                         <td><{$data.mapSpecValueInfo[$item.material_value_id]['spec_value_data']}></td>
                                         <td><{$indexSales[$item.goods_id]['cost']}></td>
+                                        <td><{$listValuatimType[$item.valuation_type]}></td>
                                         <td><{$item.remark}></td>
                                         <td><{$item.quantity}></td>
                                         <td><{$item.supplies_quantity}></td>

@@ -50,6 +50,7 @@
                                     <th>规格尺寸</th>
                                     <th>颜色</th>
                                     <th>出货工费</th>
+                                    <th>计价类型</th>
                                     <th>备注</th>
                                     <th>数量</th>
                                     <th>款式</th>
@@ -85,6 +86,7 @@
                                                 </span>
                                             </div>
                                         </td>
+                                        <td><{$listValuatimType[$item.valuation_type]}></td>
                                         <td>
                                             <input type='hidden' name='goods_id<{$item.goods_id}>[weight]' value='<{$data.mapSpecValueInfo[$item.weight_value_id]['spec_value_data']}>'>
                                             <input type='text' value='<{$item.remark}>' goods-id="<{$item.goods_id}>" class='goods-remark' name='goods_id<{$item.goods_id}>[goods_remark]'></td>

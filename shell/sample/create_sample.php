@@ -36,37 +36,40 @@ foreach($listSampleStorageSpuInfo as $key => $info){
     $data[] = $jsonData;
 }
 
-$mapEnumeration = array();
-$mapValuation       = Valuation_TypeInfo::getValuationType();
-$listCategoryName   = ArrayUtility::listField($data,'categoryLv3');
 $mapStyleInfo       = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
-$mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
-$listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
-if (empty($listGoodsType)) {
-    exit("表中无匹配产品类型,请修改后重新上传\n");
-}
-$mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
-$mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
-$mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
-$mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
-$mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
-$mapEnumeration =array(
-    'mapCategory'          => $mapCategoryName,
-    'supplierMarkupRuleId' => $sampleInfo['supplier_markup_rule_id'],
-    'mapTypeSpecValue'     => $mapTypeSpecValue,
-    'mapIndexSpecAlias'    => $mapIndexSpecAlias,
-    'mapSpecValue'         => $mapSpecValue,
-    'mapSizeId'            => $mapSizeId,
-    'mapStyle'             => $mapStyleInfo,
-    'mapSpecInfo'          => $mapSpecInfo,
-    'mapValuation'         => $mapValuation,
-);
+$mapValuation       = Valuation_TypeInfo::getValuationType();
 
 foreach ($data as $offsetRow => $row) {
 
-   $spuId = Quotation::createSampleQuotation($row,$mapEnumeration,$sampleInfo['supplier_id']);
+    $listCategoryName   = array($row['categoryLv3']);
+    $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
+    $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
+    if (empty($listGoodsType)) {
+        exit("表中无匹配产品类型,请修改后重新上传\n");
+    }
+    $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
+    $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
+    $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
+    $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
+    $mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
 
-   foreach($spuId as $val){
+    $mapEnumeration =array(
+        'mapCategory'          => $mapCategoryName,
+        'supplierMarkupRuleId' => $sampleInfo['supplier_markup_rule_id'],
+        'mapTypeSpecValue'     => $mapTypeSpecValue,
+        'mapIndexSpecAlias'    => $mapIndexSpecAlias,
+        'mapSpecValue'         => $mapSpecValue,
+        'mapSizeId'            => $mapSizeId,
+        'mapStyle'             => $mapStyleInfo,
+        'mapSpecInfo'          => $mapSpecInfo,
+        'mapValuation'         => $mapValuation,
+    );
+
+    $spuId = Quotation::createSampleQuotation($row,$mapEnumeration,$sampleInfo['supplier_id']);
+
+    $mapEnumeration = array();
+    sleep(5);
+    foreach($spuId as $val){
        
        $smapleSpuInfo   = array(
             'sample_storage_id' => $sampleInfo['sample_storage_id'],
