@@ -11,6 +11,7 @@ $orderBy    = array(
 $mapCustomer    = ArrayUtility::indexByField(ArrayUtility::searchBy(Customer_Info::listAll(),array('delete_status'=>Customer_DeleteStatus::NORMAL)),'customer_id');
 
 $mapSalesperson = ArrayUtility::indexByField(Salesperson_Info::listAll(),'salesperson_id');
+$mapCommodityConsultant = ArrayUtility::indexByField(Commodity_Consultant_Info::listAll(),'commodity_consultant_id');
 
 $mapUser    = ArrayUtility::indexByField(User_Info::listAll(),'user_id');
 
@@ -53,6 +54,7 @@ $template->assign('listOrderInfo',$listOrderInfo);
 $template->assign('mapSalesperson',$mapSalesperson);
 $template->assign('statusList',$mapOrderStatus);
 $template->assign('condition',$condition);
+$template->assign('mapCommodityConsultant',$mapCommodityConsultant);
 $template->assign('mapUser',$mapUser);
 $template->assign('mapCustomer',$mapCustomer);
 $template->assign('mainMenu',Menu_Info::getMainMenu());
