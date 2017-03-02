@@ -92,7 +92,7 @@
                                     <th>款数</th> 
                                     <th>下单件数</th>
                                     <th>重量</th>
-                                    <th>订单金额</th>
+                                    <th>参考工费</th>
                                     <th>客户名称</th>
                                     <th>渠道拓展</th>
                                     <th>商品顾问</th>
@@ -109,7 +109,7 @@
                                         <td><{$item.count_goods}></td>
                                         <td><{$item.quantity_total}></td>
                                         <td><{$item.reference_weight}></td>
-                                        <td><{$item.order_amount}></td>
+                                        <td><{$item.estimated_cost}></td>
                                         <td><{$mapCustomer[$item.customer_id]['customer_name']}></td>
                                         <td><{$mapSalesperson[$item.salesperson_id]['salesperson_name']}></td>
                                         <td><{$mapCommodityConsultant[$item.commodity_consultant_id]['commodity_consultant_name']}></td>
