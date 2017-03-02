@@ -104,7 +104,7 @@
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default reduce-quantity"><i class="fa fa-minus"></i></button>
                                             </span>
-                                            <input type="text" class="form-control borrow_quantity" name="quantity" sample-storage-id=<{$item.sample_storage_id}> spu-id=<{$item.spu_id}> value="<{$item.borrow_quantity}>" style="width: 40px;text-align: center;">
+                                            <input type="text" class="form-control borrow_quantity" max-quoantity=<{$spuSampleStorageInfo[$item.spu_id][$item.sample_storage_id]['quantity']- $spuSampleStorageInfo[$item.spu_id][$item.sample_storage_id]['sum_borrow_quantity']}> name="quantity" sample-storage-id=<{$item.sample_storage_id}> spu-id=<{$item.spu_id}> value="<{$item.borrow_quantity}>" style="width: 40px;text-align: center;">
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default increase increase-quantity"><i class="fa fa-plus"></i></button>
                                             </span>
@@ -182,11 +182,12 @@ $(document).delegate('.reduce-quantity, .increase-quantity', 'click', function (
     var self            = $(this);
     var input           = $(this).parent().siblings('input[name="quantity"]');
     var quantity        = parseInt(input.val());
+    var maxQuantity     = parseInt(input.attr("max-quoantity"));
     var sampleStorageId = parseInt(input.attr("sample-storage-id"));
     var spuId           = parseInt(input.attr("spu-id"));
     var quantity        = parseInt(input.val());
     var borrowId        = <{$smarty.get.borrow_id|default:0}>;
-    
+
     if ($(this).hasClass('reduce-quantity')) {
 
         quantity--;
@@ -199,6 +200,11 @@ $(document).delegate('.reduce-quantity, .increase-quantity', 'click', function (
 
         alert('数量不能小于1');
         return;
+    }
+    if (quantity > maxQuantity) {
+
+        alert('超出最大库存,最大库存'+maxQuantity);
+        return ;
     }
     $.ajax({
         url: '/sample/borrow/ajax_change_borrow_spu.php',
@@ -259,8 +265,14 @@ $(".borrow_quantity").blur(function(){
     var borrowId        =   <{$smarty.get.borrow_id|default:0}>,
         spuId           =  $(this).attr("spu-id"),
         borrowQuantity  =  $(this).val(), 
-        sampleStorageId =  $(this).attr("sample-storage-id");
+        sampleStorageId =  $(this).attr("sample-storage-id"),
+        maxQuantity     =  $(this).attr("max-quoantity");
+		
+    if (borrowQuantity>maxQuantity) {
 
+        alert('超出最大库存,最大库存'+maxQuantity);
+        return ;
+    }
     $.ajax({
         url: '/sample/borrow/ajax_change_borrow_spu.php',
         type: 'POST',

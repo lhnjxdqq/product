@@ -36,15 +36,10 @@ foreach($sampleType as $typeId=>$typeName){
         'sample_type_name'   => $typeName,
     );
 }
-$condition['delete_status'] = Spu_DeleteStatus::NORMAL;
 
-// 判断上下架状态
-if ( !empty($condition['online_status']) ) {
-    
-    if ( ($condition['online_status'] != 1) && ($condition['online_status'] != 2) ) {
-        Utility::notice('上下架状态不对,请重试');
-    }
-}
+$condition['online_status'] = Spu_OnlineStatus::ONLINE;
+$condition['delete_status'] = Spu_DeleteStatus::NORMAL;
+$condition['is_delete']     = Spu_DeleteStatus::NORMAL;
 
 $perpage                    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 $countSpuTotal              = Search_BorrowSample::countByCondition($condition);
