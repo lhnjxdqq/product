@@ -68,7 +68,7 @@ foreach ($data as $offsetRow => $row) {
     $spuId = Quotation::createSampleQuotation($row,$mapEnumeration,$sampleInfo['supplier_id']);
 
     $mapEnumeration = array();
-    sleep(5);
+    sleep(1);
     foreach($spuId as $val){
        
        $smapleSpuInfo   = array(
