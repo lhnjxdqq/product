@@ -90,7 +90,7 @@
                                     <th rowspan="2">辅料材质</th>
                                     <th rowspan="2">款式</th>
                                     <th rowspan="2">子款式</th>
-                                    <th rowspan="2">进货工费</th>
+                                    <th rowspan="2">K红进货工费</th>
                                     <th rowspan="2">计价类型</th>
                                     <th rowspan="2">样板数量</th>
                                     <th rowspan="2">备注</th>

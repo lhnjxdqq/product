@@ -17,7 +17,8 @@ $indexSupplierIdInfo= ArrayUtility::indexByField(Supplier_Info::listAll(),'suppl
 
 $supplierInfo       = Supplier_Info::getById($sampleStorageInfo['supplier_id']);
 $colorInfo          = json_decode($supplierInfo["price_plus_data"],true);
-$mainColorId        = $colorInfo["base_color_id"];
+$kRedSpecValueInfo  = Spec_Value_Info::getBySpecValueData('K红');
+$kRedSpecValueId    = $kRedSpecValueInfo['spec_value_id'];
 
 //用户
 $mapUser        = ArrayUtility::indexByField(ArrayUtility::searchBy(User_Info::listAll(),array('enable_status'=>1)),'user_id');
@@ -170,7 +171,7 @@ foreach ($listSpuInfo as  &$spuInfo) {
                     
                     $mapAssistantMaterialValue[$spuId][]  = $specValueData;
                 }
-                if($val['spec_value_id'] == $mainColorId) {
+                if($val['spec_value_id'] == $kRedSpecValueId) {
 
                     $spuInfo['cost']  = $indexGoodsIdCost[$goodsId];
                 }
