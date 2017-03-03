@@ -14,9 +14,9 @@ if($borrowInfo['status_id'] != Borrow_Status::NEW_BORROW){
 }
 
 Borrow_Info::update(array(
-    
-    'borrow_id' => $_GET['borrow_id'],
-    'status_id' => Borrow_Status::ISSUE,
+    'borrow_id'     => $_GET['borrow_id'],
+    'status_id'     => Borrow_Status::ISSUE,
+    'outgoing_time' => date('Y-m-d H:i:s'),
 ));
 
 Utility::notice('操作成功','/sample/borrow/index.php');

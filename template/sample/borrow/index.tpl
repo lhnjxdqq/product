@@ -76,11 +76,13 @@
                                 <thead>
                                     <tr>
                                         <th>销售员</th>
-                                        <th>借板时间</th>
+                                        <th>创建时间</th>
                                         <th>样板数量</th>
                                         <th>客户名称</th>
                                         <th>状态</th>
+                                        <th>预计借板时间</th>
                                         <th>预计归还时间</th>
+                                        <th>出库时间</th>
                                         <th>归还时间</th>
                                         <th>备注</th>
                                         <th style='text-align:center;'>操作</th>
@@ -94,7 +96,9 @@
                                             <td><{$item.sample_quantity}></td>
                                             <td><{$customerInfo[$item.customer_id]['customer_name']}></td>
                                             <td><{$borrowStatusInfo[$item.status_id]['status_name']}></td>
+                                            <td><{$item.start_time}></td>
                                             <td><{$item.end_time}></td>
+                                            <td><{$item.outgoing_time}></td>
                                             <td><{$item.return_time}></td>
                                             <td><{$item.remark}></td>
                                             <td>
