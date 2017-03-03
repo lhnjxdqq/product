@@ -127,7 +127,7 @@ $mapEnumeration =array(
 
 foreach ($list as $offsetRow => $row) {
     
-    $line  = $offsetRow+3;
+    $line  = $offsetRow+2;
     try{
         
         Validate::testNull($row['quantity'],'样板数量不能为空');
