@@ -142,7 +142,7 @@ class   Quotation {
 
         $data = self::testQuotation($data, $mapEnumeration, $isSkuCode, $supplierId);
         $content['suppplier_id'] = $supplierId;
-
+        self::runSleep(10);
         $colorCostInfo            = self::getColorCostByCostAndsupplierMarkupRuleId($data['cost'],$mapEnumeration['supplierMarkupRuleId']);
         $listSizeInfo             = self::getSizeByCategory($data['category_id']);
         
@@ -357,6 +357,13 @@ class   Quotation {
     }
     
     /**
+     * 程序睡眠(缓解系统内存压力)
+     */
+    static public function runSleep($time){
+        
+        sleep($time);
+    }
+    /**
      *  修改新报价导入报价单
      *
      * @param   array   $data             数据 
@@ -367,6 +374,7 @@ class   Quotation {
      */
     static public function createSampleQuotation(array $data, array $mapEnumeration,$supplierId) {
         
+        self::runSleep(10);
         $colorCostInfo            = self::getColorCostByCostAndsupplierMarkupRuleId($data['cost'],$mapEnumeration['supplierMarkupRuleId']);
         $listSizeInfo             = self::getSizeByCategory($data['category_id']);
 
@@ -438,6 +446,7 @@ class   Quotation {
                     'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                 );
                 Spu_Goods_RelationShip::create($content);
+
             }
             foreach($goodsInfo as $key=>$info) {
                 
@@ -1362,7 +1371,7 @@ class   Quotation {
         $data = self::testQuotation($data, $mapEnumeration, $isSkuCode, $supplierId);
         $sourceInfo  = Source_Info::getBySourceCodeAndSupplierId($data['sku_code'],$supplierId);
         $sourceId    = $sourceInfo['source_id'];
-
+        self::runSleep(10);
         $colorCostInfo            = self::getColorCostByCostAndsupplierMarkupRuleId($data['cost'],$mapEnumeration['supplierMarkupRuleId']);
         $listSizeInfo             = self::getSizeByCategory($data['category_id']);
         if(!empty($listSizeInfo)){
