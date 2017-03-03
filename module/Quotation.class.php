@@ -438,7 +438,6 @@ class   Quotation {
                     'spu_goods_name'    => $info['goods_size'].$info['goods_color'],
                 );
                 Spu_Goods_RelationShip::create($content);
-                sleep(1);
             }
             foreach($goodsInfo as $key=>$info) {
                 

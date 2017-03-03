@@ -29,7 +29,7 @@ if ($func == 'update') {
 
 if (Produce_Order_Export_Task::$func($data)) {
 
-    Utility::notice('创建导出任务成功, 请稍后下载', '/order/produce/index.php');
+    Utility::notice('创建导出任务成功, 请稍后下载');
 } else {
 
     Utility::notice('操作失败');

@@ -160,7 +160,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['remark']        = $indexSales[$goodsId]['remark'];
     $goodsInfo['quantity']      = $indexSales[$goodsId]['goods_quantity'];
     $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
-    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
+    $goodsInfo['source']        = implode(',', array_unique($groupProductIdSourceId[$goodsId]));
 }
 
 $statusList = Sales_Order_Status::getOrderStatus();
