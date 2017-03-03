@@ -92,13 +92,14 @@
                                     <th>款数</th> 
                                     <th>下单件数</th>
                                     <th>重量</th>
-                                    <th>订单金额</th>
+                                    <th>参考工费</th>
                                     <th>客户名称</th>
                                     <th>渠道拓展</th>
+                                    <th>商品顾问</th>
                                     <th>订单状态</th>
                                     <th>下单日期</th>
                                     <th>创建时间</th>
-                                    <th style="text-align:center" width="330px">操作</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -108,9 +109,10 @@
                                         <td><{$item.count_goods}></td>
                                         <td><{$item.quantity_total}></td>
                                         <td><{$item.reference_weight}></td>
-                                        <td><{$item.order_amount}></td>
+                                        <td><{$item.estimated_cost}></td>
                                         <td><{$mapCustomer[$item.customer_id]['customer_name']}></td>
                                         <td><{$mapSalesperson[$item.salesperson_id]['salesperson_name']}></td>
+                                        <td><{$mapCommodityConsultant[$item.commodity_consultant_id]['commodity_consultant_name']}></td>
                                         <td><{if $statusList[$item.sales_order_status]['status_name'] == '删除'}><font color='red'>删除</font><{else}><{$statusList[$item.sales_order_status]['status_name']}><{/if}></td>
                                         <td><{$item.order_time}></td>
                                         <td><{$item.create_time}></td>
@@ -141,13 +143,13 @@
                                                     <a href="/order/sales/create_export_task.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出</a>
                                                 <{/if}>
                                                 <{if $item.export_status == 1}>
-                                                    <a href="javascript:alert('等待导出中, 请稍等几分钟...');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 等待导出</a>
+                                                    <a href="javascript:alert('等待导出中, 请稍等几分钟...');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 文件生成中</a>
                                                 <{/if}>
                                                 <{if $item.export_status == 2}>
                                                     <a href="javascript:alert('正在导出中, 请稍等几分钟...');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 正在导出</a>
                                                 <{/if}>
                                                 <{if $item.export_status == 3}>
-                                                    <a href="/order/sales/export_file_download.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出</a>
+                                                    <a href="/order/sales/export_file_download.php?sales_order_id=<{$item.sales_order_id}>" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 下载</a>
                                                 <{/if}>
                                                 <{if $item.export_status == 4}>
                                                     <a href="javascript:alert('导出失败');" class="btn btn-info btn-xs"><i class="fa fa-download"></i> 导出失败</a>

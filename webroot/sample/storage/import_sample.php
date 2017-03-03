@@ -3,8 +3,8 @@
 require_once dirname(__FILE__).'/../../../init.inc.php';
 
 $mapSupplier    = ArrayUtility::indexByField(ArrayUtility::searchBy(Supplier_Info::listAll(),array('delete_status'=>0)),'supplier_id');
-$sampleType 	= Sample_Type::getSampleType();
-$parentOwnType 	= Sample_Type::getOwnType();
+$sampleType     = Sample_Type::getSampleType();
+$parentOwnType  = Sample_Type::getOwnType();
 $mapUser        = ArrayUtility::indexByField(ArrayUtility::searchBy(User_Info::listAll(),array('enable_status'=>1)),'user_id');
 $listAllCommodityConsultant     = ArrayUtility::searchBy(Commodity_Consultant_Info::listAll(),array('delete_status'=>DeleteStatus::NORMAL));
 

@@ -126,6 +126,7 @@ $listSpecValueId            = array_unique(array_merge(
 ));
 $listSpecValueInfo          = Spec_Value_Info::getByMulitId($listSpecValueId);
 $mapSpecValueInfo           = ArrayUtility::indexByField($listSpecValueInfo, 'spec_value_id');
+$listValuatimType = Valuation_TypeInfo::getValuationType();
 
 foreach ($listGoodsInfo as &$goodsInfo) {
 
@@ -174,7 +175,7 @@ foreach ($listGoodsInfo as &$goodsInfo) {
     $goodsInfo['remark']        = $indexSales[$goodsId]['remark'];
     $goodsInfo['quantity']      = $indexSales[$goodsId]['goods_quantity'];
     $goodsInfo['spu_sn_list']   = implode(",",$groupSku[$goodsId]);
-    $goodsInfo['source']        = implode(',', $groupProductIdSourceId[$goodsId]);
+    $goodsInfo['source']        = implode(',', array_unique($groupProductIdSourceId[$goodsId]));
 
 }
 
@@ -227,6 +228,7 @@ $template = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('indexSales', $indexSales);
 $template->assign('salesOrderId', $salesOrderId);
+$template->assign('listValuatimType', $listValuatimType);
 $template->assign('salesOrderInfo', $salesOrderInfo);
 $template->assign('mapUser', $mapUser);
 $template->assign('mapSalesperson', $mapSalesperson);
@@ -234,7 +236,6 @@ $template->assign('mapOrderStyle', $mapOrderStyle);
 $template->assign('mapCustomer', $mapCustomer);
 $template->assign('indexSales', $indexSales);
 $template->assign('sumShipment', $sumShipment);
-
 $template->assign('mapOrderStatus', $mapOrderStatus);
 $template->display('order/sales/sales_order_detail.tpl');
 
