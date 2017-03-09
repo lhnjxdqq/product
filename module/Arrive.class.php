@@ -56,12 +56,12 @@ class   Arrive {
             $data['list_product_id'] = $listProductId;
             return $data;
         }
-        
+     
         //根据买款id+颜色+三级分类判断唯一
-        $categoryId         = $mapEnumeration['indexCategoryName'][$data['categoryLv3']]['category_id'];
+        $data['category_id']    = $mapEnumeration['indexCategoryName'][$data['categoryLv3']]['category_id'];
         
-        if(!empty($categoryId)){
-        
+        if(!empty($data['category_id'])){
+
             $listGoodsInfo      = Goods_Info::getByMultiId($listGoodsId);          
             $searchByCategoryId = ArrayUtility::searchBy($listGoodsInfo , array('category_id'=>$data['category_id']));
             $listGoodsId        = ArrayUtility::listField($searchByCategoryId,'goods_id');
@@ -79,7 +79,7 @@ class   Arrive {
                 return $data;
             }
         }
- 
+
         Validate::testNull($data['product_sn'],'找不到对应的产品，请补充产品编号');
         $productInfo            = Product_Info::getBySn($data['product_sn']);
         Validate::testNull($productInfo,'产品编号为' . $data['product_sn'] . '的产品不存在');

@@ -133,7 +133,7 @@ class   Produce_Order_Arrive_Import {
                 continue;
             }
         }
-
+        
         if(!empty($errorList)){
             Produce_Order_Arrive_Info::update(array(
                 'produce_order_arrive_id'   => $orderInfo['produce_order_arrive_id'],
