@@ -165,7 +165,11 @@ class   Produce_Order_Arrive_Import {
                 //缺货数量
                 $data           = array();
                 $shortQuantity  = $indexOrderProductId[$productId]['short_quantity'];
-                
+                               
+                if( $storageProductInfo['quantity'] == 0 ){
+                    
+                    continue;
+                }
                 //最后一个product
                 if($productId == $maxProductId){
                     $quantity   = $storageProductInfo['quantity'];
@@ -187,7 +191,7 @@ class   Produce_Order_Arrive_Import {
                     continue;
                 }
                 
-                if($shortQuantity <= 0 || $storageProductInfo['quantity'] == 0){
+                if( $shortQuantity <= 0 ){
                     
                     continue;
                 }
