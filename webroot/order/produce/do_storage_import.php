@@ -12,62 +12,62 @@ if($_FILES['storage_import']['error'] != UPLOAD_ERR_OK) {
     
     throw   new ApplicationException('文件未上传成功');
 }
-$objPHPExcel        = ExcelFile::load($filePath);
-$sheet              = $objPHPExcel->getActiveSheet(); 
-$rowIterator        = $sheet->getRowIterator(1);
 
-$excelHead          = array(
-    '买款ID'             =>  'source_code',
-    '三级分类'            => 'categoryLv3',
-    '款式'                => 'style_one_level',
-    '子款式'              => 'style_two_level',
-    '主料材质'            => 'material_main_name',
-    '颜色'                => 'color_name',
-    '规格重量'            => 'weight_name',
-    '规格尺寸'            => 'size_name',
-    '工费'                => 'cost',
-    '数量'                => 'quantity',
-    '重量'                => 'weight',
-    '备注'                => 'remark',
+$csvHead          = array(
+    '买款ID'             => 'source_code',
+    '产品编号'           => 'product_sn',
+    '三级分类'           => 'categoryLv3',
+    '颜色'               => 'color_name',
+    '成本工费'           => 'cost',
+    '数量'               => 'quantity',
+    '重量'               => 'weight',
 );
 
-$mapColumnField     = array();
 $list               = array();
-
+$csv                = CSVIterator::load($filePath, $options);
 setlocale(LC_ALL, array('zh_CN.gbk','zh_CN.gb2312','zh_CN.gb18030'));
-foreach ($rowIterator as $offsetRow => $excelRow) {
-    
-    if (1 == $offsetRow) {
-        
-        $cellIterator   = $excelRow->getCellIterator();
-        
-        foreach ($cellIterator as $offsetCell => $cell) {
-            
-            $headText   = $cell->getValue();
-            
-            if (isset($excelHead[$headText])) {
-            
-                $mapColumnField[$offsetCell]    = $excelHead[$headText];
+$reportNumber   = 0;
+
+foreach ($csv as $lineNumber => $line) {
+
+    if (0 == $lineNumber) {
+
+        $format = array();
+
+        foreach ($line as $offset => $cellValue) {
+
+            $head   = Utility::GbToUtf8(trim($cellValue));
+
+            if (isset($csvHead[$head])) {
+
+                $format[$offset]    = $csvHead[$head];
             }
         }
-        
-        if (count($mapColumnField) != count($excelHead)) {
+
+        if (count($format) != count($csvHead)) {
 
             throw   new ApplicationException('无法识别表头');
         }
-        
+
+        $csv->setFormat($format);
         continue;
     }
-   
-    $data   = array();
-    
-    foreach ($mapColumnField as $offsetColumn => $fieldName) {
 
-        $data[$fieldName] = '' . $sheet->getCellByColumnAndRow($offsetColumn, $offsetRow)->getValue();
+    if (empty($line)) {
+
+        continue;
     }
+
+    ++ $reportNumber;
     
-    $list[] = $data;
+    foreach($line as &$info){
+        $info = Utility::GbToUtf8(trim($info));
+    }
+    $list[] = $line;
 }
+
+setlocale(LC_ALL,NULL);
+
 Validate::testNull($list, '表中无内容,请检查后重新上传');
 
 $mapEnumeration = array();
@@ -92,7 +92,6 @@ $listProductId      = ArrayUtility::listField($orderProductInfo,'product_id');
 
 $listMapProudctInfo = Product_Info::getByMultiId($listProductId);
 
-$listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
 $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
 
 $listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
@@ -101,19 +100,28 @@ $mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId(
 $mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
 $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
 $mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
-$mapSizeId          = ArrayUtility::listField(ArrayUtility::searchBy($mapSpecInfo,array("spec_name"=>"规格尺寸")),'spec_id');
-$mapEnumeration     = array(
-   'mapCategory'          => $mapCategoryName,
-   'mapTypeSpecValue'     => $mapTypeSpecValue,
-   'mapIndexSpecAlias'    => $mapIndexSpecAlias,
-   'mapSpecValue'         => $mapSpecValue,
-   'mapSizeId'            => $mapSizeId,
-   'mapStyle'             => $listStyleInfo,
-   'mapSpecInfo'          => $mapSpecInfo,
-   'listMapProudctInfo'   => $listMapProudctInfo,
-   'listProductId'        => $listProductId,
-   'indexSourceCode'      => $indexSourceCode,
-);
+
+$addNums = 1;
+foreach($list as $offsetRow => $row){
+
+    $line  = $offsetRow+2;
+    try{
+        Validate::testNull($row['source_code'] , '买款ID不能为空');
+        Validate::testNull($row['color_name'] , '颜色不能为空');
+        Validate::testNull($row['cost'] , '成本工费为空');
+        Validate::testNull($row['quantity'] , '数量不能为空');
+        Validate::testNull($row['weight'] , '重量不能为空');
+        $addNums++;
+
+    }catch(ApplicationException $e){
+        
+        $errorList[]            = array(
+            'content'   => $e->getMessage(),
+            'line'      => $line ,
+        );
+        continue;
+    }
+}
 
 $template           = Template::getInstance();
 $template->assign('mainMenu', $mainMenu);
@@ -133,7 +141,7 @@ if(!is_dir($uploadPath)) {
 
     mkdir($uploadPath,0777,true);
 }
-$fileName           = $time.".xlsx";
+$fileName           = $time.".csv";
 $storageFilePath  = $uploadPath.$fileName;
 $fileStoragePath    = $floderPath . $fileName;
 rename($filePath,$storageFilePath);
@@ -141,7 +149,7 @@ chmod($storageFilePath, 0777);
 
 $produceOrderArriveId   = Produce_Order_Arrive_Info::create(array(
     'produce_order_id'      => $produceOrderId,
-    'count_product'         => count($datas),
+    'count_product'         => 0,
     'file_path'             => $fileStoragePath,
     'arrive_time'           => date('Y-m-d'),
     'order_file_status'     => Sales_Order_File_Status::STANDBY,

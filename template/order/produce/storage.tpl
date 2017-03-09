@@ -53,7 +53,7 @@
                         <tr>
                             <th>导入到货表</th>
                             <td colspan=4>
-                                <form action='/order/produce/storage_import.php' method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <form action='/order/produce/do_storage_import.php' method="post" enctype="multipart/form-data" class="form-horizontal">
                                     <div class='form-group'>
                                         <div class='col-sm-4'>
                                             <input type='file' name='storage_import'>

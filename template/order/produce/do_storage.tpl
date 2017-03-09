@@ -42,99 +42,69 @@
                     </div>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
+                <form class="form-inline" action="/order/produce/do_edit_arrive.php?arrive_id=<{$smarty.get.arrive_id}>&au_price=<{$smarty.get.au_price}>" method="post">
+                <input type='hidden' value="" name="operation" id="operation">
+                <input type='hidden' value="<{$data['produceOrderInfo']['produce_order_id']}>" name="produce_order_id">
+                <div class="box-body" id='arrive'>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="prod-list">
                             <thead>
                             <tr class='info'>
-                                <th>产品编号</th>
                                 <th>买款ID</th>
                                 <th>SPU编号</th>
                                 <th>产品图片</th>
-                                <th>SKU名称</th>
                                 <th>三级分类</th>
-                                <th>款式</th>
-                                <th>子款式</th>
                                 <th>规格重量</th>
-                                <th>规格尺寸</th>
                                 <th>颜色</th>
                                 <th>主料材质</th>
-                                <th>备注</th>
-                                <th>采购工费</th>
+                                <th>系统工费</th>
                                 <th>下单件数</th>
+                                <th>实际工费</th>
                                 <th>到货重量</th>
                                 <th>到货件数</th>
-                                <th>入库件数</th>
-                                <th>入库重量</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <{foreach from=$data.listOrderDetail item=item}>
-                                    <tr <{if $item.is_arrive == 2}>class='warning'<{/if}>>
-                                        <td><{$item.product_sn}></td>
+                                    <tr>
                                         <td><{$item.source_code}></td>
-                                        <td>
-                                            <{foreach from=$item.spu_list item=spu name=spulist}>
-                                                <{$spu.spu_sn}>
-                                                <{if !$smarty.foreach.spulist.last}><br><{/if}>
-                                            <{/foreach}>
-                                        </td>
+                                        <td><{$item.spu_sn}></td>
                                         <td>
                                             <a href="<{if $item.image_url != ''}><{$item.image_url}><{else}>/images/sku_default.png<{/if}>" target="_blank"><img src="<{if $item.image_url != ''}><{$item.image_url}>@!mini<{else}>/images/sku_default.png<{/if}>" height="60" alt=""></a>
                                         </td>
-                                        <td><{$item.goods_name}></td>
                                         <td><{$item.category_name}></td>
-                                        <td><{$item.parent_style_name}></td>
-                                        <td><{$item.child_style_name}></td>
                                         <td><{$item.weight_value_data}></td>
-                                        <td><{$item.size_value_data}></td>
                                         <td><{$item.color_value_data}></td>
                                         <td><{$item.material_value_data}></td>
-                                        <td><{$item.remark}></td>
                                         <td><{$item.product_cost}></td>
-                                        <td><{$item.quantity}></td>
+                                        <td><{$item.order_quantity_quantity}></td>
                                         <td>
-                                            <input type='text' value='<{$item.arrive_weight}>' product-id="<{$item.product_id}>" size='5' class='form-control arrive_weight arrive-weight-<{$item.product_id}>' name='product_id<{$item.product_id}>[arrive_weight]'>
-                                            <input type='hidden' value='<{$item.arrive_weight}>' class='arrive-product-id-<{$item.product_id}>'>
+                                            <input type='text' value='<{$item.storage_cost}>' size='5' class='form-control' name='<{$item.spu_id}>[<{$item.color_value_id}>][arrive_cost]'>
+                                        </td>
+                                        <td>
+                                            <input type='text' value='<{$item.total_weight}>' size='5' class='form-control' name='<{$item.spu_id}>[<{$item.color_value_id}>][total_weight]'>
                                         </td>
                                         <td>
                                             <div class="input-group width-130 assign-number">
                                                 <span class="input-group-btn">
-                                                    <button type='button' product-id="<{$item.product_id}>" quantity-type='arrive' class="btn btn-default reduce">-</button>
+                                                    <button type='button' class="btn btn-default reduce">-</button>
                                                 </span>
-                                                    <input type="text" class="form-control arrive-quantity arrive-quantity-<{$item.product_id}>" product-id="<{$item.product_id}>" name="product_id<{$item.goods_id}>[quantity]" value="<{if $item.arrive_quantity!='' }><{$item.arrive_quantity}><{else}>0<{/if}>"/>
-                                                    <input type='hidden' value='<{$item.arrive_quantity}>' class='arrive-quantity-product-id-<{$item.product_id}>'>                                              
-                                              <span class="input-group-btn">
-                                                    <button type='button' product-id="<{$item.product_id}>" quantity-type='arrive' class="btn btn-default plus">+</button>
+                                                    <input type="text" class="form-control arrive-quantity" name="<{$item.spu_id}>[<{$item.color_value_id}>][quantity]" value="<{$item.arrive_total_quantity}>"/>
+                                                <span class="input-group-btn">
+                                                    <button type='button'  class="btn btn-default plus">+</button>
                                                 </span>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group width-130 assign-number">
-                                                <span class="input-group-btn">
-                                                    <button type='button' quantity-type='storage' product-id="<{$item.product_id}>" class="btn btn-default reduce">-</button>
-                                                </span>
-                                                    <input type="text" class="form-control storage-quantity storage-quantity-<{$item.product_id}>" product-id="<{$item.product_id}>" name="product_id<{$item.goods_id}>[quantity]" value="<{if $item.storage_quantity!='' }><{$item.storage_quantity}><{else}>0<{/if}>"/>
-                                                    <input type='hidden' value='<{$item.storage_quantity}>' class='storage-quantity-product-id-<{$item.product_id}>'>
-                                                <span class="input-group-btn">
-                                                    <button type='button' quantity-type='storage' product-id="<{$item.product_id}>" class="btn btn-default plus">+</button>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <input type='text' value='<{$item.storage_weight}>' product-id="<{$item.product_id}>" size='5' class='form-control storage_weight storage-weight-<{$item.product_id}>' name='product_id<{$item.product_id}>[storage_id]'></td>
-                                           <input type='hidden' value='<{$item.storage_weight}>' class='storage-product-id-<{$item.product_id}>'>
                                         </td>
                                     </tr>
                                 <{/foreach}>
                             </tbody>
                         </table>
                     </div>
-                    <div class="box-footer">
-                        <a href="/order/produce/order_storage.php?produce_order_id=<{$data['produceOrderInfo']['produce_order_id']}>" type="button" class="btn btn-primary pull-left">返回上一页</a>
-                        <span class='pull-right'>共计<span id="count_product"><{$produceOrderArriveInfo.count_product}></span>款,<span id='quantity'><{$produceOrderArriveInfo.storage_quantity_total}></span>件,重量<span id="weight_total"><{$produceOrderArriveInfo.storage_weight}></span>g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href='/order/produce/do_storage.php?arrive_id=<{$smarty.get.arrive_id}>&au_price=<{$smarty.get.au_price}>' class="btn btn-primary pull-right"> 提交入库</a></span>
+                    <div class="box-footer">                        
+                        <button id="do_edit_arrive" class="btn btn-primary pull-left">返回上一页</button>
+                        <button id="arrive_spu" class="btn btn-primary pull-right"> 提交入库</button></span>
                     </div>
+                    </form>
                     <!-- /.table-response -->
                     <{include file="section/pagelist.tpl" viewData=$data.pageViewData}>
                 </div>
@@ -170,18 +140,7 @@
         selector    : '#prod-list',
         container   : '#prod-list-vis'
     });
-    $(document).ready(function() { 
-        
-        $('#prod-list').dataTable({
-            
-            "bFilter": false, //过滤功能
-            "bInfo"  : false,//页脚信息
-            "bPaginate": false, //翻页功能
-            "aaSorting": [ [3,'asc'] ],
-            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3,15,16,17,18 ] }]
-        });
-    });
-    
+
     $('.assign-number .reduce').bind('click', function () {
         var $input      = $(this).parents('.assign-number').children('input'),
             value       = parseInt($input.val()),
@@ -199,28 +158,6 @@
             number  = value - 1;
         }
         
-        if(quantityType == 'arrive'){
-        
-            storageQuantity = parseInt($(".storage-quantity-"+productId).val());
-            if(storageQuantity > number){
-                
-                alert('到货件数不能小于入库件数');
-                return false;
-            }
-            editArriveQuantity(number,productId);
-        }
-        
-        if(quantityType == 'storage'){
-            
-            arriveQuantity  = $(".arrive-quantity-"+productId).val();
-            if(arriveQuantity < number){
-                
-                alert('入库件数不能大于到货件数');
-                return false;
-            }
-            editStorageQuantity(number,productId);
-        }
-        
         $input.val(number);
         
     });
@@ -232,187 +169,17 @@
             productId   = $(this).attr('product-id'),
             quantityType= $(this).attr('quantity-type');
         
-
-        if(quantityType == 'arrive'){
-        
-            storageQuantity = parseInt($(".storage-quantity-"+productId).val());
-            if(storageQuantity > parseInt($input.val()) + 1){
-                
-                alert('到货件数不能小于入库件数');
-                return false;
-            }
-            editArriveQuantity((parseInt($input.val()) + 1),productId);
-        }
-        
-        if(quantityType == 'storage'){
-            
-            arriveQuantity  = $(".arrive-quantity-"+productId).val();
-            if(arriveQuantity < parseInt($input.val()) + 1){
-                
-                alert('入库件数不能大于到货件数');
-                return false;
-            }
-            editStorageQuantity((parseInt($input.val()) + 1),productId);
-        }
         $input.val(parseInt($input.val()) + 1);
 
     });
-    
-    function editArriveQuantity(quantity,productId){
-    
-        $.post('/order/produce/arrive_product_edit.php', {
-            produce_order_arrive_id         : <{$produceOrderArriveInfo.produce_order_arrive_id}>,
-            product_id                      : productId,
-            quantity                        : quantity,
-            '__output_format'   : 'JSON'
-        }, function (response) {
 
-            if (0 != response.code) {
+    $("#arrive_spu").click(function(){
 
-                showMessage('错误', response.message);
+        $("#operation").val('storage');
 
-                return  ;
-            }else{
-             
-                $("#count_product").html(response.data.count);
-                $("#quantity").html(response.data.quantityTotal);
-                $("#weight_total").html(response.data.weightTotal);
-                $('.arrive-quantity-product-id-'+productId).val(quantity);
-            }
-            
-        }, 'json');
-    }
-    function editStorageQuantity(quantity,productId){
-    
-        $.post('/order/produce/arrive_product_edit.php', {
-            produce_order_arrive_id         : <{$produceOrderArriveInfo.produce_order_arrive_id}>,
-            product_id                      : productId,
-            storage_quantity                : quantity,
-            stock_quantity                  : quantity,
-            '__output_format'   : 'JSON'
-        }, function (response) {
-
-            if (0 != response.code) {
-
-                showMessage('错误', response.message);
-
-                return  ;
-            }else{
-             
-                $("#count_product").html(response.data.count);
-                $("#quantity").html(response.data.quantityTotal);
-                $("#weight_total").html(response.data.weightTotal);
-                $('.storage-quantity-product-id-'+productId).val(quantity);
-            }
-            
-        }, 'json');
-    }
-    
-    $(".arrive-quantity").blur(function(){
-        
-        quantity        = parseInt($(this).val());
-        productId       = $(this).attr('product-id');
-        storagequantity   = parseInt($(".storage-quantity-product-id-"+productId).val());
-
-        if(storagequantity > quantity){
-        
-            $(this).val($('.arrive-quantity-product-id-'+productId).val());
-            alert('到货件数不能小于入库件数');
-            return false;
-        }
-        editArriveQuantity(quantity,productId);
+        $("#arrive").submit();
     });
-    
-    $(".storage-quantity").blur(function(){
-        
-        quantity        = parseInt($(this).val());
-        productId       = $(this).attr('product-id');
-        arriveQuantity  = parseInt($(".arrive-quantity-"+productId).val());
-        
-        if(arriveQuantity < quantity){
-            
-            $(this).val($('.storage-quantity-product-id-'+productId).val());
-            alert('入库件数不能大于到货件数');
-            return false;
-        }
-        editStorageQuantity(quantity,productId);
-    });
-    
-    $(".arrive_weight").blur(function(){
-    
-        arriveId        = <{$produceOrderArriveInfo.produce_order_arrive_id}>;    
-        weight          = parseFloat($(this).val());
-        productId       = $(this).attr('product-id');
-        storageWeight   = parseFloat($(".storage-weight-"+productId).val());
 
-        if(storageWeight > weight){
-        
-            alert('到货重量不能小于入库重量');
-            $(this).val($(".arrive-product-id-"+productId).val());
-            return false;
-        }
-
-        $.post('/order/produce/arrive_product_edit.php', {
-            produce_order_arrive_id         : arriveId,
-            product_id                      : productId,
-            weight                          : weight,
-            '__output_format'   : 'JSON'
-        }, function (response) {
-
-            if (0 != response.code) {
-
-                showMessage('错误', response.message);
-
-                return  ;
-            }else{
-             
-                $("#count_product").html(response.data.count);
-                $("#quantity").html(response.data.quantityTotal);
-                $("#weight_total").html(response.data.weightTotal);
-                $(".arrive-product-id-"+productId).val(weight)
-            }
-            
-        }, 'json');
-    });
-    
-    $(".storage_weight").blur(function(){
-    
-        arriveId        = <{$produceOrderArriveInfo.produce_order_arrive_id}>;    
-        weight          = parseFloat($(this).val());
-        productId       = $(this).attr('product-id');
-        arriveWeight    = parseFloat($(".arrive-weight-"+productId).val());
-        
-        if(arriveWeight < weight){
-        
-            alert('入库重量不能大于到货重量');
-            $(this).val($(".storage-product-id-"+productId).val());
-            return false;
-        }
-
-        $.post('/order/produce/arrive_product_edit.php', {
-            produce_order_arrive_id         : arriveId,
-            product_id                      : productId,
-            storage_weight                  : weight,
-            stock_weight                    : weight,
-            '__output_format'   : 'JSON'
-        }, function (response) {
-
-            if (0 != response.code) {
-
-                showMessage('错误', response.message);
-
-                return  ;
-            }else{
-            
-                $("#goodsQuantity").html(response.data.count);
-                $("#weight_total").html(response.data.weightTotal);
-                $("#quantity").html(response.data.quantity_total);
-                $(".storage-product-id-"+productId).val(weight);
-            }
-            
-        }, 'json');
-    });
-    
 </script>
 </body>
 </html>

@@ -26,9 +26,6 @@ if($_FILES['quotation']['error'] != UPLOAD_ERR_OK) {
     
     throw   new ApplicationException('文件未上传成功');
 }
-$objPHPExcel        = ExcelFile::load($filePath);
-$sheet              = $objPHPExcel->getActiveSheet(); 
-$rowIterator        = $sheet->getRowIterator(1);
 
 $csvHead         = array(
     '买款ID'            => 'sku_code',
