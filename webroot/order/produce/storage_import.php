@@ -144,7 +144,7 @@ $produceOrderArriveId   = Produce_Order_Arrive_Info::create(array(
     'count_product'         => count($datas),
     'file_path'             => $fileStoragePath,
     'arrive_time'           => date('Y-m-d'),
-	'order_file_status'		=> Sales_Order_File_Status::STANDBY,
+    'order_file_status'     => Sales_Order_File_Status::STANDBY,
 ));
 
 Utility::notice('文件导入成功，请稍后查看结果');

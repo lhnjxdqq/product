@@ -19,7 +19,7 @@ class   Borrow_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'borrow_id,salesperson_id,create_time,end_time,start_time,return_time,sample_quantity,customer_id,status_id,remark,sales_quotation_id';
+    const   FIELDS      = 'borrow_id,salesperson_id,create_time,end_time,outgoing_time,start_time,return_time,sample_quantity,customer_id,status_id,remark,sales_quotation_id';
     /**
      * 新增
      *

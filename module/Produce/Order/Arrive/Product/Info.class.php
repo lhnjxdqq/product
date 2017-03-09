@@ -19,7 +19,7 @@ class   Produce_Order_Arrive_Product_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'product_id,produce_order_arrive_id,quantity,weight,is_isset_produce_order,storage_quantity,storage_weight,stock_quantity,stock_weight,is_whole_supplies';
+    const   FIELDS      = 'product_id,produce_order_arrive_id,storage_cost,quantity,weight,is_isset_produce_order,storage_quantity,storage_weight,stock_quantity,stock_weight,is_whole_supplies';
     /**
      * 新增
      *
@@ -86,6 +86,23 @@ class   Produce_Order_Arrive_Product_Info {
         $sql    = 'SELECT ' .  self::FIELDS . ' FROM ' . self::_tableName() . ' WHERE `produce_order_arrive_id` IN ("' . implode('","', $mapProduceOrderArriveId) . '")';
 
         return self::_getStore()->fetchAll($sql);
+    }
+    
+    /**
+     * 根据到货单Id和一批产品Id删除数据
+     */
+    static public function deleteByArriveIdAndMultiProductId($arriveId,$multiProductId){
+        
+        if(empty($arriveId) || empty($multiProductId)) {
+            
+            return　;
+        }
+		
+        $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
+
+        $sql            = 'DELETE FROM `' . self::_tableName() . '` WHERE `produce_order_arrive_id` = "' . (int) $arriveId . '" AND `product_id` IN ("' . implode('","', $multiProductId) . '")';
+
+        return  self::_getStore()->execute($sql);
     }
     
     /**

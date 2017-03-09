@@ -202,6 +202,23 @@ class   Product_Info {
     }
 
     /**
+     * 根据产品编号查询产品信息
+     *
+     * @param $productSn    产品编号
+     * @return array        产品信息
+     */
+    static public function getBySn ($productSn) {
+
+        if(empty($productSn)){
+            
+            return array();
+        }
+        $sql    = 'SELECT ' . self::FIELDS . ' FROM `' . self::_tableName() . '` WHERE `product_sn` = "' . addslashes($productSn) . '"';
+
+        return  self::_getStore()->fetchOne($sql);
+    }
+
+    /**
      * 根据一组产品ID产产品信息
      *
      * @param $multiProductId   一组产品ID

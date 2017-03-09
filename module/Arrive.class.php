@@ -14,88 +14,81 @@ class   Arrive {
      */
     static public function testStorage (array $data, array $mapEnumeration) {
 
+        Validate::testNull($data['source_code'],'买款ID不能为空');
         $data['source_id']                  = $mapEnumeration['indexSourceCode'][$data['source_code']]['source_id'];
         Validate::testNull($data['source_id'],'买款ID不存生产订单中');
         $listProductInfo                    = ArrayUtility::searchBy($mapEnumeration['listMapProudctInfo'],array('source_id'=>$data['source_id']));
 
         Validate::testNull($listProductInfo,'买款ID不存生产订单中');
         $mapEnumeration['listGoodsId']      = ArrayUtility::listField($listProductInfo,'goods_id');
-
-        Validate::testNull($data['categoryLv3'],'三级分类不能为空');
+        Validate::testNull($data['quantity'],'数量不能为空');
         Validate::testNull($data['weight'],'重量不能为零或者空');
         Validate::testNull($data['color_name'],'颜色不能为空');
-        Validate::testNull($data['cost'],'工费不能为空');
+        Validate::testNull($data['cost'],'成本工费不能为空');
 
         if($data['quantity'] == 0 || empty($data['quantity'])){
             
             throw   new ApplicationException('产品数量不能为零,且不能为空');
         }
 
-        $categoryInfo       = ArrayUtility::searchBy($mapEnumeration['mapCategory'], array("category_name"=>$data['categoryLv3'],'category_level'=>2));
+        $data['color_id']    = empty($data['color_name']) ? '' :self::_getSpecValueId($data['color_name'],$mapEnumeration['mapSpecValue'],"颜色不正确",$mapEnumeration);
 
+        $data['weight'] = sprintf('%.2f', $data['weight']);
+
+        $mapGoodsId  = self::_getGoodsId($data,$mapEnumeration);
+        Validate::testNull($mapGoodsId, '买款ID为' . $data['source_code'] . '颜色为' . $data['color_name'] . '的产品不存在');
+
+        //获取买款ID下对应订单的产品
+        $listGoodsId        = ArrayUtility::listField($mapGoodsId,'goods_id');
+        $data['goods_id']   = $listGoodsId;
         
-        if(empty($categoryInfo)){
-            
-            throw   new ApplicationException('产品分类不存在');
+        //获取spu
+        $spuGoodsInfo       = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
+        $listSpuId          = array_unique(ArrayUtility::listField($spuGoodsInfo,'spu_id'));
+
+        //判断spu唯一
+        if(count($listSpuId) == 1){
+
+            $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+            $listProductIdA = ArrayUtility::listField($listProductInfo,'product_id');
+            $listProductIdB = ArrayUtility::listField($mapProductInfo,'product_id');
+            $listProductId  = array_intersect($listProductIdA , $listProductIdB);
+            $data['list_product_id'] = $listProductId;
+            return $data;
         }
-        $indexCategoryName      = ArrayUtility::indexByField($categoryInfo,'category_name');
-        $data['category_id']    = $indexCategoryName[$data['categoryLv3']]['category_id'];      
-        $goodsType              = $indexCategoryName[$data['categoryLv3']]['goods_type_id'];
-        $data['goods_type_id']     = $goodsType;
-        $listTypeSpecValue      = ArrayUtility::searchBy($mapEnumeration['mapTypeSpecValue'], array('goods_type_id'=>$goodsType));
-        $mapMatetialSpecValue   = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['material']));
-        $mapWeightSpecValue     = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['weight']));
-        $mapColorSpecValue      = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$mapEnumeration['mapIndexSpecAlias']['color']));
+     
+        //根据买款id+颜色+三级分类判断唯一
+        $data['category_id']    = $mapEnumeration['indexCategoryName'][$data['categoryLv3']]['category_id'];
         
-        foreach($listTypeSpecValue as $key=>$val){
-            
-            if(in_array($val['spec_id'],$mapEnumeration['mapSizeId'])){
-                
-                $sizeSpecId = $val['spec_id'];
-                $data['size_spce_id']   =$sizeSpecId;
-                break;
+        if(!empty($data['category_id'])){
+
+            $listGoodsInfo      = Goods_Info::getByMultiId($listGoodsId);          
+            $searchByCategoryId = ArrayUtility::searchBy($listGoodsInfo , array('category_id'=>$data['category_id']));
+            $listGoodsId        = ArrayUtility::listField($searchByCategoryId,'goods_id');
+            $spuGoodsInfo       = Spu_Goods_RelationShip::getByMultiGoodsId($listGoodsId);
+            $listSpuId          = array_unique(ArrayUtility::listField($spuGoodsInfo,'spu_id'));
+
+            if(count($listSpuId) == 1){
+
+                $mapProductInfo = Product_Info::getByMultiGoodsId($listGoodsId);
+                $listProductIdA = ArrayUtility::listField($listProductInfo,'product_id');
+                $listProductIdB = ArrayUtility::listField($mapProductInfo,'product_id');
+                $listProductId  = array_intersect($listProductIdA , $listProductIdB);
+                $data['list_product_id'] = $listProductId;
+
+                return $data;
             }
         }
+
+        Validate::testNull($data['product_sn'],'找不到对应的产品，请补充产品编号');
+        $productInfo            = Product_Info::getBySn($data['product_sn']);
+        Validate::testNull($productInfo,'产品编号为' . $data['product_sn'] . '的产品不存在');
         
-        $mapSizeSpecValue    = ArrayUtility::searchBy($listTypeSpecValue,array("spec_id"=>$sizeSpecId));
-
-        $data['material_id'] = trim($data['material_id']);
-        $data['weight_id']   = trim($data['weight_id']);
-        $data['material_id'] = empty($data['material_main_name']) ? '' :self::_getSpecValueId($data['material_main_name'],$mapMatetialSpecValue,"主料材质不正确",$mapEnumeration);
-        $data['weight_id']   = empty($data['weight_name']) ? '' :self::_getSpecValueId(sprintf('%.2f', $data['weight_name']),$mapWeightSpecValue,"规格重量不正确",$mapEnumeration);
-        $data['color_id']    = empty($data['color_name']) ? '' :self::_getSpecValueId($data['color_name'],$mapColorSpecValue,"颜色不正确",$mapEnumeration);
-
-        if(!empty($data['size_name'])) {
-                
-                $data['size_id'] = self::_getSpecValueId($data['size_name'],$mapSizeSpecValue,"规格尺寸不正确",$mapEnumeration);
+        if(empty(ArrayUtility::searchBy($listProductInfo,array('product_id'=>$productInfo['product_id'])))){
+        
+            throw   new ApplicationException('产品编号为' . $data['product_sn'] . '的产品不存在');
         }
-        
-        $data['weight_name'] = sprintf('%.2f', $data['weight_name']);
-        
-        if(!empty($data['style_two_level'] && !empty($data['style_one_level']))){
-            
-            $styleOneLevelInfo  = ArrayUtility::searchBy($mapEnumeration['mapStyle'],array('style_name'=>$data['style_one_level'],'style_level'=>0));
-            Validate::testNull($styleOneLevelInfo, "款式不正确");
-            $indexStyleOneLevelName = ArrayUtility::indexByField($styleOneLevelInfo,'style_name','style_id');
-            $styleTwoInfo  = ArrayUtility::searchBy($mapEnumeration['mapStyle'],array('style_name'=>$data['style_two_level'],'parent_id'=>$indexStyleOneLevelName[$data['style_one_level']]));
-            Validate::testNull($styleTwoInfo, "子款式不正确");
-            $indexTwoLevelStyleOneLevelName = ArrayUtility::indexByField($styleTwoInfo,'style_name','style_id');
-            $data['style_id']   = $indexTwoLevelStyleOneLevelName[$data['style_two_level']];
-            
-        }
-
-        $goodsId  = self::_getGoodsId($data,$mapEnumeration);
-        Validate::testNull($goodsId, '不存在该规格的产品');
-        $data['goods_id'] = $goodsId;
-        $productInfo  = ArrayUtility::searchBy($mapEnumeration['listMapProudctInfo'],array('source_id'=>$data['source_id'],'goods_id'=>$goodsId));
-        Validate::testNull($productInfo,'该买款ID没有对应产品');
-        $info     = current($productInfo);
-        
-        if($data['cost'] != $info['product_cost']){
-
-            throw   new ApplicationException('工费与产品不一致');
-        }
-        $data['product_id'] = $info['product_id'];
+        $data['list_product_id'] = array($productInfo['product_id']);
         return $data;
     }
     
@@ -110,9 +103,6 @@ class   Arrive {
     static private function _getGoodsId($data,$mapEnumeration){
         
         $specInfo = array(
-            $data['size_spce_id']                               => $data['size_id'],
-            $mapEnumeration['mapIndexSpecAlias']['material']    => $data['material_id'],
-            $mapEnumeration['mapIndexSpecAlias']['weight']      => $data['weight_id'],
             $mapEnumeration['mapIndexSpecAlias']['color']       => $data['color_id'],    
         );
         $specValueList  = array();
@@ -126,8 +116,8 @@ class   Arrive {
                 'spec_value_id' => $specName,
             );   
         }
-        
-        return Goods_Spec_Value_RelationShip::getGoodsIdByValueList($specValueList, $data['style_id'], $data['category_id'],$mapEnumeration['listGoodsId']);
+
+        return Goods_Spec_Value_RelationShip::getListGoodsIdByValueList($specValueList, $data['style_id'], $data['category_id'],$mapEnumeration['listGoodsId']);
 
     }
     
@@ -232,7 +222,7 @@ class   Arrive {
         $listCategoryInfo   = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
         $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
         // 款式信息
-		$listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
+        $listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
         $mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 
         $condition['produce_order_id']  = $produceOrderId;

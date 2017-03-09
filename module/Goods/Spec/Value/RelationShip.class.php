@@ -66,16 +66,6 @@ class   Goods_Spec_Value_RelationShip {
             return;
         }
 
-        $listGoodsInfo  = Goods_Info::listByCondition(array(
-            'style_id'      => (int) $styleId,
-            'category_id'   => (int) $categoryId,
-        ));
-        $listGoodsId    = $listGoodsInfo ? ArrayUtility::listField($listGoodsInfo, 'goods_id') : array();
-        if (empty($listGoodsId)) {
-
-            return;
-        }
-
         $sql    = 'SELECT gi.goods_id, count(1) AS `cnt` FROM `' . self::_tableName() . '` AS `gsvr` LEFT JOIN `goods_info` AS `gi` ON `gsvr`.`goods_id`=`gi`.`goods_id` WHERE ';
         $where  = array();
         foreach ($specValueList as $specValue) {
@@ -119,20 +109,6 @@ class   Goods_Spec_Value_RelationShip {
         $multiGoodsId   = array_map('intval', array_unique(array_filter($listSkuId)));
 
         Validate::testNull($multiGoodsId,'不存在的sku记录');
-        
-        $condition = array();
-        if($styleId){
-        
-            $condition['style_id'] = (int) $styleId;
-        }
-        $condition['category_id']  = (int) $categoryId;
-                
-        $listGoodsInfo  = Goods_Info::listByCondition($condition);
-        $listGoodsId    = $listGoodsInfo ? ArrayUtility::listField($listGoodsInfo, 'goods_id') : array();
-        if (empty($listGoodsId)) {
-
-            return;
-        }
 
         $sql    = 'SELECT gi.goods_id, count(1) AS `cnt` FROM `' . self::_tableName() . '` AS `gsvr` LEFT JOIN `goods_info` AS `gi` ON `gsvr`.`goods_id`=`gi`.`goods_id` WHERE ';
         $where  = array();
@@ -169,6 +145,57 @@ class   Goods_Spec_Value_RelationShip {
     }
 
     /**
+     * 根据规格 规格值 子款式 品类ID 检验对应的商品
+     *
+     * @param array $specValueList  规格 规格值
+     * @param int   $styleId        款式ID
+     * @param int   $categoryId     品类ID
+     * @return array|void           商品信息
+     */
+    static public function getListGoodsIdByValueList (array $specValueList, $styleId = null, $categoryId = null , array $listSkuId) {
+
+        if (!$specValueList) {
+
+            return;
+        }
+
+        $multiGoodsId   = array_map('intval', array_unique(array_filter($listSkuId)));
+
+        Validate::testNull($multiGoodsId,'不存在的sku记录');
+
+        $condition = array();
+        
+        $sqlStyle='';
+        if($styleId){
+        
+            $condition['style_id'] = (int) $styleId;
+            $sqlStyle = ' AND `gi`.`style_id` = ' . (int) $styleId;
+        }
+        if($categoryId){
+        
+            $condition['category_id']  = (int) $categoryId;
+            $sqlCategory = ' AND `category_id` = ' . (int) $categoryId ;
+        }
+
+        $sql    = 'SELECT `gi`.`goods_id` FROM `' . self::_tableName() . '` AS `gsvr` LEFT JOIN `goods_info` AS `gi` ON `gsvr`.`goods_id`=`gi`.`goods_id` WHERE ';
+        $where  = array();
+        foreach ($specValueList as $specValue) {
+
+            $where[] = '(`gsvr`.`spec_id` = "' . (int) $specValue['spec_id'] . '" AND `gsvr`.`spec_value_id` = "' . (int) $specValue['spec_value_id'] . '")';
+        }
+        
+        $sql    .= "(".implode(' OR ', $where).")" . $sqlStyle . ' AND `gi`.`goods_id` IN ("' . implode('","', $multiGoodsId) . '") '. $sqlCategory .' GROUP BY `gi`.`goods_id` ';
+
+        $result = self::_getStore()->fetchAll($sql);
+
+        if (!$result) {
+
+            return;
+        }
+        return $result;
+    }
+
+    /**
      * 根据一组商品ID获取商品的规格和规格值
      *
      * @param array $multiGoodsId   一组商品ID
@@ -199,7 +226,7 @@ class   Goods_Spec_Value_RelationShip {
      * 根据规格ID查询商品
      *
      * @param $specValueId  商品ID
-     * @return array    	该商品的规格和规格值ID
+     * @return array        该商品的规格和规格值ID
      */
     static public function getBySpecValueId ($specValueId) {
 

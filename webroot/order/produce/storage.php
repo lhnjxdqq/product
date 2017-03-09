@@ -24,101 +24,82 @@ $listOrderProduct   = Produce_Order_List::getDetailByMultiProduceOrderId((array)
 $listProductId      = ArrayUtility::listField($listOrderProduct, 'product_id');
 $mapProductImage    = Common_Product::getProductThumbnail($listProductId);
 
-$listGoodsId        = ArrayUtility::listField($listOrderProduct, 'goods_id');
-$mapGoodsSpuList    = Common_Spu::getGoodsSpu($listGoodsId);
-$listGoodsSpecValue = Common_Goods::getMultiGoodsSpecValue($listGoodsId);
-$mapGoodsSpecValue  = ArrayUtility::indexByField($listGoodsSpecValue, 'goods_id');
-$produceOrderInfo['count_goods']    = count($listOrderProduct);
-$produceOrderInfo['count_quantity'] = 0;
-$produceOrderInfo['count_weight']   = 0;
-foreach ($listOrderProduct as $orderProduct) {
-
-    $goodsId            = $orderProduct['goods_id'];
-    $quantity           = $orderProduct['quantity'];
-    $weightValueData    = $mapGoodsSpecValue[$goodsId]['weight_value_data'];
-    $produceOrderInfo['count_quantity'] += $quantity;
-    $produceOrderInfo['count_weight']   += $quantity * $weightValueData;
-}
-// 供应商信息
-$supplierId         = $produceOrderInfo['supplier_id'];
-$supplierInfo       = Supplier_Info::getById($supplierId);
-// 销售订单信息
-$salesOrderId       = $produceOrderInfo['sales_order_id'];
-$salesOrderInfo     = Sales_Order_Info::getById($salesOrderId);
-// 客户信息
-$customerId         = $salesOrderInfo['customer_id'];
-$customerInfo       = Customer_Info::getById($customerId);
-// 用户信息
-$listUserInfo       = User_Info::listAll();
-$mapUserInfo        = ArrayUtility::indexByField($listUserInfo, 'user_id', 'username');
 // 分类信息
 $listCategoryInfo   = ArrayUtility::searchBy(Category_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id');
-// 款式信息
-$listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(), array('delete_status'=>Style_DeleteStatus::NORMAL));
-$mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
 
 $condition['produce_order_id']  = $produceOrderId;
 $condition['delete_status']     = Produce_Order_DeleteStatus::NORMAL;
-$perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
+$condition['produce_order_arrive_id']     = $arriveId;
+
+$perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
 // 分页
 $page               = new PageList(array(
-    PageList::OPT_TOTAL     => Produce_Order_Product_List::countByCondition($condition),
+    PageList::OPT_TOTAL     => Produce_Order_Arrive_Spu_List::countByCondition($condition),
     PageList::OPT_URL       => '/order/produce/storage.php',
     PageList::OPT_PERPAGE   => $perpage,
 ));
 
-$listOrderDetail    = Produce_Order_Product_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
+//已经入库的spu
+$listOrderDetail    = Produce_Order_Arrive_Spu_List::listByCondition($condition, array(), $page->getOffset(), $perpage);
+
+$listWeightSpecId   = ArrayUtility::listField($listOrderDetail,'weight_value_id');
+$listColorSpecId    = ArrayUtility::listField($listOrderDetail,'color_value_id');
+$listMaterialSpecId = ArrayUtility::listField($listOrderDetail,'material_value_id');
+$listSpuId          = ArrayUtility::listField($listOrderDetail,'spu_id');
+$listSpecValueId    = array_merge($listWeightSpecId,$listColorSpecId,$listMaterialSpecId);
+$listSpecInfo       = Spec_Value_Info::getByMulitId($listSpecValueId);
+$indexSpecId                = ArrayUtility::indexByField($listSpecInfo,'spec_value_id');
+$condition['list_spu_id']   = $listSpuId;
+//订单全部spu
+$productOrderInfo     = Produce_Order_Spu_List::listByCondition($condition, array(), 0, 20);
+$orderIndexSpuId      = ArrayUtility::groupByField($productOrderInfo,'spu_sn');
+foreach($orderIndexSpuId as $spuSn => $info){
+    
+    $orderIndexSpuId[$spuSn]    = ArrayUtility::indexByField($info,'color_value_id');
+}
+$listSpuImages              = Spu_Images_RelationShip::getByMultiSpuId($listSpuId);
+$groupSpuIdImages           = ArrayUtility::groupByField($listSpuImages, 'spu_id');
 
 foreach ($listOrderDetail as &$detail) {
-
-    $goodsId        = $detail['goods_id'];
-    $productId      = $detail['product_id'];
-    $categoryId     = $detail['category_id'];
-    $childStyleId   = $detail['style_id'];
-    $parentStyleId  = $mapStyleInfo[$childStyleId]['parent_id'];
-    $detail['category_name']        = $mapCategoryInfo[$categoryId]['category_name'];
-    $detail['parent_style_name']    = $mapStyleInfo[$parentStyleId]['style_name'];
-    $detail['child_style_name']     = $mapStyleInfo[$childStyleId]['style_name'];
-    $detail['weight_value_data']    = $mapGoodsSpecValue[$goodsId]['weight_value_data'];
-    $detail['size_value_data']      = $mapGoodsSpecValue[$goodsId]['size_value_data'];
-    $detail['color_value_data']     = $mapGoodsSpecValue[$goodsId]['color_value_data'];
-    $detail['material_value_data']  = $mapGoodsSpecValue[$goodsId]['material_value_data'];
-    $detail['spu_list']             = $mapGoodsSpuList[$goodsId];
-    $detail['image_url']            = $mapProductImage[$productId]['image_url'];
-    if(!empty($indexProductId[$productId])){
+    
+	$imageInfo                      = $groupSpuIdImages[$detail['spu_id']];
+    
+    $firstImageInfo = array();
+    if(!empty($imageInfo)){
         
-        $detail['is_arrive']        = 1;
-        $detail['arrive_weight']    = $indexProductId[$productId]['weight'];
-        $detail['storage_weight']   = $indexProductId[$productId]['storage_weight'];
-        $detail['arrive_quantity']  = $indexProductId[$productId]['quantity'];
-        $detail['storage_quantity'] = $indexProductId[$productId]['storage_quantity'];
-    }else{
-        $detail['is_arrive']        = 2;
+        $firstImageInfo = ArrayUtility::searchBy($imageInfo,array('is_first_picture' => 1));
     }
-    $listIsArrive[] = $detail['is_arrive'];
+    if(!empty($firstImageInfo) && count($firstImageInfo) ==1){
+        
+        $info = current($firstImageInfo);
+        $detail['image_url']  = !empty($info)
+            ? AliyunOSS::getInstance('images-spu')->url($info['image_key'])
+            : '';       
+    }else{
+
+        $info = Sort_Image::sortImage($imageInfo);
+
+        $detail['image_url']  = !empty($info)
+            ? AliyunOSS::getInstance('images-spu')->url($info[0]['image_key'])
+            : '';     
+    }
+    $categoryId                         = $detail['category_id'];
+    $childStyleId                       = $detail['style_id'];
+    $parentStyleId                      = $mapStyleInfo[$childStyleId]['parent_id'];
+    $detail['category_name']            = $mapCategoryInfo[$categoryId]['category_name'];
+    $detail['image_url']                = $mapProductImage[$productId]['image_url'];
+    $detail['weight_value_data']        = $indexSpecId[$detail['weight_value_id']]['spec_value_data'];
+    $detail['color_value_data']         = $indexSpecId[$detail['color_value_id']]['spec_value_data'];
+    $detail['material_value_data']      = $indexSpecId[$detail['material_value_id']]['spec_value_data'];
+    $detail['order_quantity_quantity']  = $orderIndexSpuId[$detail['spu_sn']][$detail['color_value_id']]['total_quantity'];
+    $detail['product_cost']             = $orderIndexSpuId[$detail['spu_sn']][$detail['color_value_id']]['product_cost'];
 }
 
-foreach($listOrderDetail as $key=>$info){
-
-    $isArrive[$key] = $info['is_arrive'];
-}
-
-array_multisort($isArrive,SORT_ASC,$listOrderDetail);
 $data['produceOrderInfo']   = $produceOrderInfo;
-$data['supplierInfo']       = $supplierInfo;
-$data['customerInfo']       = $customerInfo;
-$data['mapUserInfo']        = $mapUserInfo;
 $data['listOrderDetail']    = $listOrderDetail;
 $data['pageViewData']       = $page->getViewData();
 $data['mainMenu']           = Menu_Info::getMainMenu();
-$data['mapOrderType']       = Produce_Order_Type::getOrderType();
-$data['listOrderType']      = array(
-    'new_built'     => Produce_Order_StatusCode::NEWLY_BUILT,   // 新建
-    'confirmed'     => Produce_Order_StatusCode::CONFIRMED,     // 已确认
-    'stocking'      => Produce_Order_StatusCode::STOCKING,      // 采购中
-);
-
 $template = Template::getInstance();
 $template->assign('data', $data);
 $template->assign('produceOrderArriveInfo', $produceOrderArriveInfo);
