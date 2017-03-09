@@ -101,7 +101,7 @@
                         </table>
                     </div>
                     <div class="box-footer">                        
-                        <button id="do_edit_arrive" class="btn btn-primary pull-left">返回上一页</button>
+                        <button id="do_edit_arrive" class="btn btn-primary pull-left">保存数据</button>
                         <button id="arrive_spu" class="btn btn-primary pull-right"> 提交入库</button></span>
                     </div>
                     </form>

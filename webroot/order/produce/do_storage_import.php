@@ -74,7 +74,6 @@ $mapEnumeration = array();
 
 $addNums = 1;
 
-$listCategoryName   = ArrayUtility::listField($list,'categoryLv3');
 $listSourceCode     = ArrayUtility::listField($list,'source_code');
 //根据导入数据查出所有的产品
 
@@ -91,15 +90,6 @@ $orderProductInfo   = Produce_Order_Product_Info::getByProduceOrderId($produceOr
 $listProductId      = ArrayUtility::listField($orderProductInfo,'product_id');
 
 $listMapProudctInfo = Product_Info::getByMultiId($listProductId);
-
-$mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
-
-$listGoodsType      = ArrayUtility::listField($mapCategoryName, 'goods_type_id');
-validate::testNull($listGoodsType, "表中无匹配产品类型,请修改后重新上传");
-$mapTypeSpecValue   = Goods_Type_Spec_Value_Relationship::getByMulitGoodsTypeId($listGoodsType);
-$mapSpecInfo        = Spec_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_id'));
-$mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
-$mapSpecValue       = Spec_Value_Info::getByMulitId(ArrayUtility::listField($mapTypeSpecValue, 'spec_value_id'));
 
 $addNums = 1;
 foreach($list as $offsetRow => $row){
