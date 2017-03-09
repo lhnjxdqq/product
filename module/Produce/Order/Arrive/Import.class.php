@@ -94,11 +94,12 @@ class   Produce_Order_Arrive_Import {
         $listProductId      = ArrayUtility::listField($orderProductInfo,'product_id');
 
         $listMapProudctInfo = Product_Info::getByMultiId($listProductId);
-        $mapCategoryName    = Category_Info::getByCategoryName($listCategoryName);
+
+        $mapCategoryName    = Category_Info::listAll();
         $indexCategoryName  = ArrayUtility::indexByField($mapCategoryName,'category_name');
         
         $mapSpecInfo        = Spec_Info::listAll();
-        
+   
         $mapIndexSpecAlias  = ArrayUtility::indexByField($mapSpecInfo, 'spec_alias' ,'spec_id');
         $listSpecColorId    = array_unique(ArrayUtility::listField(Goods_Type_Spec_Value_Relationship::getBySpecId($mapIndexSpecAlias['color']),'spec_value_id'));
         $mapSpecValue       = Spec_Value_Info::getByMulitId($listSpecColorId);
