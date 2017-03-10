@@ -43,24 +43,39 @@ foreach($groupSpuSnOrderProduce as &$produceOrderSpuSnInfo){
         continue;
     }
 
-    $groupColorValueIdOrderProduce = ArrayUtility::groupByField($produceOrderSpuSnInfo,'color_value_id');
+    $groupSourceCodeOrderProduce = ArrayUtility::groupByField($produceOrderSpuSnInfo,'source_code');
     
-    foreach($groupColorValueIdOrderProduce as &$orderProduce){
+    foreach($groupSourceCodeOrderProduce as &$sourceCodeProduce){
         
-        $listSizeValueId    = array_filter(array_unique(ArrayUtility::listField($orderProduce,'size_value_id')));
-        $mapSizeInfo        = ArrayUtility::indexByField($orderProduce ,'size_value_id');
-        $sizeQuantity   = array();
-        
-        foreach ( $mapSizeInfo as $sizeValueId => $orderProductInfo ){
-
-            $sizeQuantity[] = $sizeValueId."-".$orderProductInfo['total_quantity'];
+        if(count($sourceCodeProduce) == 1){
+    
+            $sourceCodeProduce = current($sourceCodeProduce);
+            if(!empty($sourceCodeProduce['size_value_id'])){
+                
+                $sourceCodeProduce['size_quantity']  = $sourceCodeProduce['size_value_id']."-".$sourceCodeProduce['total_quantity']; 
+            }
+            $listProduceOrderInfo[] = $sourceCodeProduce;
+            continue;
         }
+        $groupColorValueIdOrderProduce = ArrayUtility::groupByField($sourceCodeProduce,'color_value_id');
+    
+        foreach($groupColorValueIdOrderProduce as &$orderProduce){
+            
+            $listSizeValueId    = array_filter(array_unique(ArrayUtility::listField($orderProduce,'size_value_id')));
+            $mapSizeInfo        = ArrayUtility::indexByField($orderProduce ,'size_value_id');
+            $sizeQuantity   = array();
+            
+            foreach ( $mapSizeInfo as $sizeValueId => $orderProductInfo ){
 
-        $totalQuantity      = array_sum(ArrayUtility::listField($orderProduce,'total_quantity'));
-        $orderProduce[0]['size_quantity']  = implode(',',$sizeQuantity); 
-        $orderProduce[0]['size_value_id']  = implode(',',$listSizeValueId); 
-        $orderProduce[0]['total_quantity']  = $totalQuantity;
-        $listProduceOrderInfo[]  = $orderProduce[0];        
+                $sizeQuantity[] = $sizeValueId."-".$orderProductInfo['total_quantity'];
+            }
+
+            $totalQuantity      = array_sum(ArrayUtility::listField($orderProduce,'total_quantity'));
+            $orderProduce[0]['size_quantity']  = implode(',',$sizeQuantity); 
+            $orderProduce[0]['size_value_id']  = implode(',',$listSizeValueId); 
+            $orderProduce[0]['total_quantity']  = $totalQuantity;
+            $listProduceOrderInfo[]  = $orderProduce[0];        
+        }
     }
 }
 
