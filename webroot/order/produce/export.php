@@ -92,7 +92,7 @@ foreach($groupSpuSnOrderProduce as $info){
         $sizeIdquantity =(explode("-",$sizeQuantityInfo));
         $sizeID             = $sizeIdquantity[0];
         $productQuantity    = $sizeIdquantity[1];
-        $remarkString  .= $indexSpecId[$sizeID]['spec_value_data'] . ' 数量' . $productQuantity . "\n";
+        $remarkString  .= $indexSpecId[$sizeID]['spec_value_data'] . ' 数量' . $productQuantity;
     }
     $str .= ",".iconv('utf-8','gb2312',$remarkString)."\n";
 
