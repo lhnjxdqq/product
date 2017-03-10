@@ -72,7 +72,7 @@ foreach($groupSpuSnOrderProduce as $info){
     $weightName             = iconv('utf-8','gb2312',$indexSpecId[$info['weight_value_id']]['spec_value_data']);
     $colorName              = iconv('utf-8','gb2312',$indexSpecId[$info['color_value_id']]['spec_value_data']);
     $oneStyleLevelName      = iconv('utf-8','gb2312',$mapStyleInfo[$mapStyleInfo[$info['style_id']]['parent_id']]['style_name']);
-    $towStyleLevelName      = iconv('utf-8','gb2312',$mapStyleInfo[$info['style_id']]['style_id']);
+    $towStyleLevelName      = iconv('utf-8','gb2312',$mapStyleInfo[$info['style_id']]['style_name']);
     $assistantMaterialName  = iconv('utf-8','gb2312',$indexSpecId[$info['assistant_material_value_id']]['spec_value_data']);
     $quantity               = iconv('utf-8','gb2312',$info['total_quantity']);
     $totalWeight            = iconv('utf-8','gb2312',$weightName*$quantity);
