@@ -28,11 +28,10 @@ $mapCategoryInfo    = ArrayUtility::indexByField($listCategoryInfo, 'category_id
 // 款式信息
 $listStyleInfo      = ArrayUtility::searchBy(Style_Info::listAll(),array('delete_status' => Category_DeleteStatus::NORMAL));
 $mapStyleInfo       = ArrayUtility::indexByField($listStyleInfo, 'style_id');
-
+$listProduceOrderInfo = array();
 
 foreach($groupSpuSnOrderProduce as &$produceOrderSpuSnInfo){
-
-    $sizeQuantity   = array();
+    
     if(count($produceOrderSpuSnInfo) == 1){
         
         $produceOrderSpuSnInfo = current($produceOrderSpuSnInfo);
@@ -40,29 +39,37 @@ foreach($groupSpuSnOrderProduce as &$produceOrderSpuSnInfo){
             
             $produceOrderSpuSnInfo['size_quantity']  = $produceOrderSpuSnInfo['size_value_id']."-".$produceOrderSpuSnInfo['total_quantity']; 
         }
+        $listProduceOrderInfo[] = $produceOrderSpuSnInfo;
         continue;
     }
-    
-    $listSizeValueId    = array_filter(array_unique(ArrayUtility::listField($produceOrderSpuSnInfo,'size_value_id')));
-    $mapSizeInfo        = ArrayUtility::indexByField($produceOrderSpuSnInfo ,'size_value_id');
-    
-    foreach ( $mapSizeInfo as $sizeValueId => $orderProductInfo ){
 
-        $sizeQuantity[] = $sizeValueId."-".$orderProductInfo['total_quantity'];
+    $groupColorValueIdOrderProduce = ArrayUtility::groupByField($produceOrderSpuSnInfo,'color_value_id');
+    
+    foreach($groupColorValueIdOrderProduce as &$orderProduce){
+        
+        $listSizeValueId    = array_filter(array_unique(ArrayUtility::listField($orderProduce,'size_value_id')));
+        $mapSizeInfo        = ArrayUtility::indexByField($orderProduce ,'size_value_id');
+        $sizeQuantity   = array();
+        
+        foreach ( $mapSizeInfo as $sizeValueId => $orderProductInfo ){
+
+            $sizeQuantity[] = $sizeValueId."-".$orderProductInfo['total_quantity'];
+        }
+
+        $totalQuantity      = array_sum(ArrayUtility::listField($orderProduce,'total_quantity'));
+        $orderProduce[0]['size_quantity']  = implode(',',$sizeQuantity); 
+        $orderProduce[0]['size_value_id']  = implode(',',$listSizeValueId); 
+        $orderProduce[0]['total_quantity']  = $totalQuantity;
+        $listProduceOrderInfo[]  = $orderProduce[0];        
     }
-    $totalQuantity      = array_sum(ArrayUtility::listField($produceOrderSpuSnInfo,'total_quantity'));
-    $produceOrderSpuSnInfo[0]['size_quantity']  = implode(',',$sizeQuantity); 
-    $produceOrderSpuSnInfo[0]['size_value_id']  = implode(',',$listSizeValueId); 
-    $produceOrderSpuSnInfo[0]['total_quantity']  = $totalQuantity;
-    $produceOrderSpuSnInfo  = $produceOrderSpuSnInfo[0];
 }
 
 //表头
-$str = "序号,买款ID,SPU编号,三级品类,主料材质,规格重量(g),颜色,款式,子款式,辅料材质,下单数量,总重量,成本工费,客户出货工费,备注\n"; 
+$str = "序号,买款ID,SPU编号,三级品类,主料材质,规格重量(g),颜色,款式,子款式,辅料材质,下单数量,总重量,成本工费,客户出货工费,尺寸备注\n"; 
 
 $str = iconv('utf-8','gb2312',$str); 
 $number         = 0;
-foreach($groupSpuSnOrderProduce as $info){
+foreach($listProduceOrderInfo as $info){
     
     $number                 = iconv('utf-8','gb2312',++$number);
     $sourceCode             = iconv('utf-8','gb2312',$info['source_code']);
