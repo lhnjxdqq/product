@@ -35,42 +35,38 @@
                         <tr>
                             <th>客户名称</th>
                             <td><{$data.customerInfo.customer_name}></td>
-                        </tr>
-                        <tr>
+
                             <th>下单数量</th>
                             <td><{$data.produceOrderInfo.count_quantity}></td>
-                        </tr>
-                        <tr>
+
                             <th>下单款数</th>
                             <td><{$data.produceOrderInfo.count_goods}></td>
                         </tr>
                         <tr>
                             <th>下单重量</th>
                             <td><{$data.produceOrderInfo.count_weight}></td>
-                        </tr>
-                        <tr>
+
                             <th>下单人员</th>
                             <td><{$data.mapUserInfo[$data.produceOrderInfo.create_user]}></td>
-                        </tr>
-                        <tr>
+
                             <th>下单时间</th>
                             <td><{$data.produceOrderInfo.create_time}></td>
                         </tr>
                         <tr>
                             <th>工厂批次号</th>
                             <td><{$data.produceOrderInfo.batch_code}></td>
-                        </tr>
-                        <tr>
+
                             <th>预计到货时间</th>
                             <td><{$data.produceOrderInfo.arrival_date}></td>
-                        </tr>
-                        <tr>
+
                             <th>订单类型</th>
                             <td><{$data.mapOrderType[$data.produceOrderInfo.order_type]}></td>
                         </tr>
                         <tr>
                             <th>订单备注</th>
-                            <td><{$data.produceOrderInfo.produce_order_remark}></td>
+                            <td colspan='4'><{$data.produceOrderInfo.produce_order_remark}></td>
+
+                            <td><a href='/order/produce/export.php?produce_order_id=<{$smarty.get.produce_order_id}>' class='btn btn-primary btn-xs'>内部数据导出</a></td>
                         </tr>
                     </table>
                 </div>
