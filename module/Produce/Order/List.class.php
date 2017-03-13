@@ -54,6 +54,7 @@ class Produce_Order_List {
         $sql[]      = self::_conditionBySupplierId($condition);
         $sql[]      = self::_conditionByStatusCode($condition);
         $sql[]      = self::_conditionByProduceOrderSn($condition);
+        $sql[]      = self::_conditionMultiOrderStatusId($condition);
         $sql[]      = self::_conditionByDeleteStatus($condition);
         $sqlFilter  = array_filter($sql);
 
@@ -96,10 +97,6 @@ class Produce_Order_List {
      */
     static private function _conditionByStatusCode (array $condition) {
 
-        if (!isset($condition['order_status_code'])) {
-
-            return  " `poi`.`status_code` != " . Produce_Order_StatusCode::DELETED;;
-        }
         if(empty($condition['order_status_code'])){
             
             return ;
@@ -136,6 +133,23 @@ class Produce_Order_List {
                 : '';
     }
 
+    /**
+     * 按照订单获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */ 
+    static  private function _conditionMultiOrderStatusId (array $condition) {
+
+        if (empty($condition['list_produce_order_status'])) {
+
+            return  ;
+        }
+        $multiOrderStatusId  = array_map('intval', $condition['list_produce_order_status']);
+    
+        return '`poi`.`status_code` IN ("' . implode('","', $multiOrderStatusId) . '")';
+    }
+    
     /**
      * 拼接排序语句
      *

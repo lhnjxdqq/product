@@ -34,7 +34,7 @@
                                 <input type="text" name="date_end" readonly class="form-control" value="<{$condition['date_end']}>">
                             </div>
                         </div>
-                        <div class="col-md-3" style="">
+                        <div class="col-md-4" style="">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">客户名称:</span>
                                     <select class="form-control select-multiple" name="customer_id">
@@ -45,7 +45,7 @@
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-3" style="">
+                        <div class="col-md-4" style="">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon">渠道拓展:</span>
                                     <select class="form-control select-multiple" name="salesperson_id">
@@ -56,19 +56,18 @@
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-2" style="">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">订单状态:</span>
-                                    <select class="form-control select-multiple" name="sales_order_status">
-                                            <option value="0">请选择</option>
-<{foreach from=$statusList item=item}>
-                                            <option value="<{$item.status_id}>" <{if $item.status_id eq $condition.sales_order_status}> selected = "selected" <{/if}>><{$item.status_name}></option>
-<{/foreach}>
-                                    </select>
-                            </div>
-                        </div>
                     </div>
                     <div class="box-header with-border row">
+                        <div class="col-md-4" style="">
+                            <div class="input-group input-group-sm">
+                            <span class="input-group-addon">订单状态:</span>
+                                <select class="form-control select-multiple-do" name="list_sales_order_status[]" multiple="multiple">
+<{foreach from=$statusList item=item}>
+                                    <option value="<{$item.status_id}>" <{if $condition['list_sales_order_status'] !="" && in_array($item.status_id,$condition['list_sales_order_status'] )}>selected<{/if}>><{$item.status_name}></option>
+<{/foreach}>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-4" style="">
                             <div class="input-daterange input-group input-group-sm">
                                 <span class="input-group-addon" style="border-width:1px 0 1px 1px;">下单日期:</span>
@@ -221,6 +220,7 @@
 
 $(function(){
 
+    $(".select-multiple-do").select2({'width':'200px'});
     $('.sales-quotaiton-copy').click(function () {
     
         spuQuotationId = $(this).attr('spu-quotation-id');

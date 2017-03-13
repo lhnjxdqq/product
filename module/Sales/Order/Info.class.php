@@ -189,6 +189,7 @@ class   Sales_Order_Info {
         $sql[]      = self::_conditionInSearchOrderId($condition);
         $sql[]      = self::_conditionKeywords($condition);
         $sql[]      = self::_conditionCustomerId($condition);
+        $sql[]      = self::_conditionMultiOrderStatusId($condition);
         $sql[]      = self::_conditionOrderTypeId($condition);  //订单类型
         $sql[]      = self::_conditionSalespersonId($condition);
         $sql[]      = self::_conditionOrderStatusId($condition);
@@ -272,15 +273,28 @@ class   Sales_Order_Info {
      */ 
     static  private function _conditionOrderStatusId (array $condition) {
 
-        if (!isset($condition['sales_order_status'])) {
-
-            return  "`sales_order_status` != " . Sales_Order_Status::DELETE;;
-        }
         if(empty($condition['sales_order_status'])){
             
             return ;
         }
         return  "`sales_order_status` = " . (int) $condition['sales_order_status'];
+    }
+    
+    /**
+     * 按照订单获取sql
+     *
+     * @param   array   $condition  条件
+     * @return  string              条件SQL子句 
+     */ 
+    static  private function _conditionMultiOrderStatusId (array $condition) {
+
+        if (empty($condition['list_sales_order_status'])) {
+
+            return  ;
+        }
+        $multiOrderStatusId  = array_map('intval', $condition['list_sales_order_status']);
+    
+        return '`sales_order_status` IN ("' . implode('","', $multiOrderStatusId) . '")';
     }
     
     /**

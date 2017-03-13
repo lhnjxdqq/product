@@ -52,10 +52,9 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <select name="order_status_code" class="form-control">
-                                    <option value="0">请选择订单状态</option>
+                                <select class="form-control select-multiple-do" name="list_produce_order_status[]" multiple="multiple">
                                     <{foreach from=$data.mapStatusCode item=statusName key=statusCode}>
-                                    <option value="<{$statusCode}>"<{if $statusCode == $smarty.get.order_status_code}> selected<{/if}>><{$statusName}></option>
+                                    <option value="<{$statusCode}>" <{if $data.condition['list_produce_order_status'] !="" && in_array($statusCode,$data.condition['list_produce_order_status'] )}>selected<{/if}>><{$statusName}></option>
                                     <{/foreach}>
                                 </select>
                             </div>
@@ -203,6 +202,8 @@
         format  : 'yyyy-mm-dd',
         language: 'zh-CN'
     });
+    
+    $(".select-multiple-do").select2({'width':'130px'});
     $('.delete-confirm').click(function () {
 
         return  confirm('确认删除？');
