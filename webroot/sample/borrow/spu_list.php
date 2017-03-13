@@ -61,15 +61,6 @@ $mapSpuSourceCode           = ArrayUtility::groupByField($listSpuSourceCode, 'sp
 $mapSpuInfo                 = Spu_Info::getByMultiId($listSpuId);
 $mapIndexSpuId              = ArrayUtility::indexByField($mapSpuInfo,'spu_id');
 
-foreach($indexSupplierId as $supplierId => $info){
-    
-    $plusData       = json_decode($info['price_plus_data'],true);
-    if(!empty($plusData)){
-    
-        $suppluerIdColor[$supplierId]   = $plusData['base_color_id'];   
-    }
-}
-
 foreach ($listSpuInfo as $key => $spuInfo) {
 
     $spuId              = $spuInfo['spu_id'];
