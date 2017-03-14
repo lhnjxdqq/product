@@ -71,6 +71,10 @@ $specMaterialId       = $specMaterialInfo['material'];
 $specSizeId           = $specSizeInfo['size'];
 $specAssistantMaterialId          = $specColorInfo['assistant_material'];
 
+//品类
+$listCategory   = Category_Info::listAll();
+$mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
+
 $listGoodsId            = array();
 $mapSpuInfo             = array();
 foreach($indexSourceCode as $source_code => $info){
@@ -136,11 +140,6 @@ foreach($indexSourceCode as $source_code => $info){
     
     $mapProductInfo[$source_code]= Product_Info::getByMultiGoodsId($mapGoodsId[$source_code]);
     $indexGoodsIdCost[$source_code] = ArrayUtility::indexByField($mapProductInfo[$source_code],'goods_id','product_cost');
-
-    // 根据商品查询品类
-    $listCategoryId = ArrayUtility::listField($listGoodsInfo, 'category_id');
-    $listCategory   = Category_Info::getByMultiId($listCategoryId);
-    $mapCategory    = ArrayUtility::indexByField($listCategory, 'category_id');
 
     // 根据商品查询规格重量
     $listSpecValue  = Goods_Spec_Value_RelationShip::getByMultiGoodsId($listGoodsId);
@@ -234,23 +233,25 @@ foreach($mapSpuInfo as $source=>$listSpu){
             }
             // 品类名 && 规格重量
             $goodsId    = $mapSpuGoods[$info['sku_code']][$info['spu_id']];
+
             if (!$goodsId) {
 
                 $info['category_name'] = '';
                 $info['weight_value']  = '';
             } else {
 
-                $categoryId = $mapGoodsInfo[$info['sku_code']][$goodsId]['category_id'];
+                $goodsInfo  = $mapGoodsInfo[$info['sku_code']][$goodsId];
+                $categoryId = $goodsInfo['category_id'];
                 $info['category_name'] = $mapCategory[$categoryId]['category_name'];
                 $info['material_name'] = !empty($mapMaterialValue[$info['spu_id']]) ? implode(",",$mapMaterialValue[$info['spu_id']]): '';
                 $info['assistant_material_name'] = !empty($mapAssistantMaterialValue[$info['spu_id']]) ? implode(",",$mapAssistantMaterialValue[$info['spu_id']]): '';
                 $info['size_name']     = !empty($mapSizeValue[$info['spu_id']]) ? implode(",",$mapSizeValue[$info['spu_id']]): '';
                 $info['weight_value']  = $mapWeightSpecValue[$info['sku_code']][$goodsId];
                 $info['cost']          = $mapColorValue[$info['spu_id']];
-                if(!empty($mapGoodsInfo[$info['sku_code']][$goodsId]['style_id'])){
+                if(!empty($goodsInfo['style_id'])){
                     
-                    $info['style_two_level'] = $indexStyleId[$mapGoodsInfo[$info['sku_code']][$goodsId]['style_id']]['style_name'];
-                    $info['style_one_level'] = $indexStyleId[$indexStyleId[$mapGoodsInfo[$info['sku_code']][$goodsId]['style_id']]['parent_id']]['style_name'];
+                    $info['style_two_level'] = $indexStyleId[$goodsInfo['style_id']]['style_name'];
+                    $info['style_one_level'] = $indexStyleId[$indexStyleId[$goodsInfo['style_id']]['parent_id']]['style_name'];
                 }
             }
          
