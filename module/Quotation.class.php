@@ -325,12 +325,13 @@ class   Quotation {
         $mainColorId        = $ruleInfo["base_color_id"];
         $listColorCost[$mainColorId] = $cost;
 
-        foreach($colorInfo as $colorId => $colorCostPlus){
-            
-            $listColorCost[$colorId] =  $cost+$colorCostPlus;
+        if(!empty($colorInfo)){       
+            foreach($colorInfo as $colorId => $colorCostPlus){
+                
+                $listColorCost[$colorId] =  $cost+$colorCostPlus;
+            }   
         }
 
-        $listColorCost[$mainColorId] = (int) $cost;
         return $listColorCost;
     }
     
