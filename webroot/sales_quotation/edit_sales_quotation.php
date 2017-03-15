@@ -33,6 +33,13 @@ unset($data['sales_quotation_name']);
 unset($data['sales_quotation_id']);
 unset($data['plue_price']);
 
+$slaesQuotationInfo         = Sales_Quotation_Info::getBySalesQuotationId($salesQuotationId);
+
+if($slaesQuotationInfo['run_status'] == Product_Export_RunStatus::RUNNING || $slaesQuotationInfo['run_status'] == Product_Export_RunStatus::EDIT_RUNING){
+    
+	throw   new ApplicationException("文件正在生成中或者正在修改信息，请稍后修改");
+    exit;
+}
 $slaesQuotation = array(
         'sales_quotation_id'   => $salesQuotationId,
         'sales_quotation_name' => $salesQuotationName,
@@ -41,7 +48,7 @@ $slaesQuotation = array(
         'hash_code'            => md5(time()),
         'operatior_id'         => $_SESSION['user_id'],
         'markup_rule'          => (float) $salesQuotationMarkupRule,
-        'run_status'           => Product_Export_RunStatus::STANDBY,
+        'run_status'           => Product_Export_RunStatus::EDIT_RUNING,
     );
     
 Sales_Quotation_Info::update($slaesQuotation);
@@ -132,5 +139,11 @@ foreach($data as $spuId => $colorCost){
         Sales_Quotation_Spu_Info::update($content);
     }
 }
+$slaesQuotation = array(
+        'sales_quotation_id'   => $salesQuotationId,
+        'run_status'           => Product_Export_RunStatus::STANDBY,
+);
+Sales_Quotation_Info::update($slaesQuotation);    
 Utility::notice('报价单修改成功', $_SESSION['sales_quotation_page']);
+
 unset($_SESSION['sales_quotation_page']);
