@@ -731,8 +731,9 @@ class   Quotation {
         $specRedColorInfo   = Spec_Value_Info::getBySpecValueData('K红');
         $specRedColorId     = $specRedColorInfo['spec_value_id'];
 
-        $listGoodsId            = array();
-
+        $listGoodsId        = array();
+        $listProductId      = array();
+        
         foreach($indexSourceCode as $source_code => $info){
             
             if(empty($info['relationship_product_id'])){

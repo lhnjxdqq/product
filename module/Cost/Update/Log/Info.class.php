@@ -60,7 +60,7 @@ class   Cost_Update_Log_Info {
      * @param $multiProductId   一组产品ID
      * @return array            产品信息
      */
-    static public function getByMultiProductId ($multiProductId) {
+    static public function getByMultiProductId (array $multiProductId) {
 
         $multiProductId = array_map('intval', array_unique(array_filter($multiProductId)));
 

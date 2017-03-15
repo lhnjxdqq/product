@@ -1,8 +1,8 @@
 <?php
 class Update_Cost_Status {
 
-	//0:待导入;
-	const    WAIT		 = 0;
+    //0:待导入;
+    const    WAIT        = 0;
     //1:导入中;
     const   IMPORTING    = 1;
     
@@ -30,7 +30,7 @@ class Update_Cost_Status {
 
         return  array(
             self::IMPORTING        => '导入中',
-            self::WAIT        	   => '待导入',
+            self::WAIT             => '待导入',
             self::WAIT_AUDIT       => '待审核',
             self::UPDATE           => '更新中',
             self::FINISHED         => '已完成',
