@@ -172,7 +172,7 @@ Update_Cost_Info::create(array(
     'supplier_id'             => (int) $_POST['supplier_id'],
     'auditor_user_id'         => 0,
     'supplier_markup_rule_id'   => (int) $_POST['supplier_markup_rule_id'],
-    'status_id'               => Update_Cost_Status::IMPORTING,
+    'status_id'               => Update_Cost_Status::WAIT,
 ));
 
 Utility::notice('改价单上传成功','/update_cost/index.php');
