@@ -11,4 +11,6 @@ class   Product_Export_RunStatus extends SplEnum {
     const   FINISH  = 3;
 
     const   ERROR   = 4;
+    
+    const   EDIT_RUNING    = 5;
 }
