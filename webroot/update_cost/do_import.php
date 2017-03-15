@@ -124,7 +124,7 @@ $mapEnumeration =array(
 
 foreach ($list as $offsetRow => $row) {
     
-    $line  = $offsetRow+3;
+    $line  = $offsetRow+2;
     try{
         
         $datas[] = Quotation::testQuotation($row,$mapEnumeration, $_POST['is_sku_code'], $_POST['supplier_id']);
