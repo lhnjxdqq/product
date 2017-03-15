@@ -5,17 +5,26 @@
 require_once    dirname(__FILE__) . '/../init.inc.php';
 
 $condition  = array(
-    'status_id'    => Update_Cost_Status::IMPORTING,
+    'status_id'    => Update_Cost_Status::WAIT,
 );
 $order      = array(
     'create_time'   => 'DESC',
 );
-$listInfo   = Update_Cost_Info::listByCondition($condition, $order, 0, 100);
+$listInfo   = Update_Cost_Info::listByCondition($condition, $order, 0, 5);
 
 if(empty($listInfo)){
     
     return ;
 }
+
+foreach ($listInfo as $info) {
+
+    Update_Cost_Info::update(array(
+        'update_cost_id'       => $info['update_cost_id'],
+        'status_id'            => Update_Cost_Status::IMPORTING,
+    ));
+}
+
 foreach ($listInfo as $info) {
 
     $excelFile        = Config::get('path|PHP', 'quotation_import') . $info['file_path'];
