@@ -365,7 +365,7 @@ $('.edit-cost').click(function(){
 
         if (0 != response.code) {
 
-            showMessage('错误', response.message);
+            alert(response.statusInfo);
 
             return  false;
         }else{
