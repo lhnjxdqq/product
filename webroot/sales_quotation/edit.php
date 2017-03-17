@@ -23,7 +23,7 @@ if(is_numeric($_GET['customer_id']) && !empty($_GET['customer_id'] && !empty($sa
         'customer_id'   => $customerId,
         'is_confirm'    => Sales_Quotation_ConfirmStatus::YES,
     );
-    $mapCartSpuInfo    = Sales_Quotation_Info::listByCondition($salesCondition, $order, 0, 100);
+    $mapCartSpuInfo    = Sales_Quotation_Info::listByCondition($salesCondition, $order, 0, 50);
     if(!empty($mapCartSpuInfo)){
         
         //该用户下所有销售出货单的记录ID
@@ -49,7 +49,7 @@ $orderBy                = array(
 );
 $condition['search_value_list']      = $_GET['search_value_list']; 
  
-$perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 100;
+$perpage            = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 50;
 $condition['sales_quotation_id']   = $salesQuotationId;
 $group              = 'spu_id'; 
 $countSpu   = !empty($condition['search_value_list']) ? Search_SalesQuotationSpu::countByCondition($condition)
