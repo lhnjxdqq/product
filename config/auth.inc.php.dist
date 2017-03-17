@@ -32,6 +32,7 @@ return  array(
         'Spu.getValuationTypeByListSpuSn',
         'Sku.getValuationTypeByListGoodsSn',
         'SalesQuotation.getLogPathBySalesOrderId',
+        'Spu.pushEditAttrSn',
     ),
     'white_list_host'   => array(
         '127.0.0.1',

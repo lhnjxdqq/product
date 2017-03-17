@@ -20,10 +20,34 @@ $borrowInfo                 = Borrow_Info::getByBorrowId($borrowId);
 Validate::testNull($condition, '你没有任何搜索条件');
 $condition['start_time']    = $borrowInfo['start_time'];
 $condition['end_time']      = $borrowInfo['end_time'];
-$condition['borrow_id']		= $borrowId;
+$condition['borrow_id']     = $borrowId;
 $condition['online_status'] = Spu_OnlineStatus::ONLINE;
 $condition['delete_status'] = Spu_DeleteStatus::NORMAL;
 $condition['is_delete']     = Spu_DeleteStatus::NORMAL;
+
+if ( !empty($condition['keyword_list']) ) {
+
+    $attr       = 1;
+    $listKeywords   = array_filter(array_unique(explode(" ",$condition['keyword_list'])));
+
+    if(count($listKeywords) > 5){
+                     
+         throw   new ApplicationException('搜索关键词不能超过五个');
+    }
+
+    $res = TagApi::getInstance()->Attribute_getByKeywords($listKeywords)->call();
+    
+    $listAttrInfo = current($res['data']);
+
+    foreach($listAttrInfo as $attrInfo){
+       
+        if(!empty($attrInfo)){
+
+            $attr++;
+        }
+    }
+    $condition['attr_list'] = $listAttrInfo;
+}
 $conditionData    = json_encode(array_filter($condition));
 
 $countSpuTotal              = Search_BorrowSample::countByCondition($condition);

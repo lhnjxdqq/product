@@ -19,7 +19,7 @@ class   Spu_Info {
     /**
      * 字段
      */
-    const   FIELDS      = 'spu_id,spu_sn,spu_name,spu_remark,online_status,delete_status,create_time,update_time,image_total,valuation_type';
+    const   FIELDS      = 'spu_id,spu_sn,spu_name,spu_remark,online_status,delete_status,create_time,update_time,image_total,valuation_type,style_id,brand_id,keywords';
     /**
      * 新增
      *

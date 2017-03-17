@@ -7,6 +7,30 @@ $condition                  = $_GET;
 $borrowId   = $_GET['borrow_id'];
 Validate::testNull($borrowId,'借板ID不能为空');
 
+if ( !empty($condition['keyword_list']) ) {
+
+    $attr       = 1;
+    $listKeywords   = array_filter(array_unique(explode(" ",$condition['keyword_list'])));
+
+    if(count($listKeywords) > 5){
+                     
+         throw   new ApplicationException('搜索关键词不能超过五个');
+    }
+
+    $res = TagApi::getInstance()->Attribute_getByKeywords($listKeywords)->call();
+    
+    $listAttrInfo = current($res['data']);
+
+    foreach($listAttrInfo as $attrInfo){
+       
+        if(!empty($attrInfo)){
+
+            $attr++;
+        }
+    }
+    $condition['attr_list'] = $listAttrInfo;
+}
+
 $borrowInfo                 = Borrow_Info::getByBorrowId($borrowId);
 $borrowSpuInfo              = Borrow_Spu_Info::getByBorrowId($borrowId);
 $countSpuBorrow             = count($borrowSpuInfo);
@@ -42,7 +66,8 @@ $condition['delete_status'] = Spu_DeleteStatus::NORMAL;
 $condition['is_delete']     = Spu_DeleteStatus::NORMAL;
 
 $perpage                    = isset($_GET['perpage']) && is_numeric($_GET['perpage']) ? (int) $_GET['perpage'] : 20;
-$countSpuTotal              = Search_BorrowSample::countByCondition($condition);
+
+$countSpuTotal              = $attr == 1 ? 0 :Search_BorrowSample::countByCondition($condition);
 $page                       = new PageList(array(
     PageList::OPT_TOTAL     => $countSpuTotal,
     PageList::OPT_URL       => '/sample/borrow/spu_list.php',
@@ -51,7 +76,7 @@ $page                       = new PageList(array(
 $listSpecInfo   = Spec_Info::listAll();
 $mapSpecInfo    = ArrayUtility::indexByField($listSpecInfo, 'spec_alias');
 
-$listSpuInfo                = Search_BorrowSample::listByCondition($condition, array(), $page->getOffset(), $perpage);
+$listSpuInfo                = $attr == 1 ? array() :Search_BorrowSample::listByCondition($condition, array(), $page->getOffset(), $perpage);
 
 $listSupplierId             = ArrayUtility::listField($listSpuInfo,'supplier_id');
 

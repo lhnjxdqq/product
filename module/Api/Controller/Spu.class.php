@@ -70,6 +70,33 @@ class   Api_Controller_Spu {
     }
 
     /**
+     * 接受更新spu属性的spuSn
+     * 
+     * $param  array  $params 参数
+     * $retutn array          参数
+     */
+    static public function pushEditAttrSn (array $params ) {
+        
+        Validate::testNull($params['spuList'], '参数 spuList 不能为空');
+        Validate::testArray($params['spuList'], '参数 spuList 格式应该为数组');
+        $listSpuSn      = ArrayUtility::listField($params['spuList'], 'spuSn');
+        $listSpuInfo        = self::_getSpuInfoMulti($listSpuSn);
+        Validate::testNull($listSpuInfo, '对应的 SPU 结果为空');
+        
+        foreach($listSpuInfo as $info){
+            
+            Spu_Attr_Task::create(array(
+                'spu_id'        => $info['spu_id'],
+                'run_status'    => Spu_Attr_RunStatus::WAIT,
+            ));
+        }
+        return array(
+            'code'      => 0,
+            'message'   => 'OK',
+            'data'      => array(),
+        );
+    }
+    /**
      * 获取多个SPU信息 根据买款ID
      *
      * @param   array   $params 参数

@@ -87,7 +87,7 @@
                                     <{/foreach}>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" name="search_value_list" placeholder="请输入买款ID/SKU编号/SPU编号" value="<{$smarty.get.search_value_list}>">
                             </div>
                             <div class="col-md-2">
@@ -97,6 +97,11 @@
                                         <option value="<{$typeId}>"<{if $smarty.get.search_type eq $typeId}> selected<{/if}>><{$typeName}></option>
                                     <{/foreach}>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row spu-filter">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="keyword_list" placeholder="请输入风格、工艺、元素、品牌、形状等关键词" value="<{$smarty.get.keyword_list}>">
                             </div>
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> 查询</button>
